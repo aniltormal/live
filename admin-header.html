@@ -23,12 +23,18 @@
     <div id="pageContent" class="hidden space-y-5 fade-in-up">
       <!-- हेडर सेटिंग्ज -->
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
-        <div class="flex items-center justify-between gap-2 pb-2 border-b border-slate-100">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100">
           <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🎨 हेडर व लोगो सेटिंग्ज</h2>
-          <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
-            <span>बॅनर फोटो लपवा</span>
-            <span class="toggle-pill"><input id="hideBannerToggle" type="checkbox" /><span class="knob"></span></span>
-          </label>
+          <div class="flex flex-wrap items-center gap-4">
+            <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+              <span>बॅनर फोटो लपवा</span>
+              <span class="toggle-pill"><input id="hideBannerToggle" type="checkbox" /><span class="knob"></span></span>
+            </label>
+            <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+              <span>शीर्षक व उपशीर्षक लपवा</span>
+              <span class="toggle-pill"><input id="hideHeaderTextToggle" type="checkbox" /><span class="knob"></span></span>
+            </label>
+          </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -130,6 +136,7 @@
           document.getElementById('swatchHeaderText').style.backgroundColor = h.textColor;
         }
         document.getElementById('hideBannerToggle').checked = !!h.hideBanner;
+        document.getElementById('hideHeaderTextToggle').checked = !!h.hideHeaderText;
       });
 
       fbDb.ref('siteConfig/footer').on('value', (snap) => {
@@ -151,7 +158,8 @@
       const headerPayload = {
         fontFamily: font,
         textColor: document.getElementById('headerTextColor').value.trim(),
-        hideBanner: document.getElementById('hideBannerToggle').checked
+        hideBanner: document.getElementById('hideBannerToggle').checked,
+        hideHeaderText: document.getElementById('hideHeaderTextToggle').checked
       };
       const title = document.getElementById('headerTitle').value.trim();
       const subtitle = document.getElementById('headerSubtitle').value.trim();

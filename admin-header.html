@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>हेडर व फुटर — लाईव्ह दर्शन अ‍ॅडमिन</title>
+  <title>हेडर, लोगो व फुटर — लाईव्ह दर्शन अ‍ॅडमिन</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Akshar:wght@400;600;700&family=Amiko:wght@400;600;700&family=Amita:wght@400;700&family=Anek+Devanagari:wght@400;600;700&family=Arya:wght@400;700&family=Asar&family=Bakbak+One&family=Baloo+2:wght@500;600;700&family=Biryani:wght@400;600;700&family=Cambay:wght@400;700&family=Dekko&family=Eczar:wght@400;600;700&family=Glegoo:wght@400;700&family=Gotu&family=Halant:wght@400;600;700&family=Hind:wght@400;600;700&family=Inknut+Antiqua:wght@400;600;700&family=Inter:wght@400;600;700&family=Jaldi:wght@400;700&family=Kadwa:wght@400;700&family=Kalam:wght@400;700&family=Karma:wght@400;600;700&family=Khand:wght@500;600;700&family=Khula:wght@400;600;700&family=Kurale&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Laila:wght@500;600;700&family=Martel+Sans:wght@400;600;700&family=Martel:wght@400;600;700&family=Modak&family=Mukta:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&family=Noto+Serif+Devanagari:wght@400;600;700&family=Palanquin+Dark:wght@400;600;700&family=Palanquin:wght@400;600;700&family=Playpen+Sans+Deva:wght@400;600;700&family=Poppins:wght@400;500;600;700&family=Pragati+Narrow:wght@400;700&family=Rajdhani:wght@500;600;700&family=Rhodium+Libre&family=Rozha+One&family=Sahitya:wght@400;700&family=Sarala:wght@400;700&family=Sumana:wght@400;700&family=Sura:wght@400;700&family=Teko:wght@500;600;700&family=Tillana:wght@500;600;700&family=Tiro+Devanagari+Hindi:ital@0;1&family=Tiro+Devanagari+Marathi:ital@0;1&family=Tiro+Devanagari+Sanskrit:ital@0;1&family=Vesper+Libre:wght@400;700&family=Yatra+One&display=swap" rel="stylesheet" />
@@ -11,79 +11,161 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-  <style>
-    body { font-family: 'Noto Sans Devanagari', 'Poppins', sans-serif; }
-  </style>
 </head>
-<body class="bg-slate-100 text-slate-900 min-h-screen flex flex-col">
-  <header class="bg-[#05344E] text-white shadow-md sticky top-0 z-40">
-    <div class="max-w-3xl mx-auto px-3 py-3 flex items-center justify-between gap-2">
-      <div class="flex items-center gap-2 min-w-0">
-        <a href="admin.html" class="px-2.5 py-1 rounded-lg bg-white/15 hover:bg-white/25 text-xs font-semibold">← डॅशबोर्ड</a>
-        <h1 class="text-sm sm:text-base font-bold truncate">🎨 हेडर, फुटर व ५० फॉन्ट्स</h1>
-      </div>
-      <button id="adminLogoutBtn" type="button" class="hidden px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-xs font-bold cursor-pointer shrink-0">🚪 लॉगआऊट</button>
-    </div>
-  </header>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+  <header id="adminTopHeader"></header>
 
-  <main class="flex-1 max-w-3xl w-full mx-auto p-3 sm:p-5">
-    <div id="authGateMsg" class="p-4 rounded-xl bg-white border border-slate-200 text-center text-sm font-semibold text-slate-600">
+  <main class="flex-1 max-w-4xl w-full mx-auto p-3 sm:p-6">
+    <div id="authGateMsg" class="p-6 rounded-2xl bg-white border border-slate-200 text-center text-sm font-semibold text-slate-600 shadow-sm">
       ⏳ अ‍ॅडमिन तपासणी सुरू आहे...
     </div>
-    <div id="pageContent" class="hidden space-y-4">
-      
-<form id="headerForm" class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-  <div><label class="block text-xs font-bold mb-1">मुख्य हेडर शीर्षक</label><input id="hTitle" type="text" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs" /></div>
-  <div><label class="block text-xs font-bold mb-1">उप-शीर्षक (Subtitle)</label><input id="hSub" type="text" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs" /></div>
-  <div><label class="block text-xs font-bold mb-1">फुटर टिकर मजकूर</label><textarea id="hFooter" rows="2" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs"></textarea></div>
-  <div><label class="block text-xs font-bold mb-1">हेडर/फुटर देवनागरी फॉन्ट (५० पर्याय)</label><select id="hFont" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white"></select></div>
-  <div class="grid grid-cols-2 gap-3">
-    <div><label class="block text-xs font-bold mb-1">मजकूर रंग</label><input id="hColor" type="color" value="#ffffff" class="w-full h-10 rounded-xl border border-slate-300" /></div>
-    <div><label class="block text-xs font-bold mb-1">बॅकग्राउंड रंग</label><input id="hBg" type="color" value="#05344E" class="w-full h-10 rounded-xl border border-slate-300" /></div>
-  </div>
-  <div><label class="block text-xs font-bold mb-1">नवीन हेडर फोटो अपलोड (पर्यायी)</label><input id="hPhotoFile" type="file" accept="image/*" class="w-full text-xs" /></div>
-  <button type="submit" class="w-full py-2.5 rounded-xl bg-[#05344E] text-white text-sm font-bold cursor-pointer">💾 हेडर व फुटर सेव्ह करा</button>
-</form>
 
+    <div id="pageContent" class="hidden space-y-5 fade-in-up">
+      <!-- हेडर सेटिंग्ज -->
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
+        <div class="flex items-center justify-between gap-2 pb-2 border-b border-slate-100">
+          <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🎨 हेडर व लोगो सेटिंग्ज</h2>
+          <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+            <span>बॅनर फोटो लपवा</span>
+            <span class="toggle-pill"><input id="hideBannerToggle" type="checkbox" /><span class="knob"></span></span>
+          </label>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">मुख्य शीर्षक (Title)</label>
+            <input id="headerTitle" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" placeholder="प्रमुख मंदिरे लाईव्ह दर्शन" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">उपशीर्षक (Subtitle)</label>
+            <input id="headerSubtitle" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" placeholder="अखंड भक्ती व अखंड दर्शन" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">हेडर व फुटर फॉन्ट (५० देवनागरी फॉन्ट्स)</label>
+            <select id="headerFontSelect" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white"></select>
+            <div id="headerFontPreview" class="mt-2 px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm text-[#05344E]">🙏 श्री विठ्ठल-रुक्मिणी लाईव्ह दर्शन</div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">हेडर मजकूर रंग</label>
+            <div class="flex items-center gap-2">
+              <button id="swatchHeaderText" type="button" class="w-10 h-10 rounded-xl border border-slate-300 shrink-0 cursor-pointer shadow-sm"></button>
+              <input id="headerTextColor" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono" value="#FFFFFF" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">हेडर बॅनर फोटो बदला</label>
+            <input id="headerBannerFile" type="file" accept="image/*" class="w-full text-xs file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-slate-100 file:font-bold file:text-slate-700 cursor-pointer" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">पोर्टल लोगो फोटो बदला</label>
+            <input id="headerLogoFile" type="file" accept="image/*" class="w-full text-xs file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-slate-100 file:font-bold file:text-slate-700 cursor-pointer" />
+          </div>
+        </div>
+      </section>
+
+      <!-- फुटर सेटिंग्ज -->
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
+        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E] pb-2 border-b border-slate-100">📝 फुटर सेटिंग्ज</h2>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">फुटर मजकूर</label>
+          <input id="footerText" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" placeholder="© २०२६ लाईव्ह दर्शन पोर्टल" />
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">फुटर पार्श्वभूमी रंग (Background)</label>
+            <div class="flex items-center gap-2">
+              <button id="swatchFooterBg" type="button" class="w-10 h-10 rounded-xl border border-slate-300 shrink-0 cursor-pointer shadow-sm"></button>
+              <input id="footerBgColor" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono" value="#05344E" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">फुटर मजकूर रंग</label>
+            <div class="flex items-center gap-2">
+              <button id="swatchFooterText" type="button" class="w-10 h-10 rounded-xl border border-slate-300 shrink-0 cursor-pointer shadow-sm"></button>
+              <input id="footerTextColor" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono" value="#FFFFFF" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="sticky bottom-3 z-20 flex justify-end">
+        <button id="saveHeaderBtn" type="button" class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-sm font-bold cursor-pointer shadow-lg transition">💾 हेडर व फुटर सेव्ह करा</button>
+      </div>
     </div>
   </main>
 
-  <div id="toastBox" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-black text-white text-xs font-bold shadow-lg"></div>
+  <div id="toastBox" class="hidden"></div>
 
   <script src="admin-common.js"></script>
   <script>
+    renderAdminShell('header', 'हेडर, लोगो व फुटर');
+    populateFontSelect('headerFontSelect', 'headerFontPreview');
+    bindColorPicker('headerTextColor', 'swatchHeaderText', '#FFFFFF');
+    bindColorPicker('footerBgColor', 'swatchFooterBg', '#05344E');
+    bindColorPicker('footerTextColor', 'swatchFooterText', '#FFFFFF');
 
-populateFontSelect('hFont');
-let currentHeader = {};
-initAdminGuard(() => {
-  fbDb.ref('siteConfig/header').on('value', (snap) => {
-    currentHeader = snap.val() || {};
-    if (currentHeader.title) document.getElementById('hTitle').value = currentHeader.title;
-    if (currentHeader.subtitle) document.getElementById('hSub').value = currentHeader.subtitle;
-    if (currentHeader.footerText) document.getElementById('hFooter').value = currentHeader.footerText;
-    if (currentHeader.fontFamily) document.getElementById('hFont').value = currentHeader.fontFamily;
-    if (currentHeader.textColor) document.getElementById('hColor').value = currentHeader.textColor;
-    if (currentHeader.bgColor) document.getElementById('hBg').value = currentHeader.bgColor;
-  });
-});
+    initAdminGuard(() => {
+      fbDb.ref('siteConfig/header').on('value', (snap) => {
+        const h = snap.val() || {};
+        if (h.title !== undefined) document.getElementById('headerTitle').value = h.title;
+        if (h.subtitle !== undefined) document.getElementById('headerSubtitle').value = h.subtitle;
+        if (h.fontFamily) {
+          document.getElementById('headerFontSelect').value = h.fontFamily;
+          document.getElementById('headerFontPreview').style.fontFamily = h.fontFamily;
+        }
+        if (h.textColor) {
+          document.getElementById('headerTextColor').value = h.textColor;
+          document.getElementById('swatchHeaderText').style.backgroundColor = h.textColor;
+        }
+        document.getElementById('hideBannerToggle').checked = !!h.hideBanner;
+      });
 
-document.getElementById('headerForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const payload = {
-    ...currentHeader,
-    title: document.getElementById('hTitle').value.trim(),
-    subtitle: document.getElementById('hSub').value.trim(),
-    footerText: document.getElementById('hFooter').value.trim(),
-    fontFamily: document.getElementById('hFont').value,
-    textColor: document.getElementById('hColor').value,
-    bgColor: document.getElementById('hBg').value
-  };
-  const f = document.getElementById('hPhotoFile').files[0];
-  if (f) payload.bannerImage = await compressImageFile(f, 1000, 0.78);
-  await fbDb.ref('siteConfig/header').set(payload);
-  showToast('✅ हेडर सेटिंग्ज सेव्ह झाल्या!');
-});
+      fbDb.ref('siteConfig/footer').on('value', (snap) => {
+        const f = snap.val() || {};
+        if (f.text !== undefined) document.getElementById('footerText').value = f.text;
+        if (f.bgColor) {
+          document.getElementById('footerBgColor').value = f.bgColor;
+          document.getElementById('swatchFooterBg').style.backgroundColor = f.bgColor;
+        }
+        if (f.textColor) {
+          document.getElementById('footerTextColor').value = f.textColor;
+          document.getElementById('swatchFooterText').style.backgroundColor = f.textColor;
+        }
+      });
+    });
 
+    document.getElementById('saveHeaderBtn').addEventListener('click', async () => {
+      const font = document.getElementById('headerFontSelect').value;
+      const headerPayload = {
+        fontFamily: font,
+        textColor: document.getElementById('headerTextColor').value.trim(),
+        hideBanner: document.getElementById('hideBannerToggle').checked
+      };
+      const title = document.getElementById('headerTitle').value.trim();
+      const subtitle = document.getElementById('headerSubtitle').value.trim();
+      if (title) headerPayload.title = title;
+      if (subtitle) headerPayload.subtitle = subtitle;
+
+      const footerPayload = {
+        fontFamily: font,
+        bgColor: document.getElementById('footerBgColor').value.trim(),
+        textColor: document.getElementById('footerTextColor').value.trim()
+      };
+      const fText = document.getElementById('footerText').value.trim();
+      if (fText) footerPayload.text = fText;
+
+      try {
+        const bFile = document.getElementById('headerBannerFile').files[0];
+        const lFile = document.getElementById('headerLogoFile').files[0];
+        if (bFile) headerPayload.bannerImage = await compressImageFile(bFile, 900, 280, 0.82);
+        if (lFile) headerPayload.logoImage = await compressImageFile(lFile, 320, 320, 0.85);
+        await fbDb.ref('siteConfig/header').update(headerPayload);
+        await fbDb.ref('siteConfig/footer').update(footerPayload);
+        showToast('✅ हेडर व फुटर यशस्वीरित्या सेव्ह झाले!');
+      } catch (err) {
+        showToast('❌ त्रुटी: ' + err.message, true);
+      }
+    });
   </script>
 </body>
 </html>

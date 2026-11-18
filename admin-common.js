@@ -66,33 +66,121 @@ const fbApp = firebase.apps.length ? firebase.app() : firebase.initializeApp(FIR
 const fbAuth = firebase.auth();
 const fbDb = firebase.database();
 
-function populateFontSelect(id) {
+(function injectModernAdminStyles() {
+  if (document.getElementById('modernAdminCss')) return;
+  const st = document.createElement('style');
+  st.id = 'modernAdminCss';
+  st.textContent = `
+    body { font-family: 'Noto Sans Devanagari', 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+    @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in-up { animation: fadeSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) both; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .toggle-pill { position: relative; display: inline-flex; align-items: center; width: 44px; height: 24px; border-radius: 9999px; background: #cbd5e1; transition: background .2s ease; cursor: pointer; flex-shrink: 0; }
+    .toggle-pill input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .toggle-pill .knob { width: 18px; height: 18px; border-radius: 9999px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.25); transform: translateX(3px); transition: transform .2s ease; }
+    .toggle-pill input:checked + .knob { transform: translateX(23px); }
+    .toggle-pill:has(input:checked) { background: #059669; }
+    .hsv-popover { position: fixed; z-index: 9999; width: 236px; background: #fff; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 20px 40px rgba(15,23,42,0.22); padding: 12px; }
+  `;
+  document.head.appendChild(st);
+})();
+
+function renderAdminShell(activeKey, pageTitle) {
+  const navItems = [
+    { key: 'dashboard', href: 'admin.html', icon: '📊', label: 'डॅशबोर्ड' },
+    { key: 'temples', href: 'admin-temples.html', icon: '🛕', label: 'मंदिरे' },
+    { key: 'header', href: 'admin-header.html', icon: '🎨', label: 'हेडर व फुटर' },
+    { key: 'player', href: 'admin-player.html', icon: '📺', label: 'प्लेयर' },
+    { key: 'layout', href: 'admin-layout.html', icon: '🧩', label: 'लेआउट व बटणे' },
+    { key: 'ads', href: 'admin-ads.html', icon: '📢', label: 'जाहिराती' },
+    { key: 'visitors', href: 'admin-visitors-links.html', icon: '🔗', label: 'भाविक व लिंक्स' }
+  ];
+
+  const header = document.getElementById('adminTopHeader');
+  if (!header) return;
+
+  const pillsHtml = activeKey === 'dashboard' ? '' : `
+    <nav class="bg-white/95 backdrop-blur border-b border-slate-200 sticky top-[56px] z-30">
+      <div class="max-w-5xl mx-auto px-3 py-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+        ${navItems.map(item => {
+          const isAct = item.key === activeKey;
+          return `<a href="${item.href}" class="shrink-0 px-3 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 ${isAct ? 'bg-[#05344E] text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}"><span>${item.icon}</span><span>${item.label}</span></a>`;
+        }).join('')}
+      </div>
+    </nav>
+  `;
+
+  header.outerHTML = `
+    <header class="bg-gradient-to-r from-[#04283d] via-[#05344E] to-[#0a4d70] text-white shadow-md sticky top-0 z-40">
+      <div class="max-w-5xl mx-auto px-3 sm:px-5 h-14 flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2.5 min-w-0">
+          ${activeKey !== 'dashboard'
+            ? `<a href="admin.html" class="px-3 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-extrabold transition flex items-center gap-1 shrink-0 shadow-sm" title="डॅशबोर्डवर जा"><span>←</span><span>डॅशबोर्ड</span></a>`
+            : `<div class="w-8 h-8 rounded-xl bg-amber-400/20 border border-amber-300/40 flex items-center justify-center text-base shrink-0">🛕</div>`
+          }
+          <div class="min-w-0">
+            <h1 class="text-sm sm:text-base font-extrabold tracking-tight truncate">${pageTitle}</h1>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <a href="index.html" target="_blank" class="px-2.5 sm:px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-xs font-bold transition flex items-center gap-1">
+            <span>🏠</span><span class="hidden sm:inline">मुख्य पेज</span>
+          </a>
+          <button id="adminLogoutBtn" type="button" class="hidden px-2.5 sm:px-3 py-1.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-xs font-bold cursor-pointer transition flex items-center gap-1 shadow-sm">
+            <span>🚪</span><span class="hidden sm:inline">लॉगआऊट</span>
+          </button>
+        </div>
+      </div>
+    </header>
+    ${pillsHtml}
+  `;
+
+  if (activeKey !== 'dashboard') {
+    const mainEl = document.querySelector('main');
+    if (mainEl && !document.getElementById('bottomDashBar')) {
+      const bar = document.createElement('div');
+      bar.id = 'bottomDashBar';
+      bar.className = 'mt-6 pt-4 border-t border-slate-200 flex justify-center';
+      bar.innerHTML = '<a href="admin.html" class="px-5 py-2.5 rounded-xl bg-white border border-slate-300 hover:border-[#05344E] text-[#05344E] text-xs sm:text-sm font-extrabold shadow-sm transition flex items-center gap-2"><span>←</span><span>अ‍ॅडमिन डॅशबोर्डवर परत जा</span></a>';
+      mainEl.appendChild(bar);
+    }
+  }
+}
+
+function populateFontSelect(id, previewId = null) {
   const sel = document.getElementById(id);
   if (!sel) return;
   sel.innerHTML = TOP_50_DEVANAGARI_FONTS
     .map(([v, l]) => `<option value="${v.replace(/"/g, '&quot;')}">${l}</option>`)
     .join('');
+  if (previewId) {
+    const prev = document.getElementById(previewId);
+    const updatePrev = () => { if (prev) prev.style.fontFamily = sel.value; };
+    sel.addEventListener('change', updatePrev);
+    setTimeout(updatePrev, 50);
+  }
 }
 
-function showToast(msg) {
+function showToast(msg, isError = false) {
   const t = document.getElementById('toastBox');
   if (!t) return;
   t.textContent = msg;
-  t.classList.remove('hidden');
+  t.className = `fixed bottom-5 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-full text-white text-xs font-bold shadow-xl transition-all ${isError ? 'bg-rose-600' : 'bg-slate-900'}`;
   clearTimeout(window.__toastTimer);
-  window.__toastTimer = setTimeout(() => t.classList.add('hidden'), 2400);
+  window.__toastTimer = setTimeout(() => t.classList.add('hidden'), 2600);
 }
 
-function compressImageFile(file, maxW = 900, quality = 0.78) {
+function compressImageFile(file, maxW = 900, maxH = 900, quality = 0.8) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (ev) => {
       const img = new Image();
       img.onload = () => {
-        const scale = Math.min(1, maxW / img.width);
+        const scale = Math.min(1, maxW / img.width, maxH / img.height);
         const canvas = document.createElement('canvas');
-        canvas.width = Math.round(img.width * scale);
-        canvas.height = Math.round(img.height * scale);
+        canvas.width = Math.max(1, Math.round(img.width * scale));
+        canvas.height = Math.max(1, Math.round(img.height * scale));
         canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
         resolve(canvas.toDataURL('image/jpeg', quality));
       };
@@ -103,6 +191,131 @@ function compressImageFile(file, maxW = 900, quality = 0.78) {
     reader.readAsDataURL(file);
   });
 }
+
+// Universal HSV Canvas Color Picker
+(function setupUniversalColorPicker() {
+  let popover = null;
+  let activeInput = null;
+  let activeSwatch = null;
+  let curH = 0, curS = 1, curV = 1;
+
+  function hsvToHex(h, s, v) {
+    const f = (n, k = (n + h / 60) % 6) => v - v * s * Math.max(Math.min(k, 4 - k, 1), 0);
+    const toHex = x => Math.round(x * 255).toString(16).padStart(2, '0');
+    return `#${toHex(f(5))}${toHex(f(3))}${toHex(f(1))}`.toUpperCase();
+  }
+
+  function hexToHsv(hex) {
+    let m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec((hex || '').trim());
+    if (!m) return [200, 0.8, 0.5];
+    let r = parseInt(m[1], 16) / 255, g = parseInt(m[2], 16) / 255, b = parseInt(m[3], 16) / 255;
+    let max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+    let h = d === 0 ? 0 : max === r ? ((g - b) / d) % 6 : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+    h = Math.round(h * 60);
+    if (h < 0) h += 360;
+    return [h, max === 0 ? 0 : d / max, max];
+  }
+
+  function ensurePopover() {
+    if (popover) return popover;
+    popover = document.createElement('div');
+    popover.className = 'hsv-popover hidden';
+    popover.innerHTML = `
+      <canvas class="w-full h-36 rounded-xl cursor-crosshair block border border-slate-200" width="212" height="144"></canvas>
+      <input type="range" min="0" max="360" value="0" class="w-full mt-2.5 accent-[#05344E] cursor-pointer" style="height:10px;border-radius:999px;background:linear-gradient(to right,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00);" />
+      <div class="flex items-center justify-between gap-2 mt-2.5">
+        <span class="text-xs font-mono font-bold text-slate-700 hsv-hex">#000000</span>
+        <button type="button" class="px-3 py-1 rounded-lg bg-[#05344E] text-white text-xs font-bold cursor-pointer hsv-done">ठिक आहे</button>
+      </div>
+    `;
+    document.body.appendChild(popover);
+
+    const canvas = popover.querySelector('canvas');
+    const ctx = canvas.getContext('2d');
+    const hueSlider = popover.querySelector('input[type="range"]');
+    const hexLabel = popover.querySelector('.hsv-hex');
+
+    function drawCanvas() {
+      ctx.fillStyle = `hsl(${curH}, 100%, 50%)`;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      const wg = ctx.createLinearGradient(0, 0, canvas.width, 0);
+      wg.addColorStop(0, '#fff'); wg.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = wg; ctx.fillRect(0, 0, canvas.width, canvas.height);
+      const bg = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      bg.addColorStop(0, 'rgba(0,0,0,0)'); bg.addColorStop(1, '#000');
+      ctx.fillStyle = bg; ctx.fillRect(0, 0, canvas.width, canvas.height);
+      const x = curS * canvas.width, y = (1 - curV) * canvas.height;
+      ctx.beginPath(); ctx.arc(x, y, 6, 0, Math.PI * 2);
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+    }
+
+    function applyColor() {
+      const hex = hsvToHex(curH, curS, curV);
+      hexLabel.textContent = hex;
+      if (activeInput) {
+        activeInput.value = hex;
+        activeInput.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+      if (activeSwatch) activeSwatch.style.backgroundColor = hex;
+      drawCanvas();
+    }
+
+    let dragging = false;
+    function pickAt(e) {
+      const rect = canvas.getBoundingClientRect();
+      const cx = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+      const cy = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+      curS = Math.max(0, Math.min(1, cx / rect.width));
+      curV = Math.max(0, Math.min(1, 1 - cy / rect.height));
+      applyColor();
+    }
+    canvas.addEventListener('mousedown', (e) => { dragging = true; pickAt(e); });
+    canvas.addEventListener('touchstart', (e) => { dragging = true; pickAt(e); }, { passive: true });
+    window.addEventListener('mousemove', (e) => { if (dragging) pickAt(e); });
+    window.addEventListener('touchmove', (e) => { if (dragging) pickAt(e); }, { passive: true });
+    window.addEventListener('mouseup', () => { dragging = false; });
+    window.addEventListener('touchend', () => { dragging = false; });
+
+    hueSlider.addEventListener('input', () => {
+      curH = Number(hueSlider.value);
+      applyColor();
+    });
+
+    popover.querySelector('.hsv-done').addEventListener('click', () => popover.classList.add('hidden'));
+    document.addEventListener('click', (e) => {
+      if (!popover.classList.contains('hidden') && !popover.contains(e.target) && e.target !== activeSwatch && e.target !== activeInput) {
+        popover.classList.add('hidden');
+      }
+    });
+
+    popover._openFor = (inputEl, swatchEl) => {
+      activeInput = inputEl;
+      activeSwatch = swatchEl;
+      [curH, curS, curV] = hexToHsv(inputEl.value);
+      hueSlider.value = curH;
+      hexLabel.textContent = hsvToHex(curH, curS, curV);
+      drawCanvas();
+      const rect = swatchEl.getBoundingClientRect();
+      const top = Math.min(window.innerHeight - 240, rect.bottom + 8);
+      const left = Math.max(12, Math.min(window.innerWidth - 248, rect.left));
+      popover.style.top = top + 'px';
+      popover.style.left = left + 'px';
+      popover.classList.remove('hidden');
+    };
+    return popover;
+  }
+
+  window.bindColorPicker = function(inputId, swatchId, defaultHex = '#05344E') {
+    const inp = document.getElementById(inputId);
+    const sw = document.getElementById(swatchId);
+    if (!inp || !sw) return;
+    if (!inp.value) inp.value = defaultHex;
+    sw.style.backgroundColor = inp.value;
+    const pop = ensurePopover();
+    sw.addEventListener('click', (e) => { e.stopPropagation(); pop._openFor(inp, sw); });
+    inp.addEventListener('input', () => { sw.style.backgroundColor = inp.value.trim(); });
+  };
+})();
 
 function initAdminGuard(onAuthed, isLoginPage = false) {
   const gate = document.getElementById('authGateMsg');

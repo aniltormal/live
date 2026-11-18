@@ -3,132 +3,224 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>डॅशबोर्ड — लाईव्ह दर्शन अ‍ॅडमिन</title>
+  <title>अ‍ॅडमिन डॅशबोर्ड — लाईव्ह दर्शन पोर्टल</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Akshar:wght@400;600;700&family=Amiko:wght@400;600;700&family=Amita:wght@400;700&family=Anek+Devanagari:wght@400;600;700&family=Arya:wght@400;700&family=Asar&family=Bakbak+One&family=Baloo+2:wght@500;600;700&family=Biryani:wght@400;600;700&family=Cambay:wght@400;700&family=Dekko&family=Eczar:wght@400;600;700&family=Glegoo:wght@400;700&family=Gotu&family=Halant:wght@400;600;700&family=Hind:wght@400;600;700&family=Inknut+Antiqua:wght@400;600;700&family=Inter:wght@400;600;700&family=Jaldi:wght@400;700&family=Kadwa:wght@400;700&family=Kalam:wght@400;700&family=Karma:wght@400;600;700&family=Khand:wght@500;600;700&family=Khula:wght@400;600;700&family=Kurale&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@500;600;700&family=Martel+Sans:wght@400;600;700&family=Martel:wght@400;600;700&family=Modak&family=Mukta:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&family=Noto+Serif+Devanagari:wght@400;600;700&family=Palanquin+Dark:wght@400;600;700&family=Palanquin:wght@400;600;700&family=Playpen+Sans+Deva:wght@400;600;700&family=Poppins:wght@400;500;600;700&family=Pragati+Narrow:wght@400;700&family=Rajdhani:wght@500;600;700&family=Rhodium+Libre&family=Rozha+One&family=Sahitya:wght@400;700&family=Sarala:wght@400;700&family=Sumana:wght@400;700&family=Sura:wght@400;700&family=Teko:wght@500;600;700&family=Tillana:wght@500;600;700&family=Tiro+Devanagari+Hindi:ital@0;1&family=Tiro+Devanagari+Marathi:ital@0;1&family=Tiro+Devanagari+Sanskrit:ital@0;1&family=Vesper+Libre:wght@400;700&family=Yatra+One&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-  <style>
-    body { font-family: 'Noto Sans Devanagari', 'Poppins', sans-serif; }
-  </style>
 </head>
-<body class="bg-slate-100 text-slate-900 min-h-screen flex flex-col">
-  <header class="bg-[#05344E] text-white shadow-md sticky top-0 z-40">
-    <div class="max-w-3xl mx-auto px-3 py-3 flex items-center justify-between gap-2">
-      <div class="flex items-center gap-2 min-w-0">
-        <a href="index.html" class="px-2.5 py-1 rounded-lg bg-white/15 hover:bg-white/25 text-xs font-semibold">🏠 मुख्य पेज</a>
-        <h1 class="text-sm sm:text-base font-bold truncate">🔐 अ‍ॅडमिन डॅशबोर्ड</h1>
-      </div>
-      <button id="adminLogoutBtn" type="button" class="hidden px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-xs font-bold cursor-pointer shrink-0">🚪 लॉगआऊट</button>
-    </div>
-  </header>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+  <header id="adminTopHeader"></header>
 
-  <main class="flex-1 max-w-3xl w-full mx-auto p-3 sm:p-5">
-    <div id="authGateMsg" class="p-4 rounded-xl bg-white border border-slate-200 text-center text-sm font-semibold text-slate-600">
+  <main class="flex-1 max-w-5xl w-full mx-auto p-3 sm:p-6">
+    <div id="authGateMsg" class="p-6 rounded-2xl bg-white border border-slate-200 text-center text-sm font-semibold text-slate-600 shadow-sm">
       ⏳ अ‍ॅडमिन तपासणी सुरू आहे...
     </div>
-    <div id="pageContent" class="hidden space-y-4">
-      
-<div id="loginCard" class="max-w-md mx-auto bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-  <div class="text-center">
-    <h2 class="text-lg font-bold text-[#05344E]">🔐 अ‍ॅडमिन लॉगिन</h2>
-    <p class="text-xs text-slate-500 mt-0.5">लॉगिन केल्यानंतर सर्व सेटिंग्ज स्वतंत्र पानांवर एडिट करता येतील</p>
-  </div>
-  <form id="loginForm" class="space-y-3">
-    <div>
-      <label class="block text-xs font-bold mb-1">ईमेल</label>
-      <input id="loginEmail" type="email" required placeholder="admin@example.com" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm" />
-    </div>
-    <div>
-      <label class="block text-xs font-bold mb-1">पासवर्ड</label>
-      <input id="loginPassword" type="password" required placeholder="••••••••" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm" />
-    </div>
-    <button type="submit" class="w-full py-2.5 rounded-xl bg-[#05344E] hover:bg-[#04273b] text-white text-sm font-bold cursor-pointer">लॉगिन करा</button>
-  </form>
-  <button id="resetPassBtn" type="button" class="w-full text-xs font-semibold text-[#05344E] hover:underline cursor-pointer">पासवर्ड विसरलात? रिसेट लिंक पाठवा</button>
-</div>
 
-<div id="dashboardCards" class="hidden space-y-4">
-  <div class="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2.5 flex items-center justify-between">
-    <span class="text-xs sm:text-sm font-bold text-emerald-800">✅ अ‍ॅडमिन लॉगिन यशस्वी (<span id="adminUserEmail"></span>)</span>
-    <a href="index.html" target="_blank" class="text-xs font-bold text-[#05344E] underline">मुख्य पेज पहा ↗</a>
-  </div>
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-    <a href="admin-temples.html" class="p-4 rounded-2xl bg-white border border-slate-200 hover:border-[#05344E] shadow-sm transition flex items-start gap-3">
-      <span class="text-2xl">🛕</span>
-      <div><h3 class="font-bold text-sm text-[#05344E]">१. मंदिरे व्यवस्थापन</h3><p class="text-xs text-slate-500 mt-0.5">नवीन मंदिर जोडा, लाईव्ह लिंक व माहिती एडिट करा</p></div>
-    </a>
-    <a href="admin-header.html" class="p-4 rounded-2xl bg-white border border-slate-200 hover:border-[#05344E] shadow-sm transition flex items-start gap-3">
-      <span class="text-2xl">🎨</span>
-      <div><h3 class="font-bold text-sm text-[#05344E]">२. हेडर, फुटर व ५० फॉन्ट्स</h3><p class="text-xs text-slate-500 mt-0.5">शीर्षक, फुटर मजकूर, रंग, फोटो व फॉन्ट बदला</p></div>
-    </a>
-    <a href="admin-player.html" class="p-4 rounded-2xl bg-white border border-slate-200 hover:border-[#05344E] shadow-sm transition flex items-start gap-3">
-      <span class="text-2xl">📺</span>
-      <div><h3 class="font-bold text-sm text-[#05344E]">३. प्लेयर व टिकर सेटिंग्ज</h3><p class="text-xs text-slate-500 mt-0.5">चालणारी पट्टी, रंग व प्लेयर आकार सेट करा</p></div>
-    </a>
-    <a href="admin-layout.html" class="p-4 rounded-2xl bg-white border border-slate-200 hover:border-[#05344E] shadow-sm transition flex items-start gap-3">
-      <span class="text-2xl">🧩</span>
-      <div><h3 class="font-bold text-sm text-[#05344E]">४. विभाग मथळे व बटण आकार</h3><p class="text-xs text-slate-500 mt-0.5">विभाग फॉन्ट, बटण फॉन्ट व लेआउट निवडा</p></div>
-    </a>
-    <a href="admin-ads.html" class="p-4 rounded-2xl bg-white border border-slate-200 hover:border-[#05344E] shadow-sm transition flex items-start gap-3">
-      <span class="text-2xl">📢</span>
-      <div><h3 class="font-bold text-sm text-[#05344E]">५. जाहिरात व बॅनर स्लॉट्स</h3><p class="text-xs text-slate-500 mt-0.5">३ बॅनर फोटो, लिंक, वेळ व क्लिक रिपोर्ट पहा</p></div>
-    </a>
-    <a href="admin-visitors-links.html" class="p-4 rounded-2xl bg-white border border-slate-200 hover:border-[#05344E] shadow-sm transition flex items-start gap-3">
-      <span class="text-2xl">👁️</span>
-      <div><h3 class="font-bold text-sm text-[#05344E]">६. भाविक काउंटर व १० लिंक्स</h3><p class="text-xs text-slate-500 mt-0.5">एकूण भाविक संख्या व तळाच्या १० लिंक्स एडिट करा</p></div>
-    </a>
-  </div>
-</div>
+    <div id="pageContent" class="hidden space-y-5 fade-in-up">
+      <!-- लॉगिन कार्ड -->
+      <div id="loginCard" class="max-w-md mx-auto mt-6 bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-lg space-y-5">
+        <div class="text-center space-y-1.5">
+          <div class="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-[#05344E] to-[#0a5a85] text-white flex items-center justify-center text-2xl shadow-md">🔐</div>
+          <h2 class="text-xl font-extrabold text-[#05344E]">अ‍ॅडमिन लॉगिन</h2>
+          <p class="text-xs text-slate-500">पोर्टलमधील सर्व सेटिंग्ज नियंत्रित करण्यासाठी लॉगिन करा</p>
+        </div>
+        <form id="loginForm" class="space-y-3.5">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">ईमेल पत्ता</label>
+            <input id="loginEmail" type="email" required placeholder="admin@example.com" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#05344E]/20 focus:border-[#05344E]" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">पासवर्ड</label>
+            <input id="loginPassword" type="password" required placeholder="••••••••" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#05344E]/20 focus:border-[#05344E]" />
+          </div>
+          <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-sm font-bold cursor-pointer transition shadow-md">लॉगिन करा →</button>
+        </form>
+        <button id="resetPassBtn" type="button" class="w-full text-xs font-semibold text-[#05344E] hover:underline cursor-pointer">पासवर्ड विसरलात? रिसेट लिंक पाठवा</button>
+      </div>
 
+      <!-- आधुनिक डॅशबोर्ड -->
+      <div id="dashboardCards" class="hidden space-y-5">
+        <div class="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl px-4 py-3 flex flex-wrap items-center justify-between gap-2 shadow-sm">
+          <div class="flex items-center gap-2.5 text-xs sm:text-sm font-bold text-emerald-900">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse inline-block"></span>
+            <span>स्वागत आहे! लॉगिन: <span id="adminUserEmail" class="text-[#05344E] font-extrabold"></span></span>
+          </div>
+          <a href="index.html" target="_blank" class="px-3 py-1.5 rounded-xl bg-white border border-emerald-200 text-xs font-bold text-[#05344E] hover:bg-emerald-100/60 transition shadow-sm">लाईव्ह पोर्टल पहा ↗</a>
+        </div>
+
+        <!-- ३ लाईव्ह आकडेवारी कार्ड्स -->
+        <div class="grid grid-cols-3 gap-2.5 sm:gap-4">
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-3.5 sm:p-5 shadow-sm hover:shadow-md transition">
+            <div class="flex items-center justify-between gap-1">
+              <span class="text-[11px] sm:text-xs font-bold text-slate-500">एकूण भाविक</span>
+              <span class="w-8 h-8 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center text-base shrink-0">👁️</span>
+            </div>
+            <div id="kpiVisitors" class="text-xl sm:text-3xl font-extrabold text-[#05344E] mt-2 tabular-nums">—</div>
+            <div class="text-[10px] sm:text-xs text-slate-400 mt-0.5">लाईव्ह काऊंटर</div>
+          </div>
+
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-3.5 sm:p-5 shadow-sm hover:shadow-md transition">
+            <div class="flex items-center justify-between gap-1">
+              <span class="text-[11px] sm:text-xs font-bold text-slate-500">सक्रिय मंदिरे</span>
+              <span class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-base shrink-0">🛕</span>
+            </div>
+            <div id="kpiTemples" class="text-xl sm:text-3xl font-extrabold text-[#05344E] mt-2 tabular-nums">—</div>
+            <div class="text-[10px] sm:text-xs text-slate-400 mt-0.5">एकूण यादी</div>
+          </div>
+
+          <div class="bg-white rounded-2xl border border-slate-200/80 p-3.5 sm:p-5 shadow-sm hover:shadow-md transition">
+            <div class="flex items-center justify-between gap-1">
+              <span class="text-[11px] sm:text-xs font-bold text-slate-500">जाहिरात स्लॉट्स</span>
+              <span class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-base shrink-0">📢</span>
+            </div>
+            <div id="kpiAds" class="text-xl sm:text-3xl font-extrabold text-[#05344E] mt-2 tabular-nums">—</div>
+            <div class="text-[10px] sm:text-xs text-slate-400 mt-0.5">बॅनर + पॉपअप</div>
+          </div>
+        </div>
+
+        <!-- ६ पूर्ण सेटिंग्ज कार्ड्स -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+          <a href="admin-temples.html" class="group bg-white rounded-2xl border border-slate-200 hover:border-[#05344E] hover:shadow-lg p-4 sm:p-5 shadow-sm transition-all duration-200 flex flex-col justify-between gap-3">
+            <div class="flex items-start justify-between">
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-100 text-amber-600 flex items-center justify-center text-2xl group-hover:scale-105 transition">🛕</div>
+              <span class="px-2.5 py-1 rounded-full bg-slate-100 group-hover:bg-[#05344E] group-hover:text-white text-[11px] font-bold text-slate-600 transition">उघडा →</span>
+            </div>
+            <div>
+              <h3 class="font-extrabold text-base text-[#05344E]">मंदिरे व्यवस्थापन</h3>
+              <p class="text-xs text-slate-500 mt-1 leading-relaxed">नवीन मंदिर जोडा, लाईव्ह लिंक, फोटो, क्रम व दृश्यमानता बदला</p>
+            </div>
+          </a>
+
+          <a href="admin-header.html" class="group bg-white rounded-2xl border border-slate-200 hover:border-[#05344E] hover:shadow-lg p-4 sm:p-5 shadow-sm transition-all duration-200 flex flex-col justify-between gap-3">
+            <div class="flex items-start justify-between">
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-50 to-blue-100 text-indigo-600 flex items-center justify-center text-2xl group-hover:scale-105 transition">🎨</div>
+              <span class="px-2.5 py-1 rounded-full bg-slate-100 group-hover:bg-[#05344E] group-hover:text-white text-[11px] font-bold text-slate-600 transition">उघडा →</span>
+            </div>
+            <div>
+              <h3 class="font-extrabold text-base text-[#05344E]">हेडर, लोगो व फुटर</h3>
+              <p class="text-xs text-slate-500 mt-1 leading-relaxed">शीर्षक, ५० फॉन्ट्स, रंग, लोगो, बॅनर फोटो व फुटर मजकूर</p>
+            </div>
+          </a>
+
+          <a href="admin-player.html" class="group bg-white rounded-2xl border border-slate-200 hover:border-[#05344E] hover:shadow-lg p-4 sm:p-5 shadow-sm transition-all duration-200 flex flex-col justify-between gap-3">
+            <div class="flex items-start justify-between">
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-50 to-cyan-100 text-sky-600 flex items-center justify-center text-2xl group-hover:scale-105 transition">📺</div>
+              <span class="px-2.5 py-1 rounded-full bg-slate-100 group-hover:bg-[#05344E] group-hover:text-white text-[11px] font-bold text-slate-600 transition">उघडा →</span>
+            </div>
+            <div>
+              <h3 class="font-extrabold text-base text-[#05344E]">प्लेयर, टिकर व वॉटरमार्क</h3>
+              <p class="text-xs text-slate-500 mt-1 leading-relaxed">चालणारी पट्टी, ऑफलाईन मेसेज, रंग व वॉटरमार्क पारदर्शकता</p>
+            </div>
+          </a>
+
+          <a href="admin-layout.html" class="group bg-white rounded-2xl border border-slate-200 hover:border-[#05344E] hover:shadow-lg p-4 sm:p-5 shadow-sm transition-all duration-200 flex flex-col justify-between gap-3">
+            <div class="flex items-start justify-between">
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-50 to-purple-100 text-violet-600 flex items-center justify-center text-2xl group-hover:scale-105 transition">🧩</div>
+              <span class="px-2.5 py-1 rounded-full bg-slate-100 group-hover:bg-[#05344E] group-hover:text-white text-[11px] font-bold text-slate-600 transition">उघडा →</span>
+            </div>
+            <div>
+              <h3 class="font-extrabold text-base text-[#05344E]">लेआउट, कॉलम व बटणे</h3>
+              <p class="text-xs text-slate-500 mt-1 leading-relaxed">विभाग मथळे, १ ते ४ कॉलम, कार्ड उंची, बटण रंग व फॉन्ट्स</p>
+            </div>
+          </a>
+
+          <a href="admin-ads.html" class="group bg-white rounded-2xl border border-slate-200 hover:border-[#05344E] hover:shadow-lg p-4 sm:p-5 shadow-sm transition-all duration-200 flex flex-col justify-between gap-3">
+            <div class="flex items-start justify-between">
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-50 to-green-100 text-emerald-600 flex items-center justify-center text-2xl group-hover:scale-105 transition">📢</div>
+              <span class="px-2.5 py-1 rounded-full bg-slate-100 group-hover:bg-[#05344E] group-hover:text-white text-[11px] font-bold text-slate-600 transition">उघडा →</span>
+            </div>
+            <div>
+              <h3 class="font-extrabold text-base text-[#05344E]">जाहिरात नियंत्रण</h3>
+              <p class="text-xs text-slate-500 mt-1 leading-relaxed">३ बॅनर स्लाईड्स, प्री-रोल व्हिडिओ जाहिरात व स्प्लॅश पॉपअप</p>
+            </div>
+          </a>
+
+          <a href="admin-visitors-links.html" class="group bg-white rounded-2xl border border-slate-200 hover:border-[#05344E] hover:shadow-lg p-4 sm:p-5 shadow-sm transition-all duration-200 flex flex-col justify-between gap-3">
+            <div class="flex items-start justify-between">
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-50 to-pink-100 text-rose-600 flex items-center justify-center text-2xl group-hover:scale-105 transition">🔗</div>
+              <span class="px-2.5 py-1 rounded-full bg-slate-100 group-hover:bg-[#05344E] group-hover:text-white text-[11px] font-bold text-slate-600 transition">उघडा →</span>
+            </div>
+            <div>
+              <h3 class="font-extrabold text-base text-[#05344E]">भाविक काऊंटर व १० लिंक्स</h3>
+              <p class="text-xs text-slate-500 mt-1 leading-relaxed">एकूण भाविक संख्या, फ्लॅश इफेक्ट व तळाच्या १० लिंक्स</p>
+            </div>
+          </a>
+        </div>
+      </div>
     </div>
   </main>
 
-  <div id="toastBox" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-black text-white text-xs font-bold shadow-lg"></div>
+  <div id="toastBox" class="hidden"></div>
 
   <script src="admin-common.js"></script>
   <script>
+    renderAdminShell('dashboard', 'अ‍ॅडमिन डॅशबोर्ड');
 
-initAdminGuard((user) => {
-  const loginCard = document.getElementById('loginCard');
-  const dash = document.getElementById('dashboardCards');
-  if (user) {
-    loginCard.classList.add('hidden');
-    dash.classList.remove('hidden');
-    document.getElementById('adminUserEmail').textContent = user.email;
-  } else {
-    loginCard.classList.remove('hidden');
-    dash.classList.add('hidden');
-  }
-}, true);
+    let kpiBound = false;
+    function bindDashboardKPIs() {
+      if (kpiBound) return;
+      kpiBound = true;
 
-document.getElementById('loginForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  try {
-    await fbAuth.signInWithEmailAndPassword(
-      document.getElementById('loginEmail').value.trim(),
-      document.getElementById('loginPassword').value
-    );
-    showToast('✅ लॉगिन यशस्वी!');
-  } catch (err) {
-    showToast('❌ लॉगिन त्रुटी: ' + err.message);
-  }
-});
+      fbDb.ref('siteConfig/visitors').on('value', (snap) => {
+        const val = snap.val();
+        const count = typeof val === 'number' ? val : (val && typeof val.count === 'number' ? val.count : 0);
+        document.getElementById('kpiVisitors').textContent = count.toLocaleString('en-IN');
+      });
 
-document.getElementById('resetPassBtn').addEventListener('click', async () => {
-  const email = document.getElementById('loginEmail').value.trim();
-  if (!email) return showToast('कृपया आधी ईमेल टाका');
-  try {
-    await fbAuth.sendPasswordResetEmail(email);
-    showToast('📩 पासवर्ड रिसेट लिंक ईमेलवर पाठवली आहे');
-  } catch (err) {
-    showToast('❌ ' + err.message);
-  }
-});
+      fbDb.ref('temples').on('value', (snap) => {
+        const data = snap.val() || {};
+        const active = Object.values(data).filter(t => t && !t.deleted).length;
+        document.getElementById('kpiTemples').textContent = active.toLocaleString('en-IN');
+      });
 
+      fbDb.ref('siteConfig/ads').on('value', (snap) => {
+        const ads = snap.val() || {};
+        const slides = Array.isArray(ads.bannerSlides) ? ads.bannerSlides.filter(s => s && (s.image || s.text)).length : 0;
+        const extra = (ads.preRollEnabled ? 1 : 0) + (ads.splashEnabled ? 1 : 0);
+        document.getElementById('kpiAds').textContent = (slides + extra).toLocaleString('en-IN');
+      });
+    }
+
+    initAdminGuard((user) => {
+      const loginCard = document.getElementById('loginCard');
+      const dash = document.getElementById('dashboardCards');
+      if (user) {
+        loginCard.classList.add('hidden');
+        dash.classList.remove('hidden');
+        document.getElementById('adminUserEmail').textContent = user.email;
+        bindDashboardKPIs();
+      } else {
+        loginCard.classList.remove('hidden');
+        dash.classList.add('hidden');
+      }
+    }, true);
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        await fbAuth.signInWithEmailAndPassword(
+          document.getElementById('loginEmail').value.trim(),
+          document.getElementById('loginPassword').value
+        );
+        showToast('✅ लॉगिन यशस्वी!');
+      } catch (err) {
+        showToast('❌ लॉगिन त्रुटी: ' + err.message, true);
+      }
+    });
+
+    document.getElementById('resetPassBtn').addEventListener('click', async () => {
+      const email = document.getElementById('loginEmail').value.trim();
+      if (!email) return showToast('कृपया आधी ईमेल टाका', true);
+      try {
+        await fbAuth.sendPasswordResetEmail(email);
+        showToast('📩 पासवर्ड रिसेट लिंक ईमेलवर पाठवली आहे');
+      } catch (err) {
+        showToast('❌ ' + err.message, true);
+      }
+    });
   </script>
 </body>
 </html>

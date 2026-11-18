@@ -285,9 +285,14 @@
             class="hidden px-2 py-1 rounded-lg bg-neutral-800 text-white border border-white/40 text-xs font-semibold cursor-pointer focus:outline-none">
             <option value="-1">Auto</option>
           </select>
-          <button id="closeModalBtn" type="button"
-            class="px-2.5 py-1.5 rounded-lg bg-white text-black hover:bg-neutral-200 text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap">
-            ✕ बंद करा
+          <button id="playerMuteBtn" type="button" aria-label="आवाज चालू किंवा बंद करा" title="आवाज चालू / बंद"
+            class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-white flex items-center justify-center transition cursor-pointer shrink-0">
+            <svg id="muteIconOn" class="w-4 h-4 sm:w-4.5 sm:h-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+            <svg id="muteIconOff" class="hidden w-4 h-4 sm:w-4.5 sm:h-4.5 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+          </button>
+          <button id="closeModalBtn" type="button" aria-label="बंद करा" title="बंद करा"
+            class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-rose-500 hover:bg-rose-600 text-white flex items-center justify-center shadow-sm transition cursor-pointer shrink-0">
+            <svg class="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
         </div>
       </div>
@@ -1615,6 +1620,32 @@
       }
     });
 
+    function syncPlayerMuteIcon() {
+      const btn = document.getElementById('playerMuteBtn');
+      const onIcon = document.getElementById('muteIconOn');
+      const offIcon = document.getElementById('muteIconOff');
+      if (!btn || !onIcon || !offIcon) return;
+      const isMuted = Boolean(el.nativePlayer && el.nativePlayer.muted);
+      onIcon.classList.toggle('hidden', isMuted);
+      offIcon.classList.toggle('hidden', !isMuted);
+      btn.classList.toggle('bg-amber-500/30', isMuted);
+      btn.classList.toggle('border-amber-400/60', isMuted);
+    }
+
+    (function bindPlayerMuteBtn() {
+      const btn = document.getElementById('playerMuteBtn');
+      if (!btn) return;
+      btn.addEventListener('click', () => {
+        if (!el.nativePlayer) return;
+        el.nativePlayer.muted = !el.nativePlayer.muted;
+        if (!el.nativePlayer.muted) {
+          el.nativePlayer.volume = 1;
+          el.nativePlayer.play().catch(() => {});
+        }
+        syncPlayerMuteIcon();
+      });
+    })();
+
     function cleanupPopupPlayer() {
       if (streamTimeoutTimer) {
         clearTimeout(streamTimeoutTimer);
@@ -1628,6 +1659,9 @@
       el.youtubePlayer.classList.add('hidden');
       el.nativePlayer.controls = false;
       el.nativePlayer.removeAttribute('controls');
+      el.nativePlayer.muted = false;
+      el.nativePlayer.volume = 1;
+      if (typeof syncPlayerMuteIcon === 'function') syncPlayerMuteIcon();
       el.nativePlayer.pause();
       el.nativePlayer.removeAttribute('src');
       el.nativePlayer.load();
@@ -1747,6 +1781,7 @@
             }
             el.nativePlayer.play().catch(() => {
               el.nativePlayer.muted = true;
+              if (typeof syncPlayerMuteIcon === 'function') syncPlayerMuteIcon();
               el.nativePlayer.play().catch(() => {});
             });
           });

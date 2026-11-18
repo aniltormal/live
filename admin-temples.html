@@ -69,10 +69,15 @@
       <section class="space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-2">
           <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🛕 सर्व मंदिरे (<span id="templeCountLabel">0</span>)</h2>
-          <span class="text-xs text-slate-500">नाव सुरक्षित आहे — बदलण्यासाठी '✏️ नाव बदला' दाबा; क्रम बदलण्यासाठी स्लायडर सरकवा</span>
+          <span class="text-xs text-slate-500">⬆️ वर / ⬇️ खाली बटणाने क्रम बदला आणि सर्वात शेवटी 'सेव्ह करा' दाबा</span>
         </div>
         <div id="templesList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
       </section>
+
+      <!-- सर्वात शेवटी एकच Save बटण -->
+      <div class="sticky bottom-3 z-20 flex justify-end">
+        <button id="saveAllTemplesBtn" type="button" class="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-sm font-extrabold cursor-pointer shadow-xl transition">💾 सर्व मंदिरे सेव्ह करा</button>
+      </div>
     </div>
   </main>
 
@@ -91,7 +96,8 @@
       { id: 'siddhivinayak', shortTitle: 'श्री सिद्धिविनायक, मुंबई', buttonTitle: 'श्री सिद्धिविनायक मंदिर मुंबई Live Darshan', streamType: 'auto', streamUrl: '', featured: false, order: 5 }
     ];
 
-    let currentTemplesCount = DEFAULT_TEMPLES.length;
+    let localTemples = [];
+    const pendingFiles = {};
 
     document.getElementById('toggleAddBtn').addEventListener('click', () => {
       document.getElementById('addTempleForm').classList.toggle('hidden');
@@ -147,11 +153,25 @@
       return merged;
     }
 
-    function renderTemples(fbData) {
+    function syncDOMToLocal() {
+      document.querySelectorAll('#templesList [data-temple-id]').forEach((card) => {
+        const id = card.dataset.templeId;
+        const item = localTemples.find(t => t.id === id);
+        if (!item) return;
+        const nameInp = card.querySelector('.t-name');
+        const newName = (nameInp ? nameInp.value.trim() : '') || item.shortTitle;
+        item.shortTitle = newName;
+        item.buttonTitle = newName + ' Live Darshan';
+        item.streamType = card.querySelector('.t-type').value;
+        item.streamUrl = card.querySelector('.t-url').value.trim();
+        item.featured = card.querySelector('.t-feat').checked;
+        item.hidden = card.querySelector('.t-hide').checked;
+      });
+    }
+
+    function renderList() {
       const container = document.getElementById('templesList');
-      const list = mergeTemples(fbData);
-      const total = list.length;
-      currentTemplesCount = total;
+      const total = localTemples.length;
       document.getElementById('templeCountLabel').textContent = total;
 
       if (!total) {
@@ -159,11 +179,11 @@
         return;
       }
 
-      container.innerHTML = list.map((t, idx) => {
+      container.innerHTML = localTemples.map((t, idx) => {
         const pos = idx + 1;
         const stType = t.streamType || 'hls';
         return `
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 space-y-3" data-temple-id="${esc(t.id)}" data-orig-name="${esc(t.shortTitle)}">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 space-y-3" data-temple-id="${esc(t.id)}">
           <div class="flex items-start gap-3">
             ${t.image
               ? `<img src="${esc(t.image)}" alt="" class="w-16 h-16 rounded-xl object-cover bg-slate-100 border border-slate-200 shrink-0" />`
@@ -172,13 +192,19 @@
             <div class="flex-1 min-w-0">
               <div class="flex items-center justify-between gap-2 flex-wrap">
                 <div class="flex items-center gap-1.5 flex-wrap">
-                  <span class="px-2 py-0.5 rounded-full bg-[#05344E]/10 text-[11px] font-extrabold text-[#05344E]">#${pos}</span>
+                  <span class="px-2.5 py-0.5 rounded-full bg-[#05344E] text-white text-[11px] font-extrabold">#${pos}</span>
                   ${t.featured ? '<span class="px-2 py-0.5 rounded-full bg-amber-100 text-[10px] font-bold text-amber-800">⭐ प्रमुख</span>' : ''}
                   ${t.hidden ? '<span class="px-2 py-0.5 rounded-full bg-rose-100 text-[10px] font-bold text-rose-700">लपवलेले</span>' : ''}
                 </div>
-                <button type="button" class="t-edit-name-btn px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-[11px] font-bold text-[#05344E] cursor-pointer">✏️ नाव बदला</button>
+                <div class="flex items-center gap-1">
+                  <button type="button" class="t-move-up px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-[11px] font-extrabold text-[#05344E] cursor-pointer disabled:opacity-35" ${idx === 0 ? 'disabled' : ''}>⬆️ वर</button>
+                  <button type="button" class="t-move-down px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-[11px] font-extrabold text-[#05344E] cursor-pointer disabled:opacity-35" ${idx === total - 1 ? 'disabled' : ''}>⬇️ खाली</button>
+                </div>
               </div>
-              <h3 class="t-name-heading font-extrabold text-sm sm:text-base text-[#05344E] mt-1.5 leading-snug">${esc(t.shortTitle)}</h3>
+              <div class="flex items-center justify-between gap-2 mt-1.5">
+                <h3 class="t-name-heading font-extrabold text-sm sm:text-base text-[#05344E] leading-snug">${esc(t.shortTitle)}</h3>
+                <button type="button" class="t-edit-name-btn shrink-0 px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-[11px] font-bold text-[#05344E] cursor-pointer">✏️ नाव बदला</button>
+              </div>
               <input type="text" class="t-name hidden w-full mt-1.5 px-3 py-1.5 rounded-xl border border-slate-300 text-sm font-bold text-[#05344E]" value="${esc(t.shortTitle)}" placeholder="मंदिराचे नाव" />
             </div>
           </div>
@@ -200,19 +226,6 @@
             </div>
           </div>
 
-          <!-- सोपा क्रम बदल (वर/खाली बटणे + स्लायडर) -->
-          <div class="bg-slate-50 rounded-xl border border-slate-200 px-3 py-2.5 space-y-2">
-            <div class="flex items-center justify-between gap-2 text-xs font-bold text-slate-700">
-              <span>↕️ क्रम बदला</span>
-              <div class="flex items-center gap-1.5">
-                <button type="button" class="t-move-up px-2.5 py-1 rounded-lg bg-white border border-slate-300 hover:border-[#05344E] text-[11px] font-extrabold text-[#05344E] cursor-pointer disabled:opacity-40" ${idx === 0 ? 'disabled' : ''}>⬆️ वर</button>
-                <button type="button" class="t-move-down px-2.5 py-1 rounded-lg bg-white border border-slate-300 hover:border-[#05344E] text-[11px] font-extrabold text-[#05344E] cursor-pointer disabled:opacity-40" ${idx === total - 1 ? 'disabled' : ''}>⬇️ खाली</button>
-                <span class="t-order-badge px-2.5 py-1 rounded-full bg-[#05344E] text-white text-[11px] font-extrabold">#${pos}</span>
-              </div>
-            </div>
-            <input type="range" min="1" max="${Math.max(1, total)}" step="1" value="${pos}" class="t-order-slider w-full accent-[#05344E] cursor-pointer" />
-          </div>
-
           <div class="grid grid-cols-2 gap-2 text-xs">
             <label class="flex items-center justify-between bg-slate-50 px-3 py-2 rounded-xl border border-slate-200 cursor-pointer">
               <span class="font-bold text-slate-700">⭐ प्रमुख कार्ड</span>
@@ -224,107 +237,61 @@
             </label>
           </div>
 
-          <div class="pt-2 border-t border-slate-100 space-y-2.5">
-            <label class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-amber-300 bg-gradient-to-br from-amber-50 to-orange-50 hover:border-amber-500 p-2 text-center cursor-pointer transition">
+          <div class="pt-2 border-t border-slate-100 flex items-center gap-2">
+            <label class="flex-1 flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-amber-300 bg-gradient-to-br from-amber-50 to-orange-50 hover:border-amber-500 p-2 text-center cursor-pointer transition">
               <span class="text-xs font-extrabold text-amber-900">📷 फोटो निवडा / बदला</span>
               <input type="file" accept="image/*" class="t-file hidden" />
             </label>
-            <div class="flex items-center justify-end gap-2">
-              <button type="button" class="t-save px-4 py-2 rounded-xl bg-[#05344E] hover:bg-[#04273b] text-white text-xs font-bold cursor-pointer transition">💾 सेव्ह करा</button>
-              <button type="button" class="t-del px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold cursor-pointer transition">🗑️</button>
-            </div>
+            <button type="button" class="t-del px-3.5 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold cursor-pointer transition shrink-0">🗑️ काढा</button>
           </div>
         </div>
       `;
       }).join('');
 
-      container.querySelectorAll('[data-temple-id]').forEach((card) => {
+      container.querySelectorAll('[data-temple-id]').forEach((card, idx) => {
         const id = card.dataset.templeId;
         const editBtn = card.querySelector('.t-edit-name-btn');
         const heading = card.querySelector('.t-name-heading');
         const nameInp = card.querySelector('.t-name');
-        const slider = card.querySelector('.t-order-slider');
-        const badge = card.querySelector('.t-order-badge');
 
         editBtn.addEventListener('click', () => {
           const isHidden = nameInp.classList.contains('hidden');
           nameInp.classList.toggle('hidden', !isHidden);
           heading.classList.toggle('hidden', isHidden);
-          editBtn.textContent = isHidden ? '✅ नाव पक्के करा' : '✏️ नाव बदला';
+          editBtn.textContent = isHidden ? '✅ पक्के करा' : '✏️ नाव बदला';
           if (isHidden) nameInp.focus();
-          else heading.textContent = nameInp.value.trim() || card.dataset.origName;
+          else heading.textContent = nameInp.value.trim() || heading.textContent;
         });
 
-        async function moveTempleToPosition(targetOneBased) {
-          const fromIdx = list.findIndex(item => item.id === id);
-          const toIdx = Math.max(0, Math.min(list.length - 1, targetOneBased - 1));
-          if (fromIdx === -1 || fromIdx === toIdx) return;
-          const reordered = list.slice();
-          const [moved] = reordered.splice(fromIdx, 1);
-          reordered.splice(toIdx, 0, moved);
-          const updates = {};
-          reordered.forEach((item, newIdx) => {
-            updates['temples/' + item.id + '/order'] = newIdx;
-          });
-          try {
-            await fbDb.ref().update(updates);
-            showToast(`✅ "${moved.shortTitle}" आता #${toIdx + 1} क्रमांकावर आहे!`);
-          } catch (err) {
-            showToast('❌ क्रम बदलताना त्रुटी: ' + err.message, true);
-          }
-        }
-
-        card.querySelector('.t-move-up').addEventListener('click', () => moveTempleToPosition(idx));
-        card.querySelector('.t-move-down').addEventListener('click', () => moveTempleToPosition(idx + 2));
-
-        slider.addEventListener('input', () => {
-          badge.textContent = '#' + slider.value;
+        card.querySelector('.t-move-up').addEventListener('click', () => {
+          if (idx === 0) return;
+          syncDOMToLocal();
+          const [moved] = localTemples.splice(idx, 1);
+          localTemples.splice(idx - 1, 0, moved);
+          renderList();
         });
-        slider.addEventListener('change', () => {
-          moveTempleToPosition(Number(slider.value));
+
+        card.querySelector('.t-move-down').addEventListener('click', () => {
+          if (idx >= localTemples.length - 1) return;
+          syncDOMToLocal();
+          const [moved] = localTemples.splice(idx, 1);
+          localTemples.splice(idx + 1, 0, moved);
+          renderList();
         });
 
         const tFile = card.querySelector('.t-file');
-        if (tFile) {
-          tFile.addEventListener('change', (e) => {
-            const f = e.target.files[0];
-            if (!f) return;
-            const r = new FileReader();
-            r.onload = (ev) => {
-              let im = card.querySelector('img');
-              if (!im) {
-                im = document.createElement('img');
-                im.className = 'w-16 h-16 rounded-xl object-cover bg-slate-100 border border-slate-200 shrink-0';
-                card.querySelector('.flex.items-start').replaceChild(im, card.querySelector('.flex.items-start > div:first-child'));
-              }
-              im.src = ev.target.result;
-            };
-            r.readAsDataURL(f);
-          });
-        }
-
-        card.querySelector('.t-save').addEventListener('click', async () => {
-          const finalName = nameInp.value.trim() || card.dataset.origName;
-          const orderNum = Math.max(0, Number(slider.value) - 1);
-          const payload = {
-            shortTitle: finalName,
-            buttonTitle: finalName + ' Live Darshan',
-            name: finalName,
-            streamType: card.querySelector('.t-type').value,
-            streamUrl: card.querySelector('.t-url').value.trim(),
-            featured: card.querySelector('.t-feat').checked,
-            hidden: card.querySelector('.t-hide').checked,
-            order: orderNum
+        tFile.addEventListener('change', (e) => {
+          const f = e.target.files[0];
+          if (!f) return;
+          pendingFiles[id] = f;
+          const r = new FileReader();
+          r.onload = (ev) => {
+            const item = localTemples.find(x => x.id === id);
+            if (item) item.image = ev.target.result;
+            syncDOMToLocal();
+            renderList();
           };
-          try {
-            if (tFile && tFile.files[0]) {
-              payload.image = await compressImageFile(tFile.files[0], 640, 480, 0.82);
-            }
-            await fbDb.ref('temples/' + id).update(payload);
-            showToast('✅ मंदिर अपडेट झाले!');
-          } catch (err) {
-            showToast('❌ त्रुटी: ' + err.message, true);
-          }
+          r.readAsDataURL(f);
         });
 
         card.querySelector('.t-del').addEventListener('click', async () => {
@@ -340,7 +307,47 @@
     }
 
     initAdminGuard(() => {
-      fbDb.ref('temples').on('value', (snap) => renderTemples(snap.val()));
+      fbDb.ref('temples').once('value', (snap) => {
+        localTemples = mergeTemples(snap.val());
+        renderList();
+      });
+    });
+
+    document.getElementById('saveAllTemplesBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('saveAllTemplesBtn');
+      btn.disabled = true;
+      btn.textContent = '⏳ सेव्ह होत आहे...';
+      try {
+        syncDOMToLocal();
+        const updates = {};
+        for (let i = 0; i < localTemples.length; i++) {
+          const t = localTemples[i];
+          let imgVal = t.image || '';
+          if (pendingFiles[t.id]) {
+            imgVal = await compressImageFile(pendingFiles[t.id], 640, 480, 0.82);
+            delete pendingFiles[t.id];
+          }
+          const payload = {
+            shortTitle: t.shortTitle,
+            buttonTitle: t.shortTitle + ' Live Darshan',
+            name: t.shortTitle,
+            streamType: t.streamType || 'hls',
+            streamUrl: t.streamUrl || '',
+            featured: !!t.featured,
+            hidden: !!t.hidden,
+            order: i
+          };
+          if (imgVal) payload.image = imgVal;
+          updates[t.id] = payload;
+        }
+        await fbDb.ref('temples').update(updates);
+        showToast('✅ सर्व मंदिरे व नवीन क्रम यशस्वीरित्या सेव्ह झाले!');
+      } catch (err) {
+        showToast('❌ सेव्ह करताना त्रुटी: ' + err.message, true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '💾 सर्व मंदिरे सेव्ह करा';
+      }
     });
 
     document.getElementById('addTempleForm').addEventListener('submit', async (e) => {
@@ -362,10 +369,12 @@
           streamUrl,
           featured,
           hidden: false,
-          order: currentTemplesCount
+          order: localTemples.length
         };
         if (file) payload.image = await compressImageFile(file, 640, 480, 0.82);
         await fbDb.ref('temples/' + newId).set(payload);
+        localTemples.push(payload);
+        renderList();
         e.target.reset();
         document.getElementById('newTempleImgLabel').textContent = '📷 येथून फोटो निवडा / अपलोड करा';
         e.target.classList.add('hidden');

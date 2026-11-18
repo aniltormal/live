@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>जाहिरात व्यवस्थापन — लाईव्ह दर्शन अ‍ॅडमिन</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Akshar:wght@400;600;700&family=Amiko:wght@400;600;700&family=Amita:wght@400;700&family=Anek+Devanagari:wght@400;600;700&family=Arya:wght@400;700&family=Asar&family=Bakbak+One&family=Baloo+2:wght@500;600;700&family=Biryani:wght@400;600;700&family=Cambay:wght@400;700&family=Dekko&family=Eczar:wght@400;600;700&family=Glegoo:wght@400;700&family=Gotu&family=Halant:wght@400;600;700&family=Hind:wght@400;600;700&family=Inknut+Antiqua:wght@400;600;700&family=Inter:wght@400;600;700&family=Jaldi:wght@400;700&family=Kadwa:wght@400;700&family=Kalam:wght@400;700&family=Karma:wght@400;600;700&family=Khand:wght@500;600;700&family=Khula:wght@400;600;700&family=Kurale&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@500;600;700&family=Martel+Sans:wght@400;600;700&family=Martel:wght@400;600;700&family=Modak&family=Mukta:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&family=Noto+Serif+Devanagari:wght@400;600;700&family=Palanquin+Dark:wght@400;600;700&family=Palanquin:wght@400;600;700&family=Playpen+Sans+Deva:wght@400;600;700&family=Poppins:wght@400;500;600;700&family=Pragati+Narrow:wght@400;700&family=Rajdhani:wght@500;600;700&family=Rhodium+Libre&family=Rozha+One&family=Sahitya:wght@400;700&family=Sarala:wght@400;700&family=Sumana:wght@400;700&family=Sura:wght@400;700&family=Teko:wght@500;600;700&family=Tillana:wght@500;600;700&family=Tiro+Devanagari+Hindi:ital@0;1&family=Tiro+Devanagari+Marathi:ital@0;1&family=Tiro+Devanagari+Sanskrit:ital@0;1&family=Vesper+Libre:wght@400;700&family=Yatra+One&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <style>
+    body { font-family: 'Noto Sans Devanagari', 'Poppins', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-900 min-h-screen flex flex-col">
+  <header class="bg-[#05344E] text-white shadow-md sticky top-0 z-40">
+    <div class="max-w-3xl mx-auto px-3 py-3 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2 min-w-0">
+        <a href="admin.html" class="px-2.5 py-1 rounded-lg bg-white/15 hover:bg-white/25 text-xs font-semibold">← डॅशबोर्ड</a>
+        <h1 class="text-sm sm:text-base font-bold truncate">📢 जाहिरात व बॅनर स्लॉट्स</h1>
+      </div>
+      <button id="adminLogoutBtn" type="button" class="hidden px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-xs font-bold cursor-pointer shrink-0">🚪 लॉगआऊट</button>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-3xl w-full mx-auto p-3 sm:p-5">
+    <div id="authGateMsg" class="p-4 rounded-xl bg-white border border-slate-200 text-center text-sm font-semibold text-slate-600">
+      ⏳ अ‍ॅडमिन तपासणी सुरू आहे...
+    </div>
+    <div id="pageContent" class="hidden space-y-4">
+      
+<form id="adsForm" class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+  <div class="flex items-center justify-between">
+    <span class="text-sm font-bold text-[#05344E]">📢 बॅनर जाहिराती (३ स्लॉट्स)</span>
+    <label class="inline-flex items-center gap-1.5 text-xs font-bold cursor-pointer"><input id="adsEnabled" type="checkbox" checked class="w-4 h-4 accent-[#05344E]" /><span>जाहिरात चालू</span></label>
+  </div>
+  <div id="slotsBox" class="space-y-3"></div>
+  <button type="submit" class="w-full py-2.5 rounded-xl bg-[#05344E] text-white text-sm font-bold cursor-pointer">💾 सर्व जाहिरात सेटिंग्ज सेव्ह करा</button>
+</form>
+
+    </div>
+  </main>
+
+  <div id="toastBox" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-black text-white text-xs font-bold shadow-lg"></div>
+
+  <script src="admin-common.js"></script>
+  <script>
+
+let slotsData = [{}, {}, {}];
+initAdminGuard(() => {
+  fbDb.ref('siteConfig/bannerSlots').on('value', (snap) => {
+    const val = snap.val();
+    slotsData = Array.isArray(val) ? val : [{}, {}, {}];
+    renderSlots();
+  });
+  fbDb.ref('siteConfig/ads/enabled').on('value', (snap) => {
+    document.getElementById('adsEnabled').checked = snap.val() !== false;
+  });
+});
+
+function renderSlots() {
+  const box = document.getElementById('slotsBox');
+  box.innerHTML = '';
+  [0, 1, 2].forEach((i) => {
+    const s = slotsData[i] || {};
+    const div = document.createElement('div');
+    div.className = 'p-3 rounded-xl border border-slate-200 bg-slate-50 space-y-2';
+    div.innerHTML = `
+      <div class="flex items-center justify-between text-xs font-bold">
+        <span>स्लॉट ${i + 1} (क्लिक्स: ${s.clicks || 0})</span>
+        <label class="inline-flex items-center gap-1 cursor-pointer"><input type="checkbox" id="slotEn${i}" ${s.enabled !== false ? 'checked' : ''} class="accent-[#05344E]" /><span>चालू</span></label>
+      </div>
+      <input id="slotLink${i}" type="url" value="${(s.link || '').replace(/"/g, '&quot;')}" placeholder="लिंक (उदा. https://wa.me/...)" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs" />
+      <input id="slotFile${i}" type="file" accept="image/*" class="w-full text-xs" />
+    `;
+    box.appendChild(div);
+  });
+}
+
+document.getElementById('adsForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const updated = [];
+  for (let i = 0; i < 3; i++) {
+    const old = slotsData[i] || {};
+    const fileInput = document.getElementById('slotFile' + i);
+    let imgData = old.image || '';
+    if (fileInput && fileInput.files[0]) {
+      imgData = await compressImageFile(fileInput.files[0], 900, 0.78);
+    }
+    updated.push({
+      ...old,
+      enabled: document.getElementById('slotEn' + i).checked,
+      link: document.getElementById('slotLink' + i).value.trim(),
+      image: imgData
+    });
+  }
+  await fbDb.ref('siteConfig/ads/enabled').set(document.getElementById('adsEnabled').checked);
+  await fbDb.ref('siteConfig/bannerSlots').set(updated);
+  showToast('✅ जाहिरात सेटिंग्ज सेव्ह झाल्या!');
+});
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>भाविक व लिंक्स — लाईव्ह दर्शन अ‍ॅडमिन</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Akshar:wght@400;600;700&family=Amiko:wght@400;600;700&family=Amita:wght@400;700&family=Anek+Devanagari:wght@400;600;700&family=Arya:wght@400;700&family=Asar&family=Bakbak+One&family=Baloo+2:wght@500;600;700&family=Biryani:wght@400;600;700&family=Cambay:wght@400;700&family=Dekko&family=Eczar:wght@400;600;700&family=Glegoo:wght@400;700&family=Gotu&family=Halant:wght@400;600;700&family=Hind:wght@400;600;700&family=Inknut+Antiqua:wght@400;600;700&family=Inter:wght@400;600;700&family=Jaldi:wght@400;700&family=Kadwa:wght@400;700&family=Kalam:wght@400;700&family=Karma:wght@400;600;700&family=Khand:wght@500;600;700&family=Khula:wght@400;600;700&family=Kurale&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@500;600;700&family=Martel+Sans:wght@400;600;700&family=Martel:wght@400;600;700&family=Modak&family=Mukta:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&family=Noto+Serif+Devanagari:wght@400;600;700&family=Palanquin+Dark:wght@400;600;700&family=Palanquin:wght@400;600;700&family=Playpen+Sans+Deva:wght@400;600;700&family=Poppins:wght@400;500;600;700&family=Pragati+Narrow:wght@400;700&family=Rajdhani:wght@500;600;700&family=Rhodium+Libre&family=Rozha+One&family=Sahitya:wght@400;700&family=Sarala:wght@400;700&family=Sumana:wght@400;700&family=Sura:wght@400;700&family=Teko:wght@500;600;700&family=Tillana:wght@500;600;700&family=Tiro+Devanagari+Hindi:ital@0;1&family=Tiro+Devanagari+Marathi:ital@0;1&family=Tiro+Devanagari+Sanskrit:ital@0;1&family=Vesper+Libre:wght@400;700&family=Yatra+One&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <style>
+    body { font-family: 'Noto Sans Devanagari', 'Poppins', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-900 min-h-screen flex flex-col">
+  <header class="bg-[#05344E] text-white shadow-md sticky top-0 z-40">
+    <div class="max-w-3xl mx-auto px-3 py-3 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2 min-w-0">
+        <a href="admin.html" class="px-2.5 py-1 rounded-lg bg-white/15 hover:bg-white/25 text-xs font-semibold">← डॅशबोर्ड</a>
+        <h1 class="text-sm sm:text-base font-bold truncate">👁️ भाविक काउंटर व १० लिंक्स</h1>
+      </div>
+      <button id="adminLogoutBtn" type="button" class="hidden px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-xs font-bold cursor-pointer shrink-0">🚪 लॉगआऊट</button>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-3xl w-full mx-auto p-3 sm:p-5">
+    <div id="authGateMsg" class="p-4 rounded-xl bg-white border border-slate-200 text-center text-sm font-semibold text-slate-600">
+      ⏳ अ‍ॅडमिन तपासणी सुरू आहे...
+    </div>
+    <div id="pageContent" class="hidden space-y-4">
+      
+<div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+  <div class="flex items-center justify-between">
+    <h2 class="text-sm font-bold text-[#05344E]">👁️ एकूण भाविक (Visitor Counter)</h2>
+    <label class="inline-flex items-center gap-1.5 text-xs font-bold cursor-pointer"><input id="visEn" type="checkbox" checked class="w-4 h-4 accent-[#05344E]" /><span>दाखवा</span></label>
+  </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    <div><label class="block text-xs font-bold mb-1">लेबल मजकूर</label><input id="visLbl" type="text" value="👁️ एकूण भाविक :" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs" /></div>
+    <div><label class="block text-xs font-bold mb-1">भाविक संख्या (Edit Count)</label><input id="visCnt" type="number" min="0" value="1" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-bold" /></div>
+  </div>
+  <label class="inline-flex items-center gap-1.5 text-xs font-semibold cursor-pointer"><input id="visFlash" type="checkbox" checked class="w-4 h-4 accent-[#05344E]" /><span>फ्लॅश / चमकणारा इफेक्ट चालू ठेवा</span></label>
+</div>
+
+<div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+  <div class="flex items-center justify-between">
+    <h2 class="text-sm font-bold text-[#05344E]">🔗 तळाशी १० लिंक्स व्यवस्थापन</h2>
+    <label class="inline-flex items-center gap-1.5 text-xs font-bold cursor-pointer"><input id="linksEn" type="checkbox" checked class="w-4 h-4 accent-[#05344E]" /><span>सेक्शन दाखवा</span></label>
+  </div>
+  <div id="linksRows" class="space-y-2"></div>
+  <button id="addLinkBtn" type="button" class="w-full py-2 rounded-xl border border-dashed border-slate-400 text-xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer">+ नवीन लिंक जोडा</button>
+</div>
+
+<button id="saveVLBtn" type="button" class="w-full py-3 rounded-xl bg-[#05344E] hover:bg-[#04273b] text-white text-sm font-bold cursor-pointer shadow-md">💾 भाविक व लिंक्स सेटिंग्ज सेव्ह करा</button>
+
+    </div>
+  </main>
+
+  <div id="toastBox" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-black text-white text-xs font-bold shadow-lg"></div>
+
+  <script src="admin-common.js"></script>
+  <script>
+
+const DEFAULT_LINKS = [
+  { label: 'आमच्याबद्दल', url: 'about.html', enabled: true },
+  { label: 'संपर्क', url: 'contact.html', enabled: true },
+  { label: 'जाहिरात', url: 'advertising.html', enabled: true },
+  { label: 'गोपनीयता', url: 'privacy.html', enabled: true },
+  { label: 'अटी', url: 'terms.html', enabled: true },
+  { label: 'अस्वीकरण', url: 'disclaimer.html', enabled: true },
+  { label: 'कुकीज', url: 'cookies.html', enabled: true },
+  { label: 'कॉपीराइट', url: 'copyright.html', enabled: true },
+  { label: 'कंटेंट काढणे', url: 'content-removal.html', enabled: true },
+  { label: 'बाह्य लिंक्स', url: 'third-party-links.html', enabled: true }
+];
+let itemsList = DEFAULT_LINKS.map(x => ({ ...x }));
+
+initAdminGuard(() => {
+  fbDb.ref('siteConfig/visitors').on('value', (snap) => {
+    const v = snap.val();
+    if (!v) return;
+    document.getElementById('visEn').checked = v.enabled !== false;
+    document.getElementById('visLbl').value = v.label || '👁️ एकूण भाविक :';
+    document.getElementById('visCnt').value = Number(v.count) || 1;
+    document.getElementById('visFlash').checked = v.flash !== false;
+  });
+  fbDb.ref('siteConfig/legalLinks').on('value', (snap) => {
+    const l = snap.val();
+    if (!l) return renderLinkRows();
+    document.getElementById('linksEn').checked = l.enabled !== false;
+    itemsList = Array.isArray(l.items) && l.items.length ? l.items : DEFAULT_LINKS.map(x => ({ ...x }));
+    renderLinkRows();
+  });
+  renderLinkRows();
+});
+
+function renderLinkRows() {
+  const box = document.getElementById('linksRows');
+  box.innerHTML = '';
+  itemsList.forEach((item, idx) => {
+    const row = document.createElement('div');
+    row.className = 'flex items-center gap-1.5 bg-slate-50 p-2 rounded-xl border border-slate-200';
+    row.innerHTML = `
+      <input type="checkbox" ${item.enabled !== false ? 'checked' : ''} class="l-en w-4 h-4 accent-[#05344E] shrink-0" />
+      <input type="text" value="${(item.label || '').replace(/"/g, '&quot;')}" placeholder="मराठी नाव" class="l-lbl w-28 sm:w-36 px-2 py-1.5 rounded-lg border border-slate-300 text-xs font-bold" />
+      <input type="text" value="${(item.url || '').replace(/"/g, '&quot;')}" placeholder="about.html" class="l-url flex-1 min-w-0 px-2 py-1.5 rounded-lg border border-slate-300 text-xs" />
+      <button type="button" class="l-del px-2 py-1 text-xs text-rose-600 cursor-pointer">🗑️</button>
+    `;
+    row.querySelector('.l-del').addEventListener('click', () => { itemsList.splice(idx, 1); renderLinkRows(); });
+    box.appendChild(row);
+  });
+}
+
+document.getElementById('addLinkBtn').addEventListener('click', () => {
+  itemsList.push({ label: 'नवीन पान', url: 'page.html', enabled: true });
+  renderLinkRows();
+});
+
+document.getElementById('saveVLBtn').addEventListener('click', async () => {
+  const newItems = [];
+  document.querySelectorAll('#linksRows > div').forEach((r) => {
+    const enabled = r.querySelector('.l-en').checked;
+    const label = r.querySelector('.l-lbl').value.trim();
+    const url = r.querySelector('.l-url').value.trim();
+    if (label && url) newItems.push({ label, url, enabled });
+  });
+  await fbDb.ref('siteConfig/visitors').set({
+    enabled: document.getElementById('visEn').checked,
+    label: document.getElementById('visLbl').value.trim() || '👁️ एकूण भाविक :',
+    count: Math.max(0, Number(document.getElementById('visCnt').value) || 0),
+    flash: document.getElementById('visFlash').checked
+  });
+  await fbDb.ref('siteConfig/legalLinks').set({
+    enabled: document.getElementById('linksEn').checked,
+    items: newItems
+  });
+  showToast('✅ भाविक व लिंक्स सेटिंग्ज सेव्ह झाल्या!');
+});
+
+  </script>
+</body>
+</html>

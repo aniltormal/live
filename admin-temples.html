@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>मंदिरे व्यवस्थापन — लाईव्ह दर्शन अ‍ॅडमिन</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Akshar:wght@400;600;700&family=Amiko:wght@400;600;700&family=Amita:wght@400;700&family=Anek+Devanagari:wght@400;600;700&family=Arya:wght@400;700&family=Asar&family=Bakbak+One&family=Baloo+2:wght@500;600;700&family=Biryani:wght@400;600;700&family=Cambay:wght@400;700&family=Dekko&family=Eczar:wght@400;600;700&family=Glegoo:wght@400;700&family=Gotu&family=Halant:wght@400;600;700&family=Hind:wght@400;600;700&family=Inknut+Antiqua:wght@400;600;700&family=Inter:wght@400;600;700&family=Jaldi:wght@400;700&family=Kadwa:wght@400;700&family=Kalam:wght@400;700&family=Karma:wght@400;600;700&family=Khand:wght@500;600;700&family=Khula:wght@400;600;700&family=Kurale&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@500;600;700&family=Martel+Sans:wght@400;600;700&family=Martel:wght@400;600;700&family=Modak&family=Mukta:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&family=Noto+Serif+Devanagari:wght@400;600;700&family=Palanquin+Dark:wght@400;600;700&family=Palanquin:wght@400;600;700&family=Playpen+Sans+Deva:wght@400;600;700&family=Poppins:wght@400;500;600;700&family=Pragati+Narrow:wght@400;700&family=Rajdhani:wght@500;600;700&family=Rhodium+Libre&family=Rozha+One&family=Sahitya:wght@400;700&family=Sarala:wght@400;700&family=Sumana:wght@400;700&family=Sura:wght@400;700&family=Teko:wght@500;600;700&family=Tillana:wght@500;600;700&family=Tiro+Devanagari+Hindi:ital@0;1&family=Tiro+Devanagari+Marathi:ital@0;1&family=Tiro+Devanagari+Sanskrit:ital@0;1&family=Vesper+Libre:wght@400;700&family=Yatra+One&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <style>
+    body { font-family: 'Noto Sans Devanagari', 'Poppins', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-900 min-h-screen flex flex-col">
+  <header class="bg-[#05344E] text-white shadow-md sticky top-0 z-40">
+    <div class="max-w-3xl mx-auto px-3 py-3 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2 min-w-0">
+        <a href="admin.html" class="px-2.5 py-1 rounded-lg bg-white/15 hover:bg-white/25 text-xs font-semibold">← डॅशबोर्ड</a>
+        <h1 class="text-sm sm:text-base font-bold truncate">🛕 मंदिरे व्यवस्थापन</h1>
+      </div>
+      <button id="adminLogoutBtn" type="button" class="hidden px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-xs font-bold cursor-pointer shrink-0">🚪 लॉगआऊट</button>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-3xl w-full mx-auto p-3 sm:p-5">
+    <div id="authGateMsg" class="p-4 rounded-xl bg-white border border-slate-200 text-center text-sm font-semibold text-slate-600">
+      ⏳ अ‍ॅडमिन तपासणी सुरू आहे...
+    </div>
+    <div id="pageContent" class="hidden space-y-4">
+      
+<div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+  <div class="flex items-center justify-between">
+    <h2 class="text-sm font-bold text-[#05344E]">🛕 सर्व मंदिरे यादी</h2>
+    <button id="newTempleBtn" type="button" class="px-3 py-1.5 rounded-xl bg-[#05344E] text-white text-xs font-bold cursor-pointer">+ नवीन मंदिर जोडा</button>
+  </div>
+  <div id="templesList" class="space-y-2"></div>
+</div>
+
+<form id="templeForm" class="hidden bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+  <div class="flex items-center justify-between">
+    <h3 id="templeFormTitle" class="text-sm font-bold text-[#05344E]">मंदिर एडिट करा</h3>
+    <button id="cancelTempleBtn" type="button" class="text-xs font-semibold text-slate-600 underline cursor-pointer">रद्द करा</button>
+  </div>
+  <input id="tId" type="hidden" />
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    <div><label class="block text-xs font-bold mb-1">पूर्ण नाव (बटण टेक्स्ट)</label><input id="tBtnTitle" type="text" required class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs" /></div>
+    <div><label class="block text-xs font-bold mb-1">छोटे नाव (प्लेयर शीर्षक)</label><input id="tShortTitle" type="text" required class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs" /></div>
+  </div>
+  <div><label class="block text-xs font-bold mb-1">लाईव्ह स्ट्रीम URL (.m3u8 किंवा YouTube)</label><input id="tUrl" type="url" required class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs" /></div>
+  <div><label class="block text-xs font-bold mb-1">दर्शन वेळा / माहिती</label><textarea id="tInfo" rows="2" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs"></textarea></div>
+  <div class="flex gap-2">
+    <button type="submit" class="flex-1 py-2.5 rounded-xl bg-[#05344E] text-white text-xs sm:text-sm font-bold cursor-pointer">💾 मंदिर सेव्ह करा</button>
+    <button id="deleteTempleBtn" type="button" class="hidden px-4 py-2.5 rounded-xl bg-rose-600 text-white text-xs font-bold cursor-pointer">🗑️ हटवा</button>
+  </div>
+</form>
+
+    </div>
+  </main>
+
+  <div id="toastBox" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-black text-white text-xs font-bold shadow-lg"></div>
+
+  <script src="admin-common.js"></script>
+  <script>
+
+let templesData = {};
+initAdminGuard(() => {
+  fbDb.ref('temples').on('value', (snap) => {
+    templesData = snap.val() || {};
+    const box = document.getElementById('templesList');
+    box.innerHTML = '';
+    Object.entries(templesData).forEach(([id, t]) => {
+      const row = document.createElement('div');
+      row.className = 'p-2.5 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-between gap-2';
+      row.innerHTML = `<div class="min-w-0"><div class="text-xs font-bold truncate">${t.shortTitle || t.buttonTitle || id}</div><div class="text-[11px] text-slate-500 truncate">${t.streamUrl || ''}</div></div><button type="button" class="px-3 py-1 rounded-lg bg-white border border-slate-300 text-xs font-bold cursor-pointer shrink-0">✏️ एडिट</button>`;
+      row.querySelector('button').addEventListener('click', () => openTempleForm(id, t));
+      box.appendChild(row);
+    });
+  });
+});
+
+function openTempleForm(id, t = {}) {
+  document.getElementById('templeForm').classList.remove('hidden');
+  document.getElementById('tId').value = id || '';
+  document.getElementById('tBtnTitle').value = t.buttonTitle || '';
+  document.getElementById('tShortTitle').value = t.shortTitle || '';
+  document.getElementById('tUrl').value = t.streamUrl || '';
+  document.getElementById('tInfo').value = t.info || '';
+  document.getElementById('templeFormTitle').textContent = id ? 'मंदिर एडिट करा' : 'नवीन मंदिर जोडा';
+  document.getElementById('deleteTempleBtn').classList.toggle('hidden', !id);
+}
+
+document.getElementById('newTempleBtn').addEventListener('click', () => openTempleForm(''));
+document.getElementById('cancelTempleBtn').addEventListener('click', () => document.getElementById('templeForm').classList.add('hidden'));
+
+document.getElementById('templeForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('tId').value || ('temple_' + Date.now());
+  await fbDb.ref('temples/' + id).update({
+    id,
+    buttonTitle: document.getElementById('tBtnTitle').value.trim(),
+    shortTitle: document.getElementById('tShortTitle').value.trim(),
+    streamUrl: document.getElementById('tUrl').value.trim(),
+    info: document.getElementById('tInfo').value.trim()
+  });
+  document.getElementById('templeForm').classList.add('hidden');
+  showToast('✅ मंदिर माहिती सेव्ह झाली!');
+});
+
+document.getElementById('deleteTempleBtn').addEventListener('click', async () => {
+  const id = document.getElementById('tId').value;
+  if (!id || !confirm('हे मंदिर नक्की हटवायचे का?')) return;
+  await fbDb.ref('temples/' + id).remove();
+  document.getElementById('templeForm').classList.add('hidden');
+  showToast('🗑️ मंदिर हटवले');
+});
+
+  </script>
+</body>
+</html>

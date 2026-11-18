@@ -54,6 +54,14 @@
       will-change: transform;
       animation: marquee-scroll 16s linear infinite;
     }
+    @keyframes ottShimmerSweep {
+      0% { transform: translateX(-100%) skewX(-18deg); }
+      100% { transform: translateX(200%) skewX(-18deg); }
+    }
+    .ott-shimmer-beam {
+      animation: ottShimmerSweep 1.6s ease-in-out infinite;
+      will-change: transform;
+    }
     #videoModal:fullscreen { background: #000; padding: 0 !important; }
     #videoModal:fullscreen #modalBox:not(.modal-always-horizontal-rotated) { max-width: 100vw !important; max-height: 100vh !important; border-radius: 0 !important; }
     .modal-always-horizontal-rotated {
@@ -211,7 +219,7 @@
       </div>
     </section>
 
-    <div id="templeGrid" class="grid grid-cols-2 gap-3.5 sm:gap-6">
+    <div id="templeGrid" class="grid grid-cols-3 gap-2.5 sm:gap-4">
       <!-- Square 2-per-row temple photo buttons rendered from TEMPLES_CONFIG -->
     </div>
   </main>
@@ -299,10 +307,6 @@
             class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-white flex items-center justify-center transition cursor-pointer shrink-0">
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
           </button>
-          <button id="playerFullscreenBtn" type="button" aria-label="फुलस्क्रीन" title="फुलस्क्रीन"
-            class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-white flex items-center justify-center transition cursor-pointer shrink-0">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
-          </button>
           <button id="playerMuteBtn" type="button" aria-label="आवाज चालू किंवा बंद करा" title="आवाज चालू / बंद"
             class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-white flex items-center justify-center transition cursor-pointer shrink-0">
             <svg id="muteIconOn" class="w-4 h-4 sm:w-4.5 sm:h-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
@@ -336,10 +340,10 @@
         <video id="nativePlayer" class="hidden w-full h-full max-w-full max-h-full object-cover bg-black pointer-events-none select-none"
           autoplay playsinline webkit-playsinline disablePictureInPicture controlsList="nodownload noplaybackrate noremoteplayback"></video>
 
-        <!-- OTT Loading Indicator Pill -->
-        <div id="playerLoadingBadge" class="hidden absolute inset-0 m-auto w-fit h-fit z-30 px-5 py-3 rounded-2xl bg-black/80 backdrop-blur-md border border-amber-400/50 text-white text-xs sm:text-sm font-extrabold flex items-center gap-3 shadow-2xl pointer-events-none">
-          <span class="w-5 h-5 rounded-full border-[2.5px] border-amber-400 border-t-transparent animate-spin shrink-0"></span>
-          <span>🙏 लाईव्ह दर्शन सुरू होत आहे...</span>
+        <!-- OTT Option 1: Ultra-Lightweight Soft Shimmer Glow -->
+        <div id="playerLoadingBadge" class="hidden absolute inset-0 z-30 bg-neutral-950/90 overflow-hidden flex items-end justify-center pb-12 sm:pb-14 pointer-events-none select-none">
+          <div class="ott-shimmer-beam absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-transparent via-amber-200/15 to-transparent"></div>
+          <span class="relative z-10 text-xs sm:text-sm font-bold text-amber-100/85 tracking-wide">🙏 दर्शन सुरू होत आहे...</span>
         </div>
 
         <!-- OTT Quick Temple Switcher Dock (Auto-hides after 4s, tap stage to show) -->
@@ -1193,18 +1197,23 @@
     }
 
     const siteLayoutConfig = {
+      showPanchangBar: true,
+      panchangFontFamily: "'Noto Sans Devanagari', sans-serif",
+      panchangFontSize: 'auto',
+      panchangTextColor: '#05344E',
+      panchangBgColor: '#FFFBEB',
       showSectionBanner: false,
       sectionFontFamily: "'Noto Sans Devanagari', sans-serif",
       sectionSize: 'md',
       sectionTextColor: '',
-      gridCols: '2',
+      gridCols: '3',
       headerSize: 'md',
       featuredHeight: 'md',
-      cardHeight: 'md',
+      cardHeight: 'sm',
       btnFontFamily: "'Noto Sans Devanagari', sans-serif",
-      btnFontSize: '15px',
-      btnTextColor: '',
-      btnBgColor: ''
+      btnFontSize: '12px',
+      btnTextColor: '#FFFFFF',
+      btnBgColor: '#05344E'
     };
     let customOfflineMessage = 'मंदिराची दैनंदिन पूजा/नैवेद्य वेळ किंवा तांत्रिक कारणास्तव प्रक्षेपण थांबलेले असू शकते. कृपया थोड्या वेळाने पुन्हा प्रयत्न करा.';
 

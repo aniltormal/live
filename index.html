@@ -2214,8 +2214,16 @@
                 }
                 if (typeof data[temple.id].shortTitle === 'string' && data[temple.id].shortTitle) {
                   temple.shortTitle = data[temple.id].shortTitle;
+                  temple.buttonTitle = data[temple.id].buttonTitle || (temple.shortTitle + ' Live Darshan');
                 } else if (typeof data[temple.id].name === 'string' && data[temple.id].name) {
                   temple.shortTitle = data[temple.id].name;
+                  temple.buttonTitle = data[temple.id].buttonTitle || (temple.shortTitle + ' Live Darshan');
+                }
+                if (typeof data[temple.id].buttonTitle === 'string' && data[temple.id].buttonTitle) {
+                  temple.buttonTitle = data[temple.id].buttonTitle;
+                }
+                if (typeof data[temple.id].featured === 'boolean') {
+                  temple.featured = data[temple.id].featured;
                 }
                 if (typeof data[temple.id].image === 'string' && data[temple.id].image) {
                   temple.image = data[temple.id].image;

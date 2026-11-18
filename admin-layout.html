@@ -71,6 +71,48 @@
         </div>
       </section>
 
+      <!-- पंचांग पट्टी स्टाईल -->
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-100">
+          <div>
+            <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🗓️ आजचे पंचांग पट्टी सेटिंग्ज</h2>
+            <p class="text-xs text-slate-500">हेडरखालील स्वयंचलित पंचांग पट्टीचा फॉन्ट, आकार व रंग निवडा</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">पंचांग फॉन्ट (५० फॉन्ट्स)</label>
+            <select id="panchangFontSelect" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white"></select>
+            <div id="panchangFontPreview" class="mt-2 px-3 py-2 rounded-xl bg-amber-50 border border-amber-200 text-xs text-[#05344E] truncate">आजचे पंचांग: कार्तिक शुक्ल नवमी</div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">फॉन्ट आकार</label>
+            <select id="panchangSizeSelect" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white">
+              <option value="auto" selected>ऑटो (स्क्रीनला फिट)</option>
+              <option value="11px">लहान (11px)</option>
+              <option value="12px">मध्यम (12px)</option>
+              <option value="13px">ठळक (13px)</option>
+              <option value="14px">मोठा (14px)</option>
+              <option value="16px">खूप मोठा (16px)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">मजकूर रंग</label>
+            <div class="flex items-center gap-2">
+              <button id="swatchPanchangText" type="button" class="w-10 h-10 rounded-xl border border-slate-300 shrink-0 cursor-pointer shadow-sm"></button>
+              <input id="panchangTextColor" type="text" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-xs font-mono" value="#05344E" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">पट्टी पार्श्वभूमी रंग</label>
+            <div class="flex items-center gap-2">
+              <button id="swatchPanchangBg" type="button" class="w-10 h-10 rounded-xl border border-slate-300 shrink-0 cursor-pointer shadow-sm"></button>
+              <input id="panchangBgColor" type="text" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-xs font-mono" value="#FFFBEB" />
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- ग्रिड व कार्ड आकार -->
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
         <h2 class="text-base sm:text-lg font-extrabold text-[#05344E] pb-2 border-b border-slate-100">📐 मुख्य पेज व कार्ड आकार</h2>
@@ -159,14 +201,30 @@
     renderAdminShell('layout', 'लेआउट, कॉलम व बटणे');
     populateFontSelect('sectionFontSelect', 'sectionFontPreview');
     populateFontSelect('btnFontSelect', 'btnFontPreview');
+    populateFontSelect('panchangFontSelect', 'panchangFontPreview');
     bindColorPicker('sectionTextColor', 'swatchSectionText', '#05344E');
     bindColorPicker('btnTextColor', 'swatchBtnText', '#FFFFFF');
     bindColorPicker('btnBgColor', 'swatchBtnBg', '#05344E');
+    bindColorPicker('panchangTextColor', 'swatchPanchangText', '#05344E');
+    bindColorPicker('panchangBgColor', 'swatchPanchangBg', '#FFFBEB');
 
     initAdminGuard(() => {
       fbDb.ref('siteConfig/layout').on('value', (snap) => {
         const l = snap.val() || {};
         document.getElementById('showPanchangBarToggle').checked = l.showPanchangBar !== false;
+        if (l.panchangFontFamily) {
+          document.getElementById('panchangFontSelect').value = l.panchangFontFamily;
+          document.getElementById('panchangFontPreview').style.fontFamily = l.panchangFontFamily;
+        }
+        if (l.panchangFontSize) document.getElementById('panchangSizeSelect').value = l.panchangFontSize;
+        if (l.panchangTextColor) {
+          document.getElementById('panchangTextColor').value = l.panchangTextColor;
+          document.getElementById('swatchPanchangText').style.backgroundColor = l.panchangTextColor;
+        }
+        if (l.panchangBgColor) {
+          document.getElementById('panchangBgColor').value = l.panchangBgColor;
+          document.getElementById('swatchPanchangBg').style.backgroundColor = l.panchangBgColor;
+        }
         document.getElementById('showSectionBannerToggle').checked = l.showSectionBanner !== false;
         if (l.sectionTitle) document.getElementById('sectionTitle').value = l.sectionTitle;
         if (l.sectionSubtitle) document.getElementById('sectionSubtitle').value = l.sectionSubtitle;
@@ -202,6 +260,10 @@
     document.getElementById('saveLayoutBtn').addEventListener('click', async () => {
       const payload = {
         showPanchangBar: document.getElementById('showPanchangBarToggle').checked,
+        panchangFontFamily: document.getElementById('panchangFontSelect').value,
+        panchangFontSize: document.getElementById('panchangSizeSelect').value,
+        panchangTextColor: document.getElementById('panchangTextColor').value.trim(),
+        panchangBgColor: document.getElementById('panchangBgColor').value.trim(),
         showSectionBanner: document.getElementById('showSectionBannerToggle').checked,
         sectionTitle: document.getElementById('sectionTitle').value.trim() || 'प्रमुख मंदिरांचे लाईव्ह दर्शन',
         sectionSubtitle: document.getElementById('sectionSubtitle').value.trim() || 'खालीलपैकी कोणत्याही मंदिराच्या फोटोवर टॅप करून मोठ्या स्क्रीनवर अखंड दर्शन घ्या.',

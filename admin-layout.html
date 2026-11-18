@@ -25,10 +25,16 @@
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
         <div class="flex items-center justify-between gap-2 pb-2 border-b border-slate-100">
           <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🏷️ विभाग मथळा (Section Banner)</h2>
-          <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
-            <span>विभाग बॅनर दाखवा</span>
-            <span class="toggle-pill"><input id="showSectionBannerToggle" type="checkbox" checked /><span class="knob"></span></span>
-          </label>
+          <div class="flex flex-wrap items-center gap-4">
+            <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+              <span>पंचांग पट्टी दाखवा</span>
+              <span class="toggle-pill"><input id="showPanchangBarToggle" type="checkbox" checked /><span class="knob"></span></span>
+            </label>
+            <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+              <span>विभाग बॅनर दाखवा</span>
+              <span class="toggle-pill"><input id="showSectionBannerToggle" type="checkbox" checked /><span class="knob"></span></span>
+            </label>
+          </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -160,6 +166,7 @@
     initAdminGuard(() => {
       fbDb.ref('siteConfig/layout').on('value', (snap) => {
         const l = snap.val() || {};
+        document.getElementById('showPanchangBarToggle').checked = l.showPanchangBar !== false;
         document.getElementById('showSectionBannerToggle').checked = l.showSectionBanner !== false;
         if (l.sectionTitle) document.getElementById('sectionTitle').value = l.sectionTitle;
         if (l.sectionSubtitle) document.getElementById('sectionSubtitle').value = l.sectionSubtitle;
@@ -194,6 +201,7 @@
 
     document.getElementById('saveLayoutBtn').addEventListener('click', async () => {
       const payload = {
+        showPanchangBar: document.getElementById('showPanchangBarToggle').checked,
         showSectionBanner: document.getElementById('showSectionBannerToggle').checked,
         sectionTitle: document.getElementById('sectionTitle').value.trim() || 'प्रमुख मंदिरांचे लाईव्ह दर्शन',
         sectionSubtitle: document.getElementById('sectionSubtitle').value.trim() || 'खालीलपैकी कोणत्याही मंदिराच्या फोटोवर टॅप करून मोठ्या स्क्रीनवर अखंड दर्शन घ्या.',

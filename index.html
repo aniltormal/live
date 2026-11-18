@@ -161,6 +161,14 @@
     </div>
   </header>
 
+  <!-- Automatic Daily Marathi Panchang Strip -->
+  <div id="panchangBar" class="w-full bg-gradient-to-r from-amber-50 via-orange-50/80 to-amber-50 border-b border-amber-200/80 text-[#05344E] px-3 py-1.5 text-center transition-colors duration-300">
+    <div class="max-w-4xl mx-auto flex items-center justify-center gap-1.5 text-[11px] sm:text-xs font-bold truncate">
+      <span>🗓️</span>
+      <span id="panchangText">आजचे पंचांग लोड होत आहे...</span>
+    </div>
+  </div>
+
   <!-- Main Content: 2-Column Square Temple Photo Cards -->
   <main class="flex-1 w-full max-w-4xl mx-auto px-3 sm:px-5 py-6 sm:py-8">
     <div id="sectionBannerCard" class="hidden mb-5 sm:mb-7 p-[2px] rounded-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 shadow-sm">
@@ -285,6 +293,14 @@
             class="hidden px-2 py-1 rounded-lg bg-neutral-800 text-white border border-white/40 text-xs font-semibold cursor-pointer focus:outline-none">
             <option value="-1">Auto</option>
           </select>
+          <button id="playerShareBtn" type="button" aria-label="शेअर करा" title="WhatsApp / शेअर करा"
+            class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-white flex items-center justify-center transition cursor-pointer shrink-0">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          </button>
+          <button id="playerFullscreenBtn" type="button" aria-label="फुलस्क्रीन" title="फुलस्क्रीन"
+            class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-white flex items-center justify-center transition cursor-pointer shrink-0">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+          </button>
           <button id="playerMuteBtn" type="button" aria-label="आवाज चालू किंवा बंद करा" title="आवाज चालू / बंद"
             class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-white flex items-center justify-center transition cursor-pointer shrink-0">
             <svg id="muteIconOn" class="w-4 h-4 sm:w-4.5 sm:h-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
@@ -317,6 +333,17 @@
 
         <video id="nativePlayer" class="hidden w-full h-full max-w-full max-h-full object-cover bg-black pointer-events-none select-none"
           autoplay playsinline webkit-playsinline disablePictureInPicture controlsList="nodownload noplaybackrate noremoteplayback"></video>
+
+        <!-- OTT Loading Indicator Pill -->
+        <div id="playerLoadingBadge" class="hidden absolute top-3 left-3 z-30 px-3.5 py-1.5 rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-white text-xs font-bold flex items-center gap-2 shadow-lg pointer-events-none">
+          <span class="w-3.5 h-3.5 rounded-full border-2 border-amber-400 border-t-transparent animate-spin"></span>
+          <span>प्रसारण जोडत आहे...</span>
+        </div>
+
+        <!-- OTT Quick Temple Switcher Dock (Auto-hides after 4s, tap stage to show) -->
+        <div id="playerTempleDock" class="absolute bottom-9 sm:bottom-10 left-2 right-2 z-30 transition-opacity duration-300 opacity-100">
+          <div id="playerTempleDockInner" class="flex items-center gap-2 overflow-x-auto px-2.5 py-2 rounded-2xl bg-black/70 backdrop-blur-md border border-white/15 shadow-xl" style="scrollbar-width:none;"></div>
+        </div>
 
         <!-- Bottom Scrolling Ticker Overlapping Video Bottom (#05344E bg, #D6DBD2 bold text) -->
         <div id="playerTickerBar" class="absolute bottom-0 left-0 right-0 z-20 overflow-hidden py-1.5 pointer-events-none select-none border-t border-white/15" style="background-color: #05344E;">
@@ -1420,6 +1447,10 @@
         md: `text-xs sm:text-sm leading-snug mt-0.5 transition-colors ${isDark ? 'text-neutral-300' : 'text-neutral-600'}`,
         lg: `text-sm sm:text-base leading-snug mt-0.5 transition-colors ${isDark ? 'text-neutral-300' : 'text-neutral-600'}`
       };
+      const pBar = document.getElementById('panchangBar');
+      if (pBar) {
+        pBar.classList.toggle('hidden', siteLayoutConfig.showPanchangBar === false);
+      }
       if (el.sectionBannerCard) {
         el.sectionBannerCard.classList.toggle('hidden', siteLayoutConfig.showSectionBanner === false);
       }
@@ -1558,6 +1589,7 @@
     }
 
     function showOfflineMessage(customText) {
+      showPlayerLoading(false);
       if (streamTimeoutTimer) {
         clearTimeout(streamTimeoutTimer);
         streamTimeoutTimer = null;
@@ -1620,6 +1652,127 @@
       }
     });
 
+    let ottDockHideTimer = null;
+
+    function showPlayerLoading(show) {
+      const b = document.getElementById('playerLoadingBadge');
+      if (b) b.classList.toggle('hidden', !show);
+    }
+
+    function showOttDockTemporarily() {
+      const dock = document.getElementById('playerTempleDock');
+      if (!dock) return;
+      dock.classList.remove('opacity-0', 'pointer-events-none');
+      dock.classList.add('opacity-100');
+      clearTimeout(ottDockHideTimer);
+      ottDockHideTimer = setTimeout(() => {
+        dock.classList.add('opacity-0', 'pointer-events-none');
+        dock.classList.remove('opacity-100');
+      }, 4000);
+    }
+
+    function renderPlayerTempleDock(activeTempleId) {
+      const inner = document.getElementById('playerTempleDockInner');
+      if (!inner) return;
+      const visible = TEMPLES_CONFIG.filter((t) => !t.hidden);
+      inner.innerHTML = '';
+      visible.forEach((t) => {
+        const isAct = t.id === activeTempleId;
+        const pill = document.createElement('button');
+        pill.type = 'button';
+        pill.className = `shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[11px] sm:text-xs font-bold transition cursor-pointer ${isAct ? 'bg-amber-500/30 border-amber-400 text-white shadow' : 'bg-white/10 border-white/20 text-neutral-200 hover:bg-white/20'}`;
+        pill.innerHTML = `<img src="${t.image}" alt="" class="w-5 h-5 rounded-full object-cover shrink-0" /> <span class="max-w-[110px] truncate">${t.shortTitle}</span>`;
+        pill.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (t.id !== currentOpenTempleId) {
+            openTemplePlayer(t);
+          }
+          showOttDockTemporarily();
+        });
+        inner.appendChild(pill);
+      });
+      showOttDockTemporarily();
+    }
+
+    (function bindOttPlayerEnhancements() {
+      const stage = document.getElementById('modalStage');
+      if (stage) {
+        stage.addEventListener('click', () => showOttDockTemporarily());
+        stage.addEventListener('mousemove', () => showOttDockTemporarily());
+      }
+      if (el.nativePlayer) {
+        el.nativePlayer.addEventListener('playing', () => showPlayerLoading(false));
+        el.nativePlayer.addEventListener('canplay', () => showPlayerLoading(false));
+      }
+      if (el.youtubePlayer) {
+        el.youtubePlayer.addEventListener('load', () => showPlayerLoading(false));
+      }
+      const fsBtn = document.getElementById('playerFullscreenBtn');
+      if (fsBtn && el.modalBox) {
+        fsBtn.addEventListener('click', () => {
+          if (document.fullscreenElement) {
+            document.exitFullscreen().catch(() => {});
+          } else {
+            const target = el.modalBox;
+            if (target.requestFullscreen) target.requestFullscreen().catch(() => {});
+            else if (target.webkitRequestFullscreen) target.webkitRequestFullscreen();
+          }
+        });
+      }
+    })();
+
+
+    // Automatic Daily Marathi Panchang (Lunar Tithi + Paksha + Marathi Maas + Date)
+    function updateAutoMarathiPanchang() {
+      const elText = document.getElementById('panchangText');
+      if (!elText) return;
+      try {
+        const now = new Date();
+        // Julian Day & Lunar Age (synodic month ~29.530588853 days from known new moon Jan 6 2000 18:14 UTC)
+        const jd = now.getTime() / 86400000 + 2440587.5;
+        const synodic = 29.530588853;
+        const daysSinceNew = jd - 2451550.259722;
+        const age = ((daysSinceNew % synodic) + synodic) % synodic;
+        const tithiIdx = Math.min(29, Math.floor((age / synodic) * 30));
+        const isShukla = tithiIdx < 15;
+        const paksha = isShukla ? 'शुक्ल पक्ष' : 'कृष्ण पक्ष';
+        const tithiNames = [
+          'प्रतिपदा', 'द्वितीया', 'तृतीया', 'चतुर्थी', 'पंचमी',
+          'षष्ठी', 'सप्तमी', 'अष्टमी', 'नवमी', 'दशमी',
+          'एकादशी', 'द्वादशी', 'त्रयोदशी', 'चतुर्दशी', 'पौर्णिमा'
+        ];
+        const tithiName = (tithiIdx === 29) ? 'अमावास्या' : tithiNames[tithiIdx % 15];
+        const maasNames = ['चैत्र', 'वैशाख', 'ज्येष्ठ', 'आषाढ', 'श्रावण', 'भाद्रपद', 'आश्विन', 'कार्तिक', 'मार्गशीर्ष', 'पौष', 'माघ', 'फाल्गुन'];
+        // Approximate Hindu lunar month index from solar month + lunar offset
+        const m = now.getMonth(); // 0=Jan .. 11=Dec
+        const maasMap = [9, 10, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8]; // Jan->पौष/माघ, Nov->कार्तिक
+        const maas = maasNames[maasMap[m]];
+
+        const vaarNames = ['रविवार', 'सोमवार', 'मंगळवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'];
+        const mrMonths = ['जानेवारी', 'फेब्रुवारी', 'मार्च', 'एप्रिल', 'मे', 'जून', 'जुलै', 'ऑगस्ट', 'सप्टेंबर', 'ऑक्टोबर', 'नोव्हेंबर', 'डिसेंबर'];
+        const toMrDigits = (n) => String(n).replace(/\d/g, d => '०१२३४५६७८९'[d]);
+
+        const dateStr = `${vaarNames[now.getDay()]}, ${toMrDigits(now.getDate())} ${mrMonths[m]} ${toMrDigits(now.getFullYear())}`;
+        elText.textContent = `${maas} ${paksha} ${tithiName} • ${dateStr}`;
+      } catch (_) {}
+    }
+    updateAutoMarathiPanchang();
+
+    // Share button inside player
+    (function bindPlayerShareBtn() {
+      const btn = document.getElementById('playerShareBtn');
+      if (!btn) return;
+      btn.addEventListener('click', async () => {
+        const title = (el.modalTitle && el.modalTitle.textContent) || 'लाईव्ह दर्शन पोर्टल';
+        const url = window.location.href;
+        const shareText = `🙏 ${title} — घरबसल्या अखंड लाईव्ह दर्शन घ्या: ${url}`;
+        if (navigator.share) {
+          try { await navigator.share({ title, text: `🙏 ${title} — लाईव्ह दर्शन घ्या`, url }); return; } catch (_) {}
+        }
+        window.open('https://wa.me/?text=' + encodeURIComponent(shareText), '_blank', 'noopener,noreferrer');
+      });
+    })();
+
     function syncPlayerMuteIcon() {
       const btn = document.getElementById('playerMuteBtn');
       const onIcon = document.getElementById('muteIconOn');
@@ -1647,6 +1800,7 @@
     })();
 
     function cleanupPopupPlayer() {
+      showPlayerLoading(false);
       if (streamTimeoutTimer) {
         clearTimeout(streamTimeoutTimer);
         streamTimeoutTimer = null;
@@ -1704,6 +1858,8 @@
       cleanupPopupPlayer();
       el.modalTitle.textContent = temple.buttonTitle;
       el.videoModal.classList.remove('hidden');
+      renderPlayerTempleDock(temple.id);
+      showPlayerLoading(true);
 
       const url = (temple.streamUrl || '').trim();
       const type = detectType(url, temple.streamType);

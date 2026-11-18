@@ -1006,6 +1006,7 @@
                 <select id="editTempleType" class="w-full px-3 py-2 rounded-lg border border-neutral-300 bg-white text-xs sm:text-sm font-medium">
                   <option value="hls">HLS (.m3u8)</option>
                   <option value="youtube">YouTube Live</option>
+                  <option value="facebook">Facebook Live / Video</option>
                   <option value="mp4">MP4 / थेट</option>
                   <option value="auto">Auto</option>
                 </select>
@@ -1044,6 +1045,7 @@
                 <select id="newTempleType" class="px-2.5 py-2 rounded-lg border border-neutral-300 bg-white text-xs font-medium">
                   <option value="hls">HLS (.m3u8)</option>
                   <option value="youtube">YouTube Live</option>
+                  <option value="facebook">Facebook Live / Video</option>
                   <option value="mp4">MP4 / थेट</option>
                   <option value="auto">Auto</option>
                 </select>
@@ -1544,6 +1546,7 @@
       if (!url) return 'none';
       if (configuredType && configuredType !== 'auto') return configuredType;
       if (extractYouTubeId(url)) return 'youtube';
+      if (/facebook\.com|fb\.watch/i.test(url)) return 'facebook';
       if (url.toLowerCase().includes('.m3u8')) return 'hls';
       return 'mp4';
     }
@@ -1693,6 +1696,21 @@
           return;
         }
         el.youtubePlayer.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&controls=0&disablekb=1&fs=0&rel=0&modestbranding=1`;
+        el.youtubePlayer.classList.remove('hidden');
+        return;
+      }
+
+      if (type === 'facebook') {
+        const fbSrc = url.includes('facebook.com/plugins/video.php')
+          ? url
+          : `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&autoplay=1&mute=0`;
+        el.youtubePlayer.src = fbSrc;
+        el.youtubePlayer.classList.remove('hidden');
+        return;
+      }
+
+      if (type === 'iframe') {
+        el.youtubePlayer.src = url;
         el.youtubePlayer.classList.remove('hidden');
         return;
       }
@@ -2194,26 +2212,41 @@
                 if (typeof data[temple.id].streamType === 'string') {
                   temple.streamType = data[temple.id].streamType;
                 }
+                if (typeof data[temple.id].shortTitle === 'string' && data[temple.id].shortTitle) {
+                  temple.shortTitle = data[temple.id].shortTitle;
+                } else if (typeof data[temple.id].name === 'string' && data[temple.id].name) {
+                  temple.shortTitle = data[temple.id].name;
+                }
+                if (typeof data[temple.id].image === 'string' && data[temple.id].image) {
+                  temple.image = data[temple.id].image;
+                }
+                if (typeof data[temple.id].hidden === 'boolean') {
+                  temple.hidden = data[temple.id].hidden;
+                }
               }
             }
             Object.keys(data).forEach((key) => {
-              if (key.startsWith('custom_')) {
+              if (key.startsWith('custom_') || key.startsWith('temple_')) {
                 const item = data[key];
+                if (!item || item.deleted) return;
+                const title = item.shortTitle || item.name;
                 const existing = TEMPLES_CONFIG.find((t) => t.id === key);
                 if (existing) {
-                  existing.shortTitle = item.shortTitle || existing.shortTitle;
+                  existing.shortTitle = title || existing.shortTitle;
                   existing.buttonTitle = item.buttonTitle || existing.buttonTitle;
                   existing.streamType = item.streamType || existing.streamType;
                   existing.streamUrl = item.streamUrl || '';
+                  existing.hidden = !!item.hidden;
                   if (item.image) existing.image = item.image;
-                } else if (item && item.shortTitle && !item.deleted) {
+                } else if (title) {
                   TEMPLES_CONFIG.push({
                     id: key,
-                    buttonTitle: item.buttonTitle || (item.shortTitle + ' Live Darshan'),
-                    shortTitle: item.shortTitle,
+                    buttonTitle: item.buttonTitle || (title + ' Live Darshan'),
+                    shortTitle: title,
                     image: item.image || TEMPLES_CONFIG[0].image,
                     streamType: item.streamType || 'hls',
-                    streamUrl: item.streamUrl || ''
+                    streamUrl: item.streamUrl || '',
+                    hidden: !!item.hidden
                   });
                 }
               }

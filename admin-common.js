@@ -71,7 +71,7 @@ const fbDb = firebase.database();
   const st = document.createElement('style');
   st.id = 'modernAdminCss';
   st.textContent = `
-    html, body { font-family: 'Noto Sans Devanagari', 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; overflow-x: hidden; max-width: 100%; }
+    html, body { font-family: 'Noto Sans Devanagari', 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; overflow-x: clip; max-width: 100%; }
     @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     .fade-in-up { animation: fadeSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) both; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -88,7 +88,6 @@ const fbDb = firebase.database();
 
 function renderAdminShell(activeKey, pageTitle) {
   const navItems = [
-    { key: 'dashboard', href: 'admin.html', icon: '📊', label: 'डॅशबोर्ड' },
     { key: 'temples', href: 'admin-temples.html', icon: '🛕', label: 'मंदिरे' },
     { key: 'header', href: 'admin-header.html', icon: '🎨', label: 'हेडर व फुटर' },
     { key: 'player', href: 'admin-player.html', icon: '📺', label: 'प्लेयर' },
@@ -101,7 +100,7 @@ function renderAdminShell(activeKey, pageTitle) {
   if (!header) return;
 
   const pillsHtml = activeKey === 'dashboard' ? '' : `
-    <nav class="bg-white/95 backdrop-blur border-b border-slate-200 sticky top-[56px] z-30">
+    <nav class="bg-white/95 backdrop-blur border-b border-slate-200 sticky top-[60px] z-30">
       <div class="max-w-7xl mx-auto px-3 py-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
         ${navItems.map(item => {
           const isAct = item.key === activeKey;
@@ -116,7 +115,7 @@ function renderAdminShell(activeKey, pageTitle) {
   const dashIconSvg = `<svg class="w-5 h-5 text-amber-300 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>`;
 
   header.outerHTML = `
-    <header class="bg-gradient-to-r from-[#04283d] via-[#05344E] to-[#0a4d70] text-white shadow-md sticky top-0 z-40">
+    <header class="bg-gradient-to-r from-[#04283d] via-[#05344E] to-[#0a4d70] text-white shadow-md sticky top-0 z-50">
       <div class="max-w-7xl mx-auto px-3 sm:px-5 h-15 py-2.5 flex items-center justify-between gap-2">
         <div class="flex items-center gap-2.5 min-w-0">
           ${activeKey !== 'dashboard'
@@ -140,16 +139,7 @@ function renderAdminShell(activeKey, pageTitle) {
     ${pillsHtml}
   `;
 
-  if (activeKey !== 'dashboard') {
-    const mainEl = document.querySelector('main');
-    if (mainEl && !document.getElementById('bottomDashBar')) {
-      const bar = document.createElement('div');
-      bar.id = 'bottomDashBar';
-      bar.className = 'mt-6 pt-4 border-t border-slate-200 flex justify-center';
-      bar.innerHTML = '<a href="admin.html" class="px-5 py-2.5 rounded-xl bg-white border border-slate-300 hover:border-[#05344E] text-[#05344E] text-xs sm:text-sm font-extrabold shadow-sm transition flex items-center gap-2"><span>←</span><span>अ‍ॅडमिन डॅशबोर्डवर परत जा</span></a>';
-      mainEl.appendChild(bar);
-    }
-  }
+
 }
 
 function populateFontSelect(id, previewId = null) {

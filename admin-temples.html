@@ -25,7 +25,7 @@
         <div class="flex items-center justify-between gap-2">
           <div>
             <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">➕ नवीन मंदिर जोडा</h2>
-            <p class="text-xs text-slate-500">मंदिराचे नाव, लाईव्ह स्ट्रीम लिंक (.m3u8) व फोटो अपलोड करा</p>
+            <p class="text-xs text-slate-500">मंदिराचे नाव, लाईव्ह स्ट्रीम प्रकार, लिंक व फोटो अपलोड करा</p>
           </div>
           <button id="toggleAddBtn" type="button" class="px-3.5 py-2 rounded-xl bg-[#05344E] text-white text-xs font-bold cursor-pointer hover:opacity-90 transition">+ नवीन फॉर्म</button>
         </div>
@@ -36,12 +36,24 @@
             <input id="newTempleName" type="text" required placeholder="उदा. श्री सिद्धेश्वर मंदिर" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-[#05344E]" />
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">लाईव्ह स्ट्रीम लिंक (.m3u8 / URL) *</label>
+            <label class="block text-xs font-bold text-slate-700 mb-1">स्ट्रीम प्रकार</label>
+            <select id="newTempleType" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm bg-white focus:outline-none focus:border-[#05344E]">
+              <option value="hls">HLS (.m3u8)</option>
+              <option value="youtube">YouTube Live</option>
+              <option value="facebook">Facebook Live / Video</option>
+              <option value="iframe">Iframe / Embed URL</option>
+            </select>
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-bold text-slate-700 mb-1">लाईव्ह स्ट्रीम लिंक (.m3u8 / YouTube / Facebook / URL) *</label>
             <input id="newTempleUrl" type="url" required placeholder="https://.../live.m3u8" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-[#05344E]" />
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">मंदिराचा फोटो</label>
-            <input id="newTempleImgFile" type="file" accept="image/*" class="w-full text-xs file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-slate-100 file:font-bold file:text-slate-700 cursor-pointer" />
+            <label class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-sky-300 bg-gradient-to-br from-sky-50 to-indigo-50 hover:border-[#05344E] hover:from-sky-100/70 hover:to-indigo-100/70 p-2.5 text-center cursor-pointer transition">
+              <span id="newTempleImgLabel" class="text-xs font-extrabold text-[#05344E]">📷 येथून फोटो निवडा / अपलोड करा</span>
+              <input id="newTempleImgFile" type="file" accept="image/*" class="hidden" />
+            </label>
           </div>
           <div class="flex items-center justify-between bg-slate-50 rounded-xl px-3.5 py-2.5 border border-slate-200">
             <span class="text-xs font-bold text-slate-700">प्रमुख (Featured) मंदिर म्हणून दाखवा</span>
@@ -55,9 +67,9 @@
 
       <!-- मंदिरांची यादी -->
       <section class="space-y-3">
-        <div class="flex items-center justify-between">
+        <div class="flex flex-wrap items-center justify-between gap-2">
           <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🛕 सर्व मंदिरे (<span id="templeCountLabel">0</span>)</h2>
-          <span class="text-xs text-slate-500">बदल केल्यावर प्रत्येक कार्डवर 'सेव्ह' दाबा</span>
+          <span class="text-xs text-slate-500">नाव सुरक्षित आहे — बदलण्यासाठी '✏️ नाव बदला' दाबा; क्रम बदलण्यासाठी स्लायडर सरकवा</span>
         </div>
         <div id="templesList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
       </section>
@@ -70,43 +82,131 @@
   <script>
     renderAdminShell('temples', 'मंदिरे व्यवस्थापन');
 
+    const DEFAULT_TEMPLES = [
+      { id: 'pandharpur', shortTitle: 'श्री विठ्ठल रुक्मिणी, पंढरपूर', buttonTitle: 'विठ्ठल रुक्मिणी मंदिर पंढरपूर Live Darshan', streamType: 'hls', streamUrl: 'https://cdn1.itekrfid.com/hls/local/index.m3u8', featured: true, order: 0 },
+      { id: 'kolhapur', shortTitle: 'श्री अंबाबाई महालक्ष्मी, कोल्हापूर', buttonTitle: 'श्री करवीर निवासिनी अंबाबाई महालक्ष्मी कोल्हापूर Live Darshan', streamType: 'hls', streamUrl: 'https://s122.ipcamlive.com/streams/7au3lhnveuabdrh7x/stream.m3u8', featured: false, order: 1 },
+      { id: 'tuljapur', shortTitle: 'श्री तुळजाभवानी, तुळजापूर', buttonTitle: 'श्री तुळजाभवानी मंदिर तुळजापूर Live Darshan', streamType: 'hls', streamUrl: 'https://cdndp.cdn.jio.com/Tulja_Bhavani/Tulja_Bhavani_600.m3u8?cdt=ld9mx1QCVFS8sqls8x1rug', featured: false, order: 2 },
+      { id: 'shirdi', shortTitle: 'श्री साईबाबा, शिर्डी', buttonTitle: 'शिर्डी साईबाबा Live Darshan', streamType: 'hls', streamUrl: 'https://cam.pc.cdn.bitgravity.com/cam/live/feed008/Saibaba/temple/feed/playlist_108k.m3u8', featured: false, order: 3 },
+      { id: 'dagdusheth', shortTitle: 'दगडूशेठ गणपती, पुणे', buttonTitle: 'दगडूशेठ गणपती पुणे Live Darshan', streamType: 'hls', streamUrl: 'https://dagdusheth2.shemaroo.com/Dagdusheth_Ganpati/Stream1/chunklist_w1236105352.m3u8', featured: false, order: 4 },
+      { id: 'siddhivinayak', shortTitle: 'श्री सिद्धिविनायक, मुंबई', buttonTitle: 'श्री सिद्धिविनायक मंदिर मुंबई Live Darshan', streamType: 'auto', streamUrl: '', featured: false, order: 5 }
+    ];
+
+    let currentTemplesCount = DEFAULT_TEMPLES.length;
+
     document.getElementById('toggleAddBtn').addEventListener('click', () => {
       document.getElementById('addTempleForm').classList.toggle('hidden');
+    });
+
+    document.getElementById('newTempleImgFile').addEventListener('change', (e) => {
+      const f = e.target.files[0];
+      if (f) document.getElementById('newTempleImgLabel').textContent = '✅ निवडलेला फोटो: ' + f.name;
     });
 
     function esc(s) {
       return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
-    function renderTemples(data) {
-      const container = document.getElementById('templesList');
-      const entries = Object.entries(data || {})
-        .filter(([, t]) => t && !t.deleted)
-        .sort((a, b) => (Number(a[1].order) || 999) - (Number(b[1].order) || 999));
+    function mergeTemples(fbData) {
+      const data = fbData || {};
+      const merged = [];
+      const seen = new Set();
 
-      document.getElementById('templeCountLabel').textContent = entries.length;
-      if (!entries.length) {
+      DEFAULT_TEMPLES.forEach((def, idx) => {
+        const fb = data[def.id] || {};
+        if (fb.deleted) return;
+        seen.add(def.id);
+        merged.push({
+          id: def.id,
+          shortTitle: fb.shortTitle || fb.name || def.shortTitle,
+          buttonTitle: fb.buttonTitle || def.buttonTitle,
+          streamType: fb.streamType || def.streamType,
+          streamUrl: (typeof fb.streamUrl === 'string') ? fb.streamUrl : def.streamUrl,
+          image: fb.image || '',
+          featured: (typeof fb.featured === 'boolean') ? fb.featured : def.featured,
+          hidden: !!fb.hidden,
+          order: (fb.order !== undefined && fb.order !== null) ? Number(fb.order) : idx
+        });
+      });
+
+      Object.entries(data).forEach(([id, t]) => {
+        if (seen.has(id) || !t || t.deleted) return;
+        merged.push({
+          id,
+          shortTitle: t.shortTitle || t.name || t.buttonTitle || id,
+          buttonTitle: t.buttonTitle || ((t.shortTitle || t.name || id) + ' Live Darshan'),
+          streamType: t.streamType || 'hls',
+          streamUrl: t.streamUrl || '',
+          image: t.image || '',
+          featured: !!t.featured,
+          hidden: !!t.hidden,
+          order: (t.order !== undefined && t.order !== null) ? Number(t.order) : 999
+        });
+      });
+
+      merged.sort((a, b) => a.order - b.order);
+      return merged;
+    }
+
+    function renderTemples(fbData) {
+      const container = document.getElementById('templesList');
+      const list = mergeTemples(fbData);
+      const total = list.length;
+      currentTemplesCount = total;
+      document.getElementById('templeCountLabel').textContent = total;
+
+      if (!total) {
         container.innerHTML = '<div class="col-span-full p-6 bg-white rounded-2xl border border-slate-200 text-center text-sm text-slate-500">अद्याप कोणतेही मंदिर जोडलेले नाही.</div>';
         return;
       }
 
-      container.innerHTML = entries.map(([id, t], idx) => `
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 space-y-3" data-temple-id="${esc(id)}">
-          <div class="flex items-center gap-3">
-            <img src="${esc(t.image || '')}" alt="" class="w-16 h-16 rounded-xl object-cover bg-slate-100 border border-slate-200 shrink-0" onerror="this.style.opacity='0.3'" />
+      container.innerHTML = list.map((t, idx) => {
+        const pos = idx + 1;
+        const stType = t.streamType || 'hls';
+        return `
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 space-y-3" data-temple-id="${esc(t.id)}" data-orig-name="${esc(t.shortTitle)}">
+          <div class="flex items-start gap-3">
+            ${t.image
+              ? `<img src="${esc(t.image)}" alt="" class="w-16 h-16 rounded-xl object-cover bg-slate-100 border border-slate-200 shrink-0" />`
+              : `<div class="w-16 h-16 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-2xl shrink-0">🛕</div>`
+            }
             <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-1.5">
-                <span class="px-2 py-0.5 rounded-full bg-slate-100 text-[10px] font-bold text-slate-600">#${idx + 1}</span>
-                ${t.featured ? '<span class="px-2 py-0.5 rounded-full bg-amber-100 text-[10px] font-bold text-amber-800">⭐ प्रमुख</span>' : ''}
-                ${t.hidden ? '<span class="px-2 py-0.5 rounded-full bg-rose-100 text-[10px] font-bold text-rose-700">लपवलेले</span>' : ''}
+              <div class="flex items-center justify-between gap-2 flex-wrap">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="px-2 py-0.5 rounded-full bg-[#05344E]/10 text-[11px] font-extrabold text-[#05344E]">#${pos}</span>
+                  ${t.featured ? '<span class="px-2 py-0.5 rounded-full bg-amber-100 text-[10px] font-bold text-amber-800">⭐ प्रमुख</span>' : ''}
+                  ${t.hidden ? '<span class="px-2 py-0.5 rounded-full bg-rose-100 text-[10px] font-bold text-rose-700">लपवलेले</span>' : ''}
+                </div>
+                <button type="button" class="t-edit-name-btn px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-[11px] font-bold text-[#05344E] cursor-pointer">✏️ नाव बदला</button>
               </div>
-              <input type="text" class="t-name w-full mt-1.5 px-3 py-1.5 rounded-xl border border-slate-300 text-sm font-bold text-[#05344E]" value="${esc(t.name)}" placeholder="मंदिराचे नाव" />
+              <h3 class="t-name-heading font-extrabold text-sm sm:text-base text-[#05344E] mt-1.5 leading-snug">${esc(t.shortTitle)}</h3>
+              <input type="text" class="t-name hidden w-full mt-1.5 px-3 py-1.5 rounded-xl border border-slate-300 text-sm font-bold text-[#05344E]" value="${esc(t.shortTitle)}" placeholder="मंदिराचे नाव" />
             </div>
           </div>
 
-          <div>
-            <label class="block text-[11px] font-bold text-slate-500 mb-1">लाईव्ह स्ट्रीम लिंक (.m3u8 / URL)</label>
-            <input type="url" class="t-url w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-mono" value="${esc(t.streamUrl)}" placeholder="https://..." />
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-500 mb-1">प्रकार</label>
+              <select class="t-type w-full px-2.5 py-2 rounded-xl border border-slate-300 text-xs bg-white font-bold">
+                <option value="hls" ${stType === 'hls' ? 'selected' : ''}>HLS (.m3u8)</option>
+                <option value="youtube" ${stType === 'youtube' ? 'selected' : ''}>YouTube</option>
+                <option value="facebook" ${stType === 'facebook' ? 'selected' : ''}>Facebook</option>
+                <option value="iframe" ${stType === 'iframe' ? 'selected' : ''}>Iframe</option>
+                <option value="auto" ${stType === 'auto' ? 'selected' : ''}>Auto</option>
+              </select>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-[11px] font-bold text-slate-500 mb-1">लाईव्ह स्ट्रीम लिंक (.m3u8 / URL)</label>
+              <input type="url" class="t-url w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-mono" value="${esc(t.streamUrl)}" placeholder="https://..." />
+            </div>
+          </div>
+
+          <!-- टच-फ्रेंडली क्रम स्लायडर -->
+          <div class="bg-slate-50 rounded-xl border border-slate-200 px-3 py-2.5 space-y-1.5">
+            <div class="flex items-center justify-between text-xs font-bold text-slate-700">
+              <span>↕️ क्रम ठरवा (स्लायडर सरकवा)</span>
+              <span class="t-order-badge px-2.5 py-0.5 rounded-full bg-[#05344E] text-white text-[11px] font-extrabold">क्रम: #${pos}</span>
+            </div>
+            <input type="range" min="1" max="${Math.max(1, total)}" step="1" value="${pos}" class="t-order-slider w-full accent-[#05344E] cursor-pointer" />
           </div>
 
           <div class="grid grid-cols-2 gap-2 text-xs">
@@ -120,34 +220,76 @@
             </label>
           </div>
 
-          <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100">
-            <label class="text-xs font-bold text-[#05344E] cursor-pointer hover:underline">
-              📷 फोटो बदला
+          <div class="pt-2 border-t border-slate-100 space-y-2.5">
+            <label class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-amber-300 bg-gradient-to-br from-amber-50 to-orange-50 hover:border-amber-500 p-2 text-center cursor-pointer transition">
+              <span class="text-xs font-extrabold text-amber-900">📷 फोटो निवडा / बदला</span>
               <input type="file" accept="image/*" class="t-file hidden" />
             </label>
-            <div class="flex items-center gap-2">
-              <input type="number" class="t-order w-14 px-2 py-1.5 rounded-lg border border-slate-300 text-xs text-center font-bold" value="${Number(t.order) || (idx + 1)}" title="क्रम" />
-              <button type="button" class="t-save px-3.5 py-1.5 rounded-xl bg-[#05344E] hover:bg-[#04273b] text-white text-xs font-bold cursor-pointer transition">💾 सेव्ह</button>
-              <button type="button" class="t-del px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold cursor-pointer transition">🗑️</button>
+            <div class="flex items-center justify-end gap-2">
+              <button type="button" class="t-save px-4 py-2 rounded-xl bg-[#05344E] hover:bg-[#04273b] text-white text-xs font-bold cursor-pointer transition">💾 सेव्ह करा</button>
+              <button type="button" class="t-del px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold cursor-pointer transition">🗑️</button>
             </div>
           </div>
         </div>
-      `).join('');
+      `;
+      }).join('');
 
       container.querySelectorAll('[data-temple-id]').forEach((card) => {
         const id = card.dataset.templeId;
+        const editBtn = card.querySelector('.t-edit-name-btn');
+        const heading = card.querySelector('.t-name-heading');
+        const nameInp = card.querySelector('.t-name');
+        const slider = card.querySelector('.t-order-slider');
+        const badge = card.querySelector('.t-order-badge');
+
+        editBtn.addEventListener('click', () => {
+          const isHidden = nameInp.classList.contains('hidden');
+          nameInp.classList.toggle('hidden', !isHidden);
+          heading.classList.toggle('hidden', isHidden);
+          editBtn.textContent = isHidden ? '✅ नाव पक्के करा' : '✏️ नाव बदला';
+          if (isHidden) nameInp.focus();
+          else heading.textContent = nameInp.value.trim() || card.dataset.origName;
+        });
+
+        slider.addEventListener('input', () => {
+          badge.textContent = 'क्रम: #' + slider.value;
+        });
+
+        const tFile = card.querySelector('.t-file');
+        if (tFile) {
+          tFile.addEventListener('change', (e) => {
+            const f = e.target.files[0];
+            if (!f) return;
+            const r = new FileReader();
+            r.onload = (ev) => {
+              let im = card.querySelector('img');
+              if (!im) {
+                im = document.createElement('img');
+                im.className = 'w-16 h-16 rounded-xl object-cover bg-slate-100 border border-slate-200 shrink-0';
+                card.querySelector('.flex.items-start').replaceChild(im, card.querySelector('.flex.items-start > div:first-child'));
+              }
+              im.src = ev.target.result;
+            };
+            r.readAsDataURL(f);
+          });
+        }
+
         card.querySelector('.t-save').addEventListener('click', async () => {
+          const finalName = nameInp.value.trim() || card.dataset.origName;
+          const orderNum = Math.max(0, Number(slider.value) - 1);
           const payload = {
-            name: card.querySelector('.t-name').value.trim(),
+            shortTitle: finalName,
+            buttonTitle: finalName + ' Live Darshan',
+            name: finalName,
+            streamType: card.querySelector('.t-type').value,
             streamUrl: card.querySelector('.t-url').value.trim(),
             featured: card.querySelector('.t-feat').checked,
             hidden: card.querySelector('.t-hide').checked,
-            order: Number(card.querySelector('.t-order').value) || 1
+            order: orderNum
           };
-          const fileInput = card.querySelector('.t-file');
           try {
-            if (fileInput.files[0]) {
-              payload.image = await compressImageFile(fileInput.files[0], 640, 480, 0.82);
+            if (tFile && tFile.files[0]) {
+              payload.image = await compressImageFile(tFile.files[0], 640, 480, 0.82);
             }
             await fbDb.ref('temples/' + id).update(payload);
             showToast('✅ मंदिर अपडेट झाले!');
@@ -159,7 +301,7 @@
         card.querySelector('.t-del').addEventListener('click', async () => {
           if (!confirm('हे मंदिर कायमचे काढून टाकायचे का?')) return;
           try {
-            await fbDb.ref('temples/' + id).remove();
+            await fbDb.ref('temples/' + id).update({ deleted: true });
             showToast('🗑️ मंदिर काढले');
           } catch (err) {
             showToast('❌ त्रुटी: ' + err.message, true);
@@ -175,16 +317,28 @@
     document.getElementById('addTempleForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const name = document.getElementById('newTempleName').value.trim();
+      const streamType = document.getElementById('newTempleType').value;
       const streamUrl = document.getElementById('newTempleUrl').value.trim();
       const featured = document.getElementById('newTempleFeatured').checked;
       const file = document.getElementById('newTempleImgFile').files[0];
       if (!name || !streamUrl) return;
       try {
-        const newId = 'temple_' + Date.now();
-        const payload = { id: newId, name, streamUrl, featured, hidden: false, order: 99 };
+        const newId = 'custom_' + Date.now();
+        const payload = {
+          id: newId,
+          shortTitle: name,
+          buttonTitle: name + ' Live Darshan',
+          name,
+          streamType,
+          streamUrl,
+          featured,
+          hidden: false,
+          order: currentTemplesCount
+        };
         if (file) payload.image = await compressImageFile(file, 640, 480, 0.82);
         await fbDb.ref('temples/' + newId).set(payload);
         e.target.reset();
+        document.getElementById('newTempleImgLabel').textContent = '📷 येथून फोटो निवडा / अपलोड करा';
         e.target.classList.add('hidden');
         showToast('✅ नवीन मंदिर जोडले!');
       } catch (err) {

@@ -71,7 +71,7 @@ const fbDb = firebase.database();
   const st = document.createElement('style');
   st.id = 'modernAdminCss';
   st.textContent = `
-    body { font-family: 'Noto Sans Devanagari', 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+    html, body { font-family: 'Noto Sans Devanagari', 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; overflow-x: hidden; max-width: 100%; }
     @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     .fade-in-up { animation: fadeSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) both; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -111,24 +111,28 @@ function renderAdminShell(activeKey, pageTitle) {
     </nav>
   `;
 
+  const homeIconSvg = `<svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1V9.5"/></svg>`;
+  const logoutIconSvg = `<svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>`;
+  const dashIconSvg = `<svg class="w-5 h-5 text-amber-300 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>`;
+
   header.outerHTML = `
     <header class="bg-gradient-to-r from-[#04283d] via-[#05344E] to-[#0a4d70] text-white shadow-md sticky top-0 z-40">
-      <div class="max-w-5xl mx-auto px-3 sm:px-5 h-14 flex items-center justify-between gap-2">
+      <div class="max-w-5xl mx-auto px-3 sm:px-5 h-15 py-2.5 flex items-center justify-between gap-2">
         <div class="flex items-center gap-2.5 min-w-0">
           ${activeKey !== 'dashboard'
-            ? `<a href="admin.html" class="px-3 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-extrabold transition flex items-center gap-1 shrink-0 shadow-sm" title="डॅशबोर्डवर जा"><span>←</span><span>डॅशबोर्ड</span></a>`
-            : `<div class="w-8 h-8 rounded-xl bg-amber-400/20 border border-amber-300/40 flex items-center justify-center text-base shrink-0">🛕</div>`
+            ? `<a href="admin.html" class="px-2.5 sm:px-3 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs sm:text-sm font-extrabold transition flex items-center gap-1 shrink-0 shadow-sm" title="डॅशबोर्डवर जा"><span>←</span><span>डॅशबोर्ड</span></a>`
+            : `<div class="w-9 h-9 rounded-xl bg-amber-400/15 border border-amber-300/35 flex items-center justify-center shrink-0">${dashIconSvg}</div>`
           }
           <div class="min-w-0">
-            <h1 class="text-sm sm:text-base font-extrabold tracking-tight truncate">${pageTitle}</h1>
+            <h1 class="text-base sm:text-xl font-extrabold tracking-tight truncate leading-tight">${pageTitle}</h1>
           </div>
         </div>
-        <div class="flex items-center gap-2 shrink-0">
-          <a href="index.html" target="_blank" class="px-2.5 sm:px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-xs font-bold transition flex items-center gap-1">
-            <span>🏠</span><span class="hidden sm:inline">मुख्य पेज</span>
+        <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <a href="index.html" target="_blank" class="px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs sm:text-sm font-bold transition flex items-center gap-1.5 whitespace-nowrap" title="मुख्य पेज">
+            ${homeIconSvg}<span>मुख्य पेज</span>
           </a>
-          <button id="adminLogoutBtn" type="button" class="hidden px-2.5 sm:px-3 py-1.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-xs font-bold cursor-pointer transition flex items-center gap-1 shadow-sm">
-            <span>🚪</span><span class="hidden sm:inline">लॉगआऊट</span>
+          <button id="adminLogoutBtn" type="button" class="hidden px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-rose-500 hover:bg-rose-600 text-white text-xs sm:text-sm font-bold cursor-pointer transition flex items-center gap-1.5 shadow-sm whitespace-nowrap" title="लॉगआऊट">
+            ${logoutIconSvg}<span>लॉगआऊट</span>
           </button>
         </div>
       </div>

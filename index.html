@@ -188,8 +188,14 @@
     <section id="mainAdSliderSection" class="hidden mb-5 sm:mb-7">
       <div class="relative rounded-2xl overflow-hidden border-2 border-amber-400/70 bg-white shadow-md">
         <span class="absolute top-2 left-2 z-10 px-2 py-0.5 rounded-md bg-black/70 text-white text-[10px] font-bold tracking-wide pointer-events-none">प्रायोजक जाहिरात</span>
-        <div class="relative w-full h-36 sm:h-48 bg-neutral-100 overflow-hidden">
-          <div id="mainAdTrack" class="flex w-full h-full transition-transform duration-700 ease-in-out will-change-transform"></div>
+        <div id="mainAdViewport" class="relative w-full h-36 sm:h-48 bg-neutral-100 overflow-hidden select-none touch-pan-y">
+          <div id="mainAdTrack" class="flex w-full h-full transition-transform duration-500 ease-out will-change-transform"></div>
+          <button id="mainAdPrevBtn" type="button" aria-label="मागील जाहिरात" class="hidden absolute left-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/55 hover:bg-black/80 text-white flex items-center justify-center shadow-md backdrop-blur-sm transition cursor-pointer">
+            <svg class="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button id="mainAdNextBtn" type="button" aria-label="पुढील जाहिरात" class="hidden absolute right-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/55 hover:bg-black/80 text-white flex items-center justify-center shadow-md backdrop-blur-sm transition cursor-pointer">
+            <svg class="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
         </div>
         <div id="mainAdDots" class="flex items-center justify-center gap-1.5 py-1.5 bg-neutral-100"></div>
       </div>
@@ -3041,8 +3047,13 @@
         el.mainAdTrack.appendChild(a);
       });
 
+      const prevBtn = document.getElementById('mainAdPrevBtn');
+      const nextBtn = document.getElementById('mainAdNextBtn');
+      const viewport = document.getElementById('mainAdViewport');
+
       const showSlide = (i) => {
-        const activeIdx = i % slides.length;
+        const activeIdx = ((i % slides.length) + slides.length) % slides.length;
+        bannerSlideIdx = activeIdx;
         el.mainAdTrack.style.transform = `translateX(-${activeIdx * 100}%)`;
         el.mainAdDots.innerHTML = '';
         if (slides.length > 1) {
@@ -3051,21 +3062,55 @@
             dot.type = 'button';
             dot.className = `h-2 rounded-full transition-all duration-300 cursor-pointer ${dIdx === activeIdx ? 'w-5 bg-black' : 'w-2 bg-neutral-400'}`;
             dot.addEventListener('click', () => {
-              bannerSlideIdx = dIdx;
-              showSlide(bannerSlideIdx);
+              showSlide(dIdx);
+              restartAutoSlide();
             });
             el.mainAdDots.appendChild(dot);
           });
         }
       };
 
-      showSlide(0);
-      if (slides.length > 1) {
-        bannerSlideTimer = setInterval(() => {
-          bannerSlideIdx = (bannerSlideIdx + 1) % slides.length;
-          showSlide(bannerSlideIdx);
-        }, 4000);
+      const restartAutoSlide = () => {
+        if (bannerSlideTimer) clearInterval(bannerSlideTimer);
+        if (slides.length > 1) {
+          bannerSlideTimer = setInterval(() => {
+            showSlide(bannerSlideIdx + 1);
+          }, 4000);
+        }
+      };
+
+      if (prevBtn && nextBtn) {
+        prevBtn.classList.toggle('hidden', slides.length <= 1);
+        nextBtn.classList.toggle('hidden', slides.length <= 1);
+        prevBtn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); showSlide(bannerSlideIdx - 1); restartAutoSlide(); };
+        nextBtn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); showSlide(bannerSlideIdx + 1); restartAutoSlide(); };
       }
+
+      if (viewport && !viewport.dataset.swipeBound) {
+        viewport.dataset.swipeBound = '1';
+        let startX = 0, startY = 0, swiped = false;
+        viewport.addEventListener('touchstart', (e) => {
+          startX = e.touches[0].clientX;
+          startY = e.touches[0].clientY;
+          swiped = false;
+        }, { passive: true });
+        viewport.addEventListener('touchend', (e) => {
+          if (!slides || slides.length <= 1) return;
+          const dx = e.changedTouches[0].clientX - startX;
+          const dy = e.changedTouches[0].clientY - startY;
+          if (Math.abs(dx) > 35 && Math.abs(dx) > Math.abs(dy)) {
+            swiped = true;
+            showSlide(dx < 0 ? bannerSlideIdx + 1 : bannerSlideIdx - 1);
+            restartAutoSlide();
+          }
+        }, { passive: true });
+        viewport.addEventListener('click', (e) => {
+          if (swiped) { e.preventDefault(); swiped = false; }
+        }, true);
+      }
+
+      showSlide(0);
+      restartAutoSlide();
     }
 
     // Option 2: Pre-Roll Ad with dynamic countdown text

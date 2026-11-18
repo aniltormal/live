@@ -14,26 +14,29 @@
 <body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
   <header id="adminTopHeader"></header>
 
-  <main class="flex-1 max-w-4xl w-full mx-auto p-3 sm:p-6">
+  <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6">
     <div id="authGateMsg" class="p-6 rounded-2xl bg-white border border-slate-200 text-center text-sm font-semibold text-slate-600 shadow-sm">
       ⏳ अ‍ॅडमिन तपासणी सुरू आहे...
     </div>
 
     <div id="pageContent" class="hidden space-y-5 fade-in-up">
-      <!-- १. स्लायडिंग बॅनर जाहिरात (३ स्लॉट्स) -->
+      <!-- १. स्लायडिंग बॅनर जाहिरात -->
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
-        <div class="flex items-center justify-between gap-2 pb-2 border-b border-slate-100">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100">
           <div>
-            <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🖼️ १. मुख्य स्लायडिंग बॅनर (३ स्लॉट्स)</h2>
-            <p class="text-xs text-slate-500">मुख्य पेजवरील आपोआप सरकणारी ३ जाहिरात कार्ड्स</p>
+            <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🖼️ १. मुख्य स्लायडिंग बॅनर (<span id="slotCountBadge">3</span> स्लॉट्स)</h2>
+            <p class="text-xs text-slate-500">मुख्य पेजवरील आपोआप व हाताने सरकणारी जाहिरात कार्ड्स</p>
           </div>
-          <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
-            <span>चालू ठेवा</span>
-            <span class="toggle-pill"><input id="bannerEnabled" type="checkbox" /><span class="knob"></span></span>
-          </label>
+          <div class="flex items-center gap-3">
+            <button id="addBannerSlotBtn" type="button" class="px-3 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 border border-sky-200 text-[#05344E] text-xs font-extrabold cursor-pointer transition">➕ नवीन स्लॉट जोडा</button>
+            <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+              <span>चालू ठेवा</span>
+              <span class="toggle-pill"><input id="bannerEnabled" type="checkbox" /><span class="knob"></span></span>
+            </label>
+          </div>
         </div>
 
-        <div id="bannerSlotsContainer" class="grid grid-cols-1 md:grid-cols-3 gap-3.5"></div>
+        <div id="bannerSlotsContainer" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
       </section>
 
       <!-- २. प्री-रोल जाहिरात -->
@@ -63,8 +66,11 @@
             <input id="preRollText" type="text" placeholder="जाहिरात शीर्षक किंवा संदेश" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">प्री-रोल फोटो बदला</label>
-            <input id="preRollFile" type="file" accept="image/*" class="w-full text-xs file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-slate-100 file:font-bold file:text-slate-700 cursor-pointer" />
+            <label class="block text-xs font-bold text-slate-700 mb-1">प्री-रोल फोटो अपलोड</label>
+            <label class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-sky-300 bg-gradient-to-br from-sky-50 to-indigo-50 hover:border-[#05344E] p-3 text-center cursor-pointer transition">
+              <span class="text-xs font-extrabold text-[#05344E]">📷 येथून फोटो निवडा / बदला</span>
+              <input id="preRollFile" type="file" accept="image/*" class="hidden" />
+            </label>
           </div>
         </div>
         <div id="preRollPreviewWrap" class="hidden">
@@ -107,8 +113,11 @@
             <input id="splashText" type="text" placeholder="विशेष सूचना किंवा जाहिरात" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
           </div>
           <div class="sm:col-span-2">
-            <label class="block text-xs font-bold text-slate-700 mb-1">स्प्लॅश फोटो बदला</label>
-            <input id="splashFile" type="file" accept="image/*" class="w-full text-xs file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:bg-slate-100 file:font-bold file:text-slate-700 cursor-pointer" />
+            <label class="block text-xs font-bold text-slate-700 mb-1">स्प्लॅश फोटो अपलोड</label>
+            <label class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-emerald-300 bg-gradient-to-br from-emerald-50 to-teal-50 hover:border-emerald-600 p-3 text-center cursor-pointer transition">
+              <span class="text-xs font-extrabold text-emerald-900">📷 येथून पॉपअप फोटो निवडा / बदला</span>
+              <input id="splashFile" type="file" accept="image/*" class="hidden" />
+            </label>
           </div>
         </div>
         <div id="splashPreviewWrap" class="hidden">
@@ -129,44 +138,123 @@
     renderAdminShell('ads', 'जाहिरात नियंत्रण');
 
     let currentAds = { bannerSlides: [{}, {}, {}] };
+    const slotPendingFiles = {};
 
     function esc(s) {
       return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
+    function syncSlotsFromDOM() {
+      const cards = document.querySelectorAll('#bannerSlotsContainer [data-slot]');
+      cards.forEach((card) => {
+        const idx = Number(card.dataset.slot);
+        if (!currentAds.bannerSlides[idx]) currentAds.bannerSlides[idx] = {};
+        currentAds.bannerSlides[idx].link = card.querySelector('.slot-link').value.trim();
+        currentAds.bannerSlides[idx].text = card.querySelector('.slot-text').value.trim();
+      });
+    }
+
     function renderSlots(slides) {
       const box = document.getElementById('bannerSlotsContainer');
-      const arr = [slides[0] || {}, slides[1] || {}, slides[2] || {}];
+      const arr = (Array.isArray(slides) && slides.length >= 3) ? slides : [slides[0] || {}, slides[1] || {}, slides[2] || {}];
+      currentAds.bannerSlides = arr;
+      document.getElementById('slotCountBadge').textContent = arr.length;
+
       box.innerHTML = arr.map((s, i) => `
-        <div class="rounded-2xl border border-slate-200 bg-slate-50/70 p-3.5 space-y-2.5" data-slot="${i}">
+        <div class="rounded-2xl border border-slate-200 bg-gradient-to-b from-slate-50 to-white p-3.5 space-y-2.5 shadow-sm" data-slot="${i}">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-extrabold text-[#05344E]">स्लॉट #${i + 1}</span>
-            <button type="button" class="slot-clear text-[11px] font-bold text-rose-600 hover:underline cursor-pointer">काढा</button>
+            <span class="px-2.5 py-0.5 rounded-full bg-[#05344E]/10 text-[#05344E] text-xs font-extrabold">स्लॉट #${i + 1}</span>
+            <div class="flex items-center gap-2">
+              <button type="button" class="slot-clear text-[11px] font-bold text-rose-600 hover:underline cursor-pointer">${arr.length > 3 ? 'स्लॉट काढा' : 'फोटो काढा'}</button>
+            </div>
           </div>
-          <div class="h-24 rounded-xl bg-white border border-slate-200 overflow-hidden flex items-center justify-center">
-            ${s.image ? `<img src="${esc(s.image)}" class="w-full h-full object-cover slot-img" />` : `<span class="text-xs text-slate-400 slot-empty">फोटो नाही</span>`}
+
+          <div class="h-28 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center">
+            ${s.image ? `<img src="${esc(s.image)}" class="w-full h-full object-cover slot-img" />` : `<span class="text-xs text-slate-400 font-semibold slot-empty">अजून फोटो नाही</span>`}
           </div>
-          <input type="file" accept="image/*" class="slot-file w-full text-[11px] file:mr-2 file:py-1.5 file:px-2.5 file:rounded-lg file:border-0 file:bg-white file:font-bold cursor-pointer" />
-          <input type="url" class="slot-link w-full px-2.5 py-2 rounded-xl border border-slate-300 text-xs bg-white" value="${esc(s.link)}" placeholder="लिंक (https://...)" />
-          <input type="text" class="slot-text w-full px-2.5 py-2 rounded-xl border border-slate-300 text-xs bg-white" value="${esc(s.text)}" placeholder="मजकूर (पर्यायी)" />
+
+          <label class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-sky-300 bg-gradient-to-br from-sky-50 to-indigo-50 hover:border-[#05344E] hover:from-sky-100/70 hover:to-indigo-100/70 p-2.5 text-center cursor-pointer transition">
+            <span class="text-xs font-extrabold text-[#05344E]">📷 फोटो निवडा / अपलोड करा</span>
+            <span class="text-[10px] text-slate-500 mt-0.5">JPG, PNG, WebP</span>
+            <input type="file" accept="image/*" class="slot-file hidden" />
+          </label>
+
+          <input type="url" class="slot-link w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white focus:outline-none focus:border-[#05344E]" value="${esc(s.link)}" placeholder="लिंक (https://...)" />
+          <input type="text" class="slot-text w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white focus:outline-none focus:border-[#05344E]" value="${esc(s.text)}" placeholder="मजकूर (पर्यायी)" />
         </div>
       `).join('');
 
-      box.querySelectorAll('.slot-clear').forEach((btn) => {
-        btn.addEventListener('click', (e) => {
+      box.querySelectorAll('.slot-file').forEach((inp) => {
+        inp.addEventListener('change', (e) => {
           const card = e.target.closest('[data-slot]');
           const idx = Number(card.dataset.slot);
-          currentAds.bannerSlides[idx] = { image: '', link: '', text: '' };
+          const file = e.target.files[0];
+          if (!file) return;
+          slotPendingFiles[idx] = file;
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            currentAds.bannerSlides[idx].image = ev.target.result;
+            syncSlotsFromDOM();
+            renderSlots(currentAds.bannerSlides);
+          };
+          reader.readAsDataURL(file);
+        });
+      });
+
+      box.querySelectorAll('.slot-clear').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          syncSlotsFromDOM();
+          const card = e.target.closest('[data-slot]');
+          const idx = Number(card.dataset.slot);
+          delete slotPendingFiles[idx];
+          if (currentAds.bannerSlides.length > 3) {
+            currentAds.bannerSlides.splice(idx, 1);
+          } else {
+            currentAds.bannerSlides[idx] = { image: '', link: '', text: '' };
+          }
           renderSlots(currentAds.bannerSlides);
         });
       });
     }
 
+    document.getElementById('addBannerSlotBtn').addEventListener('click', () => {
+      syncSlotsFromDOM();
+      currentAds.bannerSlides.push({ image: '', link: '', text: '' });
+      renderSlots(currentAds.bannerSlides);
+      showToast(`➕ स्लॉट #${currentAds.bannerSlides.length} जोडला आहे`);
+    });
+
+    // Live local preview for Pre-Roll & Splash
+    document.getElementById('preRollFile').addEventListener('change', (e) => {
+      const f = e.target.files[0];
+      if (!f) return;
+      const r = new FileReader();
+      r.onload = (ev) => {
+        document.getElementById('preRollPreview').src = ev.target.result;
+        document.getElementById('preRollPreviewWrap').classList.remove('hidden');
+      };
+      r.readAsDataURL(f);
+    });
+    document.getElementById('splashFile').addEventListener('change', (e) => {
+      const f = e.target.files[0];
+      if (!f) return;
+      const r = new FileReader();
+      r.onload = (ev) => {
+        document.getElementById('splashPreview').src = ev.target.result;
+        document.getElementById('splashPreviewWrap').classList.remove('hidden');
+      };
+      r.readAsDataURL(f);
+    });
+
     initAdminGuard(() => {
       fbDb.ref('siteConfig/ads').on('value', (snap) => {
         const ads = snap.val() || {};
         currentAds = Object.assign({ bannerSlides: [{}, {}, {}] }, ads);
-        if (!Array.isArray(currentAds.bannerSlides)) currentAds.bannerSlides = [{}, {}, {}];
+        if (!Array.isArray(currentAds.bannerSlides) || currentAds.bannerSlides.length < 3) {
+          const base = Array.isArray(currentAds.bannerSlides) ? currentAds.bannerSlides : [];
+          while (base.length < 3) base.push({});
+          currentAds.bannerSlides = base;
+        }
 
         document.getElementById('bannerEnabled').checked = !!ads.bannerEnabled;
         renderSlots(currentAds.bannerSlides);
@@ -194,17 +282,17 @@
 
     document.getElementById('saveAdsBtn').addEventListener('click', async () => {
       try {
+        syncSlotsFromDOM();
         const slides = [];
         const cards = document.querySelectorAll('#bannerSlotsContainer [data-slot]');
         for (let i = 0; i < cards.length; i++) {
-          const card = cards[i];
           const prev = (currentAds.bannerSlides && currentAds.bannerSlides[i]) || {};
-          const file = card.querySelector('.slot-file').files[0];
+          const file = slotPendingFiles[i];
           const img = file ? await compressImageFile(file, 900, 320, 0.82) : (prev.image || '');
           slides.push({
             image: img,
-            link: card.querySelector('.slot-link').value.trim(),
-            text: card.querySelector('.slot-text').value.trim()
+            link: cards[i].querySelector('.slot-link').value.trim(),
+            text: cards[i].querySelector('.slot-text').value.trim()
           });
         }
 

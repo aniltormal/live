@@ -76,11 +76,11 @@ const fbDb = firebase.database();
     .fade-in-up { animation: fadeSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) both; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    .toggle-pill { position: relative; display: inline-flex; align-items: center; width: 44px; height: 24px; border-radius: 9999px; background: #cbd5e1; transition: background .2s ease; cursor: pointer; flex-shrink: 0; }
-    .toggle-pill input { opacity: 0; width: 0; height: 0; position: absolute; }
-    .toggle-pill .knob { width: 18px; height: 18px; border-radius: 9999px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.25); transform: translateX(3px); transition: transform .2s ease; }
+    .toggle-pill { position: relative; display: inline-flex; align-items: center; width: 44px; height: 24px; border-radius: 9999px; flex-shrink: 0; cursor: pointer; }
+    .toggle-pill input { -webkit-appearance: none; appearance: none; position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; border-radius: 9999px; background: #cbd5e1; transition: background .2s ease; cursor: pointer; z-index: 1; }
+    .toggle-pill input:checked { background: #059669; }
+    .toggle-pill .knob { position: relative; z-index: 2; pointer-events: none; width: 18px; height: 18px; border-radius: 9999px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.28); transform: translateX(3px); transition: transform .2s ease; }
     .toggle-pill input:checked + .knob { transform: translateX(23px); }
-    .toggle-pill:has(input:checked) { background: #059669; }
     .hsv-popover { position: fixed; z-index: 9999; width: 236px; background: #fff; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 20px 40px rgba(15,23,42,0.22); padding: 12px; }
   `;
   document.head.appendChild(st);
@@ -102,7 +102,7 @@ function renderAdminShell(activeKey, pageTitle) {
 
   const pillsHtml = activeKey === 'dashboard' ? '' : `
     <nav class="bg-white/95 backdrop-blur border-b border-slate-200 sticky top-[56px] z-30">
-      <div class="max-w-5xl mx-auto px-3 py-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+      <div class="max-w-7xl mx-auto px-3 py-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
         ${navItems.map(item => {
           const isAct = item.key === activeKey;
           return `<a href="${item.href}" class="shrink-0 px-3 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 ${isAct ? 'bg-[#05344E] text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}"><span>${item.icon}</span><span>${item.label}</span></a>`;
@@ -117,7 +117,7 @@ function renderAdminShell(activeKey, pageTitle) {
 
   header.outerHTML = `
     <header class="bg-gradient-to-r from-[#04283d] via-[#05344E] to-[#0a4d70] text-white shadow-md sticky top-0 z-40">
-      <div class="max-w-5xl mx-auto px-3 sm:px-5 h-15 py-2.5 flex items-center justify-between gap-2">
+      <div class="max-w-7xl mx-auto px-3 sm:px-5 h-15 py-2.5 flex items-center justify-between gap-2">
         <div class="flex items-center gap-2.5 min-w-0">
           ${activeKey !== 'dashboard'
             ? `<a href="admin.html" class="px-2.5 sm:px-3 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs sm:text-sm font-extrabold transition flex items-center gap-1 shrink-0 shadow-sm" title="डॅशबोर्डवर जा"><span>←</span><span>डॅशबोर्ड</span></a>`

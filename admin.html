@@ -14,7 +14,7 @@
 <body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
   <header id="adminTopHeader"></header>
 
-  <main class="flex-1 max-w-5xl w-full mx-auto p-3 sm:p-6">
+  <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6">
     <div id="authGateMsg" class="p-6 rounded-2xl bg-white border border-slate-200 text-center text-sm font-semibold text-slate-600 shadow-sm">
       ⏳ अ‍ॅडमिन तपासणी सुरू आहे...
     </div>
@@ -53,99 +53,99 @@
 
         <!-- ३ लाईव्ह आकडेवारी कार्ड्स -->
         <div class="grid grid-cols-3 gap-2.5 sm:gap-4">
-          <div class="bg-white rounded-2xl border border-slate-200/80 p-2.5 sm:p-5 shadow-sm hover:shadow-md transition">
+          <div class="bg-gradient-to-br from-sky-50 via-white to-cyan-50/80 rounded-2xl border border-sky-200 p-2.5 sm:p-5 shadow-sm hover:shadow-md transition">
             <div class="flex items-center justify-between gap-1">
-              <span class="text-[11px] sm:text-xs font-bold text-slate-500">एकूण भाविक</span>
-              <span class="w-8 h-8 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center text-base shrink-0">👁️</span>
+              <span class="text-[11px] sm:text-xs font-bold text-sky-800">एकूण भाविक</span>
+              <span class="w-8 h-8 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center text-base shrink-0 shadow-xs">👁️</span>
             </div>
             <div id="kpiVisitors" class="text-lg sm:text-3xl font-extrabold text-[#05344E] mt-2 tabular-nums">—</div>
-            <div class="text-[10px] sm:text-xs text-slate-400 mt-0.5">लाईव्ह काऊंटर</div>
+            <div class="text-[10px] sm:text-xs text-sky-600/80 font-medium mt-0.5">लाईव्ह काऊंटर</div>
           </div>
 
-          <div class="bg-white rounded-2xl border border-slate-200/80 p-2.5 sm:p-5 shadow-sm hover:shadow-md transition">
+          <div class="bg-gradient-to-br from-amber-50 via-white to-orange-50/80 rounded-2xl border border-amber-200 p-2.5 sm:p-5 shadow-sm hover:shadow-md transition">
             <div class="flex items-center justify-between gap-1">
-              <span class="text-[11px] sm:text-xs font-bold text-slate-500">सक्रिय मंदिरे</span>
-              <span class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-base shrink-0">🛕</span>
+              <span class="text-[11px] sm:text-xs font-bold text-amber-800">सक्रिय मंदिरे</span>
+              <span class="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-base shrink-0 shadow-xs">🛕</span>
             </div>
             <div id="kpiTemples" class="text-lg sm:text-3xl font-extrabold text-[#05344E] mt-2 tabular-nums">—</div>
-            <div class="text-[10px] sm:text-xs text-slate-400 mt-0.5">एकूण यादी</div>
+            <div class="text-[10px] sm:text-xs text-amber-700/80 font-medium mt-0.5">एकूण यादी</div>
           </div>
 
-          <div class="bg-white rounded-2xl border border-slate-200/80 p-2.5 sm:p-5 shadow-sm hover:shadow-md transition">
+          <div class="bg-gradient-to-br from-emerald-50 via-white to-teal-50/80 rounded-2xl border border-emerald-200 p-2.5 sm:p-5 shadow-sm hover:shadow-md transition">
             <div class="flex items-center justify-between gap-1">
-              <span class="text-[11px] sm:text-xs font-bold text-slate-500">जाहिरात स्लॉट्स</span>
-              <span class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-base shrink-0">📢</span>
+              <span class="text-[11px] sm:text-xs font-bold text-emerald-800">जाहिरात स्लॉट्स</span>
+              <span class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-base shrink-0 shadow-xs">📢</span>
             </div>
             <div id="kpiAds" class="text-lg sm:text-3xl font-extrabold text-[#05344E] mt-2 tabular-nums">—</div>
-            <div class="text-[10px] sm:text-xs text-slate-400 mt-0.5">बॅनर + पॉपअप</div>
+            <div class="text-[10px] sm:text-xs text-emerald-700/80 font-medium mt-0.5">बॅनर + पॉपअप</div>
           </div>
         </div>
 
         <!-- ६ पूर्ण सेटिंग्ज कार्ड्स -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-          <a href="admin-temples.html" class="group bg-white rounded-2xl border border-slate-200 hover:border-[#05344E] hover:shadow-lg p-4 sm:p-5 shadow-sm transition-all duration-200 flex flex-col justify-between gap-3">
+          <a href="admin-temples.html" class="group bg-gradient-to-br from-amber-50 via-orange-50/50 to-white rounded-2xl border border-amber-200 hover:border-amber-400 hover:shadow-lg p-4 sm:p-5 shadow-sm transition-all duration-200 flex flex-col justify-between gap-3">
             <div class="flex items-start justify-between">
-              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-100 text-amber-600 flex items-center justify-center text-2xl group-hover:scale-105 transition">🛕</div>
-              <span class="px-2.5 py-1 rounded-full bg-slate-100 group-hover:bg-[#05344E] group-hover:text-white text-[11px] font-bold text-slate-600 transition">उघडा →</span>
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-100 to-orange-200/80 text-amber-700 flex items-center justify-center text-2xl group-hover:scale-105 transition shadow-xs">🛕</div>
+              <span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 group-hover:bg-amber-600 group-hover:text-white text-[11px] font-bold transition">उघडा →</span>
             </div>
             <div>
               <h3 class="font-extrabold text-base text-[#05344E]">मंदिरे व्यवस्थापन</h3>
-              <p class="text-xs text-slate-500 mt-1 leading-relaxed">नवीन मंदिर जोडा, लाईव्ह लिंक, फोटो, क्रम व दृश्यमानता बदला</p>
+              <p class="text-xs text-slate-600 mt-1 leading-relaxed">नवीन मंदिर जोडा, लाईव्ह लिंक, फोटो, क्रम व दृश्यमानता बदला</p>
             </div>
           </a>
 
-          <a href="admin-header.html" class="group bg-white rounded-2xl border border-slate-200 hover:border-[#05344E] hover:shadow-lg p-4 sm:p-5 shadow-sm transition-all duration-200 flex flex-col justify-between gap-3">
+          <a href="admin-header.html" class="group bg-gradient-to-br from-indigo-50 via-blue-50/50 to-white rounded-2xl border border-indigo-200 hover:border-indigo-400 hover:shadow-lg p-4 sm:p-5 shadow-sm transition-all duration-200 flex flex-col justify-between gap-3">
             <div class="flex items-start justify-between">
-              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-50 to-blue-100 text-indigo-600 flex items-center justify-center text-2xl group-hover:scale-105 transition">🎨</div>
-              <span class="px-2.5 py-1 rounded-full bg-slate-100 group-hover:bg-[#05344E] group-hover:text-white text-[11px] font-bold text-slate-600 transition">उघडा →</span>
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-100 to-blue-200/80 text-indigo-700 flex items-center justify-center text-2xl group-hover:scale-105 transition shadow-xs">🎨</div>
+              <span class="px-2.5 py-1 rounded-full bg-indigo-100 text-indigo-800 group-hover:bg-indigo-600 group-hover:text-white text-[11px] font-bold transition">उघडा →</span>
             </div>
             <div>
               <h3 class="font-extrabold text-base text-[#05344E]">हेडर, लोगो व फुटर</h3>
-              <p class="text-xs text-slate-500 mt-1 leading-relaxed">शीर्षक, ५० फॉन्ट्स, रंग, लोगो, बॅनर फोटो व फुटर मजकूर</p>
+              <p class="text-xs text-slate-600 mt-1 leading-relaxed">शीर्षक, ५० फॉन्ट्स, रंग, लोगो, बॅनर फोटो व फुटर मजकूर</p>
             </div>
           </a>
 
-          <a href="admin-player.html" class="group bg-white rounded-2xl border border-slate-200 hover:border-[#05344E] hover:shadow-lg p-4 sm:p-5 shadow-sm transition-all duration-200 flex flex-col justify-between gap-3">
+          <a href="admin-player.html" class="group bg-gradient-to-br from-sky-50 via-cyan-50/50 to-white rounded-2xl border border-sky-200 hover:border-sky-400 hover:shadow-lg p-4 sm:p-5 shadow-sm transition-all duration-200 flex flex-col justify-between gap-3">
             <div class="flex items-start justify-between">
-              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-50 to-cyan-100 text-sky-600 flex items-center justify-center text-2xl group-hover:scale-105 transition">📺</div>
-              <span class="px-2.5 py-1 rounded-full bg-slate-100 group-hover:bg-[#05344E] group-hover:text-white text-[11px] font-bold text-slate-600 transition">उघडा →</span>
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-100 to-cyan-200/80 text-sky-700 flex items-center justify-center text-2xl group-hover:scale-105 transition shadow-xs">📺</div>
+              <span class="px-2.5 py-1 rounded-full bg-sky-100 text-sky-800 group-hover:bg-sky-600 group-hover:text-white text-[11px] font-bold transition">उघडा →</span>
             </div>
             <div>
               <h3 class="font-extrabold text-base text-[#05344E]">प्लेयर, टिकर व वॉटरमार्क</h3>
-              <p class="text-xs text-slate-500 mt-1 leading-relaxed">चालणारी पट्टी, ऑफलाईन मेसेज, रंग व वॉटरमार्क पारदर्शकता</p>
+              <p class="text-xs text-slate-600 mt-1 leading-relaxed">चालणारी पट्टी, ऑफलाईन मेसेज, रंग व वॉटरमार्क पारदर्शकता</p>
             </div>
           </a>
 
-          <a href="admin-layout.html" class="group bg-white rounded-2xl border border-slate-200 hover:border-[#05344E] hover:shadow-lg p-4 sm:p-5 shadow-sm transition-all duration-200 flex flex-col justify-between gap-3">
+          <a href="admin-layout.html" class="group bg-gradient-to-br from-violet-50 via-purple-50/50 to-white rounded-2xl border border-violet-200 hover:border-violet-400 hover:shadow-lg p-4 sm:p-5 shadow-sm transition-all duration-200 flex flex-col justify-between gap-3">
             <div class="flex items-start justify-between">
-              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-50 to-purple-100 text-violet-600 flex items-center justify-center text-2xl group-hover:scale-105 transition">🧩</div>
-              <span class="px-2.5 py-1 rounded-full bg-slate-100 group-hover:bg-[#05344E] group-hover:text-white text-[11px] font-bold text-slate-600 transition">उघडा →</span>
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-100 to-purple-200/80 text-violet-700 flex items-center justify-center text-2xl group-hover:scale-105 transition shadow-xs">🧩</div>
+              <span class="px-2.5 py-1 rounded-full bg-violet-100 text-violet-800 group-hover:bg-violet-600 group-hover:text-white text-[11px] font-bold transition">उघडा →</span>
             </div>
             <div>
               <h3 class="font-extrabold text-base text-[#05344E]">लेआउट, कॉलम व बटणे</h3>
-              <p class="text-xs text-slate-500 mt-1 leading-relaxed">विभाग मथळे, १ ते ४ कॉलम, कार्ड उंची, बटण रंग व फॉन्ट्स</p>
+              <p class="text-xs text-slate-600 mt-1 leading-relaxed">विभाग मथळे, १ ते ४ कॉलम, कार्ड उंची, बटण रंग व फॉन्ट्स</p>
             </div>
           </a>
 
-          <a href="admin-ads.html" class="group bg-white rounded-2xl border border-slate-200 hover:border-[#05344E] hover:shadow-lg p-4 sm:p-5 shadow-sm transition-all duration-200 flex flex-col justify-between gap-3">
+          <a href="admin-ads.html" class="group bg-gradient-to-br from-emerald-50 via-teal-50/50 to-white rounded-2xl border border-emerald-200 hover:border-emerald-400 hover:shadow-lg p-4 sm:p-5 shadow-sm transition-all duration-200 flex flex-col justify-between gap-3">
             <div class="flex items-start justify-between">
-              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-50 to-green-100 text-emerald-600 flex items-center justify-center text-2xl group-hover:scale-105 transition">📢</div>
-              <span class="px-2.5 py-1 rounded-full bg-slate-100 group-hover:bg-[#05344E] group-hover:text-white text-[11px] font-bold text-slate-600 transition">उघडा →</span>
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-200/80 text-emerald-700 flex items-center justify-center text-2xl group-hover:scale-105 transition shadow-xs">📢</div>
+              <span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 group-hover:bg-emerald-600 group-hover:text-white text-[11px] font-bold transition">उघडा →</span>
             </div>
             <div>
               <h3 class="font-extrabold text-base text-[#05344E]">जाहिरात नियंत्रण</h3>
-              <p class="text-xs text-slate-500 mt-1 leading-relaxed">३ बॅनर स्लाईड्स, प्री-रोल व्हिडिओ जाहिरात व स्प्लॅश पॉपअप</p>
+              <p class="text-xs text-slate-600 mt-1 leading-relaxed">बॅनर स्लाईड्स, प्री-रोल व्हिडिओ जाहिरात व स्प्लॅश पॉपअप</p>
             </div>
           </a>
 
-          <a href="admin-visitors-links.html" class="group bg-white rounded-2xl border border-slate-200 hover:border-[#05344E] hover:shadow-lg p-4 sm:p-5 shadow-sm transition-all duration-200 flex flex-col justify-between gap-3">
+          <a href="admin-visitors-links.html" class="group bg-gradient-to-br from-rose-50 via-pink-50/50 to-white rounded-2xl border border-rose-200 hover:border-rose-400 hover:shadow-lg p-4 sm:p-5 shadow-sm transition-all duration-200 flex flex-col justify-between gap-3">
             <div class="flex items-start justify-between">
-              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-50 to-pink-100 text-rose-600 flex items-center justify-center text-2xl group-hover:scale-105 transition">🔗</div>
-              <span class="px-2.5 py-1 rounded-full bg-slate-100 group-hover:bg-[#05344E] group-hover:text-white text-[11px] font-bold text-slate-600 transition">उघडा →</span>
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-100 to-pink-200/80 text-rose-700 flex items-center justify-center text-2xl group-hover:scale-105 transition shadow-xs">🔗</div>
+              <span class="px-2.5 py-1 rounded-full bg-rose-100 text-rose-800 group-hover:bg-rose-600 group-hover:text-white text-[11px] font-bold transition">उघडा →</span>
             </div>
             <div>
               <h3 class="font-extrabold text-base text-[#05344E]">भाविक काऊंटर व १० लिंक्स</h3>
-              <p class="text-xs text-slate-500 mt-1 leading-relaxed">एकूण भाविक संख्या, फ्लॅश इफेक्ट व तळाच्या १० लिंक्स</p>
+              <p class="text-xs text-slate-600 mt-1 leading-relaxed">एकूण भाविक संख्या, फ्लॅश इफेक्ट व तळाच्या १० लिंक्स</p>
             </div>
           </a>
         </div>

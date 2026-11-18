@@ -1446,7 +1446,8 @@
         lg: 'relative w-full h-56 sm:h-64 overflow-hidden bg-white'
       };
 
-      TEMPLES_CONFIG.forEach((temple, idx) => {
+      const visibleTemples = TEMPLES_CONFIG.filter((t) => !t.hidden);
+      visibleTemples.forEach((temple, idx) => {
         const isFeaturedTop = idx === 0;
         const btn = document.createElement('button');
         btn.type = 'button';

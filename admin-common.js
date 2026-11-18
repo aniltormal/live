@@ -339,3 +339,151 @@ function initAdminGuard(onAuthed, isLoginPage = false) {
     }
   });
 }
+
+
+// Modern Custom Dropdown Menu for all <select> elements
+(function setupModernDropdowns() {
+  const st = document.createElement('style');
+  st.textContent = `
+    .mdrop-wrap { position: relative; width: 100%; }
+    .mdrop-btn { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 12px; border-radius: 12px; border: 1.5px solid #cbd5e1; background: linear-gradient(to bottom, #ffffff, #f8fafc); color: #0f172a; font-size: 13px; font-weight: 700; cursor: pointer; text-align: left; transition: all .18s ease; box-shadow: 0 1px 2px rgba(15,23,42,0.04); }
+    .mdrop-btn:hover { border-color: #05344E; background: #fff; }
+    .mdrop-btn.open { border-color: #05344E; box-shadow: 0 0 0 3px rgba(5,52,78,0.12); background: #fff; }
+    .mdrop-menu { position: fixed; z-index: 9998; background: #fff; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 20px 45px rgba(15,23,42,0.18); overflow: hidden; display: none; flex-direction: column; }
+    .mdrop-menu.open { display: flex; animation: fadeSlideUp .16s ease-out; }
+    .mdrop-search { padding: 8px 10px; border-bottom: 1px solid #f1f5f9; background: #f8fafc; }
+    .mdrop-search input { width: 100%; padding: 7px 10px; border-radius: 10px; border: 1px solid #cbd5e1; font-size: 12px; outline: none; background: #fff; }
+    .mdrop-search input:focus { border-color: #05344E; }
+    .mdrop-list { max-height: 240px; overflow-y: auto; padding: 6px; }
+    .mdrop-item { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 10px; border-radius: 10px; font-size: 13px; font-weight: 600; color: #334155; cursor: pointer; text-align: left; transition: background .12s ease; }
+    .mdrop-item:hover { background: #f1f5f9; color: #05344E; }
+    .mdrop-item.active { background: #e0f2fe; color: #05344E; font-weight: 800; }
+  `;
+  document.head.appendChild(st);
+
+  let activeMenu = null;
+  let activeBtn = null;
+
+  function closeActive() {
+    if (activeMenu) activeMenu.classList.remove('open');
+    if (activeBtn) activeBtn.classList.remove('open');
+    activeMenu = null;
+    activeBtn = null;
+  }
+
+  document.addEventListener('click', (e) => {
+    if (activeMenu && !activeMenu.contains(e.target) && activeBtn && !activeBtn.contains(e.target)) {
+      closeActive();
+    }
+  });
+  window.addEventListener('scroll', () => { if (activeMenu) closeActive(); }, true);
+
+  window.upgradeSelectToModern = function(sel) {
+    if (!sel || sel.dataset.modernUpgraded) return;
+    sel.dataset.modernUpgraded = '1';
+    sel.style.display = 'none';
+
+    const wrap = document.createElement('div');
+    wrap.className = 'mdrop-wrap';
+    sel.parentNode.insertBefore(wrap, sel);
+    wrap.appendChild(sel);
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'mdrop-btn';
+    btn.innerHTML = `<span class="mdrop-label truncate"></span><svg class="w-4 h-4 text-slate-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`;
+    wrap.appendChild(btn);
+
+    const menu = document.createElement('div');
+    menu.className = 'mdrop-menu';
+    document.body.appendChild(menu);
+
+    function syncLabel() {
+      const opt = sel.options[sel.selectedIndex];
+      btn.querySelector('.mdrop-label').textContent = opt ? opt.textContent : 'निवडा...';
+    }
+
+    function buildItems(filter = '') {
+      const q = filter.trim().toLowerCase();
+      const list = menu.querySelector('.mdrop-list');
+      list.innerHTML = '';
+      Array.from(sel.options).forEach((opt, idx) => {
+        if (q && !opt.textContent.toLowerCase().includes(q)) return;
+        const item = document.createElement('button');
+        item.type = 'button';
+        const isSel = idx === sel.selectedIndex;
+        item.className = 'mdrop-item' + (isSel ? ' active' : '');
+        if (opt.value && opt.value.includes("'")) item.style.fontFamily = opt.value;
+        item.innerHTML = `<span class="truncate">${opt.textContent}</span>${isSel ? '<span class="text-xs font-extrabold">✓</span>' : ''}`;
+        item.addEventListener('click', () => {
+          sel.selectedIndex = idx;
+          sel.dispatchEvent(new Event('change', { bubbles: true }));
+          syncLabel();
+          closeActive();
+        });
+        list.appendChild(item);
+      });
+    }
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const wasOpen = menu.classList.contains('open');
+      closeActive();
+      if (wasOpen) return;
+
+      const hasMany = sel.options.length > 7;
+      menu.innerHTML = (hasMany ? '<div class="mdrop-search"><input type="text" placeholder="🔍 शोधा..." /></div>' : '') + '<div class="mdrop-list"></div>';
+      buildItems();
+
+      const rect = btn.getBoundingClientRect();
+      menu.style.width = Math.max(220, rect.width) + 'px';
+      const spaceBelow = window.innerHeight - rect.bottom - 12;
+      menu.style.left = Math.max(10, Math.min(window.innerWidth - Math.max(220, rect.width) - 10, rect.left)) + 'px';
+      if (spaceBelow < 220 && rect.top > 240) {
+        menu.style.top = 'auto';
+        menu.style.bottom = (window.innerHeight - rect.top + 6) + 'px';
+      } else {
+        menu.style.bottom = 'auto';
+        menu.style.top = (rect.bottom + 6) + 'px';
+      }
+
+      menu.classList.add('open');
+      btn.classList.add('open');
+      activeMenu = menu;
+      activeBtn = btn;
+
+      const sInp = menu.querySelector('.mdrop-search input');
+      if (sInp) {
+        sInp.addEventListener('input', () => buildItems(sInp.value));
+        setTimeout(() => sInp.focus(), 30);
+      }
+    });
+
+    // Keep label synced when JS sets sel.value programmatically
+    const obs = new MutationObserver(syncLabel);
+    obs.observe(sel, { childList: true });
+    const origDesc = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value');
+    Object.defineProperty(sel, 'value', {
+      get() { return origDesc.get.call(this); },
+      set(v) { origDesc.set.call(this, v); syncLabel(); }
+    });
+    syncLabel();
+  };
+
+  window.upgradeAllSelects = function(root = document) {
+    root.querySelectorAll('select').forEach(window.upgradeSelectToModern);
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => window.upgradeAllSelects(), 80);
+    const mo = new MutationObserver((muts) => {
+      muts.forEach(m => m.addedNodes.forEach(n => {
+        if (n.nodeType === 1) {
+          if (n.tagName === 'SELECT') window.upgradeSelectToModern(n);
+          else if (n.querySelectorAll) window.upgradeAllSelects(n);
+        }
+      }));
+    });
+    mo.observe(document.body, { childList: true, subtree: true });
+  });
+})();

@@ -3067,31 +3067,14 @@
         const a = document.createElement('a');
         a.target = '_blank';
         a.rel = 'noopener noreferrer';
-        a.className = 'relative w-full h-full shrink-0 flex flex-col';
+        a.className = 'relative w-full h-full shrink-0 block';
         configureAdLink(a, slide.link);
 
-        const imgWrap = document.createElement('div');
-        imgWrap.className = 'flex-1 min-h-0 w-full overflow-hidden';
         const img = document.createElement('img');
         img.src = slide.image;
-        img.alt = slide.text || `जाहिरात ${idx + 1}`;
+        img.alt = `जाहिरात ${idx + 1}`;
         img.className = 'w-full h-full object-cover';
-        imgWrap.appendChild(img);
-        a.appendChild(imgWrap);
-
-        if (slide.text) {
-          const bar = document.createElement('div');
-          bar.className = 'px-3 py-1 text-center shrink-0';
-          bar.style.backgroundColor = siteAdsConfig.bannerTextBgColor || '#05344E';
-          const p = document.createElement('p');
-          p.className = 'font-bold truncate leading-snug';
-          p.style.color = siteAdsConfig.bannerTextColor || '#FFFFFF';
-          p.style.fontFamily = siteAdsConfig.bannerTextFont || "'Noto Sans Devanagari', sans-serif";
-          p.style.fontSize = siteAdsConfig.bannerTextSize || '12px';
-          p.textContent = slide.text;
-          bar.appendChild(p);
-          a.appendChild(bar);
-        }
+        a.appendChild(img);
         el.mainAdTrack.appendChild(a);
       });
 

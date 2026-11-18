@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>जाहिरात नियंत्रण — लाईव्ह दर्शन अ‍ॅडमिन</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Akshar:wght@400;600;700&family=Amiko:wght@400;600;700&family=Amita:wght@400;700&family=Anek+Devanagari:wght@400;600;700&family=Arya:wght@400;700&family=Asar&family=Bakbak+One&family=Baloo+2:wght@500;600;700&family=Biryani:wght@400;600;700&family=Cambay:wght@400;700&family=Dekko&family=Eczar:wght@400;600;700&family=Glegoo:wght@400;700&family=Gotu&family=Halant:wght@400;600;700&family=Hind:wght@400;600;700&family=Inknut+Antiqua:wght@400;600;700&family=Inter:wght@400;600;700&family=Jaldi:wght@400;700&family=Kadwa:wght@400;700&family=Kalam:wght@400;700&family=Karma:wght@400;600;700&family=Khand:wght@500;600;700&family=Khula:wght@400;600;700&family=Kurale&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@500;600;700&family=Martel+Sans:wght@400;600;700&family=Martel:wght@400;600;700&family=Modak&family=Mukta:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&family=Noto+Serif+Devanagari:wght@400;600;700&family=Palanquin+Dark:wght@400;600;700&family=Palanquin:wght@400;600;700&family=Playpen+Sans+Deva:wght@400;600;700&family=Poppins:wght@400;500;600;700&family=Pragati+Narrow:wght@400;700&family=Rajdhani:wght@500;600;700&family=Rhodium+Libre&family=Rozha+One&family=Sahitya:wght@400;700&family=Sarala:wght@400;700&family=Sumana:wght@400;700&family=Sura:wght@400;700&family=Teko:wght@500;600;700&family=Tillana:wght@500;600;700&family=Tiro+Devanagari+Hindi:ital@0;1&family=Tiro+Devanagari+Marathi:ital@0;1&family=Tiro+Devanagari+Sanskrit:ital@0;1&family=Vesper+Libre:wght@400;700&family=Yatra+One&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -37,6 +38,42 @@
         </div>
 
         <div id="bannerSlotsContainer" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+
+        <!-- बॅनर खालील मजकूर स्टाईल -->
+        <div class="pt-4 border-t border-slate-100 space-y-3">
+          <h3 class="text-xs sm:text-sm font-extrabold text-[#05344E]">🎨 बॅनर फोटोच्या खालील मजकूर पट्टीची स्टाईल</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">मजकूर फॉन्ट (५० फॉन्ट्स)</label>
+              <select id="bannerTextFont" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white"></select>
+              <div id="bannerTextFontPreview" class="mt-1.5 px-2.5 py-1 rounded-lg bg-slate-100 text-xs text-[#05344E] truncate">प्रायोजक जाहिरात नमुना</div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">फॉन्ट आकार</label>
+              <select id="bannerTextSize" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white">
+                <option value="11px">खूप लहान (11px)</option>
+                <option value="12px" selected>लहान (12px - डिफॉल्ट)</option>
+                <option value="13px">मध्यम (13px)</option>
+                <option value="14px">मोठा (14px)</option>
+                <option value="16px">ठळक (16px)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">मजकूर रंग</label>
+              <div class="flex items-center gap-2">
+                <button id="swatchBannerText" type="button" class="w-9 h-9 rounded-xl border border-slate-300 shrink-0 cursor-pointer shadow-sm"></button>
+                <input id="bannerTextColor" type="text" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-mono" value="#FFFFFF" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">पट्टीचा पार्श्वभूमी रंग</label>
+              <div class="flex items-center gap-2">
+                <button id="swatchBannerBg" type="button" class="w-9 h-9 rounded-xl border border-slate-300 shrink-0 cursor-pointer shadow-sm"></button>
+                <input id="bannerTextBgColor" type="text" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-mono" value="#05344E" />
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- २. प्री-रोल जाहिरात -->
@@ -136,6 +173,9 @@
   <script src="admin-common.js"></script>
   <script>
     renderAdminShell('ads', 'जाहिरात नियंत्रण');
+    populateFontSelect('bannerTextFont', 'bannerTextFontPreview');
+    bindColorPicker('bannerTextColor', 'swatchBannerText', '#FFFFFF');
+    bindColorPicker('bannerTextBgColor', 'swatchBannerBg', '#05344E');
 
     let currentAds = { bannerSlides: [{}, {}, {}] };
     const slotPendingFiles = {};
@@ -257,6 +297,19 @@
         }
 
         document.getElementById('bannerEnabled').checked = !!ads.bannerEnabled;
+        if (ads.bannerTextFont) {
+          document.getElementById('bannerTextFont').value = ads.bannerTextFont;
+          document.getElementById('bannerTextFontPreview').style.fontFamily = ads.bannerTextFont;
+        }
+        if (ads.bannerTextSize) document.getElementById('bannerTextSize').value = ads.bannerTextSize;
+        if (ads.bannerTextColor) {
+          document.getElementById('bannerTextColor').value = ads.bannerTextColor;
+          document.getElementById('swatchBannerText').style.backgroundColor = ads.bannerTextColor;
+        }
+        if (ads.bannerTextBgColor) {
+          document.getElementById('bannerTextBgColor').value = ads.bannerTextBgColor;
+          document.getElementById('swatchBannerBg').style.backgroundColor = ads.bannerTextBgColor;
+        }
         renderSlots(currentAds.bannerSlides);
 
         document.getElementById('preRollEnabled').checked = !!ads.preRollEnabled;
@@ -301,6 +354,10 @@
 
         const payload = Object.assign({}, currentAds, {
           bannerEnabled: document.getElementById('bannerEnabled').checked,
+          bannerTextFont: document.getElementById('bannerTextFont').value,
+          bannerTextSize: document.getElementById('bannerTextSize').value,
+          bannerTextColor: document.getElementById('bannerTextColor').value.trim(),
+          bannerTextBgColor: document.getElementById('bannerTextBgColor').value.trim(),
           bannerSlides: slides,
           preRollEnabled: document.getElementById('preRollEnabled').checked,
           preRollDuration: Math.max(2, Math.min(30, Number(document.getElementById('preRollDuration').value) || 5)),

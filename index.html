@@ -4373,6 +4373,8 @@
       const guideText = document.getElementById('pwaGuideText');
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
+      const _sp = new URLSearchParams(window.location.search);
+      const isQrInstall = _sp.get('install') === '1' || _sp.get('qr') === '1';
       let pwaAutoHideTimer = null;
       function wasShownBefore() {
         try {
@@ -4380,24 +4382,29 @@
         } catch (e) { return false; }
       }
 
-      function showBanner() {
-        if (!banner || wasShownBefore()) return;
-        try { localStorage.setItem('ld_pwa_prompt_shown_v1', '1'); } catch (e) {}
+      function showBanner(force) {
+        if (!banner) return;
+        if (!force && wasShownBefore()) return;
+        if (!force) {
+          try { localStorage.setItem('ld_pwa_prompt_shown_v1', '1'); } catch (e) {}
+        }
         banner.classList.remove('hidden');
         if (pwaAutoHideTimer) clearTimeout(pwaAutoHideTimer);
         pwaAutoHideTimer = setTimeout(() => {
           banner.classList.add('hidden');
-        }, 8000);
+        }, force ? 25000 : 8000);
       }
 
       window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        showBanner();
+        showBanner(isQrInstall);
       });
 
-      if (isIOS) {
-        setTimeout(showBanner, 2500);
+      if (isQrInstall) {
+        setTimeout(() => showBanner(true), 1200);
+      } else if (isIOS) {
+        setTimeout(() => showBanner(false), 2500);
       }
 
       window.triggerPortalInstall = async function() {

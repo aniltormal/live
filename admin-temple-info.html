@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>मंदिर माहिती व वेळापत्रक — लाईव्ह दर्शन अ‍ॅडमिन</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+  <header id="adminTopHeader"></header>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6">
+    <div id="authGateMsg" class="p-6 rounded-2xl bg-white border border-slate-200 text-center text-sm font-semibold text-slate-600 shadow-sm">
+      ⏳ अ‍ॅडमिन तपासणी सुरू आहे...
+    </div>
+
+    <div id="pageContent" class="hidden space-y-5 fade-in-up">
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100">
+          <div>
+            <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">📝 मंदिर निवडा व माहिती संपादित करा</h2>
+            <p class="text-xs text-slate-500">येथे सेव्ह केलेली माहिती फक्त `temple-info.html` उघडल्यावर लोड होते (मुख्य पेज नेहमी हलके राहते)</p>
+          </div>
+          <a id="previewInfoPageLink" href="temple-info.html?id=pandharpur" target="_blank" class="px-3.5 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 text-xs font-extrabold transition">👁️ माहिती पेज पहा ↗</a>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">मंदिर निवडा</label>
+          <select id="infoTempleSelect" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm bg-white"></select>
+        </div>
+        <div class="p-3.5 rounded-2xl bg-sky-50/80 border border-sky-200 space-y-2.5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <p class="text-xs sm:text-sm font-extrabold text-[#05344E]">🌐 इंटरनेटवरून अद्ययावत माहिती मिळवा (नवीन व जुन्या मंदिरांसाठी)</p>
+              <p class="text-[11px] text-slate-600">नवीन मंदिर अ‍ॅड केल्यावर किंवा माहिती अपडेट करण्यासाठी बटण दाबा; तसेच वेळोवेळी स्वयंचलित अपडेट सेट करा.</p>
+            </div>
+            <span id="lastUpdatedLabel" class="text-[11px] font-bold text-slate-500"></span>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <input id="wikiSearchInput" type="text" class="flex-1 min-w-[200px] px-3 py-2 rounded-xl border border-sky-300 bg-white text-xs sm:text-sm" placeholder="मंदिराचे नाव (उदा. त्र्यंबकेश्वर मंदिर, नाशिक)" />
+            <button id="fetchInternetInfoBtn" type="button" class="px-3.5 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs sm:text-sm font-bold cursor-pointer transition shrink-0">🌐 इंटरनेटवरून माहिती आणा</button>
+            <button id="resetOfficialInfoBtn" type="button" class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs sm:text-sm font-bold cursor-pointer transition shrink-0">🔄 अधिकृत माहिती ताजी करा</button>
+          </div>
+          <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-sky-200/70">
+            <label for="autoRefreshToggle" class="flex items-center gap-2.5 cursor-pointer select-none">
+              <input id="autoRefreshToggle" type="checkbox" class="toggle-pill" />
+              <span class="text-xs sm:text-sm font-extrabold text-slate-800">⏱️ वेळोवेळी स्वयंचलित माहिती अपडेट (चालू / बंद)</span>
+            </label>
+            <div id="autoRefreshIntervalWrap" class="hidden flex items-center gap-2">
+              <span class="text-xs font-semibold text-slate-600">कालावधी:</span>
+              <select id="autoRefreshDaysSelect" class="px-3 py-1.5 rounded-xl border border-sky-300 bg-white text-xs font-bold text-slate-800">
+                <option value="7">दर ७ दिवसांनी</option>
+                <option value="15">दर १५ दिवसांनी</option>
+                <option value="30">दर ३० दिवसांनी</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <label class="text-xs sm:text-sm font-extrabold text-[#05344E]">🖼️ मंदिराचा मुख्य फोटो (माहिती पेजसाठी)</label>
+            <button id="resetHeroImgBtn" type="button" class="px-2.5 py-1 rounded-lg bg-white border border-amber-300 hover:bg-amber-100 text-[11px] font-bold text-amber-900 cursor-pointer transition">🔄 मूळ फोटो वापरा</button>
+          </div>
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <div class="w-full sm:w-44 h-28 rounded-xl overflow-hidden border border-amber-300 bg-[#05344E] flex items-center justify-center shrink-0">
+              <img id="heroImgPreview" src="" alt="मंदिर फोटो" class="hidden w-full h-full object-cover object-top" />
+              <span id="heroImgFallback" class="text-3xl">🛕</span>
+            </div>
+            <div class="flex-1 space-y-2">
+              <label for="heroImgFileInput" class="flex flex-col items-center justify-center px-3 py-2.5 rounded-xl border-2 border-dashed border-amber-400 bg-white/80 hover:bg-amber-100/60 cursor-pointer transition text-center">
+                <span class="text-xs font-extrabold text-amber-900">📁 मोबाईल / संगणकातून नवीन फोटो निवडा</span>
+                <span class="text-[10px] text-slate-500">फोटो आपोआप कॉम्प्रेस होऊन सेव्ह होईल (JPG / PNG / WebP)</span>
+                <input id="heroImgFileInput" type="file" accept="image/*" class="hidden" />
+              </label>
+              <input id="infoHeroImageUrlInput" type="url" class="w-full px-3 py-2 rounded-xl border border-amber-300 bg-white text-xs" placeholder="किंवा थेट फोटोची URL लिंक पेस्ट करा (https://...)" />
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">🕰️ दैनंदिन आरती व दर्शन वेळापत्रक</label>
+            <textarea id="infoScheduleInput" rows="8" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm leading-relaxed" placeholder="• पहाटे ५:०० : काकड आरती..."></textarea>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">🛕 मंदिराचा इतिहास व महत्त्व</label>
+            <textarea id="infoHistoryInput" rows="8" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm leading-relaxed" placeholder="मंदिराचा संक्षिप्त इतिहास व वैशिष्ट्य..."></textarea>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">📍 पत्ता व प्रवास माहिती</label>
+            <textarea id="infoAddressInput" rows="3" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm leading-relaxed" placeholder="पत्ता, रेल्वे स्थानक व बस सेवा..."></textarea>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">🌐 अधिकृत वेबसाईट लिंक (पर्यायी)</label>
+            <input id="infoWebsiteInput" type="url" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" placeholder="https://..." />
+          </div>
+        </div>
+      </section>
+
+      <div class="sticky bottom-3 z-20 flex justify-end">
+        <button id="saveTempleInfoBtn" type="button" class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-sm font-bold cursor-pointer shadow-lg transition">💾 मंदिराची माहिती सेव्ह करा</button>
+      </div>
+    </div>
+  </main>
+
+  <div id="toastBox" class="hidden"></div>
+
+  <script src="admin-common.js"></script>
+  <script>
+    renderAdminShell('templeinfo', 'मंदिर माहिती व वेळापत्रक');
+
+    const DEFAULT_TEMPLES_META = [
+      { id: 'pandharpur', name: 'श्री विठ्ठल रुक्मिणी, पंढरपूर' },
+      { id: 'kolhapur', name: 'श्री अंबाबाई महालक्ष्मी, कोल्हापूर' },
+      { id: 'tuljapur', name: 'श्री तुळजाभवानी, तुळजापूर' },
+      { id: 'shirdi', name: 'श्री साईबाबा, शिर्डी' },
+      { id: 'dagdusheth', name: 'दगडूशेठ गणपती, पुणे' },
+      { id: 'siddhivinayak', name: 'श्री सिद्धिविनायक, मुंबई' }
+    ];
+
+    const DEFAULT_INFO_TEXT = {
+    "pandharpur": {
+        "title": "श्री विठ्ठल-रुक्मिणी मंदिर, पंढरपूर",
+        "schedule": "• पहाटे ४:०० : श्रींच्या नामदेव पायरीचे द्वार उघडणे\n• पहाटे ४:०० ते ५:३० : काकड आरती व नित्यपूजा\n• स. ६:०० ते ११:०० : सकाळचे दर्शन (१०:४५ ते ११:०० महानैवेद्यासाठी बंद)\n• दु. ११:१५ ते सायं. ४:३० : दुपारचे दर्शन\n• सायं. ४:३० ते ५:०० : श्रींचा पोशाख (दर्शन बंद)\n• सायं. ६:४५ ते ७:०० : धुपारती\n• रात्री १०:३० ते ११:१५ : नित्य शेजारती (यानंतर दर्शन बंद)\n• रात्री १२:०० ते १:०० : शेजारती व मंदिर बंद\n(टीप: आषाढी, कार्तिकी, माघी व चैत्री एकादशीला २४ तास अखंड मुखदर्शन व पदस्पर्श दर्शन सुरू असते.)",
+        "history": "महाराष्ट्राचे आराध्य दैवत श्री पांडुरंग (विठ्ठल) आणि श्री रुक्मिणीमातेचे हे प्राचीन व जागृत मंदिर चंद्रभागा (भीमा) नदीच्या तीरावर वसलेले आहे. भक्ती, समता आणि वारकरी संप्रदायाचे हे मुख्य केंद्र असून 'दक्षिण काशी' म्हणून ओळखले जाते.\n\nभक्त पुंडलिकाच्या निस्सीम मातृ-पितृ भक्तीवर प्रसन्न होऊन भगवान श्रीकृष्ण येथे विटेवर उभे राहिले, अशी अख्यायिका आहे. संत ज्ञानेश्वर महाराज, संत तुकाराम महाराज, संत नामदेव, संत एकनाथ व संत चोखामेळा यांच्या पदस्पर्शाने ही भूमी पावन झाली आहे.",
+        "address": "श्री विठ्ठल रुक्मिणी मंदिर समिती, २५९३, प्रदक्षिणा रोड, पंढरपूर, जि. सोलापूर - ४१३३०४.\n• रेल्वे स्थानक: पंढरपूर रेल्वे स्टेशन (मंदिरापासून १.५ किमी)\n• बस सेवा: महाराष्ट्रभरातून पंढरपूरसाठी थेट एस.टी. बस सेवा उपलब्ध.",
+        "website": "https://vitthalrukminimandir.org/daily_schedule.php"
+    },
+    "kolhapur": {
+        "title": "श्री अंबाबाई (महालक्ष्मी) मंदिर, कोल्हापूर",
+        "schedule": "• पहाटे ४:०० : मंदिर उघडण्याची वेळ\n• पहाटे ५:३० ते ५:४५ : काकड आरती\n• स. ८:०० : सकाळची महापूजा व अलंकार पूजा\n• दु. १२:३० ते १:०० : महानैवेद्य (गाभारा बंद)\n• दु. १:०० ते सायं. ७:३० : दुपारचे व सायंकाळचे दर्शन\n• रात्री ७:३० ते ८:३० : सायंकाळची आरती व धुपारती\n• रात्री ९:३० ते १०:०० : शेजारती व मंदिर बंद\n(शुक्रवारी व पौर्णिमेला रात्री विशेष पालखी सोहळा असतो.)",
+        "history": "साडेतीन शक्तिपीठांपैकी एक पूर्ण शक्तिपीठ म्हणून करवीर निवासिनी श्री अंबाबाई (महालक्ष्मी) मंदिर प्रसिद्ध आहे. चालुक्य काळातील ७व्या शतकात (इ.स. ६३४ मध्ये राजा कर्णदेव यांनी) या भव्य हेमाडपंती मंदिराचे बांधकाम केले.\n\nमंदिराची वास्तू अत्यंत वैशिष्ट्यपूर्ण असून दरवर्षी जानेवारी व नोव्हेंबर महिन्यात 'किरणोत्सव' साजरा होतो, जेव्हा अस्ताला जाणारे सूर्यकिण थेट देवीच्या चरणांवर व मुखकमलावर पडतात.",
+        "address": "पश्चिम महाराष्ट्र देवस्थान व्यवस्थापन समिती, भवानी मंडप, महाद्वार रोड, कोल्हापूर - ४१६०१२.\n• रेल्वे स्थानक: छत्रपती शाहू महाराज टर्मिनस, कोल्हापूर (३ किमी)\n• विमानतळ: कोल्हापूर विमानतळ (१० किमी).",
+        "website": "https://www.mahalaxmikolhapur.com/"
+    },
+    "tuljapur": {
+        "title": "श्री तुळजाभवानी मंदिर, तुळजापूर",
+        "schedule": "• पहाटे ४:०० : मंदिर उघडणे व चरणतीर्थ\n• पहाटे ४:३० ते ६:०० : काकड आरती\n• स. ६:०० ते १०:०० : पंचामृत अभिषेक पूजा\n• स. ११:०० ते १२:०० : वस्त्रालंकार पूजा व महानैवेद्य\n• दु. १२:३० ते सायं. ७:०० : अखंड दर्शन\n• रात्री ७:०० ते ९:३० : सायंकाळची पूजा, धुपारती व प्रक्षाळ पूजा\n• रात्री ९:३० ते १०:०० : शेजारती व मंदिर बंद\n(मंगळवार, शुक्रवार व नवरात्रीत विशेष गर्दी व सोहळे असतात.)",
+        "history": "संपूर्ण महाराष्ट्राची कुलस्वामिनी श्री तुळजाभवानी माता हे साडेतीन शक्तिपीठांपैकी एक पूर्ण आद्य शक्तिपीठ आहे. बालाघाटच्या डोंगररांगांमध्ये यमुनाचल पर्वतावर हे भव्य मंदिर वसलेले आहे.\n\nछत्रपती शिवाजी महाराजांना स्वराज्य स्थापनेसाठी 'भवानी तलवार' आणि आशीर्वाद याच मातेने दिले, असा ऐतिहासिक व धार्मिक संदर्भ आहे. मातेची मूर्ती चल (स्थानापन्न हलणारी) असून वर्षातून तीन वेळा ती गाभाऱ्याबाहेर पलंगावर निद्रेसाठी नेली जाते.",
+        "address": "श्री तुळजाभवानी मंदिर संस्थान, महाद्वार रोड, तुळजापूर, जि. धाराशिव - ४१३६०१.\n• रेल्वे स्थानक: सोलापूर रेल्वे स्टेशन (४५ किमी) / धाराशिव (२२ किमी)\n• रस्ता मार्ग: सोलापूर-तुळजापूर महामार्गावर थेट बस व टॅक्सी सेवा.",
+        "website": "https://shrituljabhavani.org/en/dailyworship-timings"
+    },
+    "shirdi": {
+        "title": "श्री साईबाबा समाधी मंदिर, शिर्डी",
+        "schedule": "• पहाटे ४:४५ : मंदिर उघडण्याची वेळ\n• पहाटे ५:०० : भूपाळी\n• पहाटे ५:१५ : काकड आरती\n• पहाटे ५:५० : श्रींचे मंगल स्नान व दर्शनास सुरुवात\n• स. ६:२० : आरती 'शिर्डी माझे पंढरपूर'\n• स. ६:२५ : समाधी दर्शन सुरू\n• स. ११:३० : धुनी पूजा (द्वारकामाई)\n• दु. १२:०० : मध्यान्ह आरती\n• सायं. ४:०० : पोथी वाचन\n• सूर्यास्त समयी : धुपारती\n• रात्री ८:३० ते १०:०० : भजन व गायन सेवा\n• रात्री १०:०० : शेजारती व समाधी मंदिर बंद\n(गुरूवारी रात्री साईबाबांची भव्य पालखी मिरवणूक निघते.)",
+        "history": "'सबका मालिक एक' आणि 'श्रद्धा व सबुरी' हा मानवतेचा संदेश देणारे श्री साईबाबा यांचे समाधी मंदिर शिर्डी येथे आहे. १८५८ साली साईबाबा शिर्डीत आले आणि १९१८ पर्यंत येथे राहून त्यांनी भक्तांचा उद्धार केला.\n\nमंदिर परिसरात द्वारकामाई, चावडी, गुरुस्थान व लेंडी बाग ही अत्यंत पवित्र स्थळे आहेत. जगभरातून कोट्यवधी भाविक दरवर्षी बाबांच्या समाधी दर्शनासाठी येतात.",
+        "address": "श्री साईबाबा संस्थान विश्वस्तव्यवस्था, शिर्डी, ता. राहाता, जि. अहिल्यानगर - ४२३१०९.\n• रेल्वे स्थानक: साईनगर शिर्डी (३ किमी) व मनमाड जंक्शन (५८ किमी)\n• विमानतळ: शिर्डी आंतरराष्ट्रीय विमानतळ, काकडी (१४ किमी).",
+        "website": "https://sai.org.in/"
+    },
+    "dagdusheth": {
+        "title": "श्रीमंत दगडूशेठ हलवाई गणपती, पुणे",
+        "schedule": "• पहाटे ५:३० ते रात्री ११:०० : अखंड दर्शन (मंगळवार व संकष्टीला पहाटे ४:०० पासून)\n• स. ७:३० ते ७:४५ : सुप्रभातम् व नित्य पूजा\n• दु. १:३० ते २:०० : महानैवेद्य आरती\n• दु. ३:०० ते ३:१५ : मध्यान्ह आरती\n• रात्री ८:०० ते ९:०० : महामंगल आरती\n• रात्री १०:३० ते १०:४५ : शेजारती\n(दर संकष्टी चतुर्थीला सहस्रावर्तन व विशेष फुलांची आरास असते.)",
+        "history": "पुण्याचे ग्रामदैवत आणि भक्तांच्या हाकेला धावून जाणारा 'नवसाचा गणपती' म्हणून श्रीमंत दगडूशेठ हलवाई गणपती जगप्रसिद्ध आहे. १८९३ साली प्रसिद्ध मिठाई व्यापारी श्रीमंत दगडूशेठ हलवाई आणि त्यांच्या पत्नी लक्ष्मीबाई यांनी प्लेगच्या साथीत मुलाच्या निधनानंतर गुरुमाऊलींच्या आज्ञेने या गणपतीची स्थापना केली.\n\nलोकमान्य टिळकांनी सार्वजनिक गणेशोत्सवाला व्यापक स्वरूप देण्यासाठी याच मंडळापासून प्रेरणा घेतली. सुवर्णालंकारांनी मढलेली ही मंगलमूर्ती अत्यंत तेजस्वी आहे.",
+        "address": "श्रीमंत दगडूशेठ हलवाई सार्वजनिक गणपती ट्रस्ट, २५०, बुधवार पेठ, छत्रपती शिवाजी महाराज रोड, पुणे - ४११००२.\n• रेल्वे स्थानक: पुणे जंक्शन (३.५ किमी)\n• मेट्रो स्थानक: मंडई / बुधवार पेठ मेट्रो स्टेशन (चालत ५ मिनिटे).",
+        "website": "https://www.dagdushethganpati.com/marathi/temple-schedule"
+    },
+    "siddhivinayak": {
+        "title": "श्री सिद्धिविनायक गणपती मंदिर, मुंबई",
+        "schedule": "• पहाटे ५:३० ते ६:०० : काकड आरती\n• स. ६:०० ते दु. १२:०० : सकाळचे श्री दर्शन\n• दु. १२:०५ ते १२:३० : महानैवेद्य व आरती\n• दु. १२:३० ते रात्री ७:२० : दुपारचे व सायंकाळचे दर्शन\n• रात्री ७:३० ते ८:०० : धुपारती व महाआरती\n• रात्री ९:५० ते १०:०० : शेजारती व मंदिर बंद\n(मंगळवारी विशेष: पहाटे ३:१५ ला दर्शन सुरू, ५:०० ला काकड आरती व रात्री उशिरापर्यंत दर्शन.)",
+        "history": "मुंबईतील प्रभादेवी परिसरात स्थित श्री सिद्धिविनायक मंदिर हे देशभरातील अत्यंत श्रीमंत व जागृत गणेश मंदिरांपैकी एक आहे. १९ नोव्हेंबर १८०१ रोजी लक्ष्मण विठू पाटील यांनी देवुबाई पाटील यांच्या इच्छेनुसार या मंदिराची मूळ उभारणी केली.\n\nयेथील गणपतीची मूर्ती उजव्या सोंडेची असून बाजूला रिद्धी-सिद्धी विराजमान आहेत. अष्टकोनी गाभारा, सोन्याचा कळस व भव्य वास्तू भाविकांचे मन प्रसन्न करते.",
+        "address": "श्री सिद्धिविनायक गणपती मंदिर न्यास, एस. के. बोले मार्ग, प्रभादेवी, मुंबई - ४०००२८.\n• रेल्वे स्थानक: दादर रेल्वे स्टेशन (पश्चिम/मध्य - १.५ किमी)\n• मेट्रो स्थानक: सिद्धिविनायक मेट्रो स्टेशन (अ‍ॅक्वा लाईन-३).",
+        "website": "https://www.siddhivinayak.org/temple-schedule/"
+    }
+};
+
+    const sel = document.getElementById('infoTempleSelect');
+    const wikiInput = document.getElementById('wikiSearchInput');
+    const autoToggle = document.getElementById('autoRefreshToggle');
+    const autoWrap = document.getElementById('autoRefreshIntervalWrap');
+    const autoSel = document.getElementById('autoRefreshDaysSelect');
+    function syncAutoRefreshUI() {
+      if (!autoToggle || !autoWrap) return;
+      autoWrap.classList.toggle('hidden', !autoToggle.checked);
+    }
+    if (autoToggle) autoToggle.addEventListener('change', syncAutoRefreshUI);
+    const lastUpdLbl = document.getElementById('lastUpdatedLabel');
+    let templeNameMap = {};
+    const heroImgPreview = document.getElementById('heroImgPreview');
+    const heroImgFallback = document.getElementById('heroImgFallback');
+    const heroImgUrlInput = document.getElementById('infoHeroImageUrlInput');
+    const heroImgFileInput = document.getElementById('heroImgFileInput');
+    let templeImageMap = {};
+
+    function updateHeroPreview(src) {
+      const clean = (src || '').trim();
+      if (clean) {
+        heroImgPreview.src = clean;
+        heroImgPreview.classList.remove('hidden');
+        heroImgFallback.classList.add('hidden');
+      } else {
+        heroImgPreview.src = '';
+        heroImgPreview.classList.add('hidden');
+        heroImgFallback.classList.remove('hidden');
+      }
+    }
+
+    function compressPhotoFile(file, maxW = 900, quality = 0.82) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = () => reject(new Error('फोटो वाचता आला नाही'));
+        reader.onload = () => {
+          const img = new Image();
+          img.onerror = () => reject(new Error('अवैध इमेज फाईल'));
+          img.onload = () => {
+            const scale = Math.min(1, maxW / (img.width || maxW));
+            const w = Math.max(1, Math.round(img.width * scale));
+            const h = Math.max(1, Math.round(img.height * scale));
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+          img.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    if (heroImgFileInput) {
+      heroImgFileInput.addEventListener('change', async (e) => {
+        const f = e.target.files && e.target.files[0];
+        if (!f) return;
+        try {
+          const dataUrl = await compressPhotoFile(f);
+          heroImgUrlInput.value = dataUrl;
+          updateHeroPreview(dataUrl);
+          showToast('🖼️ नवीन फोटो तयार आहे! सेव्ह करण्यासाठी खालील बटण दाबा.');
+        } catch (err) {
+          showToast('❌ ' + err.message, true);
+        }
+      });
+    }
+    if (heroImgUrlInput) {
+      heroImgUrlInput.addEventListener('input', () => {
+        updateHeroPreview(heroImgUrlInput.value || templeImageMap[sel.value] || '');
+      });
+    }
+    document.getElementById('resetHeroImgBtn').addEventListener('click', () => {
+      heroImgUrlInput.value = '';
+      updateHeroPreview(templeImageMap[sel.value] || '');
+      showToast('🔄 मूळ मंदिराचा फोटो पूर्ववत केला. सेव्ह बटण दाबा.');
+    });
+
+
+    async function fetchWikiSummaryAdmin(query) {
+      const cleanQ = (query || '').replace(/^(श्री|श्रीमंत)\s+/g, '').trim();
+      const candidates = [cleanQ, query].filter(Boolean);
+      for (const lang of ['mr', 'en']) {
+        for (const q of candidates) {
+          try {
+            const sRes = await fetch(`https://${lang}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(q)}&srlimit=1&format=json&origin=*`);
+            if (!sRes.ok) continue;
+            const sData = await sRes.json();
+            const hit = sData && sData.query && sData.query.search && sData.query.search[0];
+            if (!hit || !hit.title) continue;
+            const sumRes = await fetch(`https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(hit.title)}`);
+            if (!sumRes.ok) continue;
+            const sum = await sumRes.json();
+            if (sum && sum.extract) {
+              return {
+                extract: sum.extract.trim(),
+                url: (sum.content_urls && sum.content_urls.desktop && sum.content_urls.desktop.page) || '',
+                lang
+              };
+            }
+          } catch (_) {}
+        }
+      }
+      return null;
+    }
+
+    function loadTempleInfo(id) {
+      document.getElementById('previewInfoPageLink').href = 'temple-info.html?id=' + encodeURIComponent(id);
+      if (wikiInput) wikiInput.value = templeNameMap[id] || '';
+      const def = DEFAULT_INFO_TEXT[id] || { schedule: '', history: '', address: '', website: '' };
+      fbDb.ref('templeInfo/' + id).once('value', (snap) => {
+        const val = snap.val() || {};
+        document.getElementById('infoScheduleInput').value = val.schedule !== undefined ? val.schedule : def.schedule;
+        document.getElementById('infoHistoryInput').value = val.history !== undefined ? val.history : def.history;
+        document.getElementById('infoAddressInput').value = val.address !== undefined ? val.address : def.address;
+        document.getElementById('infoWebsiteInput').value = val.website !== undefined ? val.website : def.website;
+        if (heroImgUrlInput) heroImgUrlInput.value = val.heroImage || '';
+        updateHeroPreview(val.heroImage || templeImageMap[id] || '');
+        const days = Number(val.autoRefreshDays || 0);
+        const enabled = val.autoRefreshEnabled !== undefined ? Boolean(val.autoRefreshEnabled) : (days > 0);
+        if (autoToggle) autoToggle.checked = enabled;
+        if (autoSel) autoSel.value = String(days > 0 ? days : 7);
+        syncAutoRefreshUI();
+        if (lastUpdLbl) {
+          lastUpdLbl.textContent = val.updatedAt ? ('शेवटचे अपडेट: ' + new Date(val.updatedAt).toLocaleDateString('mr-IN')) : '';
+        }
+      });
+    }
+
+    initAdminGuard(() => {
+      fbDb.ref('temples').once('value', (snap) => {
+        const data = snap.val() || {};
+        const items = [];
+        const seen = new Set();
+        templeNameMap = {};
+        DEFAULT_TEMPLES_META.forEach((d) => {
+          const fb = data[d.id];
+          if (fb && fb.deleted) return;
+          seen.add(d.id);
+          const nm = (fb && (fb.shortTitle || fb.name)) || d.name;
+          templeNameMap[d.id] = nm;
+          if (fb && fb.image) templeImageMap[d.id] = fb.image;
+          items.push({ id: d.id, name: nm });
+        });
+        Object.entries(data).forEach(([id, t]) => {
+          if (seen.has(id) || !t || t.deleted) return;
+          const nm = t.shortTitle || t.name || id;
+          templeNameMap[id] = nm;
+          if (t.image) templeImageMap[id] = t.image;
+          items.push({ id, name: nm });
+        });
+        sel.innerHTML = items.map(it => `<option value="${it.id}">${it.name}</option>`).join('');
+        if (items.length) loadTempleInfo(items[0].id);
+      });
+    });
+
+    sel.addEventListener('change', () => loadTempleInfo(sel.value));
+
+    document.getElementById('fetchInternetInfoBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('fetchInternetInfoBtn');
+      const q = (wikiInput.value || templeNameMap[sel.value] || '').trim();
+      if (!q) { showToast('कृपया मंदिराचे नाव टाका.', true); return; }
+      const orig = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = '⏳ माहिती शोधत आहे...';
+      try {
+        const res = await fetchWikiSummaryAdmin(q);
+        if (!res) {
+          showToast('इंटरनेटवर अचूक माहिती सापडली नाही. कृपया मंदिराचे नाव थोडे बदलून पहा.', true);
+        } else {
+          const histEl = document.getElementById('infoHistoryInput');
+          const cur = histEl.value.trim();
+          if (!cur) {
+            histEl.value = res.extract;
+          } else if (!cur.includes(res.extract.slice(0, 40))) {
+            histEl.value = cur + '\n\n🌐 इंटरनेटवरून अद्ययावत माहिती:\n' + res.extract;
+          }
+          const siteEl = document.getElementById('infoWebsiteInput');
+          if (!siteEl.value.trim() && res.url) siteEl.value = res.url;
+          showToast('✅ इंटरनेटवरून माहिती आणली! आता "सेव्ह करा" बटण दाबा.');
+        }
+      } catch (e) {
+        showToast('❌ इंटरनेट माहिती आणताना त्रुटी: ' + e.message, true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = orig;
+      }
+    });
+
+    document.getElementById('resetOfficialInfoBtn').addEventListener('click', () => {
+      const id = sel.value;
+      const def = DEFAULT_INFO_TEXT[id];
+      if (!def) {
+        showToast('या नवीन मंदिरासाठी अधिकृत पूर्वनिर्धारित माहिती नाही; "🌐 इंटरनेटवरून माहिती आणा" वापरा.', true);
+        return;
+      }
+      document.getElementById('infoScheduleInput').value = def.schedule || '';
+      document.getElementById('infoHistoryInput').value = def.history || '';
+      document.getElementById('infoAddressInput').value = def.address || '';
+      document.getElementById('infoWebsiteInput').value = def.website || '';
+      showToast('🔄 अधिकृत माहिती बॉक्समध्ये भरली आहे. सेव्ह करण्यासाठी खालील बटण दाबा.');
+    });
+
+    document.getElementById('saveTempleInfoBtn').addEventListener('click', async () => {
+      const id = sel.value;
+      if (!id) return;
+      const now = Date.now();
+      try {
+        await fbDb.ref('templeInfo/' + id).set({
+          schedule: document.getElementById('infoScheduleInput').value.trim(),
+          history: document.getElementById('infoHistoryInput').value.trim(),
+          address: document.getElementById('infoAddressInput').value.trim(),
+          website: document.getElementById('infoWebsiteInput').value.trim(),
+          heroImage: heroImgUrlInput ? heroImgUrlInput.value.trim() : '',
+          autoRefreshEnabled: Boolean(autoToggle && autoToggle.checked),
+          autoRefreshDays: (autoToggle && autoToggle.checked) ? Number((autoSel && autoSel.value) || 7) : 0,
+          updatedAt: now
+        });
+        if (lastUpdLbl) lastUpdLbl.textContent = 'शेवटचे अपडेट: ' + new Date(now).toLocaleDateString('mr-IN');
+        showToast('✅ मंदिराची माहिती यशस्वीरित्या सेव्ह झाली!');
+      } catch (err) {
+        showToast('❌ त्रुटी: ' + err.message, true);
+      }
+    });
+  </script>
+</body>
+</html>

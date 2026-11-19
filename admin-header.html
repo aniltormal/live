@@ -21,73 +21,75 @@
     </div>
 
     <div id="pageContent" class="hidden space-y-5 fade-in-up">
-      <!-- हेडर सेटिंग्ज -->
+      <!-- १. नवीन हेडर व लोगो सेटिंग्ज (सर्व पेजेसवर लागू) -->
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
-        <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100">
-          <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🎨 हेडर व लोगो सेटिंग्ज</h2>
-          <div class="flex flex-wrap items-center gap-4">
-            <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
-              <span>बॅनर फोटो लपवा</span>
-              <span class="toggle-pill"><input id="hideBannerToggle" type="checkbox" /><span class="knob"></span></span>
-            </label>
-            <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
-              <span>शीर्षक व उपशीर्षक लपवा</span>
-              <span class="toggle-pill"><input id="hideHeaderTextToggle" type="checkbox" /><span class="knob"></span></span>
-            </label>
-          </div>
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-100">
+          <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🎨 नवीन हेडर व लोगो सेटिंग्ज (सर्व पेजेससाठी)</h2>
+          <label for="headerGoldGradToggle" class="flex items-center gap-2 cursor-pointer select-none px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200">
+            <input id="headerGoldGradToggle" type="checkbox" class="toggle-pill" checked />
+            <span class="text-xs font-bold text-amber-900">✨ सुवर्ण ग्रेडियंट अक्षरे</span>
+          </label>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">मुख्य शीर्षक (Title)</label>
-            <input id="headerTitle" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" placeholder="प्रमुख मंदिरे लाईव्ह दर्शन" />
+            <label class="block text-xs font-bold text-slate-700 mb-1">पोर्टलचे मुख्य शीर्षक</label>
+            <input id="headerTitleInput" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" value="श्री. लाईव्ह दर्शन पोर्टल" />
           </div>
+
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">उपशीर्षक (Subtitle)</label>
-            <input id="headerSubtitle" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" placeholder="अखंड भक्ती व अखंड दर्शन" />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">हेडर व फुटर फॉन्ट (५० देवनागरी फॉन्ट्स)</label>
+            <label class="block text-xs font-bold text-slate-700 mb-1">शीर्षक फॉन्ट (सर्व देवनागरी फॉन्ट्स)</label>
             <select id="headerFontSelect" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white"></select>
-            <div id="headerFontPreview" class="mt-2 px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm text-[#05344E]">🙏 श्री विठ्ठल-रुक्मिणी लाईव्ह दर्शन</div>
           </div>
+
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">हेडर मजकूर रंग</label>
+            <label class="block text-xs font-bold text-slate-700 mb-1">हेडर पार्श्वभूमी रंग</label>
+            <div class="flex items-center gap-2">
+              <button id="swatchHeaderBg" type="button" class="w-10 h-10 rounded-xl border border-slate-300 shrink-0 cursor-pointer shadow-sm"></button>
+              <input id="headerBgColor" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono" value="#05344E" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">हेडर तळाची सोनेरी बॉर्डर रंग</label>
+            <div class="flex items-center gap-2">
+              <button id="swatchHeaderBorder" type="button" class="w-10 h-10 rounded-xl border border-slate-300 shrink-0 cursor-pointer shadow-sm"></button>
+              <input id="headerBorderColor" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono" value="#FBBF24" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">शीर्षक रंग (सुवर्ण ग्रेडियंट बंद असल्यास)</label>
             <div class="flex items-center gap-2">
               <button id="swatchHeaderText" type="button" class="w-10 h-10 rounded-xl border border-slate-300 shrink-0 cursor-pointer shadow-sm"></button>
               <input id="headerTextColor" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono" value="#FFFFFF" />
             </div>
           </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">हेडर बॅनर फोटो बदला</label>
-            <label class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-indigo-300 bg-gradient-to-br from-indigo-50 to-sky-50 hover:border-[#05344E] p-3 text-center cursor-pointer transition">
-              <span id="headerBannerLabel" class="text-xs font-extrabold text-indigo-900">📷 येथून बॅनर फोटो निवडा / अपलोड करा</span>
-              <input id="headerBannerFile" type="file" accept="image/*" class="hidden" />
-            </label>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">पोर्टल लोगो फोटो बदला</label>
-            <label class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-violet-300 bg-gradient-to-br from-violet-50 to-purple-50 hover:border-[#05344E] p-3 text-center cursor-pointer transition">
-              <span id="headerLogoLabel" class="text-xs font-extrabold text-violet-900">📷 येथून लोगो फोटो निवडा / अपलोड करा</span>
+
+          <div class="flex items-center gap-3 p-3 rounded-2xl bg-sky-50/70 border-2 border-dashed border-sky-300">
+            <img id="logoPreview" src="" alt="लोगो" class="hidden w-12 h-12 rounded-full object-cover border-2 border-amber-400 bg-white shrink-0" />
+            <div class="flex-1 min-w-0">
+              <label for="headerLogoFile" class="block text-xs font-extrabold text-[#05344E] cursor-pointer">🖼️ नवीन पोर्टल लोगो निवडा</label>
+              <p class="text-[11px] text-slate-500">गोलाकार फ्रेममध्ये सर्व पेजेसवर दिसेल</p>
               <input id="headerLogoFile" type="file" accept="image/*" class="hidden" />
-            </label>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- फुटर सेटिंग्ज -->
+      <!-- २. फुटर सेटिंग्ज -->
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
         <h2 class="text-base sm:text-lg font-extrabold text-[#05344E] pb-2 border-b border-slate-100">📝 फुटर सेटिंग्ज</h2>
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">फुटर मजकूर</label>
-          <input id="footerText" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" placeholder="© २०२६ लाईव्ह दर्शन पोर्टल" />
+          <label class="block text-xs font-bold text-slate-700 mb-1">तळाच्या पट्टीतील अस्वीकरण मजकूर</label>
+          <textarea id="footerTextInput" rows="2" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" placeholder="अस्वीकरण व कॉपीराइट सूचना..."></textarea>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">फुटर पार्श्वभूमी रंग (Background)</label>
+            <label class="block text-xs font-bold text-slate-700 mb-1">फुटर पार्श्वभूमी रंग</label>
             <div class="flex items-center gap-2">
               <button id="swatchFooterBg" type="button" class="w-10 h-10 rounded-xl border border-slate-300 shrink-0 cursor-pointer shadow-sm"></button>
-              <input id="footerBgColor" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono" value="#05344E" />
+              <input id="footerBgColor" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono" value="#000000" />
             </div>
           </div>
           <div>
@@ -100,14 +102,12 @@
         </div>
       </section>
 
-
-      <!-- लोडिंग स्क्रीन सेटिंग्ज -->
+      <!-- ३. लोडिंग स्क्रीन सेटिंग्ज -->
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-100">
           <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">⏳ लोडिंग स्क्रीन (Splash Loader) सेटिंग्ज</h2>
           <button id="resetLoaderImgBtn" type="button" class="px-2.5 py-1 rounded-lg bg-amber-50 border border-amber-300 hover:bg-amber-100 text-[11px] font-bold text-amber-900 cursor-pointer">🔄 मूळ विठ्ठल-रुक्मिणी फोटो वापरा</button>
         </div>
-
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="sm:col-span-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 p-3 rounded-2xl bg-amber-50/70 border border-amber-200">
             <div class="w-24 h-24 rounded-xl border-2 border-amber-400 bg-white p-1 flex items-center justify-center overflow-hidden shrink-0">
@@ -122,25 +122,21 @@
               <input id="loaderImageUrl" type="url" class="w-full px-3 py-2 rounded-xl border border-amber-300 bg-white text-xs" placeholder="किंवा फोटोची URL लिंक पेस्ट करा (रिकामे ठेवल्यास विठ्ठल-रुक्मिणी फोटो दिसेल)" />
             </div>
           </div>
-
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">स्वागत शीर्षक (एका ओळीत)</label>
             <input id="loaderTitleInput" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" value="🙏 लाईव्ह दर्शन पोर्टल मध्ये आपले स्वागत आहे 🙏" />
           </div>
-
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">उप-ओळ (Subtitle)</label>
             <input id="loaderSubtitleInput" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" value="॥ सर्व देवांचे दर्शन, एकाच ठिकाणी ॥" />
           </div>
-
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">लोडिंग स्क्रीन पार्श्वभूमी रंग</label>
             <div class="flex items-center gap-2">
               <button id="swatchLoaderBg" type="button" class="w-10 h-10 rounded-xl border border-slate-300 shrink-0 cursor-pointer shadow-sm"></button>
-              <input id="loaderBgColor" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono" value="#FFF7E6" />
+              <input id="loaderBgColor" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono" value="#FFFDF7" />
             </div>
           </div>
-
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">फ्रेम व प्रोग्रेस बार रंग</label>
             <div class="flex items-center gap-2">
@@ -151,25 +147,30 @@
         </div>
       </section>
 
+      <!-- ४. बदलांचा लाईव्ह प्रिव्ह्यू -->
       <section id="adminTabLivePreview" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-3">
-        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">👁️ हेडर, फुटर व लोडिंग स्क्रीन लाईव्ह प्रिव्ह्यू</h2>
+        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">👁️ नवीन हेडर, फुटर व लोडिंग स्क्रीन लाईव्ह प्रिव्ह्यू</h2>
         <div class="rounded-2xl border border-slate-300 overflow-hidden shadow-inner">
-          <div class="bg-gradient-to-r from-[#031926] via-[#05344E] to-[#084160] text-white px-4 py-2.5 border-b-2 border-amber-400 flex items-center justify-between">
-            <div class="min-w-0">
-              <div id="pvHdrTitle" class="text-lg font-bold truncate">श्री. लाईव्ह दर्शन पोर्टल</div>
-              <div id="pvHdrSub" class="text-[11px] text-amber-100 truncate">सर्व मंदिरांचे थेट दर्शन एकाच ठिकाणी</div>
+          <div id="pvHdrBar" class="px-4 py-3 border-b-2 flex items-center justify-between gap-3" style="background:#05344E;border-bottom-color:#FBBF24;">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="w-10 h-10 rounded-full border-2 border-amber-400 bg-white flex items-center justify-center text-lg shrink-0">🛕</span>
+              <span id="pvHdrTitle" class="text-xl sm:text-2xl font-bold truncate bg-gradient-to-r from-white via-amber-200 to-amber-400 bg-clip-text text-transparent">श्री. लाईव्ह दर्शन पोर्टल</span>
             </div>
-            <span class="px-2.5 py-1 rounded-lg bg-white/10 text-xs">☰</span>
+            <div class="flex items-center gap-2 shrink-0 text-amber-200">
+              <span class="w-9 h-9 rounded-xl bg-white/10 border border-amber-300/40 flex items-center justify-center">☀️</span>
+              <span class="w-9 h-9 rounded-xl bg-white/10 border border-amber-300/40 flex items-center justify-center">☰</span>
+            </div>
           </div>
-          <div id="pvLoaderMini" class="p-3 text-center border-b border-slate-200" style="background:#FFF7E6;">
+          <div id="pvLoaderMini" class="p-3 text-center border-b border-slate-200" style="background:#FFFDF7;">
             <div id="pvLoaderMiniTtl" class="text-sm font-bold text-[#05344E]">🙏 लाईव्ह दर्शन पोर्टल मध्ये आपले स्वागत आहे 🙏</div>
             <div id="pvLoaderMiniSub" class="text-xs text-amber-800">॥ सर्व देवांचे दर्शन, एकाच ठिकाणी ॥</div>
           </div>
           <div id="pvFtrBar" class="px-4 py-2 text-xs font-semibold truncate" style="background:#000000;color:#FFFFFF;">अस्वीकरण व कॉपीराइट सूचना...</div>
         </div>
       </section>
+
       <div class="sticky bottom-3 z-20 flex justify-end">
-        <button id="saveHeaderBtn" type="button" class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-sm font-bold cursor-pointer shadow-lg transition">💾 हेडर व फुटर सेव्ह करा</button>
+        <button id="saveHeaderBtn" type="button" class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-sm font-bold cursor-pointer shadow-lg transition">💾 हेडर, फुटर व लोडिंग सेटिंग्ज सेव्ह करा</button>
       </div>
     </div>
   </main>
@@ -179,14 +180,18 @@
   <script src="admin-common.js"></script>
   <script>
     renderAdminShell('header', 'हेडर, लोगो व फुटर');
-    populateFontSelect('headerFontSelect', 'headerFontPreview');
-    bindColorPicker('headerTextColor', 'swatchHeaderText', '#FFFFFF');
-    bindColorPicker('footerBgColor', 'swatchFooterBg', '#05344E');
-    bindColorPicker('footerTextColor', 'swatchFooterText', '#FFFFFF');
+    populateFontSelect('headerFontSelect');
+    document.getElementById('headerFontSelect').value = "'Khand', sans-serif";
 
-    bindColorPicker('loaderBgColor', 'swatchLoaderBg', '#FFF7E6');
+    bindColorPicker('headerBgColor', 'swatchHeaderBg', '#05344E');
+    bindColorPicker('headerBorderColor', 'swatchHeaderBorder', '#FBBF24');
+    bindColorPicker('headerTextColor', 'swatchHeaderText', '#FFFFFF');
+    bindColorPicker('footerBgColor', 'swatchFooterBg', '#000000');
+    bindColorPicker('footerTextColor', 'swatchFooterText', '#FFFFFF');
+    bindColorPicker('loaderBgColor', 'swatchLoaderBg', '#FFFDF7');
     bindColorPicker('loaderAccentColor', 'swatchLoaderAccent', '#F59E0B');
 
+    let uploadedLogoData = '';
     const loaderImgPrev = document.getElementById('loaderImgPreview');
     const loaderImgFb = document.getElementById('loaderImgFallback');
     const loaderImgUrl = document.getElementById('loaderImageUrl');
@@ -194,159 +199,130 @@
 
     function syncLoaderImgPreview(src) {
       const s = (src || '').trim();
-      if (s) {
-        loaderImgPrev.src = s;
-        loaderImgPrev.classList.remove('hidden');
-        loaderImgFb.classList.add('hidden');
-      } else {
-        loaderImgPrev.src = '';
-        loaderImgPrev.classList.add('hidden');
-        loaderImgFb.classList.remove('hidden');
-      }
+      if (s) { loaderImgPrev.src = s; loaderImgPrev.classList.remove('hidden'); loaderImgFb.classList.add('hidden'); }
+      else { loaderImgPrev.src = ''; loaderImgPrev.classList.add('hidden'); loaderImgFb.classList.remove('hidden'); }
     }
 
-    if (loaderImgFile) {
-      loaderImgFile.addEventListener('change', async (e) => {
-        const f = e.target.files && e.target.files[0];
-        if (!f) return;
-        try {
-          const dataUrl = await compressImageToDataUrl(f, 800, 0.85);
-          loaderImgUrl.value = dataUrl;
-          syncLoaderImgPreview(dataUrl);
-          showToast('🖼️ लोडिंग फोटो तयार आहे! खालील सेव्ह बटण दाबा.');
-        } catch (err) {
-          showToast('❌ ' + err.message, true);
-        }
-      });
-    }
-    if (loaderImgUrl) {
-      loaderImgUrl.addEventListener('input', () => syncLoaderImgPreview(loaderImgUrl.value));
-    }
+    document.getElementById('headerLogoFile').addEventListener('change', async (e) => {
+      const f = e.target.files && e.target.files[0];
+      if (!f) return;
+      uploadedLogoData = await compressImageFile(f, 300, 300, 0.85);
+      const lp = document.getElementById('logoPreview');
+      lp.src = uploadedLogoData;
+      lp.classList.remove('hidden');
+      showToast('🖼️ नवीन लोगो तयार आहे! सेव्ह बटण दाबा.');
+    });
+
+    loaderImgFile.addEventListener('change', async (e) => {
+      const f = e.target.files && e.target.files[0];
+      if (!f) return;
+      const d = await compressImageFile(f, 800, 800, 0.85);
+      loaderImgUrl.value = d;
+      syncLoaderImgPreview(d);
+      showToast('🖼️ लोडिंग फोटो तयार आहे! सेव्ह बटण दाबा.');
+    });
+    loaderImgUrl.addEventListener('input', () => syncLoaderImgPreview(loaderImgUrl.value));
     document.getElementById('resetLoaderImgBtn').addEventListener('click', () => {
       loaderImgUrl.value = '';
       syncLoaderImgPreview('');
-      showToast('🔄 मूळ विठ्ठल-रुक्मिणी फोटो पूर्ववत केला. सेव्ह बटण दाबा.');
-    });
-
-
-    document.getElementById('headerBannerFile').addEventListener('change', (e) => {
-      if (e.target.files[0]) document.getElementById('headerBannerLabel').textContent = '✅ निवडलेला बॅनर: ' + e.target.files[0].name;
-    });
-    document.getElementById('headerLogoFile').addEventListener('change', (e) => {
-      if (e.target.files[0]) document.getElementById('headerLogoLabel').textContent = '✅ निवडलेला लोगो: ' + e.target.files[0].name;
-    });
-    initAdminGuard(() => {
-      fbDb.ref('siteConfig/header').on('value', (snap) => {
-        const h = snap.val() || {};
-        if (h.title !== undefined) document.getElementById('headerTitle').value = h.title;
-        if (h.subtitle !== undefined) document.getElementById('headerSubtitle').value = h.subtitle;
-        if (h.fontFamily) {
-          document.getElementById('headerFontSelect').value = h.fontFamily;
-          document.getElementById('headerFontPreview').style.fontFamily = h.fontFamily;
-        }
-        if (h.textColor) {
-          document.getElementById('headerTextColor').value = h.textColor;
-          document.getElementById('swatchHeaderText').style.backgroundColor = h.textColor;
-        }
-        document.getElementById('hideBannerToggle').checked = !!h.hideBanner;
-        document.getElementById('hideHeaderTextToggle').checked = !!h.hideHeaderText;
-      });
-
-      fbDb.ref('siteConfig/loader').on('value', (snap) => {
-        const l = snap.val() || {};
-        if (l.title !== undefined) document.getElementById('loaderTitleInput').value = l.title;
-        if (l.subtitle !== undefined) document.getElementById('loaderSubtitleInput').value = l.subtitle;
-        if (l.image !== undefined) { loaderImgUrl.value = l.image; syncLoaderImgPreview(l.image); }
-        if (l.bgColor) { document.getElementById('loaderBgColor').value = l.bgColor; document.getElementById('swatchLoaderBg').style.backgroundColor = l.bgColor; }
-        if (l.accentColor) { document.getElementById('loaderAccentColor').value = l.accentColor; document.getElementById('swatchLoaderAccent').style.backgroundColor = l.accentColor; }
-      });
-      fbDb.ref('siteConfig/footer').on('value', (snap) => {
-        const f = snap.val() || {};
-        if (f.text !== undefined) document.getElementById('footerText').value = f.text;
-        if (f.bgColor) {
-          document.getElementById('footerBgColor').value = f.bgColor;
-          document.getElementById('swatchFooterBg').style.backgroundColor = f.bgColor;
-        }
-        if (f.textColor) {
-          document.getElementById('footerTextColor').value = f.textColor;
-          document.getElementById('swatchFooterText').style.backgroundColor = f.textColor;
-        }
-      });
-    });
-
-    document.getElementById('saveHeaderBtn').addEventListener('click', async () => {
-      const font = document.getElementById('headerFontSelect').value;
-      const headerPayload = {
-        fontFamily: font,
-        textColor: document.getElementById('headerTextColor').value.trim(),
-        hideBanner: document.getElementById('hideBannerToggle').checked,
-        hideHeaderText: document.getElementById('hideHeaderTextToggle').checked
-      };
-      const title = document.getElementById('headerTitle').value.trim();
-      const subtitle = document.getElementById('headerSubtitle').value.trim();
-      if (title) headerPayload.title = title;
-      if (subtitle) headerPayload.subtitle = subtitle;
-
-      const footerPayload = {
-        fontFamily: font,
-        bgColor: document.getElementById('footerBgColor').value.trim(),
-        textColor: document.getElementById('footerTextColor').value.trim()
-      };
-      const fText = document.getElementById('footerText').value.trim();
-      if (fText) footerPayload.text = fText;
-
-      try {
-        const bFile = document.getElementById('headerBannerFile').files[0];
-        const lFile = document.getElementById('headerLogoFile').files[0];
-        if (bFile) headerPayload.bannerImage = await compressImageFile(bFile, 900, 280, 0.82);
-        if (lFile) headerPayload.logoImage = await compressImageFile(lFile, 320, 320, 0.85);
-        await fbDb.ref('siteConfig/header').update(headerPayload);
-        await fbDb.ref('siteConfig/footer').update(footerPayload);
-        await fbDb.ref('siteConfig/loader').update({
-          title: document.getElementById('loaderTitleInput').value.trim(),
-          subtitle: document.getElementById('loaderSubtitleInput').value.trim(),
-          image: loaderImgUrl ? loaderImgUrl.value.trim() : '',
-          bgColor: document.getElementById('loaderBgColor').value.trim(),
-          accentColor: document.getElementById('loaderAccentColor').value.trim()
-        });
-        showToast('✅ हेडर व फुटर यशस्वीरित्या सेव्ह झाले!');
-      } catch (err) {
-        showToast('❌ त्रुटी: ' + err.message, true);
-      }
+      showToast('🔄 मूळ विठ्ठल-रुक्मिणी फोटो पूर्ववत केला.');
     });
 
     function updateHeaderTabPreview() {
-      const t = document.getElementById('pvHdrTitle'), s = document.getElementById('pvHdrSub');
-      const ht = document.getElementById('headerTitleInput'), hs = document.getElementById('headerSubtitleInput');
-      const hideHT = document.getElementById('hideHeaderTextToggle');
-      if (t && ht) {
-        t.textContent = ht.value || 'श्री. लाईव्ह दर्शन पोर्टल';
-        t.style.fontFamily = document.getElementById('headerFontSelect').value;
-        t.classList.toggle('hidden', Boolean(hideHT && hideHT.checked));
-      }
-      if (s && hs) {
-        s.textContent = hs.value || 'सर्व मंदिरांचे थेट दर्शन एकाच ठिकाणी';
-        s.classList.toggle('hidden', Boolean(hideHT && hideHT.checked));
+      const bar = document.getElementById('pvHdrBar');
+      const t = document.getElementById('pvHdrTitle');
+      const gradOn = document.getElementById('headerGoldGradToggle').checked;
+      bar.style.background = document.getElementById('headerBgColor').value || '#05344E';
+      bar.style.borderBottomColor = document.getElementById('headerBorderColor').value || '#FBBF24';
+      t.textContent = document.getElementById('headerTitleInput').value || 'श्री. लाईव्ह दर्शन पोर्टल';
+      t.style.setProperty('font-family', document.getElementById('headerFontSelect').value, 'important');
+      if (gradOn) {
+        t.className = 'text-xl sm:text-2xl font-bold truncate bg-gradient-to-r from-white via-amber-200 to-amber-400 bg-clip-text text-transparent';
+        t.style.color = '';
+      } else {
+        t.className = 'text-xl sm:text-2xl font-bold truncate';
+        t.style.color = document.getElementById('headerTextColor').value || '#FFFFFF';
       }
       const f = document.getElementById('pvFtrBar');
-      if (f) {
-        f.textContent = document.getElementById('footerTextInput').value || 'अस्वीकरण व कॉपीराइट सूचना...';
-        f.style.backgroundColor = document.getElementById('footerBgColor').value || '#000000';
-        f.style.color = document.getElementById('footerTextColor').value || '#FFFFFF';
-      }
-      const lm = document.getElementById('pvLoaderMini');
-      if (lm) lm.style.background = document.getElementById('loaderBgColor').value || '#FFF7E6';
-      const lmt = document.getElementById('pvLoaderMiniTtl');
-      if (lmt) lmt.textContent = document.getElementById('loaderTitleInput').value || '🙏 लाईव्ह दर्शन पोर्टल मध्ये आपले स्वागत आहे 🙏';
-      const lms = document.getElementById('pvLoaderMiniSub');
-      if (lms) lms.textContent = document.getElementById('loaderSubtitleInput').value || '॥ सर्व देवांचे दर्शन, एकाच ठिकाणी ॥';
+      f.textContent = document.getElementById('footerTextInput').value || 'अस्वीकरण व कॉपीराइट सूचना...';
+      f.style.backgroundColor = document.getElementById('footerBgColor').value || '#000000';
+      f.style.color = document.getElementById('footerTextColor').value || '#FFFFFF';
+      document.getElementById('pvLoaderMini').style.background = document.getElementById('loaderBgColor').value || '#FFFDF7';
+      document.getElementById('pvLoaderMiniTtl').textContent = document.getElementById('loaderTitleInput').value || '🙏 लाईव्ह दर्शन पोर्टल मध्ये आपले स्वागत आहे 🙏';
+      document.getElementById('pvLoaderMiniSub').textContent = document.getElementById('loaderSubtitleInput').value || '॥ सर्व देवांचे दर्शन, एकाच ठिकाणी ॥';
     }
     document.querySelectorAll('#pageContent input, #pageContent select, #pageContent textarea').forEach(el => {
       el.addEventListener('input', updateHeaderTabPreview);
       el.addEventListener('change', updateHeaderTabPreview);
     });
-    setTimeout(updateHeaderTabPreview, 200);
 
+    initAdminGuard(() => {
+      fbDb.ref('siteConfig/header').on('value', (snap) => {
+        const h = snap.val() || {};
+        if (h.title) document.getElementById('headerTitleInput').value = h.title;
+        if (h.fontFamily) document.getElementById('headerFontSelect').value = h.fontFamily;
+        if (h.goldGradient !== undefined) document.getElementById('headerGoldGradToggle').checked = Boolean(h.goldGradient);
+        if (h.bgColor) { document.getElementById('headerBgColor').value = h.bgColor; document.getElementById('swatchHeaderBg').style.backgroundColor = h.bgColor; }
+        if (h.borderColor) { document.getElementById('headerBorderColor').value = h.borderColor; document.getElementById('swatchHeaderBorder').style.backgroundColor = h.borderColor; }
+        if (h.textColor) { document.getElementById('headerTextColor').value = h.textColor; document.getElementById('swatchHeaderText').style.backgroundColor = h.textColor; }
+        if (h.logoImage) {
+          const lp = document.getElementById('logoPreview');
+          lp.src = h.logoImage;
+          lp.classList.remove('hidden');
+        }
+        updateHeaderTabPreview();
+      });
+      fbDb.ref('siteConfig/footer').on('value', (snap) => {
+        const f = snap.val() || {};
+        if (f.text) document.getElementById('footerTextInput').value = f.text;
+        if (f.bgColor) { document.getElementById('footerBgColor').value = f.bgColor; document.getElementById('swatchFooterBg').style.backgroundColor = f.bgColor; }
+        if (f.textColor) { document.getElementById('footerTextColor').value = f.textColor; document.getElementById('swatchFooterText').style.backgroundColor = f.textColor; }
+        updateHeaderTabPreview();
+      });
+      fbDb.ref('siteConfig/loader').on('value', (snap) => {
+        const l = snap.val() || {};
+        if (l.title) document.getElementById('loaderTitleInput').value = l.title;
+        if (l.subtitle) document.getElementById('loaderSubtitleInput').value = l.subtitle;
+        if (l.image !== undefined) { loaderImgUrl.value = l.image; syncLoaderImgPreview(l.image); }
+        if (l.bgColor) { document.getElementById('loaderBgColor').value = l.bgColor; document.getElementById('swatchLoaderBg').style.backgroundColor = l.bgColor; }
+        if (l.accentColor) { document.getElementById('loaderAccentColor').value = l.accentColor; document.getElementById('swatchLoaderAccent').style.backgroundColor = l.accentColor; }
+        updateHeaderTabPreview();
+      });
+    });
+
+    document.getElementById('saveHeaderBtn').addEventListener('click', async () => {
+      try {
+        const headerPayload = {
+          title: document.getElementById('headerTitleInput').value.trim() || 'श्री. लाईव्ह दर्शन पोर्टल',
+          fontFamily: document.getElementById('headerFontSelect').value,
+          goldGradient: document.getElementById('headerGoldGradToggle').checked,
+          bgColor: document.getElementById('headerBgColor').value.trim() || '#05344E',
+          borderColor: document.getElementById('headerBorderColor').value.trim() || '#FBBF24',
+          textColor: document.getElementById('headerTextColor').value.trim() || '#FFFFFF',
+          subtitle: '',
+          hideBanner: true,
+          hideHeaderText: false
+        };
+        if (uploadedLogoData) headerPayload.logoImage = uploadedLogoData;
+        await fbDb.ref('siteConfig/header').set(headerPayload);
+        await fbDb.ref('siteConfig/footer').update({
+          text: document.getElementById('footerTextInput').value.trim(),
+          bgColor: document.getElementById('footerBgColor').value.trim(),
+          textColor: document.getElementById('footerTextColor').value.trim()
+        });
+        await fbDb.ref('siteConfig/loader').update({
+          title: document.getElementById('loaderTitleInput').value.trim(),
+          subtitle: document.getElementById('loaderSubtitleInput').value.trim(),
+          image: loaderImgUrl.value.trim(),
+          bgColor: document.getElementById('loaderBgColor').value.trim(),
+          accentColor: document.getElementById('loaderAccentColor').value.trim()
+        });
+        showToast('✅ नवीन हेडर, फुटर व लोडिंग सेटिंग्ज सेव्ह झाल्या!');
+      } catch (err) {
+        showToast('❌ त्रुटी: ' + err.message, true);
+      }
+    });
+    setTimeout(updateHeaderTabPreview, 200);
   </script>
 </body>
 </html>

@@ -24,7 +24,6 @@
         </div>
         <div class="min-w-0">
           <h1 id="headerTitle" class="font-khand bg-gradient-to-r from-white via-amber-200 to-amber-400 bg-clip-text text-transparent leading-[1.3] pt-0.5 tracking-[0.04em] truncate" style="font-size: clamp(24px, 6.4vw, 38px);">श्री. लाईव्ह दर्शन पोर्टल</h1>
-          <p id="headerSubtitle" class="text-[11px] sm:text-xs text-amber-100/85 truncate">कायदेशीर व पोर्टल माहिती दुवे</p>
         </div>
       </a>
       <a href="index.html" aria-label="मुख्य पेज" title="मुख्य पेज" class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-amber-500 hover:bg-amber-600 text-white shadow-md border border-amber-300/60 flex items-center justify-center transition hover:scale-105 shrink-0">
@@ -167,12 +166,17 @@
       });
       db.ref('siteConfig/header').on('value', (snap) => {
         const h = snap.val() || {};
+        const hdr = document.getElementById('appHeader');
         const t = document.getElementById('headerTitle');
-        const s = document.getElementById('headerSubtitle');
         const l = document.getElementById('headerLogoImg');
+        if (hdr && h.bgColor) hdr.style.background = h.bgColor;
+        if (hdr && h.borderColor) hdr.style.borderBottomColor = h.borderColor;
         if (t && h.title) t.textContent = h.title;
-        if (s && h.subtitle) s.textContent = h.subtitle;
         if (t && h.fontFamily && !h.fontFamily.includes('Noto Sans Devanagari')) t.style.fontFamily = h.fontFamily;
+        if (t && h.goldGradient === false && h.textColor) {
+          t.className = 'font-khand leading-[1.3] pt-0.5 tracking-[0.04em] truncate';
+          t.style.color = h.textColor;
+        }
         if (l && h.logoImage) l.src = h.logoImage;
       });
       db.ref('siteConfig/master').on('value', (snap) => {

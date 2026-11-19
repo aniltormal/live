@@ -78,7 +78,7 @@
       <section id="adminTabLivePreview" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-2">
         <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">👁️ मुख्य पेजवरील दृश्य क्रम प्रिव्ह्यू</h2>
         <p class="text-xs text-slate-600">वर लपवलेली (`🙈`) मंदिरे वगळता बाकी सर्व मंदिरे येथे निवडलेल्या क्रमानुसार मुख्य पेजवर दिसतात.</p>
-        <div id="pvTemplesSummary" class="flex flex-wrap gap-2 pt-1"></div>
+        <div id="pvTemplesSummary" class="grid grid-cols-3 gap-2.5 pt-2 max-w-xl mx-auto"></div>
       </section>
       <div class="sticky bottom-3 z-20 flex justify-end">
         <button id="saveAllTemplesBtn" type="button" class="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-sm font-extrabold cursor-pointer shadow-xl transition">💾 सर्व मंदिरे सेव्ह करा</button>
@@ -391,9 +391,32 @@
 
     setInterval(() => {
       const box = document.getElementById('pvTemplesSummary');
-      if (!box || typeof templesList === 'undefined') return;
-      box.innerHTML = templesList.filter(t => !t.hidden && !t.deleted).map((t, i) => `<span class="px-3 py-1 rounded-full bg-[#05344E] text-white text-xs font-bold">${i+1}. ${t.shortTitle || t.name}</span>`).join('') || '<span class="text-xs text-slate-500">कोणतेही दृश्य मंदिर नाही</span>';
-    }, 800);
+      if (!box) return;
+      const cards = Array.from(document.querySelectorAll('#templesList [data-temple-id]'));
+      const visible = cards.filter(c => {
+        const hid = c.querySelector('.t-hidden');
+        return !(hid && hid.checked);
+      });
+      box.innerHTML = visible.map((c, i) => {
+        const inp = c.querySelector('.t-name');
+        const h3 = c.querySelector('.t-name-heading');
+        const img = c.querySelector('img');
+        const feat = c.querySelector('.t-featured');
+        const isFeat = (feat && feat.checked) || i === 0;
+        const nm = (inp && inp.value.trim()) || (h3 && h3.textContent.trim()) || c.dataset.templeId;
+        const imgSrc = img ? img.src : '';
+        return `
+          <div class="${isFeat ? 'col-span-3' : ''} rounded-xl overflow-hidden border border-slate-300 bg-white shadow-sm flex flex-col">
+            <div class="relative ${isFeat ? 'h-32 sm:h-40' : 'h-24 sm:h-28'} bg-slate-900 overflow-hidden flex items-center justify-center">
+              ${imgSrc ? `<img src="${imgSrc}" alt="${nm}" class="w-full h-full object-cover object-top" />` : '<span class="text-2xl">🛕</span>'}
+              <span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded bg-red-600 text-white text-[9px] font-bold">LIVE •</span>
+              <span class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-white text-[#05344E] text-[10px] font-extrabold flex items-center justify-center shadow">i</span>
+              <span class="absolute bottom-1.5 right-1.5 w-6 h-6 rounded-full bg-white text-[#05344E] border-2 border-amber-400 text-[10px] flex items-center justify-center shadow">▶</span>
+            </div>
+            <div class="bg-[#05344E] text-white px-2 py-1.5 text-center text-[11px] font-bold truncate">${nm}</div>
+          </div>`;
+      }).join('') || '<div class="col-span-3 text-xs text-slate-500 text-center py-4">कोणतेही दृश्य मंदिर नाही</div>';
+    }, 600);
   </script>
 </body>
 </html>

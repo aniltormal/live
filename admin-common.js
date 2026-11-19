@@ -417,7 +417,7 @@ function initAdminGuard(onAuthed, isLoginPage = false) {
       closeActive();
     }
   });
-  window.addEventListener('scroll', () => { if (activeMenu) closeActive(); }, true);
+  window.addEventListener('scroll', (e) => { if (activeMenu && e.target !== document && e.target !== window && activeMenu.contains(e.target)) return; if (activeMenu) closeActive(); }, true);
 
   window.upgradeSelectToModern = function(sel) {
     if (!sel || sel.dataset.modernUpgraded) return;
@@ -496,7 +496,7 @@ function initAdminGuard(onAuthed, isLoginPage = false) {
       const sInp = menu.querySelector('.mdrop-search input');
       if (sInp) {
         sInp.addEventListener('input', () => buildItems(sInp.value));
-        setTimeout(() => sInp.focus(), 30);
+        // no auto-focus so mobile scroll/keyboard doesn't close menu
       }
     });
 
@@ -519,7 +519,7 @@ function initAdminGuard(onAuthed, isLoginPage = false) {
     setTimeout(() => window.upgradeAllSelects(), 80);
     const mo = new MutationObserver((muts) => {
       muts.forEach(m => m.addedNodes.forEach(n => {
-        if (n.nodeType === 1 && !n.classList.contains('mdrop-item') && !n.classList.contains('mdrop-menu') && !n.classList.contains('mdrop-wrap')) {
+        if (n.nodeType === 1 && !n.classList.contains('mdrop-item') && !n.classList.contains('mdrop-menu') && !n.classList.contains('mdrop-wrap') && !(n.closest && n.closest('.mdrop-menu'))) {
           if (n.tagName === 'SELECT') window.upgradeSelectToModern(n);
           else if (n.querySelectorAll) window.upgradeAllSelects(n);
         }

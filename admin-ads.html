@@ -56,7 +56,16 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">जाहिरात कालावधी (सेकंद)</label>
-            <input id="preRollDuration" type="number" min="2" max="30" value="5" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
+            <input id="preRollDuration" type="number" min="2" max="60" value="10" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">व्हिडिओ स्किप बटण किती सेकंदांनी दिसावे?</label>
+            <select id="preRollSkipAfter" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white">
+              <option value="3">३ सेकंदांनंतर (YouTube स्टाईल)</option>
+              <option value="5" selected>५ सेकंदांनंतर (डिफॉल्ट)</option>
+              <option value="8">८ सेकंदांनंतर</option>
+              <option value="10">१० सेकंदांनंतर</option>
+            </select>
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">क्लिक लिंक (URL)</label>
@@ -67,15 +76,21 @@
             <input id="preRollText" type="text" placeholder="जाहिरात शीर्षक किंवा संदेश" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">प्री-रोल फोटो अपलोड</label>
+            <label class="block text-xs font-bold text-slate-700 mb-1">प्री-रोल फोटो किंवा व्हिडिओ अपलोड</label>
             <label class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-sky-300 bg-gradient-to-br from-sky-50 to-indigo-50 hover:border-[#05344E] p-3 text-center cursor-pointer transition">
-              <span class="text-xs font-extrabold text-[#05344E]">📷 येथून फोटो निवडा / बदला</span>
-              <input id="preRollFile" type="file" accept="image/*" class="hidden" />
+              <span class="text-xs font-extrabold text-[#05344E]">📷 / 🎬 फोटो किंवा व्हिडिओ निवडा (MP4/JPG)</span>
+              <input id="preRollFile" type="file" accept="image/*,video/*" class="hidden" />
             </label>
           </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">किंवा थेट व्हिडिओ लिंक (MP4 URL - मोठ्या व्हिडिओसाठी)</label>
+            <input id="preRollVideoUrl" type="url" placeholder="https://.../ad-video.mp4" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
+          </div>
         </div>
-        <div id="preRollPreviewWrap" class="hidden">
-          <img id="preRollPreview" src="" alt="Pre-Roll" class="h-28 rounded-xl border border-slate-200 object-cover" />
+        <div id="preRollPreviewWrap" class="hidden flex flex-wrap items-center gap-3">
+          <img id="preRollPreview" src="" alt="Pre-Roll" class="hidden h-28 rounded-xl border border-slate-200 object-cover" />
+          <video id="preRollVideoPreview" src="" controls muted playsinline class="hidden h-28 rounded-xl border border-slate-200 bg-black"></video>
+          <button id="preRollClearBtn" type="button" class="px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold cursor-pointer">🗑️ मीडिया काढा</button>
         </div>
       </section>
 
@@ -95,7 +110,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">कालावधी (सेकंद)</label>
-            <input id="splashDuration" type="number" min="2" max="30" value="5" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
+            <input id="splashDuration" type="number" min="2" max="60" value="10" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">कधी दाखवावी (Frequency)</label>
@@ -106,29 +121,48 @@
             </select>
           </div>
           <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">व्हिडिओ स्किप बटण किती सेकंदांनी दिसावे?</label>
+            <select id="splashSkipAfter" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white">
+              <option value="3">३ सेकंदांनंतर (YouTube स्टाईल)</option>
+              <option value="5" selected>५ सेकंदांनंतर (डिफॉल्ट)</option>
+              <option value="8">८ सेकंदांनंतर</option>
+              <option value="10">१० सेकंदांनंतर</option>
+            </select>
+          </div>
+          <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">क्लिक लिंक (URL)</label>
             <input id="splashLink" type="url" placeholder="https://..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
           </div>
-          <div>
+          <div class="sm:col-span-2">
             <label class="block text-xs font-bold text-slate-700 mb-1">पॉपअप मजकूर (पर्यायी)</label>
             <input id="splashText" type="text" placeholder="विशेष सूचना किंवा जाहिरात" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
           </div>
-          <div class="sm:col-span-2">
-            <label class="block text-xs font-bold text-slate-700 mb-1">स्प्लॅश फोटो अपलोड</label>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">स्प्लॅश फोटो किंवा व्हिडिओ अपलोड</label>
             <label class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-emerald-300 bg-gradient-to-br from-emerald-50 to-teal-50 hover:border-emerald-600 p-3 text-center cursor-pointer transition">
-              <span class="text-xs font-extrabold text-emerald-900">📷 येथून पॉपअप फोटो निवडा / बदला</span>
-              <input id="splashFile" type="file" accept="image/*" class="hidden" />
+              <span class="text-xs font-extrabold text-emerald-900">📷 / 🎬 येथून पॉपअप फोटो किंवा व्हिडिओ निवडा (MP4/JPG)</span>
+              <input id="splashFile" type="file" accept="image/*,video/*" class="hidden" />
             </label>
           </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">किंवा थेट व्हिडिओ लिंक (MP4 URL - मोठ्या व्हिडिओसाठी)</label>
+            <input id="splashVideoUrl" type="url" placeholder="https://.../popup-ad.mp4" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
+          </div>
         </div>
-        <div id="splashPreviewWrap" class="hidden">
-          <img id="splashPreview" src="" alt="Splash" class="h-28 rounded-xl border border-slate-200 object-cover" />
+        <div id="splashPreviewWrap" class="hidden flex flex-wrap items-center gap-3">
+          <img id="splashPreview" src="" alt="Splash" class="hidden h-28 rounded-xl border border-slate-200 object-cover" />
+          <video id="splashVideoPreview" src="" controls muted playsinline class="hidden h-28 rounded-xl border border-slate-200 bg-black"></video>
+          <button id="splashClearBtn" type="button" class="px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold cursor-pointer">🗑️ मीडिया काढा</button>
         </div>
       </section>
 
-      <section id="adminTabLivePreview" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-2">
-        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">👁️ जाहिरात स्थिती प्रिव्ह्यू</h2>
-        <div id="pvAdsStatus" class="text-xs sm:text-sm font-bold text-slate-700"></div>
+      <section id="adminTabLivePreview" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-3">
+        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">👁️ जाहिरात स्थिती लाईव्ह प्रिव्ह्यू</h2>
+        <div id="pvAdsStatus" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs font-bold"></div>
+        <div id="pvBannerVisual" class="hidden rounded-xl border border-amber-300 bg-amber-50/40 p-2.5 space-y-1.5">
+          <div class="text-[11px] font-extrabold text-amber-900">🖼️ सक्रिय स्लायडिंग बॅनर स्लॉट्स प्रिव्ह्यू:</div>
+          <div id="pvBannerThumbs" class="flex gap-2 overflow-x-auto pb-1"></div>
+        </div>
       </section>
       <div class="sticky bottom-3 z-20 flex justify-end">
         <button id="saveAdsBtn" type="button" class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-sm font-bold cursor-pointer shadow-lg transition">💾 सर्व जाहिरात सेटिंग्ज सेव्ह करा</button>
@@ -228,26 +262,92 @@
       showToast(`➕ स्लॉट #${currentAds.bannerSlides.length} जोडला आहे`);
     });
 
-    // Live local preview for Pre-Roll & Splash
+    function showAdMediaPreview(prefix, src, isVideo) {
+      const wrap = document.getElementById(prefix + 'PreviewWrap');
+      const img = document.getElementById(prefix + 'Preview');
+      const vid = document.getElementById(prefix + 'VideoPreview');
+      if (!wrap || !img || !vid) return;
+      if (!src) {
+        wrap.classList.add('hidden');
+        img.classList.add('hidden'); img.src = '';
+        vid.classList.add('hidden'); vid.src = '';
+        return;
+      }
+      wrap.classList.remove('hidden');
+      if (isVideo) {
+        img.classList.add('hidden'); img.src = '';
+        vid.src = src; vid.classList.remove('hidden');
+      } else {
+        vid.classList.add('hidden'); vid.src = '';
+        img.src = src; img.classList.remove('hidden');
+      }
+    }
+
+    function readVideoFileAsDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        if (file.size > 4.5 * 1024 * 1024) {
+          reject(new Error('व्हिडिओ फाईल 4.5MB पेक्षा मोठी आहे. कृपया लहान MP4 वापरा किंवा थेट Video URL पेस्ट करा.'));
+          return;
+        }
+        const r = new FileReader();
+        r.onload = (e) => resolve(e.target.result);
+        r.onerror = () => reject(new Error('व्हिडिओ वाचताना त्रुटी आली.'));
+        r.readAsDataURL(file);
+      });
+    }
+
     document.getElementById('preRollFile').addEventListener('change', (e) => {
       const f = e.target.files[0];
       if (!f) return;
+      const isVid = f.type.startsWith('video/');
+      if (isVid && f.size > 4.5 * 1024 * 1024) {
+        showToast('⚠️ 4.5MB पेक्षा मोठा व्हिडिओ थेट अपलोड होऊ शकत नाही — कृपया MP4 लिंक वापरा.', true);
+        e.target.value = '';
+        return;
+      }
       const r = new FileReader();
-      r.onload = (ev) => {
-        document.getElementById('preRollPreview').src = ev.target.result;
-        document.getElementById('preRollPreviewWrap').classList.remove('hidden');
-      };
+      r.onload = (ev) => showAdMediaPreview('preRoll', ev.target.result, isVid);
       r.readAsDataURL(f);
     });
+    document.getElementById('preRollVideoUrl').addEventListener('input', (e) => {
+      const u = e.target.value.trim();
+      if (u) showAdMediaPreview('preRoll', u, true);
+    });
+    document.getElementById('preRollClearBtn').addEventListener('click', () => {
+      document.getElementById('preRollFile').value = '';
+      document.getElementById('preRollVideoUrl').value = '';
+      currentAds.preRollImage = '';
+      currentAds.preRollVideo = '';
+      currentAds.preRollVideoUrl = '';
+      currentAds.preRollMediaType = '';
+      showAdMediaPreview('preRoll', '', false);
+    });
+
     document.getElementById('splashFile').addEventListener('change', (e) => {
       const f = e.target.files[0];
       if (!f) return;
+      const isVid = f.type.startsWith('video/');
+      if (isVid && f.size > 4.5 * 1024 * 1024) {
+        showToast('⚠️ 4.5MB पेक्षा मोठा व्हिडिओ थेट अपलोड होऊ शकत नाही — कृपया MP4 लिंक वापरा.', true);
+        e.target.value = '';
+        return;
+      }
       const r = new FileReader();
-      r.onload = (ev) => {
-        document.getElementById('splashPreview').src = ev.target.result;
-        document.getElementById('splashPreviewWrap').classList.remove('hidden');
-      };
+      r.onload = (ev) => showAdMediaPreview('splash', ev.target.result, isVid);
       r.readAsDataURL(f);
+    });
+    document.getElementById('splashVideoUrl').addEventListener('input', (e) => {
+      const u = e.target.value.trim();
+      if (u) showAdMediaPreview('splash', u, true);
+    });
+    document.getElementById('splashClearBtn').addEventListener('click', () => {
+      document.getElementById('splashFile').value = '';
+      document.getElementById('splashVideoUrl').value = '';
+      currentAds.splashImage = '';
+      currentAds.splashVideo = '';
+      currentAds.splashVideoUrl = '';
+      currentAds.splashMediaType = '';
+      showAdMediaPreview('splash', '', false);
     });
 
     initAdminGuard(() => {
@@ -265,22 +365,28 @@
         renderSlots(currentAds.bannerSlides);
 
         document.getElementById('preRollEnabled').checked = !!ads.preRollEnabled;
-        document.getElementById('preRollDuration').value = ads.preRollDuration || 5;
+        document.getElementById('preRollDuration').value = ads.preRollDuration || 10;
+        document.getElementById('preRollSkipAfter').value = String(ads.preRollSkipAfter || 5);
         document.getElementById('preRollLink').value = ads.preRollLink || '';
         document.getElementById('preRollText').value = ads.preRollText || '';
-        if (ads.preRollImage) {
-          document.getElementById('preRollPreview').src = ads.preRollImage;
-          document.getElementById('preRollPreviewWrap').classList.remove('hidden');
+        document.getElementById('preRollVideoUrl').value = ads.preRollVideoUrl || '';
+        if (ads.preRollVideoUrl || ads.preRollVideo) {
+          showAdMediaPreview('preRoll', ads.preRollVideoUrl || ads.preRollVideo, true);
+        } else if (ads.preRollImage) {
+          showAdMediaPreview('preRoll', ads.preRollImage, false);
         }
 
         document.getElementById('splashEnabled').checked = !!ads.splashEnabled;
-        document.getElementById('splashDuration').value = ads.splashDuration || 5;
+        document.getElementById('splashDuration').value = ads.splashDuration || 10;
+        document.getElementById('splashSkipAfter').value = String(ads.splashSkipAfter || 5);
         document.getElementById('splashFreq').value = ads.splashFrequency || 'always';
         document.getElementById('splashLink').value = ads.splashLink || '';
         document.getElementById('splashText').value = ads.splashText || '';
-        if (ads.splashImage) {
-          document.getElementById('splashPreview').src = ads.splashImage;
-          document.getElementById('splashPreviewWrap').classList.remove('hidden');
+        document.getElementById('splashVideoUrl').value = ads.splashVideoUrl || '';
+        if (ads.splashVideoUrl || ads.splashVideo) {
+          showAdMediaPreview('splash', ads.splashVideoUrl || ads.splashVideo, true);
+        } else if (ads.splashImage) {
+          showAdMediaPreview('splash', ads.splashImage, false);
         }
       });
     });
@@ -302,22 +408,65 @@
 
         const preFile = document.getElementById('preRollFile').files[0];
         const splFile = document.getElementById('splashFile').files[0];
+        const preVideoUrlInput = document.getElementById('preRollVideoUrl').value.trim();
+        const splVideoUrlInput = document.getElementById('splashVideoUrl').value.trim();
+
+        let preRollImage = currentAds.preRollImage || '';
+        let preRollVideo = currentAds.preRollVideo || '';
+        let preRollMediaType = currentAds.preRollMediaType || (preRollVideo || preVideoUrlInput ? 'video' : 'image');
+        if (preFile) {
+          if (preFile.type.startsWith('video/')) {
+            preRollVideo = await readVideoFileAsDataUrl(preFile);
+            preRollImage = '';
+            preRollMediaType = 'video';
+          } else {
+            preRollImage = await compressImageFile(preFile, 900, 500, 0.82);
+            preRollVideo = '';
+            preRollMediaType = 'image';
+          }
+        } else if (preVideoUrlInput) {
+          preRollMediaType = 'video';
+        }
+
+        let splashImage = currentAds.splashImage || '';
+        let splashVideo = currentAds.splashVideo || '';
+        let splashMediaType = currentAds.splashMediaType || (splashVideo || splVideoUrlInput ? 'video' : 'image');
+        if (splFile) {
+          if (splFile.type.startsWith('video/')) {
+            splashVideo = await readVideoFileAsDataUrl(splFile);
+            splashImage = '';
+            splashMediaType = 'video';
+          } else {
+            splashImage = await compressImageFile(splFile, 720, 900, 0.82);
+            splashVideo = '';
+            splashMediaType = 'image';
+          }
+        } else if (splVideoUrlInput) {
+          splashMediaType = 'video';
+        }
 
         const payload = Object.assign({}, currentAds, {
           bannerEnabled: document.getElementById('bannerEnabled').checked,
-
           bannerSlides: slides,
           preRollEnabled: document.getElementById('preRollEnabled').checked,
-          preRollDuration: Math.max(2, Math.min(30, Number(document.getElementById('preRollDuration').value) || 5)),
+          preRollDuration: Math.max(2, Math.min(60, Number(document.getElementById('preRollDuration').value) || 10)),
+          preRollSkipAfter: Number(document.getElementById('preRollSkipAfter').value) || 5,
           preRollLink: document.getElementById('preRollLink').value.trim(),
           preRollText: document.getElementById('preRollText').value.trim(),
-          preRollImage: preFile ? await compressImageFile(preFile, 900, 500, 0.82) : (currentAds.preRollImage || ''),
+          preRollImage,
+          preRollVideo,
+          preRollVideoUrl: preVideoUrlInput,
+          preRollMediaType,
           splashEnabled: document.getElementById('splashEnabled').checked,
-          splashDuration: Math.max(2, Math.min(30, Number(document.getElementById('splashDuration').value) || 5)),
+          splashDuration: Math.max(2, Math.min(60, Number(document.getElementById('splashDuration').value) || 10)),
+          splashSkipAfter: Number(document.getElementById('splashSkipAfter').value) || 5,
           splashFrequency: document.getElementById('splashFreq').value,
           splashLink: document.getElementById('splashLink').value.trim(),
           splashText: document.getElementById('splashText').value.trim(),
-          splashImage: splFile ? await compressImageFile(splFile, 720, 900, 0.82) : (currentAds.splashImage || '')
+          splashImage,
+          splashVideo,
+          splashVideoUrl: splVideoUrlInput,
+          splashMediaType
         });
 
         await fbDb.ref('siteConfig/ads').set(payload);
@@ -327,14 +476,53 @@
       }
     });
 
-    setInterval(() => {
-      const el = document.getElementById('pvAdsStatus');
-      if (!el) return;
-      const b = document.getElementById('bannerEnabledToggle')?.checked;
-      const p = document.getElementById('preRollEnabledToggle')?.checked;
-      const s = document.getElementById('splashEnabledToggle')?.checked;
-      el.textContent = `स्लायडिंग बॅनर: ${b ? 'चालू ✅' : 'बंद ❌'} • प्री-रोल जाहिरात: ${p ? 'चालू ✅' : 'बंद ❌'} • स्प्लॅश पॉपअप: ${s ? 'चालू ✅' : 'बंद ❌'}`;
-    }, 600);
+    function updateAdsTabPreview() {
+      const box = document.getElementById('pvAdsStatus');
+      if (!box) return;
+      const b = Boolean(document.getElementById('bannerEnabled')?.checked);
+      const p = Boolean(document.getElementById('preRollEnabled')?.checked);
+      const s = Boolean(document.getElementById('splashEnabled')?.checked);
+      const slides = (currentAds.bannerSlides || []).filter(x => x && x.image);
+      const preDur = document.getElementById('preRollDuration')?.value || 5;
+      const splDur = document.getElementById('splashDuration')?.value || 5;
+
+      const card = (icon, title, on, sub) => `
+        <div class="rounded-xl border p-3 ${on ? 'bg-emerald-50 border-emerald-300 text-emerald-900' : 'bg-slate-50 border-slate-200 text-slate-500'}">
+          <div class="flex items-center justify-between gap-2">
+            <span>${icon} ${title}</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold ${on ? 'bg-emerald-600 text-white' : 'bg-slate-300 text-slate-700'}">${on ? 'चालू ✅' : 'बंद ❌'}</span>
+          </div>
+          <div class="text-[11px] font-semibold mt-1 opacity-85">${sub}</div>
+        </div>
+      `;
+
+      box.innerHTML =
+        card('🖼️', 'स्लायडिंग बॅनर', b, `${slides.length} फोटो अपलोड केलेले`) +
+        card('🎬', 'प्री-रोल जाहिरात', p, `${preDur} सेकंद कालावधी`) +
+        card('✨', 'स्प्लॅश पॉपअप', s, `${splDur} सेकंद कालावधी`);
+
+      const bVis = document.getElementById('pvBannerVisual');
+      const bThumbs = document.getElementById('pvBannerThumbs');
+      if (bVis && bThumbs) {
+        bVis.classList.toggle('hidden', !b || !slides.length);
+        bThumbs.innerHTML = slides.map((sl, i) => `
+          <div class="shrink-0 w-36 h-16 rounded-lg overflow-hidden border border-amber-300 bg-white relative">
+            <img src="${esc(sl.image)}" class="w-full h-full object-cover" />
+            <span class="absolute bottom-0.5 right-1 px-1 rounded bg-black/70 text-white text-[9px]">#${i + 1}</span>
+          </div>
+        `).join('');
+      }
+    }
+
+    ['bannerEnabled', 'preRollEnabled', 'splashEnabled', 'preRollDuration', 'splashDuration'].forEach((id) => {
+      const inp = document.getElementById(id);
+      if (inp) {
+        inp.addEventListener('change', updateAdsTabPreview);
+        inp.addEventListener('input', updateAdsTabPreview);
+      }
+    });
+    setInterval(updateAdsTabPreview, 600);
+    setTimeout(updateAdsTabPreview, 150);
   </script>
 </body>
 </html>

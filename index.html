@@ -11,6 +11,11 @@
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+  <meta name="theme-color" content="#05344E" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Khand:wght@500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Tiro+Devanagari+Marathi:ital@0;1&display=swap" rel="stylesheet" />
@@ -186,9 +191,6 @@
         <button id="menuCloseBtn" type="button" onclick="window.closePortalMenu && window.closePortalMenu()" aria-label="मेनू बंद करा" class="w-8 h-8 rounded-lg bg-white/15 hover:bg-white/25 text-white flex items-center justify-center font-bold cursor-pointer">✕</button>
       </div>
       <nav id="mobileMenuNav" class="flex-1 overflow-y-auto p-3 space-y-1.5 text-sm font-bold">
-        <a href="index.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-amber-50 text-[#05344E] border border-amber-200/70">
-          <span>🏠</span><span>सर्व मंदिरे (मुख्य पेज)</span>
-        </a>
         <div class="rounded-xl border border-slate-200 overflow-hidden">
           <button id="menuTempleInfoToggle" type="button" onclick="window.togglePortalMenuInfo && window.togglePortalMenuInfo()" class="w-full flex items-center justify-between px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100 text-[#05344E] cursor-pointer">
             <span class="flex items-center gap-3"><span>🕰️</span><span>आरती वेळापत्रक व माहिती</span></span>
@@ -203,6 +205,9 @@
           <a href="legal-links.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>🔗</span><span>कायदेशीर समस्या व पोर्टल दुवे</span></a>
           <a href="disclaimer.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📄</span><span>नियम व अस्वीकरण</span></a>
         </div>
+        <button id="menuInstallAppBtn" type="button" onclick="window.triggerPortalInstall && window.triggerPortalInstall()" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-[#05344E] to-[#084160] text-amber-300 border border-amber-400/50 shadow-sm cursor-pointer transition hover:opacity-95">
+          <span>📲</span><span>होम स्क्रीनवर शॉर्टकट जोडा</span>
+        </button>
       </nav>
       <div id="mobileMenuFooter" class="px-4 py-2.5 bg-slate-100 border-t border-slate-200 text-[11px] text-slate-500 text-center font-semibold">
         श्री. लाईव्ह दर्शन पोर्टल
@@ -368,17 +373,22 @@
         <div id="preRollOverlay" class="hidden absolute inset-0 z-40 bg-black flex flex-col items-center justify-center">
           <a id="preRollLinkEl" href="#" target="_blank" rel="noopener noreferrer" class="relative w-full h-full flex items-center justify-center">
             <img id="preRollImgEl" src="" alt="जाहिरात" class="w-full h-full object-cover" />
-            <div id="preRollTextWrap" class="hidden absolute bottom-10 left-3 right-3 bg-black/70 rounded-lg px-3 py-1.5 text-center">
+            <video id="preRollVideoEl" src="" playsinline autoplay muted class="hidden w-full h-full object-contain bg-black"></video>
+            <div id="preRollTextWrap" class="hidden absolute bottom-12 left-3 right-3 bg-black/70 rounded-lg px-3 py-1.5 text-center">
               <p id="preRollTextEl" class="text-xs sm:text-sm font-bold text-white"></p>
             </div>
           </a>
           <div class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full bg-black/75 border border-white/25 text-white text-[11px] sm:text-xs font-bold">
             <span id="preRollCountdownLabel">जाहिरात • दर्शन 5 सेकंदात सुरू होईल...</span>
           </div>
+          <button id="preRollMuteBtn" type="button" class="hidden absolute top-2.5 right-2.5 px-2.5 py-1 rounded-full bg-black/75 border border-white/25 text-white text-xs font-bold cursor-pointer">🔇 आवाज</button>
           <button id="preRollSkipBtn" type="button"
-            class="absolute bottom-2.5 right-2.5 px-3 py-1.5 rounded-full bg-white text-black hover:bg-neutral-200 text-xs font-extrabold shadow-lg cursor-pointer transition">
-            वगळा (5s) ✕
+            class="hidden absolute bottom-3.5 right-0 bg-black/85 hover:bg-black text-white pl-4 pr-3.5 py-2 rounded-l-full border border-r-0 border-white/30 text-xs sm:text-sm font-extrabold shadow-xl transition flex items-center gap-1.5">
+            ⏳ ५ सेकंदात स्किप करा
           </button>
+          <div id="preRollProgressWrap" class="hidden absolute bottom-0 inset-x-0 h-1 bg-white/20">
+            <div id="preRollProgressFill" class="h-full w-0 bg-amber-400 transition-all duration-300"></div>
+          </div>
         </div>
 
         <div id="modalMessageBox" class="hidden absolute inset-0 z-30 bg-neutral-950/95 flex flex-col items-center justify-center p-6 text-center gap-2">
@@ -397,12 +407,23 @@
         class="absolute top-2.5 right-2.5 z-10 w-8 h-8 rounded-full bg-black/80 text-white hover:bg-black text-sm font-bold flex items-center justify-center cursor-pointer shadow">
         ✕
       </button>
-      <a id="splashAdLinkEl" href="#" target="_blank" rel="noopener noreferrer" class="block w-full bg-neutral-100">
-        <img id="splashAdImgEl" src="" alt="जाहिरात" class="w-full max-h-[60vh] object-cover" />
-        <div id="splashAdTextWrap" class="hidden px-4 py-2.5 bg-amber-50 border-t border-amber-200 text-center">
-          <p id="splashAdTextEl" class="text-xs sm:text-sm font-bold text-black"></p>
+      <div class="relative w-full bg-black">
+        <a id="splashAdLinkEl" href="#" target="_blank" rel="noopener noreferrer" class="block w-full bg-neutral-100">
+          <img id="splashAdImgEl" src="" alt="जाहिरात" class="w-full max-h-[60vh] object-cover" />
+          <video id="splashAdVideoEl" src="" playsinline autoplay muted class="hidden w-full max-h-[60vh] object-contain bg-black"></video>
+        </a>
+        <button id="splashMuteBtn" type="button" class="hidden absolute top-2.5 left-2.5 z-10 px-2.5 py-1 rounded-full bg-black/75 border border-white/25 text-white text-xs font-bold cursor-pointer">🔇 आवाज</button>
+        <button id="splashSkipBtn" type="button"
+          class="hidden absolute bottom-3 right-0 z-10 bg-black/85 hover:bg-black text-white pl-3.5 pr-3 py-1.5 rounded-l-full border border-r-0 border-white/30 text-xs font-extrabold shadow-xl transition flex items-center gap-1.5">
+          ⏳ ५ सेकंदात स्किप करा
+        </button>
+        <div id="splashProgressWrap" class="hidden absolute bottom-0 inset-x-0 h-1 bg-white/20">
+          <div id="splashProgressFill" class="h-full w-0 bg-amber-400 transition-all duration-300"></div>
         </div>
-      </a>
+      </div>
+      <div id="splashAdTextWrap" class="hidden px-4 py-2.5 bg-amber-50 border-t border-amber-200 text-center">
+        <p id="splashAdTextEl" class="text-xs sm:text-sm font-bold text-black"></p>
+      </div>
       <div class="px-3 py-2 bg-neutral-950 text-white text-center text-xs font-bold">
         <span id="splashCountdownLabel">जाहिरात • 5 सेकंदात बंद होईल...</span>
       </div>
@@ -1310,9 +1331,14 @@
     function applyTheme() {
       if (isDark) {
         el.appBody.className = 'bg-black text-white min-h-screen flex flex-col transition-colors duration-300';
+        document.body.style.backgroundColor = '';
+        document.body.style.color = '';
         if (el.appFooter) el.appFooter.className = 'bg-neutral-950 text-white border-t-2 border-white/30 py-2.5 px-3 flex items-center gap-3 overflow-hidden transition-colors duration-300';
       } else {
         el.appBody.className = 'bg-white text-black min-h-screen flex flex-col transition-colors duration-300';
+        const mc = (window.__masterCfg && window.__masterCfg.enabled !== false && window.__masterCfg.colors) || {};
+        document.body.style.backgroundColor = mc.pageBg || '';
+        document.body.style.color = mc.text || '';
         if (el.appFooter) el.appFooter.className = 'bg-black text-white border-t-2 border-black py-2.5 px-3 flex items-center gap-3 overflow-hidden transition-colors duration-300';
       }
       if (el.themeToggleBtn) el.themeToggleBtn.setAttribute('aria-checked', isDark ? 'true' : 'false');
@@ -1998,7 +2024,7 @@
       el.nativePlayer.play().catch(() => {});
       };
 
-      if (siteAdsConfig.preRollEnabled && siteAdsConfig.preRollImage) {
+      if (siteAdsConfig.preRollEnabled && (siteAdsConfig.preRollImage || siteAdsConfig.preRollVideo || siteAdsConfig.preRollVideoUrl)) {
         showPreRollAd(startActualStream);
       } else {
         startActualStream();
@@ -2419,6 +2445,10 @@
           if (c.layout.btnFontFamily) ensureGoogleFontLoaded(c.layout.btnFontFamily);
           applyLayoutToPage();
         }
+        if (c.visitors && typeof c.visitors === 'object') {
+          currentVisitorsCfg = c.visitors;
+          if (typeof renderVisitorBadge === 'function') renderVisitorBadge();
+        }
         if (c.ads && typeof c.ads === 'object') {
           siteAdsConfig.bannerEnabled = Boolean(c.ads.bannerEnabled);
           siteAdsConfig.bannerSlides = Array.isArray(c.ads.bannerSlides) ? c.ads.bannerSlides : [];
@@ -2615,14 +2645,22 @@
             siteAdsConfig.bannerSlides = Array.isArray(a.bannerSlides) ? a.bannerSlides : [];
             siteAdsConfig.preRollEnabled = Boolean(a.preRollEnabled);
             siteAdsConfig.preRollImage = a.preRollImage || '';
+            siteAdsConfig.preRollVideo = a.preRollVideo || '';
+            siteAdsConfig.preRollVideoUrl = a.preRollVideoUrl || '';
+            siteAdsConfig.preRollMediaType = a.preRollMediaType || '';
+            siteAdsConfig.preRollSkipAfter = Number(a.preRollSkipAfter) || 5;
             siteAdsConfig.preRollLink = a.preRollLink || '';
             siteAdsConfig.preRollText = a.preRollText || '';
-            siteAdsConfig.preRollDuration = Number(a.preRollDuration) || 5;
+            siteAdsConfig.preRollDuration = Number(a.preRollDuration) || 10;
             siteAdsConfig.splashEnabled = Boolean(a.splashEnabled);
             siteAdsConfig.splashImage = a.splashImage || '';
+            siteAdsConfig.splashVideo = a.splashVideo || '';
+            siteAdsConfig.splashVideoUrl = a.splashVideoUrl || '';
+            siteAdsConfig.splashMediaType = a.splashMediaType || '';
+            siteAdsConfig.splashSkipAfter = Number(a.splashSkipAfter) || 5;
             siteAdsConfig.splashLink = a.splashLink || '';
             siteAdsConfig.splashText = a.splashText || '';
-            siteAdsConfig.splashDuration = Number(a.splashDuration) || 5;
+            siteAdsConfig.splashDuration = Number(a.splashDuration) || 10;
             siteAdsConfig.splashFrequency = a.splashFrequency || 'daily';
             renderMainAdBanner();
             maybeShowSplashAd();
@@ -2665,23 +2703,35 @@
         // Listen for full Video Player Settings (header, title, clock, buttons, ticker, font & watermark)
         
     function applyMasterConfigGlobal(m) {
+      window.__masterCfg = m;
       if (m && m.fontFamily) ensureGoogleFontLoaded(m.fontFamily);
+      const hdr = document.getElementById('appHeader');
+      const ftr = document.getElementById('appFooter');
+      const llb = document.getElementById('legalLinksBar');
+      const pBar = document.getElementById('panchangBar');
       if (!m || m.enabled === false) {
         document.documentElement.style.fontSize = '';
+        document.body.style.backgroundColor = '';
+        document.body.style.color = '';
+        if (hdr) { hdr.style.backgroundImage = ''; hdr.style.backgroundColor = ''; }
+        if (ftr) ftr.style.backgroundColor = '';
+        if (llb) llb.style.backgroundColor = '';
+        if (pBar) pBar.style.backgroundColor = '';
         return;
       }
       if (m.fontFamily) document.body.style.fontFamily = m.fontFamily;
       if (m.fontScale) document.documentElement.style.fontSize = (16 * (Number(m.fontScale) / 100)).toFixed(2) + 'px';
       const c = m.colors || {};
-      if (c.pageBg) document.body.style.backgroundColor = c.pageBg;
-      if (c.text) document.body.style.color = c.text;
-      const hdr = document.getElementById('appHeader');
-      if (hdr && c.headerBg) hdr.style.backgroundColor = c.headerBg;
-      const ftr = document.getElementById('appFooter');
+      if (!isDark) {
+        if (c.pageBg) document.body.style.backgroundColor = c.pageBg;
+        if (c.text) document.body.style.color = c.text;
+      }
+      if (hdr && c.headerBg) {
+        hdr.style.backgroundImage = 'none';
+        hdr.style.backgroundColor = c.headerBg;
+      }
       if (ftr && c.footerBg) ftr.style.backgroundColor = c.footerBg;
-      const llb = document.getElementById('legalLinksBar');
       if (llb && c.primary) llb.style.backgroundColor = c.primary;
-      const pBar = document.getElementById('panchangBar');
       if (pBar && c.primary) pBar.style.backgroundColor = c.primary;
       document.querySelectorAll('.temple-title-bar').forEach(el => { if (c.primary) el.style.backgroundColor = c.primary; });
     }
@@ -3441,19 +3491,61 @@
       restartAutoSlide();
     }
 
-    // Option 2: Pre-Roll Ad with dynamic countdown text
+    // Option 2: Pre-Roll Ad (Image + Video with YouTube Option 1 Skip Button)
     function stopPreRollAd() {
       if (preRollTimer) {
         clearInterval(preRollTimer);
         preRollTimer = null;
+      }
+      const pv = document.getElementById('preRollVideoEl');
+      if (pv) {
+        try { pv.pause(); } catch (e) {}
+        pv.removeAttribute('src');
+        pv.classList.add('hidden');
       }
       el.preRollOverlay.classList.add('hidden');
     }
 
     function showPreRollAd(onFinish) {
       stopPreRollAd();
-      let remaining = Math.max(2, Math.min(30, Number(siteAdsConfig.preRollDuration) || 5));
-      el.preRollImgEl.src = siteAdsConfig.preRollImage;
+      const totalDur = Math.max(2, Math.min(60, Number(siteAdsConfig.preRollDuration) || 10));
+      let remaining = totalDur;
+      const videoSrc = (siteAdsConfig.preRollVideoUrl || siteAdsConfig.preRollVideo || '').trim();
+      const isVideo = Boolean(videoSrc);
+      const skipAfter = Math.min(totalDur, Math.max(1, Number(siteAdsConfig.preRollSkipAfter) || 5));
+      let elapsed = 0;
+
+      const pv = document.getElementById('preRollVideoEl');
+      const pmute = document.getElementById('preRollMuteBtn');
+      const pProgWrap = document.getElementById('preRollProgressWrap');
+      const pProgFill = document.getElementById('preRollProgressFill');
+
+      if (isVideo && pv) {
+        el.preRollImgEl.classList.add('hidden');
+        pv.src = videoSrc;
+        pv.muted = true;
+        pv.classList.remove('hidden');
+        pv.play().catch(() => {});
+        if (pmute) {
+          pmute.classList.remove('hidden');
+          pmute.textContent = '🔇 आवाज';
+          pmute.onclick = (ev) => {
+            ev.preventDefault(); ev.stopPropagation();
+            pv.muted = !pv.muted;
+            pmute.textContent = pv.muted ? '🔇 आवाज' : '🔊 म्यूट';
+          };
+        }
+        el.preRollSkipBtn.classList.remove('hidden');
+        if (pProgWrap) pProgWrap.classList.remove('hidden');
+      } else {
+        if (pv) pv.classList.add('hidden');
+        if (pmute) pmute.classList.add('hidden');
+        el.preRollImgEl.src = siteAdsConfig.preRollImage;
+        el.preRollImgEl.classList.remove('hidden');
+        el.preRollSkipBtn.classList.add('hidden');
+        if (pProgWrap) pProgWrap.classList.add('hidden');
+      }
+
       configureAdLink(el.preRollLinkEl, siteAdsConfig.preRollLink);
       if (siteAdsConfig.preRollText) {
         el.preRollTextEl.textContent = siteAdsConfig.preRollText;
@@ -3462,21 +3554,42 @@
         el.preRollTextWrap.classList.add('hidden');
       }
 
-      const updateLabels = () => {
-        el.preRollCountdownLabel.textContent = `जाहिरात • दर्शन ${remaining} सेकंदात सुरू होईल...`;
-        el.preRollSkipBtn.textContent = `वगळा (${remaining}s) ✕`;
-      };
-      updateLabels();
-      el.preRollOverlay.classList.remove('hidden');
-
       const finish = () => {
         stopPreRollAd();
         onFinish();
       };
 
-      el.preRollSkipBtn.onclick = finish;
+      const updateLabels = () => {
+        el.preRollCountdownLabel.textContent = `जाहिरात • दर्शन ${remaining} सेकंदात सुरू होईल...`;
+        if (isVideo) {
+          const leftToSkip = Math.max(0, skipAfter - elapsed);
+          if (leftToSkip > 0) {
+            el.preRollSkipBtn.textContent = `⏳ ${leftToSkip} सेकंदात स्किप करा`;
+            el.preRollSkipBtn.disabled = true;
+            el.preRollSkipBtn.classList.add('opacity-80', 'cursor-not-allowed');
+            el.preRollSkipBtn.classList.remove('cursor-pointer');
+            el.preRollSkipBtn.onclick = null;
+          } else {
+            el.preRollSkipBtn.innerHTML = '<span>जाहिरात स्किप करा</span><span class="text-amber-300">⏭️</span>';
+            el.preRollSkipBtn.disabled = false;
+            el.preRollSkipBtn.classList.remove('opacity-80', 'cursor-not-allowed');
+            el.preRollSkipBtn.classList.add('cursor-pointer');
+            el.preRollSkipBtn.onclick = (ev) => { ev.preventDefault(); ev.stopPropagation(); finish(); };
+          }
+          if (pProgFill) pProgFill.style.width = Math.min(100, Math.round((elapsed / totalDur) * 100)) + '%';
+        }
+      };
+
+      updateLabels();
+      el.preRollOverlay.classList.remove('hidden');
+
+      if (isVideo && pv) {
+        pv.onended = finish;
+      }
+
       preRollTimer = setInterval(() => {
         remaining -= 1;
+        elapsed += 1;
         if (remaining <= 0) {
           finish();
         } else {
@@ -3485,11 +3598,17 @@
       }, 1000);
     }
 
-    // Option 3: Smart Splash Popup Ad with dynamic countdown text
+    // Option 3: Smart Splash Popup Ad (Image + Video with YouTube Option 1 Skip Button)
     function closeSplashAd() {
       if (splashTimer) {
         clearInterval(splashTimer);
         splashTimer = null;
+      }
+      const sv = document.getElementById('splashAdVideoEl');
+      if (sv) {
+        try { sv.pause(); } catch (e) {}
+        sv.removeAttribute('src');
+        sv.classList.add('hidden');
       }
       el.splashAdModal.classList.add('hidden');
     }
@@ -3498,7 +3617,9 @@
 
     function maybeShowSplashAd() {
       if (splashShownThisLoad) return;
-      if (!siteAdsConfig.splashEnabled || !siteAdsConfig.splashImage) return;
+      const videoSrc = (siteAdsConfig.splashVideoUrl || siteAdsConfig.splashVideo || '').trim();
+      const isVideo = Boolean(videoSrc);
+      if (!siteAdsConfig.splashEnabled || (!siteAdsConfig.splashImage && !isVideo)) return;
 
       const todayKey = new Date().toISOString().slice(0, 10);
       if (siteAdsConfig.splashFrequency === 'daily') {
@@ -3509,8 +3630,43 @@
       }
 
       splashShownThisLoad = true;
-      let remaining = Math.max(2, Math.min(30, Number(siteAdsConfig.splashDuration) || 5));
-      el.splashAdImgEl.src = siteAdsConfig.splashImage;
+      const totalDur = Math.max(2, Math.min(60, Number(siteAdsConfig.splashDuration) || 10));
+      let remaining = totalDur;
+      const skipAfter = Math.min(totalDur, Math.max(1, Number(siteAdsConfig.splashSkipAfter) || 5));
+      let elapsed = 0;
+
+      const sv = document.getElementById('splashAdVideoEl');
+      const smute = document.getElementById('splashMuteBtn');
+      const sSkipBtn = document.getElementById('splashSkipBtn');
+      const sProgWrap = document.getElementById('splashProgressWrap');
+      const sProgFill = document.getElementById('splashProgressFill');
+
+      if (isVideo && sv) {
+        el.splashAdImgEl.classList.add('hidden');
+        sv.src = videoSrc;
+        sv.muted = true;
+        sv.classList.remove('hidden');
+        sv.play().catch(() => {});
+        if (smute) {
+          smute.classList.remove('hidden');
+          smute.textContent = '🔇 आवाज';
+          smute.onclick = (ev) => {
+            ev.preventDefault(); ev.stopPropagation();
+            sv.muted = !sv.muted;
+            smute.textContent = sv.muted ? '🔇 आवाज' : '🔊 म्यूट';
+          };
+        }
+        if (sSkipBtn) sSkipBtn.classList.remove('hidden');
+        if (sProgWrap) sProgWrap.classList.remove('hidden');
+      } else {
+        if (sv) sv.classList.add('hidden');
+        if (smute) smute.classList.add('hidden');
+        el.splashAdImgEl.src = siteAdsConfig.splashImage;
+        el.splashAdImgEl.classList.remove('hidden');
+        if (sSkipBtn) sSkipBtn.classList.add('hidden');
+        if (sProgWrap) sProgWrap.classList.add('hidden');
+      }
+
       configureAdLink(el.splashAdLinkEl, siteAdsConfig.splashLink);
       if (siteAdsConfig.splashText) {
         el.splashAdTextEl.textContent = siteAdsConfig.splashText;
@@ -3518,15 +3674,42 @@
       } else {
         el.splashAdTextWrap.classList.add('hidden');
       }
-      el.splashCountdownLabel.textContent = `जाहिरात • ${remaining} सेकंदात बंद होईल...`;
+
+      const updateSplashLabels = () => {
+        el.splashCountdownLabel.textContent = `जाहिरात • ${remaining} सेकंदात बंद होईल...`;
+        if (isVideo && sSkipBtn) {
+          const leftToSkip = Math.max(0, skipAfter - elapsed);
+          if (leftToSkip > 0) {
+            sSkipBtn.textContent = `⏳ ${leftToSkip} सेकंदात स्किप करा`;
+            sSkipBtn.disabled = true;
+            sSkipBtn.classList.add('opacity-80', 'cursor-not-allowed');
+            sSkipBtn.classList.remove('cursor-pointer');
+            sSkipBtn.onclick = null;
+          } else {
+            sSkipBtn.innerHTML = '<span>जाहिरात स्किप करा</span><span class="text-amber-300">⏭️</span>';
+            sSkipBtn.disabled = false;
+            sSkipBtn.classList.remove('opacity-80', 'cursor-not-allowed');
+            sSkipBtn.classList.add('cursor-pointer');
+            sSkipBtn.onclick = (ev) => { ev.preventDefault(); ev.stopPropagation(); closeSplashAd(); };
+          }
+          if (sProgFill) sProgFill.style.width = Math.min(100, Math.round((elapsed / totalDur) * 100)) + '%';
+        }
+      };
+
+      updateSplashLabels();
       el.splashAdModal.classList.remove('hidden');
+
+      if (isVideo && sv) {
+        sv.onended = closeSplashAd;
+      }
 
       splashTimer = setInterval(() => {
         remaining -= 1;
+        elapsed += 1;
         if (remaining <= 0) {
           closeSplashAd();
         } else {
-          el.splashCountdownLabel.textContent = `जाहिरात • ${remaining} सेकंदात बंद होईल...`;
+          updateSplashLabels();
         }
       }, 1000);
     }
@@ -3744,7 +3927,12 @@
 
       if (!sessionStorage.getItem('ld_visited_counted')) {
         sessionStorage.setItem('ld_visited_counted', '1');
-        visRef.child('count').transaction((cur) => (Number(cur) || 0) + 1);
+        visRef.child('count').once('value').then(() => {
+          visRef.child('count').transaction((cur) => {
+            if (cur === null) return;
+            return (Number(cur) || 0) + 1;
+          });
+        }).catch(() => {});
       }
 
       visRef.on('value', (snap) => {
@@ -3756,6 +3944,7 @@
             count: Number(v.count) || 1,
             flash: v.flash !== false
           };
+          updateSiteCache('visitors', currentVisitorsCfg);
           renderVisitorBadge();
           renderAdminVisitorsAndLinks();
         }
@@ -3934,6 +4123,107 @@
         drawer.addEventListener('click', (e) => { if (e.target === drawer) window.closePortalMenu(); });
       }
     });
+  </script>
+
+  <!-- PWA Add to Home Screen Prompt Banner -->
+  <div id="pwaInstallBanner" class="hidden fixed bottom-14 left-3 right-3 sm:left-auto sm:right-4 sm:max-w-sm z-40 rounded-2xl bg-gradient-to-r from-[#031926] via-[#05344E] to-[#084160] text-white border-2 border-amber-400 shadow-2xl p-3 flex items-center gap-3">
+    <img src="icon-192.png" alt="लाईव्ह दर्शन" class="w-11 h-11 rounded-xl border border-amber-400/80 shrink-0 bg-white object-cover" />
+    <div class="flex-1 min-w-0">
+      <div class="text-xs sm:text-sm font-extrabold text-amber-300 truncate">श्री. लाईव्ह दर्शन अ‍ॅप</div>
+      <div id="pwaInstallDesc" class="text-[11px] text-slate-200 leading-snug">थेट मोबाईल होम स्क्रीनवर शॉर्टकट जोडा</div>
+    </div>
+    <button id="pwaInstallActionBtn" type="button" class="shrink-0 px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-[#031926] text-xs font-extrabold cursor-pointer shadow">जोडा</button>
+    <button id="pwaInstallDismissBtn" type="button" aria-label="बंद करा" class="shrink-0 w-7 h-7 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold flex items-center justify-center cursor-pointer">✕</button>
+  </div>
+
+  <!-- iOS / Manual Add to Home Screen Guide Modal -->
+  <div id="pwaGuideModal" class="hidden fixed inset-0 z-50 bg-black/65 flex items-center justify-center p-4">
+    <div class="w-full max-w-sm rounded-2xl bg-white text-slate-900 border-2 border-amber-400 shadow-2xl p-5 space-y-3">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-extrabold text-[#05344E]">📲 होम स्क्रीनवर शॉर्टकट कसा जोडायचा?</h3>
+        <button id="pwaGuideCloseBtn" type="button" class="w-7 h-7 rounded-lg bg-slate-100 text-slate-700 font-bold text-xs cursor-pointer">✕</button>
+      </div>
+      <p id="pwaGuideText" class="text-xs sm:text-sm text-slate-700 leading-relaxed"></p>
+      <button id="pwaGuideOkBtn" type="button" class="w-full py-2.5 rounded-xl bg-[#05344E] text-white text-xs font-extrabold cursor-pointer">समजले</button>
+    </div>
+  </div>
+
+  <script>
+    (function initPortalPWA() {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      }
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+      if (isStandalone) {
+        const mb = document.getElementById('menuInstallAppBtn');
+        if (mb) mb.classList.add('hidden');
+        return;
+      }
+
+      let deferredPrompt = null;
+      const banner = document.getElementById('pwaInstallBanner');
+      const actBtn = document.getElementById('pwaInstallActionBtn');
+      const disBtn = document.getElementById('pwaInstallDismissBtn');
+      const guideModal = document.getElementById('pwaGuideModal');
+      const guideText = document.getElementById('pwaGuideText');
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+      let pwaAutoHideTimer = null;
+      function wasShownBefore() {
+        try {
+          return localStorage.getItem('ld_pwa_prompt_shown_v1') === '1';
+        } catch (e) { return false; }
+      }
+
+      function showBanner() {
+        if (!banner || wasShownBefore()) return;
+        try { localStorage.setItem('ld_pwa_prompt_shown_v1', '1'); } catch (e) {}
+        banner.classList.remove('hidden');
+        if (pwaAutoHideTimer) clearTimeout(pwaAutoHideTimer);
+        pwaAutoHideTimer = setTimeout(() => {
+          banner.classList.add('hidden');
+        }, 8000);
+      }
+
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        showBanner();
+      });
+
+      if (isIOS) {
+        setTimeout(showBanner, 2500);
+      }
+
+      window.triggerPortalInstall = async function() {
+        if (typeof window.closePortalMenu === 'function') window.closePortalMenu();
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          try {
+            const res = await deferredPrompt.userChoice;
+            if (res && res.outcome === 'accepted' && banner) banner.classList.add('hidden');
+          } catch (e) {}
+          deferredPrompt = null;
+          return;
+        }
+        if (guideModal && guideText) {
+          guideText.innerHTML = isIOS
+            ? '१. खालील Safari बारमधील <strong>Share (↑)</strong> आयकॉनवर टॅप करा.<br/>२. यादीत खाली येऊन <strong>“Add to Home Screen”</strong> वर टॅप करा व <strong>Add</strong> दाबा.'
+            : '१. तुमच्या Chrome ब्राउझरच्या वर उजव्या कोपऱ्यातील <strong>⋮ (तीन डॉट)</strong> वर टॅप करा.<br/>२. <strong>“Add to Home screen”</strong> किंवा <strong>“Install app”</strong> पर्याय निवडा.';
+          guideModal.classList.remove('hidden');
+        }
+      };
+
+      if (actBtn) actBtn.addEventListener('click', window.triggerPortalInstall);
+      if (disBtn) disBtn.addEventListener('click', () => {
+        if (banner) banner.classList.add('hidden');
+        try { localStorage.setItem('ld_pwa_dismiss_ts', String(Date.now())); } catch (e) {}
+      });
+      const gc = document.getElementById('pwaGuideCloseBtn');
+      const go = document.getElementById('pwaGuideOkBtn');
+      if (gc) gc.addEventListener('click', () => guideModal && guideModal.classList.add('hidden'));
+      if (go) go.addEventListener('click', () => guideModal && guideModal.classList.add('hidden'));
+    })();
   </script>
 </body>
 </html>

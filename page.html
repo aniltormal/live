@@ -24,14 +24,49 @@
           <h1 id="headerTitle" class="font-khand bg-gradient-to-r from-white via-amber-200 to-amber-400 bg-clip-text text-transparent leading-[1.3] pt-0.5 tracking-[0.04em] truncate" style="font-size: clamp(24px, 6.4vw, 38px);">श्री. लाईव्ह दर्शन पोर्टल</h1>
         </div>
       </a>
-      <a href="index.html" aria-label="मुख्य पेज" title="मुख्य पेज" class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-amber-500 hover:bg-amber-600 text-white shadow-md border border-amber-300/60 flex items-center justify-center transition hover:scale-105 shrink-0">
+      <div class="flex items-center gap-2 shrink-0">
+        <a href="index.html" aria-label="मुख्य पेज" title="मुख्य पेज" class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-amber-500 hover:bg-amber-600 text-white shadow-md border border-amber-300/60 flex items-center justify-center transition hover:scale-105 shrink-0">
         <svg class="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M3 10.5L12 3l9 7.5"/>
           <path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/>
         </svg>
       </a>
+        <button id="menuOpenBtn" type="button" onclick="window.openPortalMenu && window.openPortalMenu()" aria-label="मेनू उघडा" class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white/10 hover:bg-white/20 border border-amber-300/40 text-amber-200 flex items-center justify-center shadow-sm transition cursor-pointer shrink-0">
+          <svg class="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
     </div>
   </header>
+
+  <!-- ☰ Hamburger Slide-Out Menu Drawer -->
+  <div id="mobileMenuDrawer" class="hidden fixed inset-0 z-50 bg-black/55 opacity-0 transition-opacity duration-300 flex justify-end" role="dialog" aria-modal="true">
+    <div id="mobileMenuPanel" class="w-60 sm:w-64 max-w-[70vw] h-full bg-white text-slate-900 shadow-2xl flex flex-col overflow-hidden transition-all duration-300 ease-out translate-x-full">
+      <div class="bg-gradient-to-r from-[#031926] via-[#05344E] to-[#084160] text-white px-4 py-3.5 border-b-2 border-amber-400 flex items-center justify-between">
+        <div class="font-khand text-lg font-bold tracking-wide">🛕 पोर्टल मेनू</div>
+        <button id="menuCloseBtn" type="button" onclick="window.closePortalMenu && window.closePortalMenu()" aria-label="मेनू बंद करा" class="w-8 h-8 rounded-lg bg-white/15 hover:bg-white/25 text-white flex items-center justify-center font-bold cursor-pointer">✕</button>
+      </div>
+      <nav id="mobileMenuNav" class="flex-1 overflow-y-auto p-3 space-y-1.5 text-sm font-bold">
+        <div class="rounded-xl border border-slate-200 overflow-hidden">
+          <button id="menuTempleInfoToggle" type="button" onclick="window.togglePortalMenuInfo && window.togglePortalMenuInfo()" class="w-full flex items-center justify-between px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100 text-[#05344E] cursor-pointer">
+            <span class="flex items-center gap-3"><span>🕰️</span><span>आरती वेळापत्रक व माहिती</span></span>
+            <span id="menuTempleInfoArrow" class="text-xs">▼</span>
+          </button>
+          <div id="menuTempleInfoList" class="hidden bg-white px-2 py-1.5 space-y-1 border-t border-slate-100"></div>
+        </div>
+        <div id="mobileMenuDynamicLinks" class="space-y-1.5">
+          <a href="panchang.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>🗓️</span><span>आजचे पंचांग व सणवार</span></a>
+          <a href="contact.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📢</span><span>जाहिरात व संपर्क</span></a>
+          <a href="about.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>ℹ️</span><span>आमच्याबद्दल</span></a>
+          <a href="legal-links.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>🔗</span><span>कायदेशीर समस्या व पोर्टल दुवे</span></a>
+          <a href="disclaimer.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📄</span><span>नियम व अस्वीकरण</span></a>
+        </div>
+      </nav>
+      <div id="mobileMenuFooter" class="px-4 py-2.5 bg-slate-100 border-t border-slate-200 text-[11px] text-slate-500 text-center font-semibold">
+        श्री. लाईव्ह दर्शन पोर्टल
+      </div>
+    </div>
+  </div>
+
 
   <main class="flex-1 max-w-4xl w-full mx-auto p-4 sm:p-6 space-y-5">
     <section id="customPageCard" class="bg-white rounded-3xl border border-slate-200 shadow-md p-5 sm:p-7 space-y-4">
@@ -168,6 +203,89 @@
           } else if (ctaWrap) {
             ctaWrap.classList.add('hidden');
           }
+        });
+      }
+    })();
+  </script>
+
+  <script>
+    (function initSubpagePortalMenu() {
+      const DEFAULT_TEMPLES_MENU = [
+        { id: 'pandharpur', shortTitle: 'श्री विठ्ठल-रुक्मिणी, पंढरपूर' },
+        { id: 'kolhapur', shortTitle: 'महालक्ष्मी मंदिर, कोल्हापूर' },
+        { id: 'tuljapur', shortTitle: 'तुळजाभवानी मंदिर, तुळजापूर' },
+        { id: 'shirdi', shortTitle: 'साईबाबा मंदिर, शिर्डी' },
+        { id: 'dagdusheth', shortTitle: 'दगडूशेठ गणपती, पुणे' },
+        { id: 'siddhivinayak', shortTitle: 'सिद्धिविनायक, मुंबई' }
+      ];
+      function esc(s) {
+        return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      }
+      function renderTempleMenu(list) {
+        const box = document.getElementById('menuTempleInfoList');
+        if (!box) return;
+        box.innerHTML = (list || []).filter(t => t && !t.deleted && !t.hidden).map(t =>
+          `<a href="temple-info.html?id=${encodeURIComponent(t.id)}" class="block px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700 hover:bg-amber-50 hover:text-[#05344E] truncate">🛕 ${esc(t.shortTitle || t.name || t.id)}</a>`
+        ).join('');
+      }
+      renderTempleMenu(DEFAULT_TEMPLES_MENU);
+
+      window.openPortalMenu = function() {
+        const d = document.getElementById('mobileMenuDrawer');
+        const p = document.getElementById('mobileMenuPanel');
+        if (!d) return;
+        d.classList.remove('hidden');
+        requestAnimationFrame(() => {
+          d.classList.remove('opacity-0');
+          if (p) p.classList.remove('translate-x-full');
+        });
+      };
+      window.closePortalMenu = function() {
+        const d = document.getElementById('mobileMenuDrawer');
+        const p = document.getElementById('mobileMenuPanel');
+        if (!d) return;
+        d.classList.add('opacity-0');
+        if (p) p.classList.add('translate-x-full');
+        setTimeout(() => d.classList.add('hidden'), 280);
+      };
+      window.togglePortalMenuInfo = function() {
+        const box = document.getElementById('menuTempleInfoList');
+        const arr = document.getElementById('menuTempleInfoArrow');
+        if (!box) return;
+        const hidden = box.classList.toggle('hidden');
+        if (arr) arr.textContent = hidden ? '▼' : '▲';
+      };
+
+      const drawer = document.getElementById('mobileMenuDrawer');
+      if (drawer) {
+        drawer.addEventListener('click', (e) => {
+          if (e.target === drawer) window.closePortalMenu();
+        });
+      }
+
+      if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
+        const db = firebase.database();
+        db.ref('siteConfig/menuLinks').on('value', (snap) => {
+          const m = snap.val();
+          const box = document.getElementById('mobileMenuDynamicLinks');
+          if (box && m && Array.isArray(m.items) && m.items.length) {
+            box.innerHTML = m.items.filter(it => it && it.enabled !== false && it.label && it.url).map(it =>
+              `<a href="${esc(it.url)}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>${esc(it.icon || '📄')}</span><span>${esc(it.label)}</span></a>`
+            ).join('');
+          }
+        });
+        db.ref('temples').on('value', (snap) => {
+          const data = snap.val();
+          if (!data || typeof data !== 'object') return;
+          const map = {};
+          DEFAULT_TEMPLES_MENU.forEach(t => { map[t.id] = { ...t }; });
+          Object.keys(data).forEach(k => {
+            if (data[k] && typeof data[k] === 'object') {
+              map[k] = Object.assign(map[k] || { id: k }, data[k], { id: k });
+            }
+          });
+          const arr = Object.values(map).sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
+          renderTempleMenu(arr);
         });
       }
     })();

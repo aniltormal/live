@@ -116,8 +116,8 @@ const fbDb = firebase.database();
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     .toggle-pill { position: relative; display: inline-flex; align-items: center; width: 44px; height: 24px; border-radius: 9999px; flex-shrink: 0; cursor: pointer; }
-    .toggle-pill input { -webkit-appearance: none; appearance: none; position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; border-radius: 9999px; background: #cbd5e1; transition: background .2s ease; cursor: pointer; z-index: 1; }
-    .toggle-pill input:checked { background: #059669; }
+    .toggle-pill input { -webkit-appearance: none; appearance: none; position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; border-radius: 9999px; background: #dc2626; transition: background .2s ease; cursor: pointer; z-index: 1; }
+    .toggle-pill input:checked { background: #16a34a; }
     .toggle-pill .knob { position: relative; z-index: 2; pointer-events: none; width: 18px; height: 18px; border-radius: 9999px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.28); transform: translateX(3px); transition: transform .2s ease; }
     .toggle-pill input:checked + .knob { transform: translateX(23px); }
     .hsv-popover { position: fixed; z-index: 9999; width: 236px; background: #fff; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 20px 40px rgba(15,23,42,0.22); padding: 12px; }
@@ -527,4 +527,69 @@ function initAdminGuard(onAuthed, isLoginPage = false) {
     });
     mo.observe(document.body, { childList: true, subtree: true });
   });
+})();
+
+
+// Universal Save Confirmation Modal across all 8 Admin Tabs
+(function initGlobalSaveConfirmation() {
+  const SAVE_IDS = new Set([
+    'saveAdsBtn',
+    'saveHeaderBtn',
+    'saveLayoutBtn',
+    'saveMasterBtn',
+    'savePlayerBtn',
+    'saveTempleInfoBtn',
+    'saveAllTemplesBtn',
+    'saveVisMenuBtn'
+  ]);
+  let pendingBtn = null;
+
+  function ensureModal() {
+    let modal = document.getElementById('globalSaveConfirmModal');
+    if (modal) return modal;
+    modal = document.createElement('div');
+    modal.id = 'globalSaveConfirmModal';
+    modal.className = 'hidden fixed inset-0 z-[9999] bg-black/60 flex items-center justify-center p-4';
+    modal.innerHTML = `
+      <div class="w-full max-w-md rounded-2xl bg-white border-2 border-[#05344E]/25 shadow-2xl p-5 space-y-4">
+        <div class="flex items-center gap-2.5 text-[#05344E]">
+          <span class="text-2xl">💾</span>
+          <h3 class="text-base sm:text-lg font-extrabold">सेटिंग्ज सेव्ह करायच्या का?</h3>
+        </div>
+        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+          तुम्ही केलेले सर्व बदल थेट लाईव्ह वेबसाईटवर लागू करून सेव्ह करायचे का?
+        </p>
+        <div class="flex flex-col sm:flex-row justify-end gap-2 pt-1">
+          <button id="globalSaveCancelBtn" type="button" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs sm:text-sm font-bold cursor-pointer">रद्द करा</button>
+          <button id="globalSaveConfirmBtn" type="button" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-xs sm:text-sm font-extrabold cursor-pointer shadow-md">✅ होय, सेव्ह करा</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    modal.querySelector('#globalSaveCancelBtn').addEventListener('click', () => {
+      pendingBtn = null;
+      modal.classList.add('hidden');
+    });
+    modal.querySelector('#globalSaveConfirmBtn').addEventListener('click', () => {
+      modal.classList.add('hidden');
+      if (pendingBtn) {
+        const b = pendingBtn;
+        pendingBtn = null;
+        b.dataset.confirmedSave = '1';
+        b.click();
+        setTimeout(() => { delete b.dataset.confirmedSave; }, 50);
+      }
+    });
+    return modal;
+  }
+
+  document.addEventListener('click', (e) => {
+    const btn = e.target && e.target.closest ? e.target.closest('button') : null;
+    if (!btn || !SAVE_IDS.has(btn.id)) return;
+    if (btn.dataset.confirmedSave === '1') return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    pendingBtn = btn;
+    ensureModal().classList.remove('hidden');
+  }, true);
 })();

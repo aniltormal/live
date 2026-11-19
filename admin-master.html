@@ -150,11 +150,30 @@
         </div>
       </section>
 
-      <div class="sticky bottom-3 z-20 flex justify-end">
+      <div class="sticky bottom-3 z-20 flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-2.5">
+        <button id="resetMasterBtn" type="button" class="w-full sm:w-auto px-5 py-3 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-700 border-2 border-rose-300 text-sm font-extrabold cursor-pointer shadow-md transition">🔄 रिसेट सेटिंग (सर्व पूर्ववत करा)</button>
         <button id="saveMasterBtn" type="button" class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-sm font-bold cursor-pointer shadow-lg transition">💾 मास्टर सेटिंग संपूर्ण वेबसाईटवर लागू करा</button>
       </div>
     </div>
   </main>
+
+  
+  <!-- Reset Confirmation Modal -->
+  <div id="resetConfirmModal" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+    <div class="w-full max-w-md rounded-2xl bg-white border-2 border-rose-300 shadow-2xl p-5 space-y-4">
+      <div class="flex items-center gap-2.5 text-rose-700">
+        <span class="text-2xl">⚠️</span>
+        <h3 class="text-base sm:text-lg font-extrabold">सर्व सेटिंग्ज रिसेट करायच्या का?</h3>
+      </div>
+      <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+        हे केल्यास वेबसाईटची <strong>मास्टर थीम, हेडर, लेआउट, प्लेयर आणि फूटर</strong> या सर्व सेटिंग्ज मूळ डिफॉल्ट स्थितीत पूर्ववत होऊन सेव्ह होतील. (तुमची मंदिरे, आरती माहिती, जाहिराती आणि भाविक संख्या सुरक्षित राहील.)
+      </p>
+      <div class="flex flex-col sm:flex-row justify-end gap-2 pt-1">
+        <button id="cancelResetBtn" type="button" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs sm:text-sm font-bold cursor-pointer">रद्द करा</button>
+        <button id="confirmResetBtn" type="button" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs sm:text-sm font-extrabold cursor-pointer shadow-md">✅ होय, रिसेट करून सेव्ह करा</button>
+      </div>
+    </div>
+  </div>
 
   <div id="toastBox" class="hidden"></div>
 
@@ -379,6 +398,70 @@
         showToast('✅ मास्टर सेटिंग संपूर्ण वेबसाईटवर लागू झाली!');
       } catch (err) {
         showToast('❌ त्रुटी: ' + err.message, true);
+      }
+    });
+
+    // Reset All Settings with Confirmation
+    const resetModal = document.getElementById('resetConfirmModal');
+    document.getElementById('resetMasterBtn').addEventListener('click', () => {
+      if (resetModal) resetModal.classList.remove('hidden');
+    });
+    document.getElementById('cancelResetBtn').addEventListener('click', () => {
+      if (resetModal) resetModal.classList.add('hidden');
+    });
+    document.getElementById('confirmResetBtn').addEventListener('click', async () => {
+      if (resetModal) resetModal.classList.add('hidden');
+      const defaultMaster = {
+        enabled: false,
+        fontFamily: "'Khand', 'Noto Sans Devanagari', sans-serif",
+        fontScale: 100,
+        themeId: 'royal_navy',
+        colors: {
+          primary: '#05344E',
+          accent: '#F59E0B',
+          pageBg: '#F8FAFC',
+          headerBg: '#FFFFFF',
+          text: '#0F172A',
+          footerBg: '#000000'
+        },
+        customThemes
+      };
+      const defaultHeader = {
+        title: 'श्री. लाईव्ह दर्शन पोर्टल',
+        fontFamily: "'Khand', 'Noto Sans Devanagari', sans-serif",
+        goldGradient: true,
+        bgColor: 'linear-gradient(to right, #031926, #05344E, #084160)',
+        borderColor: '#FBBF24',
+        textColor: '#FBBF24'
+      };
+      const defaultLayout = {
+        showPanchangBar: true,
+        panchangFontFamily: "'Noto Sans Devanagari', sans-serif",
+        panchangFontSize: 'auto',
+        panchangTextColor: '#05344E',
+        panchangBgColor: '#FFFBEB',
+        showDevoteeTicker: false,
+        gridCols: '3',
+        headerSize: 'md',
+        featuredHeight: 'md',
+        cardHeight: 'sm',
+        btnFontFamily: "'Khand', 'Noto Sans Devanagari', sans-serif",
+        btnFontSize: '12px',
+        btnTextColor: '#FFFFFF',
+        btnBgColor: '#05344E'
+      };
+      try {
+        await fbDb.ref('siteConfig/master').set(defaultMaster);
+        await fbDb.ref('siteConfig/header').update(defaultHeader);
+        await fbDb.ref('siteConfig/layout').update(defaultLayout);
+        document.getElementById('masterEnabledToggle').checked = false;
+        fontSel.value = defaultMaster.fontFamily;
+        scaleSlider.value = 100;
+        scaleVal.textContent = '100%';
+        applyThemeToInputs(BUILTIN_THEMES[0]);
+        showToast('✅ सर्व सेटिंग्ज मूळ डिफॉल्ट स्थितीत रिसेट होऊन सेव्ह झाल्या!');
+      } catch (err) {
+        showToast('❌ रिसेट करताना त्रुटी: ' + err.message, true);
       }
     });
   </script>

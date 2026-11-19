@@ -31,7 +31,7 @@
         </div>
 
         <div class="p-3 rounded-xl bg-amber-50/70 border border-amber-200 text-xs text-amber-900 font-semibold">
-          💡 <strong>टीप:</strong> "मुख्य पेज (🏠)" आणि "आरती वेळापत्रक व माहिती (🕰️)" हे मेनूच्या वर स्थिर राहतील. खालील सर्व मेनू लिंक्स तुम्ही एडिट, बंद/चालू, वर-खाली किंवा नवीन जोडू शकता — नवीन मेनू जोडल्यास त्यासाठी आपोआप <code class="px-1 py-0.5 rounded bg-white border border-amber-300">page.html?id=...</code> हे स्वतंत्र पेज तयार होते.
+          💡 <strong>टीप:</strong> "आरती वेळापत्रक व माहिती (🕰️)" हा पर्याय मेनूच्या वर स्थिर राहील. खालील सर्व मेनू लिंक्स तुम्ही एडिट, बंद/चालू, वर-खाली किंवा नवीन जोडू शकता — नवीन मेनू जोडल्यास त्यासाठी आपोआप <code class="px-1 py-0.5 rounded bg-white border border-amber-300">page.html?id=...</code> हे स्वतंत्र पेज तयार होते.
         </div>
 
         <div id="menuLinksContainer" class="space-y-3"></div>
@@ -256,7 +256,6 @@
           ? collectMenuFromDom()
           : menuItemsState;
         const fixedTop = `
-          <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-amber-50 text-[#05344E] border border-amber-200/70"><span>🏠</span><span>सर्व मंदिरे (मुख्य पेज)</span></div>
           <div class="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-slate-50 text-[#05344E] border border-slate-200"><span>🕰️ आरती वेळापत्रक व माहिती</span><span class="text-[10px]">▼</span></div>
         `;
         const dyn = current.filter(it => it.enabled !== false && it.label).map(it => `

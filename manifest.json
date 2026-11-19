@@ -1,0 +1,25 @@
+{
+  "name": "श्री. लाईव्ह दर्शन पोर्टल",
+  "short_name": "लाईव्ह दर्शन",
+  "description": "सर्व प्रमुख देवस्थानांचे थेट लाईव्ह दर्शन, आरती वेळापत्रक व आजचे पंचांग एकाच ठिकाणी.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#031926",
+  "theme_color": "#05344E",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

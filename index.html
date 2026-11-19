@@ -519,22 +519,7 @@
                 <input id="editHeaderTitleInput" type="text" placeholder="श्री. लाईव्ह दर्शन पोर्टल"
                   class="w-full px-3 py-2 rounded-lg border border-neutral-300 bg-white text-xs sm:text-sm" />
               </div>
-              <div>
-                <label for="editHeaderSubtitleInput" class="block text-xs font-semibold text-neutral-700 mb-1">उपशीर्षक</label>
-                <input id="editHeaderSubtitleInput" type="text" placeholder="सर्व मंदिरांचे थेट दर्शन एकाच ठिकाणी"
-                  class="w-full px-3 py-2 rounded-lg border border-neutral-300 bg-white text-xs sm:text-sm" />
-              </div>
-              <div>
-                <div class="flex items-center justify-between gap-2 mb-1">
-                  <label for="editHeaderBannerFile" class="block text-xs font-semibold text-neutral-700">वरचा बॅनर फोटो बदला (ऐच्छिक):</label>
-                  <button id="toggleBannerHideBtn" type="button"
-                    class="px-2 py-0.5 rounded-md bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-[11px] font-bold cursor-pointer transition">
-                    🗑️ फोटो तात्पुरता लपवा
-                  </button>
-                </div>
-                <input id="editHeaderBannerFile" type="file" accept="image/*"
-                  class="w-full text-xs file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-black file:text-white file:font-semibold file:cursor-pointer" />
-              </div>
+
               <div>
                 <label for="editHeaderLogoFile" class="block text-xs font-semibold text-neutral-700 mb-1">गोल लोगो फोटो बदला (ऐच्छिक):</label>
                 <input id="editHeaderLogoFile" type="file" accept="image/*"
@@ -1211,13 +1196,12 @@
     let customOfflineTitle = '🙏 सध्या लाईव्ह दर्शन तात्पुरते बंद आहे';
     let customHeaderTextColor = '';
     function applyHeaderTextColorForTheme() {
+      if (!el.headerTitle) return;
       const c = (customHeaderTextColor || '').trim().toLowerCase();
       if (!c || c === '#000000' || c === '#ffffff' || c === '#000' || c === '#fff') {
         el.headerTitle.style.color = '';
-        el.headerSubtitle.style.color = '';
       } else {
-        el.headerTitle.style.color = (customHeaderTextColor && customHeaderTextColor.toLowerCase() !== '#000000' && customHeaderTextColor.toLowerCase() !== '#000') ? customHeaderTextColor : '#ffffff';
-        el.headerSubtitle.style.color = customHeaderTextColor;
+        el.headerTitle.style.color = customHeaderTextColor;
       }
     }
 
@@ -1247,7 +1231,6 @@
       appHeader: document.getElementById('appHeader'),
       headerEmblem: document.getElementById('headerEmblem'),
       headerTitle: document.getElementById('headerTitle'),
-      headerSubtitle: document.getElementById('headerSubtitle'),
       appFooter: document.getElementById('appFooter'),
       sectionBannerCard: document.getElementById('sectionBannerCard'),
       sectionBannerInner: document.getElementById('sectionBannerInner'),
@@ -1286,16 +1269,11 @@
       adminUserLabel: document.getElementById('adminUserLabel'),
       adminLogoutBtn: document.getElementById('adminLogoutBtn'),
       adminListView: document.getElementById('adminListView'),
-      headerBannerWrapper: document.getElementById('headerBannerWrapper'),
-      toggleBannerHideBtn: document.getElementById('toggleBannerHideBtn'),
-      headerBannerImg: document.getElementById('headerBannerImg'),
       headerLogoImg: document.getElementById('headerLogoImg'),
       adminLinksContainer: document.getElementById('adminLinksContainer'),
       adminHeaderEditView: document.getElementById('adminHeaderEditView'),
       backFromHeaderBtn: document.getElementById('backFromHeaderBtn'),
       editHeaderTitleInput: document.getElementById('editHeaderTitleInput'),
-      editHeaderSubtitleInput: document.getElementById('editHeaderSubtitleInput'),
-      editHeaderBannerFile: document.getElementById('editHeaderBannerFile'),
       editHeaderLogoFile: document.getElementById('editHeaderLogoFile'),
       footerMarqueeTrack: document.getElementById('footerMarqueeTrack'),
       playerTickerTrack: document.getElementById('playerTickerTrack'),
@@ -2286,19 +2264,16 @@
 
     function openHeaderEditView() {
       hideAdminStatus();
-      el.editHeaderTitleInput.value = el.headerTitle.textContent.trim();
-      el.editHeaderSubtitleInput.value = el.headerSubtitle.textContent.trim();
-      el.editFooterTextInput.value = getMarqueeText(el.footerMarqueeTrack);
-      el.editHeaderFontSelect.value = el.headerTitle.style.fontFamily || "'Noto Sans Devanagari', sans-serif";
-      el.editHeaderTextColor.value = rgbToHex(getComputedStyle(el.headerTitle).color, '#000000');
-      el.editFooterBgColor.value = rgbToHex(getComputedStyle(el.appFooter).backgroundColor, '#000000');
-      el.editFooterTextColor.value = rgbToHex(getComputedStyle(el.footerMarqueeTrack).color, '#ffffff');
-      el.swatchHeaderText.style.backgroundColor = el.editHeaderTextColor.value;
-      el.swatchFooterBg.style.backgroundColor = el.editFooterBgColor.value;
-      el.swatchFooterText.style.backgroundColor = el.editFooterTextColor.value;
-      el.editHeaderBannerFile.value = '';
-      el.editHeaderLogoFile.value = '';
-      updateBannerHideButtonLabel();
+      if (el.editHeaderTitleInput && el.headerTitle) el.editHeaderTitleInput.value = el.headerTitle.textContent.trim();
+      if (el.editFooterTextInput && el.footerMarqueeTrack) el.editFooterTextInput.value = getMarqueeText(el.footerMarqueeTrack);
+      if (el.editHeaderFontSelect && el.headerTitle) el.editHeaderFontSelect.value = el.headerTitle.style.fontFamily || "'Khand', sans-serif";
+      if (el.editHeaderTextColor && el.headerTitle) el.editHeaderTextColor.value = rgbToHex(getComputedStyle(el.headerTitle).color, '#FBBF24');
+      if (el.editFooterBgColor && el.appFooter) el.editFooterBgColor.value = rgbToHex(getComputedStyle(el.appFooter).backgroundColor, '#000000');
+      if (el.editFooterTextColor && el.footerMarqueeTrack) el.editFooterTextColor.value = rgbToHex(getComputedStyle(el.footerMarqueeTrack).color, '#ffffff');
+      if (el.swatchHeaderText && el.editHeaderTextColor) el.swatchHeaderText.style.backgroundColor = el.editHeaderTextColor.value;
+      if (el.swatchFooterBg && el.editFooterBgColor) el.swatchFooterBg.style.backgroundColor = el.editFooterBgColor.value;
+      if (el.swatchFooterText && el.editFooterTextColor) el.swatchFooterText.style.backgroundColor = el.editFooterTextColor.value;
+      if (el.editHeaderLogoFile) el.editHeaderLogoFile.value = '';
       refreshCustomAdminPickers();
       showAdminSubView('header');
     }
@@ -2512,17 +2487,12 @@
         const c = JSON.parse(raw);
         if (c.loader) applyLoaderConfig(c.loader);
         if (c.header) {
-          if (c.header.title) el.headerTitle.textContent = c.header.title;
-          if (c.header.subtitle) el.headerSubtitle.textContent = c.header.subtitle;
-          if (c.header.bannerImage && el.headerBannerImg) el.headerBannerImg.src = c.header.bannerImage;
-          if (el.headerBannerWrapper) {
-            isHeaderBannerHidden = Boolean(c.header.hideBanner);
-            el.headerBannerWrapper.classList.toggle('hidden', isHeaderBannerHidden);
-          }
+          if (c.header.title && el.headerTitle) el.headerTitle.textContent = c.header.title;
           if (c.header.logoImage && el.headerLogoImg) el.headerLogoImg.src = c.header.logoImage;
+          if (c.header.bgColor && el.appHeader) el.appHeader.style.background = c.header.bgColor;
+          if (c.header.borderColor && el.appHeader) el.appHeader.style.borderBottomColor = c.header.borderColor;
           const hideHT = Boolean(c.header.hideHeaderText);
           if (el.headerTitle) el.headerTitle.classList.toggle('hidden', hideHT);
-          if (el.headerSubtitle) el.headerSubtitle.classList.toggle('hidden', hideHT);
         }
         if (c.layout) {
           Object.assign(siteLayoutConfig, c.layout);
@@ -2650,25 +2620,30 @@
         fbDb.ref('siteConfig/header').on('value', (snapshot) => {
           const h = snapshot.val();
           if (h && typeof h === 'object') {
-            if (h.title) el.headerTitle.textContent = h.title;
-            if (h.subtitle) el.headerSubtitle.textContent = h.subtitle;
-            if (h.fontFamily) {
+            if (h.title && el.headerTitle) el.headerTitle.textContent = h.title;
+            if (h.fontFamily && el.headerTitle) {
               if (!h.fontFamily.includes('Noto Sans Devanagari')) el.headerTitle.style.fontFamily = h.fontFamily;
-              el.headerSubtitle.style.fontFamily = h.fontFamily;
             }
-            if (h.textColor) {
-              customHeaderTextColor = h.textColor;
-              applyHeaderTextColorForTheme();
-            }
-            if (h.bannerImage && el.headerBannerImg) el.headerBannerImg.src = h.bannerImage;
-            if (el.headerBannerWrapper) {
-              isHeaderBannerHidden = Boolean(h.hideBanner);
-              el.headerBannerWrapper.classList.toggle('hidden', isHeaderBannerHidden);
+            if (h.bgColor && el.appHeader) el.appHeader.style.background = h.bgColor;
+            if (h.borderColor && el.appHeader) el.appHeader.style.borderBottomColor = h.borderColor;
+            if (el.headerTitle) {
+              if (h.goldGradient === false && h.textColor) {
+                el.headerTitle.style.backgroundImage = 'none';
+                el.headerTitle.style.webkitTextFillColor = h.textColor;
+                el.headerTitle.style.color = h.textColor;
+                customHeaderTextColor = h.textColor;
+              } else if (h.goldGradient === true) {
+                el.headerTitle.style.backgroundImage = '';
+                el.headerTitle.style.webkitTextFillColor = '';
+                el.headerTitle.style.color = '';
+              } else if (h.textColor) {
+                customHeaderTextColor = h.textColor;
+                applyHeaderTextColorForTheme();
+              }
             }
             if (h.logoImage && el.headerLogoImg) el.headerLogoImg.src = h.logoImage;
             const hideHT = Boolean(h.hideHeaderText);
             if (el.headerTitle) el.headerTitle.classList.toggle('hidden', hideHT);
-            if (el.headerSubtitle) el.headerSubtitle.classList.toggle('hidden', hideHT);
             if (h.offlineMessage) customOfflineMessage = h.offlineMessage;
             updateSiteCache('header', h);
           }
@@ -3047,23 +3022,20 @@
 
     el.saveHeaderConfigBtn.addEventListener('click', async () => {
       if (!fbDb) return;
-      const title = el.editHeaderTitleInput.value.trim();
-      const subtitle = el.editHeaderSubtitleInput.value.trim();
-      const footerText = el.editFooterTextInput.value.trim();
-      const bannerFile = el.editHeaderBannerFile.files[0];
-      const logoFile = el.editHeaderLogoFile.files[0];
+      const title = el.editHeaderTitleInput ? el.editHeaderTitleInput.value.trim() : '';
+      const footerText = el.editFooterTextInput ? el.editFooterTextInput.value.trim() : '';
+      const logoFile = el.editHeaderLogoFile ? el.editHeaderLogoFile.files[0] : null;
 
-      const headerFont = el.editHeaderFontSelect.value;
-      const headerTextColor = el.editHeaderTextColor.value;
-      const footerBgColor = el.editFooterBgColor.value;
-      const footerTextColor = el.editFooterTextColor.value;
+      const headerFont = el.editHeaderFontSelect ? el.editHeaderFontSelect.value : "'Khand', sans-serif";
+      const headerTextColor = el.editHeaderTextColor ? el.editHeaderTextColor.value : '#FBBF24';
+      const footerBgColor = el.editFooterBgColor ? el.editFooterBgColor.value : '#000000';
+      const footerTextColor = el.editFooterTextColor ? el.editFooterTextColor.value : '#FFFFFF';
 
       const headerPayload = {
         fontFamily: headerFont,
         textColor: headerTextColor
       };
       if (title) headerPayload.title = title;
-      if (subtitle) headerPayload.subtitle = subtitle;
 
       const footerPayload = {
         fontFamily: headerFont,
@@ -3074,9 +3046,6 @@
 
       try {
         showAdminStatus('हेडर व फुटर सेव्ह करत आहे...', false);
-        if (bannerFile) {
-          headerPayload.bannerImage = await compressRectImageToDataUrl(bannerFile, 900, 280);
-        }
         if (logoFile) {
           headerPayload.logoImage = await compressImageToDataUrl(logoFile);
         }
@@ -3196,32 +3165,6 @@
     });
 
     // Init
-    let isHeaderBannerHidden = false;
-
-    function updateBannerHideButtonLabel() {
-      if (!el.toggleBannerHideBtn) return;
-      el.toggleBannerHideBtn.textContent = isHeaderBannerHidden
-        ? '♻️ बॅनर फोटो पुन्हा दाखवा'
-        : '🗑️ फोटो तात्पुरता लपवा';
-    }
-
-    if (el.toggleBannerHideBtn) {
-      el.toggleBannerHideBtn.addEventListener('click', async () => {
-        isHeaderBannerHidden = !isHeaderBannerHidden;
-        if (el.headerBannerWrapper) {
-          el.headerBannerWrapper.classList.toggle('hidden', isHeaderBannerHidden);
-        }
-        updateBannerHideButtonLabel();
-        if (fbDb) {
-          try {
-            await fbDb.ref('siteConfig/header').update({ hideBanner: isHeaderBannerHidden });
-            showAdminStatus(isHeaderBannerHidden ? 'वरचा बॅनर फोटो तात्पुरता लपवला आहे.' : 'वरचा बॅनर फोटो पुन्हा दाखवला आहे.', false);
-          } catch (err) {
-            showAdminStatus('अपडेट करताना त्रुटी: ' + (err.message || 'Database नियम तपासा.'), true);
-          }
-        }
-      });
-    }
 
     // Custom In-App Dropdown & Universal Canvas Color Picker UI (no fixed palette, no native OS popup)
     function hsvToHex(h, s, v) {

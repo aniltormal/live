@@ -229,27 +229,6 @@
 
   <!-- Main Content: 2-Column Square Temple Photo Cards -->
   <main class="flex-1 w-full max-w-4xl mx-auto px-3 sm:px-5 py-6 sm:py-8">
-    <div id="sectionBannerCard" class="hidden mb-5 sm:mb-7 p-[2px] rounded-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 shadow-sm">
-      <div id="sectionBannerInner" class="relative rounded-[14px] bg-white px-3.5 py-3.5 sm:px-5 sm:py-4 flex items-center gap-3 sm:gap-4 transition-colors duration-300">
-        <div class="shrink-0 w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-amber-50 border border-amber-300 flex items-center justify-center shadow-xs" aria-hidden="true">
-          <svg class="w-6 h-6 sm:w-7 sm:h-7 text-amber-600" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2l1.5 2.5h-3L12 2zm-3 3.5h6l1.5 3.5h-9L9 5.5zM6 10h12l1.5 3h-15L6 10zm-1.5 4h15v6h-4.5v-3.5a2.5 2.5 0 0 0-5 0V20H4.5v-6zM3 21h18v1.5H3V21z"/>
-          </svg>
-        </div>
-        <div class="flex-1 min-w-0 pr-14 sm:pr-16">
-          <h2 id="sectionHeading" class="text-base sm:text-xl font-extrabold text-black leading-snug transition-colors">
-            प्रमुख मंदिरांचे लाईव्ह दर्शन
-          </h2>
-          <p id="sectionSubheading" class="text-xs sm:text-sm text-neutral-600 leading-snug mt-0.5 transition-colors">
-            खालीलपैकी कोणत्याही मंदिराच्या फोटोवर टॅप करून मोठ्या स्क्रीनवर अखंड दर्शन घ्या.
-          </p>
-        </div>
-        <span class="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-red-600 text-white text-[10px] sm:text-xs font-bold shadow-md">
-          LIVE <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
-        </span>
-      </div>
-    </div>
-
     <!-- Option 1: True Smooth Horizontal Auto-Sliding Ad Banner -->
     <section id="mainAdSliderSection" class="hidden mb-5 sm:mb-7">
       <div class="relative rounded-2xl overflow-hidden border-2 border-amber-400/70 bg-white shadow-md">
@@ -264,6 +243,16 @@
           </button>
         </div>
         <div id="mainAdDots" class="flex items-center justify-center gap-1.5 py-1.5 bg-neutral-100"></div>
+      </div>
+    </section>
+
+    <!-- Devotee Scrolling Message (Below Sliding Ad) -->
+    <section id="devoteeTickerSection" class="hidden mb-4 sm:mb-6 rounded-2xl overflow-hidden border border-amber-400/60 shadow-sm" style="background:#FFFBEB;color:#78350F;">
+      <div class="flex items-center">
+        <span class="shrink-0 px-3 py-2 bg-amber-500 text-[#031926] text-[11px] sm:text-xs font-extrabold tracking-wide flex items-center gap-1">📢 सूचना</span>
+        <div class="flex-1 overflow-hidden py-2 px-2">
+          <div id="devoteeTickerTrack" class="marquee-track text-xs sm:text-sm font-bold whitespace-nowrap" style="animation-duration: 22s;"></div>
+        </div>
       </div>
     </section>
 
@@ -683,65 +672,6 @@
               </button>
             </div>
             <div class="space-y-2.5">
-              <label class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-white border border-neutral-300 cursor-pointer select-none">
-                <span class="text-xs sm:text-sm font-bold text-black">मुख्य विभाग मथळा व उपशीर्षक दाखवा</span>
-                <span class="inline-flex items-center gap-2">
-                  <span id="showSectionBannerToggleText" class="text-[11px] font-bold text-emerald-700">चालू</span>
-                  <span class="relative inline-flex items-center">
-                    <input id="showSectionBannerToggle" type="checkbox" checked class="sr-only peer" />
-                    <span class="w-11 h-6 bg-neutral-300 rounded-full peer peer-checked:bg-emerald-600 transition-colors duration-200"></span>
-                    <span class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 peer-checked:translate-x-5"></span>
-                  </span>
-                </span>
-              </label>
-              <div>
-                <label for="editSectionTitleInput" class="block text-xs font-semibold text-neutral-700 mb-1">मुख्य विभाग मथळा (Option 2C):</label>
-                <input id="editSectionTitleInput" type="text" placeholder="प्रमुख मंदिरांचे लाईव्ह दर्शन"
-                  class="w-full px-3 py-2 rounded-lg border border-neutral-300 bg-white text-xs sm:text-sm" />
-              </div>
-              <div>
-                <label for="editSectionSubInput" class="block text-xs font-semibold text-neutral-700 mb-1">मुख्य विभाग उपशीर्षक:</label>
-                <input id="editSectionSubInput" type="text" placeholder="खालीलपैकी कोणत्याही मंदिराच्या फोटोवर टॅप करून मोठ्या स्क्रीनवर अखंड दर्शन घ्या."
-                  class="w-full px-3 py-2 rounded-lg border border-neutral-300 bg-white text-xs sm:text-sm" />
-              </div>
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                <div>
-                  <label for="editSectionFontSelect" class="block text-xs font-semibold text-neutral-700 mb-1">विभाग टेक्स्ट फॉन्ट:</label>
-                  <select id="editSectionFontSelect" class="w-full px-2.5 py-2 text-xs font-medium">
-                    <option value="'Noto Sans Devanagari', sans-serif">१. Noto Sans Devanagari (आधुनिक व स्वच्छ)</option>
-                    <option value="'Mukta', sans-serif">२. Mukta (लोकप्रिय मराठी वेब फॉन्ट)</option>
-                    <option value="'Tiro Devanagari Marathi', serif">३. Tiro Devanagari Marathi (भक्तिमय पारंपरिक)</option>
-                    <option value="'Poppins', 'Noto Sans Devanagari', sans-serif">४. Poppins (आकर्षक गोलाकार)</option>
-                    <option value="'Hind', sans-serif">५. Hind (वाचायला सोपा व स्पष्ट)</option>
-                    <option value="'Khand', sans-serif">६. Khand (जाड व ठळक मथळे)</option>
-                    <option value="'Teko', sans-serif">७. Teko (उंच व प्रभावी हेडलाईन)</option>
-                    <option value="'Yatra One', cursive">८. Yatra One (उत्सवी / मंदिर स्टाईल)</option>
-                    <option value="'Rozha One', serif">९. Rozha One (शाही व भव्य मथळे)</option>
-                    <option value="'Kalam', cursive">१०. Kalam (हस्तलिखित देवनागरी)</option>
-                    <option value="'Martel', serif">११. Martel (साहित्यिक व सुंदर)</option>
-                    <option value="'Karma', serif">१२. Karma (मृदू व वाचनीय)</option>
-                    <option value="'Laila', serif">१३. Laila (आकर्षक व वक्र)</option>
-                    <option value="'Sahitya', serif">१४. Sahitya (पारंपरिक ग्रंथ स्टाईल)</option>
-                    <option value="'Eczar', serif">१५. Eczar (ठळक व दमदार)</option>
-                  </select>
-                </div>
-                <div>
-                  <label for="editSectionSizeSelect" class="block text-xs font-semibold text-neutral-700 mb-1">विभाग टेक्स्ट साईज:</label>
-                  <select id="editSectionSizeSelect" class="w-full px-2.5 py-2 text-xs font-medium">
-                    <option value="sm">लहान</option>
-                    <option value="md" selected>मध्यम (डिफॉल्ट)</option>
-                    <option value="lg">मोठा</option>
-                  </select>
-                </div>
-                <div>
-                  <label for="editSectionTextColor" class="block text-xs font-semibold text-neutral-700 mb-1">विभाग टेक्स्ट कोड:</label>
-                  <div class="flex items-center gap-1.5">
-                    <span id="swatchSectionText" class="w-7 h-8 rounded border border-neutral-300 shrink-0" style="background-color: #000000;"></span>
-                    <input id="editSectionTextColor" data-color-picker="true" type="text" value="" placeholder="डिफॉल्ट"
-                      class="w-full px-2.5 py-2 rounded-lg border border-neutral-300 bg-white text-xs font-mono" />
-                  </div>
-                </div>
-              </div>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <div>
                   <label for="editGridColsSelect" class="block text-xs font-semibold text-neutral-700 mb-1">एका ओळीत किती बटणे:</label>
@@ -1211,10 +1141,12 @@
       panchangFontSize: 'auto',
       panchangTextColor: '#05344E',
       panchangBgColor: '#FFFBEB',
-      showSectionBanner: false,
-      sectionFontFamily: "'Noto Sans Devanagari', sans-serif",
-      sectionSize: 'md',
-      sectionTextColor: '',
+      showDevoteeTicker: false,
+      devoteeTickerText: '',
+      devoteeTickerFontFamily: "'Noto Sans Devanagari', sans-serif",
+      devoteeTickerSpeed: '22s',
+      devoteeTickerTextColor: '#78350F',
+      devoteeTickerBgColor: '#FFFBEB',
       gridCols: '3',
       headerSize: 'md',
       featuredHeight: 'md',
@@ -1232,10 +1164,8 @@
       headerEmblem: document.getElementById('headerEmblem'),
       headerTitle: document.getElementById('headerTitle'),
       appFooter: document.getElementById('appFooter'),
-      sectionBannerCard: document.getElementById('sectionBannerCard'),
-      sectionBannerInner: document.getElementById('sectionBannerInner'),
-      sectionHeading: document.getElementById('sectionHeading'),
-      sectionSubheading: document.getElementById('sectionSubheading'),
+      devoteeTickerSection: document.getElementById('devoteeTickerSection'),
+      devoteeTickerTrack: document.getElementById('devoteeTickerTrack'),
       templeGrid: document.getElementById('templeGrid'),
       themeToggleBtn: document.getElementById('themeToggleBtn'),
       themeKnob: document.getElementById('themeKnob'),
@@ -1305,13 +1235,6 @@
       savePlayerConfigBtn: document.getElementById('savePlayerConfigBtn'),
       adminLayoutEditView: document.getElementById('adminLayoutEditView'),
       backFromLayoutBtn: document.getElementById('backFromLayoutBtn'),
-      showSectionBannerToggle: document.getElementById('showSectionBannerToggle'),
-      editSectionTitleInput: document.getElementById('editSectionTitleInput'),
-      editSectionSubInput: document.getElementById('editSectionSubInput'),
-      editSectionFontSelect: document.getElementById('editSectionFontSelect'),
-      editSectionSizeSelect: document.getElementById('editSectionSizeSelect'),
-      editSectionTextColor: document.getElementById('editSectionTextColor'),
-      swatchSectionText: document.getElementById('swatchSectionText'),
       editGridColsSelect: document.getElementById('editGridColsSelect'),
       editHeaderSizeSelect: document.getElementById('editHeaderSizeSelect'),
       editFeaturedHeightSelect: document.getElementById('editFeaturedHeightSelect'),
@@ -1396,15 +1319,9 @@
     function applyTheme() {
       if (isDark) {
         el.appBody.className = 'bg-black text-white min-h-screen flex flex-col transition-colors duration-300';
-        if (el.sectionBannerInner) el.sectionBannerInner.className = 'relative rounded-[14px] bg-neutral-950 px-3.5 py-3.5 sm:px-5 sm:py-4 flex items-center gap-3 sm:gap-4 transition-colors duration-300';
-        if (el.sectionHeading) el.sectionHeading.className = 'text-base sm:text-xl font-extrabold text-white leading-snug transition-colors';
-        if (el.sectionSubheading) el.sectionSubheading.className = 'text-xs sm:text-sm text-neutral-300 leading-snug mt-0.5 transition-colors';
         if (el.appFooter) el.appFooter.className = 'bg-neutral-950 text-white border-t-2 border-white/30 py-2.5 px-3 flex items-center gap-3 overflow-hidden transition-colors duration-300';
       } else {
         el.appBody.className = 'bg-white text-black min-h-screen flex flex-col transition-colors duration-300';
-        if (el.sectionBannerInner) el.sectionBannerInner.className = 'relative rounded-[14px] bg-white px-3.5 py-3.5 sm:px-5 sm:py-4 flex items-center gap-3 sm:gap-4 transition-colors duration-300';
-        if (el.sectionHeading) el.sectionHeading.className = 'text-base sm:text-xl font-extrabold text-black leading-snug transition-colors';
-        if (el.sectionSubheading) el.sectionSubheading.className = 'text-xs sm:text-sm text-neutral-600 leading-snug mt-0.5 transition-colors';
         if (el.appFooter) el.appFooter.className = 'bg-black text-white border-t-2 border-black py-2.5 px-3 flex items-center gap-3 overflow-hidden transition-colors duration-300';
       }
       if (el.themeToggleBtn) el.themeToggleBtn.setAttribute('aria-checked', isDark ? 'true' : 'false');
@@ -1467,31 +1384,32 @@
     }
 
     function applyLayoutToPage() {
-      const colsMap = {
-        '1': 'grid-cols-1',
-        '2': 'grid-cols-2',
-        '3': 'grid-cols-3',
-        '4': 'grid-cols-4'
-      };
-      el.templeGrid.className = `grid ${colsMap[siteLayoutConfig.gridCols] || 'grid-cols-2'} gap-4 sm:gap-6`;
-      const titleTone = isDark ? 'text-white' : 'text-black';
-      const hdrSizeMap = {
-        sm: 'font-khand bg-gradient-to-r from-white via-amber-200 to-amber-400 bg-clip-text text-transparent leading-[1.3] pt-0.5 tracking-[0.04em] truncate',
-        md: 'font-khand bg-gradient-to-r from-white via-amber-200 to-amber-400 bg-clip-text text-transparent leading-[1.3] pt-0.5 tracking-[0.04em] truncate',
-        lg: 'font-khand bg-gradient-to-r from-white via-amber-200 to-amber-400 bg-clip-text text-transparent leading-[1.3] pt-0.5 tracking-[0.04em] truncate'
-      };
-      el.headerTitle.className = hdrSizeMap[siteLayoutConfig.headerSize] || hdrSizeMap.md;
+      const cols = Math.min(6, Math.max(1, parseInt(siteLayoutConfig.gridCols, 10) || 3));
+      el.templeGrid.className = cols >= 4 ? 'grid gap-2 sm:gap-3.5' : 'grid gap-3 sm:gap-5';
+      el.templeGrid.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
 
-      const secTitleSizes = {
-        sm: `text-sm sm:text-base font-extrabold leading-snug transition-colors ${isDark ? 'text-white' : 'text-black'}`,
-        md: `text-base sm:text-xl font-extrabold leading-snug transition-colors ${isDark ? 'text-white' : 'text-black'}`,
-        lg: `text-lg sm:text-2xl font-extrabold leading-snug transition-colors ${isDark ? 'text-white' : 'text-black'}`
+      const hdrPadMap = {
+        xs: '4px',
+        sm: '8px',
+        md: '12px',
+        lg: '18px',
+        xl: '24px'
       };
-      const secSubSizes = {
-        sm: `text-[11px] sm:text-xs leading-snug mt-0.5 transition-colors ${isDark ? 'text-neutral-300' : 'text-neutral-600'}`,
-        md: `text-xs sm:text-sm leading-snug mt-0.5 transition-colors ${isDark ? 'text-neutral-300' : 'text-neutral-600'}`,
-        lg: `text-sm sm:text-base leading-snug mt-0.5 transition-colors ${isDark ? 'text-neutral-300' : 'text-neutral-600'}`
+      const hdrFontClampMap = {
+        xs: 'clamp(18px, 5vw, 28px)',
+        sm: 'clamp(21px, 5.6vw, 33px)',
+        md: 'clamp(24px, 6.4vw, 38px)',
+        lg: 'clamp(27px, 7vw, 44px)',
+        xl: 'clamp(30px, 7.8vw, 50px)'
       };
+      if (el.appHeader) {
+        const p = hdrPadMap[siteLayoutConfig.headerSize] || hdrPadMap.md;
+        el.appHeader.style.paddingTop = p;
+        el.appHeader.style.paddingBottom = p;
+      }
+      if (el.headerTitle) {
+        el.headerTitle.style.fontSize = hdrFontClampMap[siteLayoutConfig.headerSize] || hdrFontClampMap.md;
+      }
       const pBar = document.getElementById('panchangBar');
       const pInner = document.getElementById('panchangInner');
       if (pBar) {
@@ -1513,20 +1431,17 @@
           }
         }
       }
-      if (el.sectionBannerCard) {
-        el.sectionBannerCard.classList.toggle('hidden', siteLayoutConfig.showSectionBanner === false);
-      }
-      el.sectionHeading.className = secTitleSizes[siteLayoutConfig.sectionSize] || secTitleSizes.md;
-      el.sectionSubheading.className = secSubSizes[siteLayoutConfig.sectionSize] || secSubSizes.md;
-      el.sectionHeading.style.fontFamily = siteLayoutConfig.sectionFontFamily;
-      el.sectionSubheading.style.fontFamily = siteLayoutConfig.sectionFontFamily;
-      const sc = (siteLayoutConfig.sectionTextColor || '').trim();
-      if (sc && sc.toLowerCase() !== '#000000' && sc.toLowerCase() !== '#ffffff') {
-        el.sectionHeading.style.color = sc;
-        el.sectionSubheading.style.color = sc;
-      } else {
-        el.sectionHeading.style.color = '';
-        el.sectionSubheading.style.color = '';
+      if (el.devoteeTickerSection && el.devoteeTickerTrack) {
+        const dtText = (siteLayoutConfig.devoteeTickerText || '').trim();
+        const showDt = siteLayoutConfig.showDevoteeTicker === true && dtText.length > 0;
+        el.devoteeTickerSection.classList.toggle('hidden', !showDt);
+        if (showDt) {
+          el.devoteeTickerTrack.textContent = dtText + '   ✦   ' + dtText;
+          el.devoteeTickerTrack.style.fontFamily = siteLayoutConfig.devoteeTickerFontFamily || "'Noto Sans Devanagari', sans-serif";
+          el.devoteeTickerTrack.style.animationDuration = siteLayoutConfig.devoteeTickerSpeed || '22s';
+          el.devoteeTickerSection.style.backgroundColor = siteLayoutConfig.devoteeTickerBgColor || '#FFFBEB';
+          el.devoteeTickerSection.style.color = siteLayoutConfig.devoteeTickerTextColor || '#78350F';
+        }
       }
       renderTempleButtons();
     }
@@ -1534,14 +1449,18 @@
     function renderTempleButtons() {
       el.templeGrid.innerHTML = '';
       const featHMap = {
+        xs: 'relative w-full h-32 sm:h-40 overflow-hidden bg-white',
         sm: 'relative w-full h-44 sm:h-52 overflow-hidden bg-white',
         md: 'relative w-full h-56 sm:h-72 overflow-hidden bg-white',
-        lg: 'relative w-full h-72 sm:h-96 overflow-hidden bg-white'
+        lg: 'relative w-full h-72 sm:h-96 overflow-hidden bg-white',
+        xl: 'relative w-full h-80 sm:h-[28rem] overflow-hidden bg-white'
       };
       const cardHMap = {
+        xs: 'relative w-full h-20 sm:h-24 overflow-hidden bg-white',
         sm: 'relative w-full h-28 sm:h-36 overflow-hidden bg-white',
         md: 'relative w-full aspect-square overflow-hidden bg-white',
-        lg: 'relative w-full h-56 sm:h-64 overflow-hidden bg-white'
+        lg: 'relative w-full h-56 sm:h-64 overflow-hidden bg-white',
+        xl: 'relative w-full h-64 sm:h-80 overflow-hidden bg-white'
       };
 
       const visibleTemples = TEMPLES_CONFIG.filter((t) => !t.hidden);
@@ -2280,14 +2199,6 @@
 
     function openLayoutEditView() {
       hideAdminStatus();
-      el.showSectionBannerToggle.checked = siteLayoutConfig.showSectionBanner !== false;
-      syncSectionBannerToggleLabel();
-      el.editSectionTitleInput.value = el.sectionHeading.textContent.trim();
-      el.editSectionSubInput.value = el.sectionSubheading.textContent.trim();
-      el.editSectionFontSelect.value = siteLayoutConfig.sectionFontFamily;
-      el.editSectionSizeSelect.value = siteLayoutConfig.sectionSize;
-      el.editSectionTextColor.value = siteLayoutConfig.sectionTextColor || '';
-      el.swatchSectionText.style.backgroundColor = siteLayoutConfig.sectionTextColor || (isDark ? '#ffffff' : '#000000');
       el.editGridColsSelect.value = siteLayoutConfig.gridCols;
       el.editHeaderSizeSelect.value = siteLayoutConfig.headerSize;
       el.editFeaturedHeightSelect.value = siteLayoutConfig.featuredHeight;
@@ -2496,8 +2407,6 @@
         }
         if (c.layout) {
           Object.assign(siteLayoutConfig, c.layout);
-          if (c.layout.sectionTitle) el.sectionHeading.textContent = c.layout.sectionTitle;
-          if (c.layout.sectionSubtitle) el.sectionSubheading.textContent = c.layout.sectionSubtitle;
           applyLayoutToPage();
         }
         return true;
@@ -2689,12 +2598,17 @@
         fbDb.ref('siteConfig/layout').on('value', (snapshot) => {
           const l = snapshot.val();
           if (l && typeof l === 'object') {
-            if (typeof l.showSectionBanner === 'boolean') siteLayoutConfig.showSectionBanner = l.showSectionBanner;
-            if (l.sectionTitle) el.sectionHeading.textContent = l.sectionTitle;
-            if (l.sectionSubtitle) el.sectionSubheading.textContent = l.sectionSubtitle;
-            if (l.sectionFontFamily) siteLayoutConfig.sectionFontFamily = l.sectionFontFamily;
-            if (l.sectionSize) siteLayoutConfig.sectionSize = l.sectionSize;
-            if (typeof l.sectionTextColor === 'string') siteLayoutConfig.sectionTextColor = l.sectionTextColor;
+            if (typeof l.showPanchangBar === 'boolean') siteLayoutConfig.showPanchangBar = l.showPanchangBar;
+            if (l.panchangFontFamily) siteLayoutConfig.panchangFontFamily = l.panchangFontFamily;
+            if (l.panchangFontSize) siteLayoutConfig.panchangFontSize = l.panchangFontSize;
+            if (typeof l.panchangTextColor === 'string') siteLayoutConfig.panchangTextColor = l.panchangTextColor;
+            if (typeof l.panchangBgColor === 'string') siteLayoutConfig.panchangBgColor = l.panchangBgColor;
+            if (typeof l.showDevoteeTicker === 'boolean') siteLayoutConfig.showDevoteeTicker = l.showDevoteeTicker;
+            if (typeof l.devoteeTickerText === 'string') siteLayoutConfig.devoteeTickerText = l.devoteeTickerText;
+            if (l.devoteeTickerFontFamily) siteLayoutConfig.devoteeTickerFontFamily = l.devoteeTickerFontFamily;
+            if (l.devoteeTickerSpeed) siteLayoutConfig.devoteeTickerSpeed = l.devoteeTickerSpeed;
+            if (typeof l.devoteeTickerTextColor === 'string') siteLayoutConfig.devoteeTickerTextColor = l.devoteeTickerTextColor;
+            if (typeof l.devoteeTickerBgColor === 'string') siteLayoutConfig.devoteeTickerBgColor = l.devoteeTickerBgColor;
             if (l.gridCols) siteLayoutConfig.gridCols = String(l.gridCols);
             if (l.headerSize) siteLayoutConfig.headerSize = l.headerSize;
             if (l.featuredHeight) siteLayoutConfig.featuredHeight = l.featuredHeight;
@@ -2965,33 +2879,14 @@
       });
     }
 
-    function syncSectionBannerToggleLabel() {
-      const txt = document.getElementById('showSectionBannerToggleText');
-      if (!txt || !el.showSectionBannerToggle) return;
-      const on = el.showSectionBannerToggle.checked;
-      txt.textContent = on ? 'चालू' : 'बंद';
-      txt.className = on ? 'text-[11px] font-bold text-emerald-700' : 'text-[11px] font-bold text-neutral-500';
-    }
-    el.showSectionBannerToggle.addEventListener('change', syncSectionBannerToggleLabel);
-
     el.backFromLayoutBtn.addEventListener('click', () => {
       hideAdminStatus();
       showAdminSubView('list');
     });
 
-    el.editSectionTextColor.addEventListener('input', () => {
-      el.swatchSectionText.style.backgroundColor = el.editSectionTextColor.value.trim() || (isDark ? '#ffffff' : '#000000');
-    });
-
     el.saveLayoutConfigBtn.addEventListener('click', async () => {
       if (!fbDb) return;
       const payload = {
-        showSectionBanner: el.showSectionBannerToggle.checked,
-        sectionTitle: el.editSectionTitleInput.value.trim() || 'प्रमुख मंदिरांचे लाईव्ह दर्शन',
-        sectionSubtitle: el.editSectionSubInput.value.trim() || 'खालीलपैकी कोणत्याही मंदिराच्या फोटोवर टॅप करून मोठ्या स्क्रीनवर अखंड दर्शन घ्या.',
-        sectionFontFamily: el.editSectionFontSelect.value,
-        sectionSize: el.editSectionSizeSelect.value,
-        sectionTextColor: el.editSectionTextColor.value.trim(),
         gridCols: el.editGridColsSelect.value,
         headerSize: el.editHeaderSizeSelect.value,
         featuredHeight: el.editFeaturedHeightSelect.value,
@@ -3002,8 +2897,6 @@
         btnBgColor: el.editBtnBgColor.value.trim()
       };
       Object.assign(siteLayoutConfig, payload);
-      el.sectionHeading.textContent = payload.sectionTitle;
-      el.sectionSubheading.textContent = payload.sectionSubtitle;
       applyLayoutToPage();
       try {
         showAdminStatus('पेज व बटण सेटिंग सेव्ह करत आहे...', false);
@@ -3940,7 +3833,7 @@
       const optsHtml = TOP_50_DEVANAGARI_FONTS
         .map(([val, lbl]) => `<option value="${val.replace(/"/g, '&quot;')}">${lbl}</option>`)
         .join('');
-      ['editHeaderFontSelect', 'editPlayerFontSelect', 'editSectionFontSelect', 'editBtnFontSelect'].forEach((id) => {
+      ['editHeaderFontSelect', 'editPlayerFontSelect', 'editBtnFontSelect'].forEach((id) => {
         const sel = document.getElementById(id);
         if (!sel) return;
         const prev = sel.value;

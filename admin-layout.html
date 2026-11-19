@@ -11,6 +11,18 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <style>
+    @keyframes ldPreviewMarquee {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .pv-marquee {
+      display: inline-block;
+      white-space: nowrap;
+      padding-left: 100%;
+      animation: ldPreviewMarquee 20s linear infinite;
+    }
+  </style>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
   <header id="adminTopHeader"></header>
@@ -21,56 +33,6 @@
     </div>
 
     <div id="pageContent" class="hidden space-y-5 fade-in-up">
-      <!-- विभाग मथळा व बॅनर -->
-      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
-        <div class="flex items-center justify-between gap-2 pb-2 border-b border-slate-100">
-          <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🏷️ विभाग मथळा (Section Banner)</h2>
-          <div class="flex flex-wrap items-center gap-4">
-            <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
-              <span>पंचांग पट्टी दाखवा</span>
-              <span class="toggle-pill"><input id="showPanchangBarToggle" type="checkbox" checked /><span class="knob"></span></span>
-            </label>
-            <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
-              <span>विभाग बॅनर दाखवा</span>
-              <span class="toggle-pill"><input id="showSectionBannerToggle" type="checkbox" /><span class="knob"></span></span>
-            </label>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">विभाग शीर्षक</label>
-            <input id="sectionTitle" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" value="प्रमुख मंदिरांचे लाईव्ह दर्शन" />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">विभाग उपशीर्षक</label>
-            <input id="sectionSubtitle" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" value="खालीलपैकी कोणत्याही मंदिराच्या फोटोवर टॅप करून मोठ्या स्क्रीनवर अखंड दर्शन घ्या." />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">विभाग फॉन्ट (५० देवनागरी फॉन्ट्स)</label>
-            <select id="sectionFontSelect" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white"></select>
-            <div id="sectionFontPreview" class="mt-2 px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm text-[#05344E]">प्रमुख मंदिरांचे लाईव्ह दर्शन</div>
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">मथळा आकार</label>
-              <select id="sectionSizeSelect" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white">
-                <option value="sm">लहान</option>
-                <option value="md" selected>मध्यम</option>
-                <option value="lg">मोठा</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">मजकूर रंग</label>
-              <div class="flex items-center gap-1.5">
-                <button id="swatchSectionText" type="button" class="w-10 h-10 rounded-xl border border-slate-300 shrink-0 cursor-pointer shadow-sm"></button>
-                <input id="sectionTextColor" type="text" class="w-full px-2.5 py-2.5 rounded-xl border border-slate-300 text-xs font-mono" value="#05344E" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <!-- पंचांग पट्टी स्टाईल -->
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-100">
@@ -78,10 +40,14 @@
             <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🗓️ आजचे पंचांग पट्टी सेटिंग्ज</h2>
             <p class="text-xs text-slate-500">हेडरखालील स्वयंचलित पंचांग पट्टीचा फॉन्ट, आकार व रंग निवडा</p>
           </div>
+          <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+            <span>पंचांग पट्टी दाखवा</span>
+            <span class="toggle-pill"><input id="showPanchangBarToggle" type="checkbox" checked /><span class="knob"></span></span>
+          </label>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">पंचांग फॉन्ट (५० फॉन्ट्स)</label>
+            <label class="block text-xs font-bold text-slate-700 mb-1">पंचांग फॉन्ट (५२ फॉन्ट्स)</label>
             <select id="panchangFontSelect" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white"></select>
             <div id="panchangFontPreview" class="mt-2 px-3 py-2 rounded-xl bg-amber-50 border border-amber-200 text-xs text-[#05344E] truncate">आजचे पंचांग: कार्तिक शुक्ल नवमी</div>
           </div>
@@ -113,6 +79,55 @@
         </div>
       </section>
 
+      <!-- भाविकांसाठी स्क्रोल होणारा मेसेज (जाहिरातीखाली) -->
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-100">
+          <div>
+            <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">📣 भाविकांसाठी स्क्रोल होणारा मेसेज (जाहिरातीखाली)</h2>
+            <p class="text-xs text-slate-500">मुख्य पेजवर स्लायडिंग जाहिरातीच्या खाली भाविकांसाठी स्वतंत्र सूचना / संदेश पट्टी</p>
+          </div>
+          <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+            <span>मेसेज पट्टी दाखवा</span>
+            <span class="toggle-pill"><input id="showDevoteeTickerToggle" type="checkbox" /><span class="knob"></span></span>
+          </label>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">भाविकांसाठी स्क्रोल होणारा मेसेज</label>
+            <input id="devoteeTickerText" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" value="🙏 सर्व भाविकांना नम्र विनंती: अखंड श्री विठ्ठल-रुक्मिणी व प्रमुख देवस्थानांचे थेट लाईव्ह दर्शन घरबसल्या घ्या! 🛕" placeholder="येथे भाविकांसाठी संदेश लिहा..." />
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">मेसेज फॉन्ट (५२ फॉन्ट्स)</label>
+              <select id="devoteeTickerFontSelect" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white"></select>
+              <div id="devoteeTickerFontPreview" class="mt-2 px-3 py-2 rounded-xl bg-amber-50 border border-amber-200 text-xs text-[#05344E] truncate">🙏 सर्व भाविकांसाठी विशेष सूचना</div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">स्क्रोल गती (Speed)</label>
+              <select id="devoteeTickerSpeedSelect" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white">
+                <option value="32s">धीमी (32s)</option>
+                <option value="22s" selected>मध्यम (22s - डिफॉल्ट)</option>
+                <option value="14s">वेगवान (14s)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">मजकूर रंग</label>
+              <div class="flex items-center gap-2">
+                <button id="swatchDevoteeTickerText" type="button" class="w-10 h-10 rounded-xl border border-slate-300 shrink-0 cursor-pointer shadow-sm"></button>
+                <input id="devoteeTickerTextColor" type="text" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-xs font-mono" value="#78350F" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">पट्टी पार्श्वभूमी रंग</label>
+              <div class="flex items-center gap-2">
+                <button id="swatchDevoteeTickerBg" type="button" class="w-10 h-10 rounded-xl border border-slate-300 shrink-0 cursor-pointer shadow-sm"></button>
+                <input id="devoteeTickerBgColor" type="text" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-xs font-mono" value="#FFFBEB" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- ग्रिड व कार्ड आकार -->
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
         <h2 class="text-base sm:text-lg font-extrabold text-[#05344E] pb-2 border-b border-slate-100">📐 मुख्य पेज व कार्ड आकार</h2>
@@ -124,30 +139,38 @@
               <option value="2">२ बटणे</option>
               <option value="3" selected>३ बटणे (डिफॉल्ट)</option>
               <option value="4">४ बटणे</option>
+              <option value="5">५ बटणे</option>
+              <option value="6">६ बटणे</option>
             </select>
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">हेडर उंची (Header Size)</label>
             <select id="headerSizeSelect" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white">
+              <option value="xs">खूप लहान</option>
               <option value="sm">लहान</option>
               <option value="md" selected>मध्यम (डिफॉल्ट)</option>
               <option value="lg">मोठा</option>
+              <option value="xl">खूप मोठा</option>
             </select>
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">प्रमुख कार्ड उंची (Featured Height)</label>
             <select id="featuredHeightSelect" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white">
+              <option value="xs">खूप लहान</option>
               <option value="sm">लहान</option>
               <option value="md" selected>मध्यम (डिफॉल्ट)</option>
               <option value="lg">मोठा</option>
+              <option value="xl">खूप मोठा</option>
             </select>
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">इतर कार्ड उंची (Card Height)</label>
             <select id="cardHeightSelect" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white">
+              <option value="xs">खूप लहान</option>
               <option value="sm" selected>लहान (डिफॉल्ट)</option>
               <option value="md">मध्यम (चौकोनी)</option>
               <option value="lg">मोठा</option>
+              <option value="xl">खूप मोठा</option>
             </select>
           </div>
         </div>
@@ -158,13 +181,14 @@
         <h2 class="text-base sm:text-lg font-extrabold text-[#05344E] pb-2 border-b border-slate-100">🔘 मंदिर बटण फॉन्ट व रंग</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">बटण फॉन्ट (५० देवनागरी फॉन्ट्स)</label>
+            <label class="block text-xs font-bold text-slate-700 mb-1">बटण फॉन्ट (५२ देवनागरी फॉन्ट्स)</label>
             <select id="btnFontSelect" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white"></select>
             <div id="btnFontPreview" class="mt-2 px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm text-[#05344E]">श्री विठ्ठल-रुक्मिणी मंदिर</div>
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">बटण फॉन्ट आकार</label>
             <select id="btnFontSizeSelect" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white">
+              <option value="10px">खूप लहान (10px)</option>
               <option value="12px" selected>लहान (12px - डिफॉल्ट)</option>
               <option value="15px">मध्यम (15px)</option>
               <option value="18px">मोठा (18px)</option>
@@ -189,16 +213,45 @@
       </section>
 
       <section id="adminTabLivePreview" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-3">
-        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">👁️ लेआउट, पंचांग व कार्ड बटण लाईव्ह प्रिव्ह्यू</h2>
-        <div class="rounded-2xl border border-slate-300 bg-slate-50 p-3 space-y-3">
-          <div id="pvPanchangStrip" class="px-3 py-1.5 rounded-xl text-xs font-bold text-center" style="background:#FFFBEB;color:#78350F;">🗓️ आजचे पंचांग: मार्गशीर्ष शुद्ध नवमी • गुरुवार</div>
-          <div id="pvSecBox" class="px-3 py-2 rounded-xl bg-white border border-amber-300 text-center">
-            <div id="pvSecTtl" class="text-sm font-extrabold text-[#05344E]">प्रमुख देवस्थान लाईव्ह दर्शन</div>
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">👁️ लेआउट, हेडर, कार्ड आकार व बटण लाईव्ह प्रिव्ह्यू</h2>
+          <span id="pvLayoutMetaBadge" class="px-2.5 py-1 rounded-full bg-slate-100 text-[11px] font-bold text-[#05344E] border border-slate-200">३ बटणे • मध्यम हेडर • मध्यम प्रमुख कार्ड</span>
+        </div>
+        <div class="rounded-2xl border border-slate-300 bg-slate-100 overflow-hidden shadow-inner">
+          <div id="pvMiniHeader" class="px-3 py-2.5 bg-gradient-to-r from-[#031926] via-[#05344E] to-[#084160] border-b-2 border-amber-400 flex items-center justify-between transition-all duration-200">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="w-6 h-6 rounded-full bg-amber-400/20 border border-amber-400 flex items-center justify-center text-xs shrink-0">🛕</span>
+              <span id="pvMiniHeaderTitle" class="font-extrabold text-amber-300 truncate" style="font-size:15px;">श्री. लाईव्ह दर्शन पोर्टल</span>
+            </div>
+            <span class="text-[10px] text-amber-200 font-bold shrink-0">☰ मेनू</span>
           </div>
-          <div id="pvCardsGrid" class="grid grid-cols-3 gap-2">
-            <div class="rounded-xl overflow-hidden border border-slate-200 bg-white"><div class="h-12 bg-amber-100 flex items-center justify-center">🛕</div><div class="pvCardBtn px-2 py-1 text-center text-xs font-bold truncate" style="background:#05344E;color:#FFFFFF;">पंढरपूर</div></div>
-            <div class="rounded-xl overflow-hidden border border-slate-200 bg-white"><div class="h-12 bg-orange-100 flex items-center justify-center">🙏</div><div class="pvCardBtn px-2 py-1 text-center text-xs font-bold truncate" style="background:#05344E;color:#FFFFFF;">कोल्हापूर</div></div>
-            <div class="rounded-xl overflow-hidden border border-slate-200 bg-white"><div class="h-12 bg-sky-100 flex items-center justify-center">✨</div><div class="pvCardBtn px-2 py-1 text-center text-xs font-bold truncate" style="background:#05344E;color:#FFFFFF;">शिर्डी</div></div>
+          <div class="p-3 space-y-2.5">
+            <div id="pvPanchangStrip" class="px-3 py-1.5 rounded-xl text-xs font-bold text-center" style="background:#FFFBEB;color:#78350F;">🗓️ आजचे पंचांग: मार्गशीर्ष शुद्ध नवमी • गुरुवार</div>
+            <div class="px-3 py-2.5 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-300/70 text-center text-xs font-bold text-amber-900">🖼️ स्लायडिंग जाहिरात बॅनर</div>
+            <div id="pvDevoteeTicker" class="hidden rounded-xl overflow-hidden border border-amber-400/60 shadow-xs" style="background:#FFFBEB;color:#78350F;">
+              <div class="flex items-center">
+                <span class="shrink-0 px-2.5 py-1.5 bg-amber-500 text-[#031926] text-[11px] font-extrabold">📢 सूचना</span>
+                <div class="flex-1 overflow-hidden py-1.5 px-2">
+                  <div id="pvDevoteeTickerTrack" class="pv-marquee text-xs font-bold">🙏 सर्व भाविकांना नम्र विनंती: अखंड श्री विठ्ठल-रुक्मिणी व प्रमुख देवस्थानांचे थेट लाईव्ह दर्शन घरबसल्या घ्या! 🛕</div>
+                </div>
+              </div>
+            </div>
+            <div id="pvFeaturedCard" class="rounded-xl overflow-hidden border-2 border-slate-800 bg-white shadow-sm transition-all duration-200">
+              <div id="pvFeaturedImgBox" class="bg-gradient-to-br from-amber-100 via-orange-50 to-amber-200 flex flex-col items-center justify-center relative transition-all duration-200" style="height:104px;">
+                <span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded bg-red-600 text-white text-[9px] font-bold">LIVE ●</span>
+                <span class="text-2xl">🛕</span>
+                <span class="text-[10px] font-bold text-amber-900 mt-0.5">प्रमुख मंदिर कार्ड</span>
+              </div>
+              <div class="pvCardBtn px-2 py-1.5 text-center font-bold truncate" style="background:#05344E;color:#FFFFFF;font-size:12px;">श्री विठ्ठल-रुक्मिणी मंदिर, पंढरपूर</div>
+            </div>
+            <div id="pvCardsGrid" class="grid gap-2 transition-all duration-200" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
+              <div class="rounded-xl overflow-hidden border border-slate-300 bg-white shadow-xs"><div class="pvCardImgBox bg-orange-100 flex items-center justify-center transition-all duration-200" style="height:52px;">🙏</div><div class="pvCardBtn px-1.5 py-1 text-center font-bold truncate" style="background:#05344E;color:#FFFFFF;font-size:12px;">कोल्हापूर</div></div>
+              <div class="rounded-xl overflow-hidden border border-slate-300 bg-white shadow-xs"><div class="pvCardImgBox bg-rose-100 flex items-center justify-center transition-all duration-200" style="height:52px;">🌺</div><div class="pvCardBtn px-1.5 py-1 text-center font-bold truncate" style="background:#05344E;color:#FFFFFF;font-size:12px;">तुळजापूर</div></div>
+              <div class="rounded-xl overflow-hidden border border-slate-300 bg-white shadow-xs"><div class="pvCardImgBox bg-sky-100 flex items-center justify-center transition-all duration-200" style="height:52px;">✨</div><div class="pvCardBtn px-1.5 py-1 text-center font-bold truncate" style="background:#05344E;color:#FFFFFF;font-size:12px;">शिर्डी</div></div>
+              <div class="rounded-xl overflow-hidden border border-slate-300 bg-white shadow-xs"><div class="pvCardImgBox bg-amber-100 flex items-center justify-center transition-all duration-200" style="height:52px;">🐘</div><div class="pvCardBtn px-1.5 py-1 text-center font-bold truncate" style="background:#05344E;color:#FFFFFF;font-size:12px;">दगडूशेठ</div></div>
+              <div class="rounded-xl overflow-hidden border border-slate-300 bg-white shadow-xs"><div class="pvCardImgBox bg-emerald-100 flex items-center justify-center transition-all duration-200" style="height:52px;">🔱</div><div class="pvCardBtn px-1.5 py-1 text-center font-bold truncate" style="background:#05344E;color:#FFFFFF;font-size:12px;">सिद्धिविनायक</div></div>
+              <div class="rounded-xl overflow-hidden border border-slate-300 bg-white shadow-xs"><div class="pvCardImgBox bg-purple-100 flex items-center justify-center transition-all duration-200" style="height:52px;">🕉️</div><div class="pvCardBtn px-1.5 py-1 text-center font-bold truncate" style="background:#05344E;color:#FFFFFF;font-size:12px;">त्र्यंबकेश्वर</div></div>
+            </div>
           </div>
         </div>
       </section>
@@ -213,14 +266,15 @@
   <script src="admin-common.js"></script>
   <script>
     renderAdminShell('layout', 'लेआउट, कॉलम व बटणे');
-    populateFontSelect('sectionFontSelect', 'sectionFontPreview');
     populateFontSelect('btnFontSelect', 'btnFontPreview');
     populateFontSelect('panchangFontSelect', 'panchangFontPreview');
-    bindColorPicker('sectionTextColor', 'swatchSectionText', '#05344E');
+    populateFontSelect('devoteeTickerFontSelect', 'devoteeTickerFontPreview');
     bindColorPicker('btnTextColor', 'swatchBtnText', '#FFFFFF');
     bindColorPicker('btnBgColor', 'swatchBtnBg', '#05344E');
     bindColorPicker('panchangTextColor', 'swatchPanchangText', '#05344E');
     bindColorPicker('panchangBgColor', 'swatchPanchangBg', '#FFFBEB');
+    bindColorPicker('devoteeTickerTextColor', 'swatchDevoteeTickerText', '#78350F');
+    bindColorPicker('devoteeTickerBgColor', 'swatchDevoteeTickerBg', '#FFFBEB');
 
     initAdminGuard(() => {
       fbDb.ref('siteConfig/layout').on('value', (snap) => {
@@ -239,18 +293,23 @@
           document.getElementById('panchangBgColor').value = l.panchangBgColor;
           document.getElementById('swatchPanchangBg').style.backgroundColor = l.panchangBgColor;
         }
-        document.getElementById('showSectionBannerToggle').checked = l.showSectionBanner !== false;
-        if (l.sectionTitle) document.getElementById('sectionTitle').value = l.sectionTitle;
-        if (l.sectionSubtitle) document.getElementById('sectionSubtitle').value = l.sectionSubtitle;
-        if (l.sectionFontFamily) {
-          document.getElementById('sectionFontSelect').value = l.sectionFontFamily;
-          document.getElementById('sectionFontPreview').style.fontFamily = l.sectionFontFamily;
+
+        document.getElementById('showDevoteeTickerToggle').checked = l.showDevoteeTicker === true;
+        if (l.devoteeTickerText) document.getElementById('devoteeTickerText').value = l.devoteeTickerText;
+        if (l.devoteeTickerFontFamily) {
+          document.getElementById('devoteeTickerFontSelect').value = l.devoteeTickerFontFamily;
+          document.getElementById('devoteeTickerFontPreview').style.fontFamily = l.devoteeTickerFontFamily;
         }
-        if (l.sectionSize) document.getElementById('sectionSizeSelect').value = l.sectionSize;
-        if (l.sectionTextColor) {
-          document.getElementById('sectionTextColor').value = l.sectionTextColor;
-          document.getElementById('swatchSectionText').style.backgroundColor = l.sectionTextColor;
+        if (l.devoteeTickerSpeed) document.getElementById('devoteeTickerSpeedSelect').value = l.devoteeTickerSpeed;
+        if (l.devoteeTickerTextColor) {
+          document.getElementById('devoteeTickerTextColor').value = l.devoteeTickerTextColor;
+          document.getElementById('swatchDevoteeTickerText').style.backgroundColor = l.devoteeTickerTextColor;
         }
+        if (l.devoteeTickerBgColor) {
+          document.getElementById('devoteeTickerBgColor').value = l.devoteeTickerBgColor;
+          document.getElementById('swatchDevoteeTickerBg').style.backgroundColor = l.devoteeTickerBgColor;
+        }
+
         if (l.gridCols) document.getElementById('gridColsSelect').value = String(l.gridCols);
         if (l.headerSize) document.getElementById('headerSizeSelect').value = l.headerSize;
         if (l.featuredHeight) document.getElementById('featuredHeightSelect').value = l.featuredHeight;
@@ -268,6 +327,7 @@
           document.getElementById('btnBgColor').value = l.btnBgColor;
           document.getElementById('swatchBtnBg').style.backgroundColor = l.btnBgColor;
         }
+        updateLayoutTabPreview();
       });
     });
 
@@ -278,12 +338,12 @@
         panchangFontSize: document.getElementById('panchangSizeSelect').value,
         panchangTextColor: document.getElementById('panchangTextColor').value.trim(),
         panchangBgColor: document.getElementById('panchangBgColor').value.trim(),
-        showSectionBanner: document.getElementById('showSectionBannerToggle').checked,
-        sectionTitle: document.getElementById('sectionTitle').value.trim() || 'प्रमुख मंदिरांचे लाईव्ह दर्शन',
-        sectionSubtitle: document.getElementById('sectionSubtitle').value.trim() || 'खालीलपैकी कोणत्याही मंदिराच्या फोटोवर टॅप करून मोठ्या स्क्रीनवर अखंड दर्शन घ्या.',
-        sectionFontFamily: document.getElementById('sectionFontSelect').value,
-        sectionSize: document.getElementById('sectionSizeSelect').value,
-        sectionTextColor: document.getElementById('sectionTextColor').value.trim(),
+        showDevoteeTicker: document.getElementById('showDevoteeTickerToggle').checked,
+        devoteeTickerText: document.getElementById('devoteeTickerText').value.trim(),
+        devoteeTickerFontFamily: document.getElementById('devoteeTickerFontSelect').value,
+        devoteeTickerSpeed: document.getElementById('devoteeTickerSpeedSelect').value,
+        devoteeTickerTextColor: document.getElementById('devoteeTickerTextColor').value.trim(),
+        devoteeTickerBgColor: document.getElementById('devoteeTickerBgColor').value.trim(),
         gridCols: document.getElementById('gridColsSelect').value,
         headerSize: document.getElementById('headerSizeSelect').value,
         featuredHeight: document.getElementById('featuredHeightSelect').value,
@@ -310,21 +370,63 @@
         ps.style.color = document.getElementById('panchangTextColor').value || '#78350F';
         ps.style.fontFamily = document.getElementById('panchangFontSelect').value;
       }
+      const dtWrap = document.getElementById('pvDevoteeTicker');
+      const dtTrack = document.getElementById('pvDevoteeTickerTrack');
+      const dtToggle = document.getElementById('showDevoteeTickerToggle');
+      if (dtWrap && dtTrack && dtToggle) {
+        const txt = (document.getElementById('devoteeTickerText').value || '').trim();
+        dtWrap.classList.toggle('hidden', !dtToggle.checked || !txt);
+        dtWrap.style.backgroundColor = document.getElementById('devoteeTickerBgColor').value || '#FFFBEB';
+        dtWrap.style.color = document.getElementById('devoteeTickerTextColor').value || '#78350F';
+        dtTrack.textContent = txt || '🙏 सर्व भाविकांसाठी विशेष सूचना';
+        dtTrack.style.fontFamily = document.getElementById('devoteeTickerFontSelect').value;
+        dtTrack.style.animationDuration = document.getElementById('devoteeTickerSpeedSelect').value || '22s';
+      }
       const cols = document.getElementById('gridColsSelect') ? document.getElementById('gridColsSelect').value : '3';
+      const hdrSize = document.getElementById('headerSizeSelect') ? document.getElementById('headerSizeSelect').value : 'md';
+      const featH = document.getElementById('featuredHeightSelect') ? document.getElementById('featuredHeightSelect').value : 'md';
+      const cardH = document.getElementById('cardHeightSelect') ? document.getElementById('cardHeightSelect').value : 'sm';
+      const btnSize = document.getElementById('btnFontSizeSelect') ? document.getElementById('btnFontSizeSelect').value : '12px';
+
+      const hdrPadMap = { xs: '4px 12px', sm: '7px 12px', md: '11px 12px', lg: '16px 12px', xl: '22px 12px' };
+      const hdrFontMap = { xs: '12px', sm: '14px', md: '16px', lg: '19px', xl: '22px' };
+      const featPxMap = { xs: '56px', sm: '76px', md: '104px', lg: '136px', xl: '170px' };
+      const cardPxMap = { xs: '34px', sm: '52px', md: '74px', lg: '98px', xl: '124px' };
+      const sizeLabels = { xs: 'खूप लहान', sm: 'लहान', md: 'मध्यम', lg: 'मोठा', xl: 'खूप मोठा' };
+
+      const miniHdr = document.getElementById('pvMiniHeader');
+      const miniHdrTitle = document.getElementById('pvMiniHeaderTitle');
+      if (miniHdr) miniHdr.style.padding = hdrPadMap[hdrSize] || hdrPadMap.md;
+      if (miniHdrTitle) miniHdrTitle.style.fontSize = hdrFontMap[hdrSize] || hdrFontMap.md;
+
+      const featCard = document.getElementById('pvFeaturedCard');
+      const featImgBox = document.getElementById('pvFeaturedImgBox');
+      if (featCard) featCard.classList.toggle('hidden', cols === '1');
+      if (featImgBox) featImgBox.style.height = featPxMap[featH] || featPxMap.md;
+
       const grid = document.getElementById('pvCardsGrid');
-      if (grid) grid.className = `grid grid-cols-${cols || 3} gap-2`;
+      if (grid) grid.style.gridTemplateColumns = `repeat(${cols || 3}, minmax(0, 1fr))`;
+
+      document.querySelectorAll('.pvCardImgBox').forEach(box => {
+        box.style.height = cardPxMap[cardH] || cardPxMap.sm;
+      });
       document.querySelectorAll('.pvCardBtn').forEach(b => {
         b.style.backgroundColor = document.getElementById('btnBgColor').value || '#05344E';
         b.style.color = document.getElementById('btnTextColor').value || '#FFFFFF';
         b.style.fontFamily = document.getElementById('btnFontSelect').value;
+        b.style.fontSize = btnSize;
       });
+
+      const badge = document.getElementById('pvLayoutMetaBadge');
+      if (badge) {
+        badge.textContent = `${cols} बटणे • हेडर: ${sizeLabels[hdrSize] || 'मध्यम'} • प्रमुख: ${sizeLabels[featH] || 'मध्यम'} • इतर: ${sizeLabels[cardH] || 'लहान'}`;
+      }
     }
     document.querySelectorAll('#pageContent input, #pageContent select').forEach(el => {
       el.addEventListener('input', updateLayoutTabPreview);
       el.addEventListener('change', updateLayoutTabPreview);
     });
     setTimeout(updateLayoutTabPreview, 200);
-
   </script>
 </body>
 </html>

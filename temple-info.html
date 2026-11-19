@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Khand:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.15/dist/hls.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
   <style>
@@ -14,6 +15,22 @@
     .font-khand { font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; }
     @keyframes marquee-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
     .marquee-track { display: flex; width: max-content; animation: marquee-scroll 18s linear infinite; }
+    @keyframes live-pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.45; transform: scale(1.25); } }
+    .live-dot { animation: live-pulse 1.4s ease-in-out infinite; }
+    @keyframes watermark-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    .watermark-track { display: flex; width: max-content; animation: watermark-scroll 22s linear infinite; }
+    @keyframes ott-shimmer-sweep { 0% { transform: translateX(-100%); } 100% { transform: translateX(200%); } }
+    .ott-shimmer-beam { animation: ott-shimmer-sweep 1.8s ease-in-out infinite; }
+    .modal-always-horizontal-rotated {
+      position: fixed !important;
+      top: 50% !important;
+      left: 50% !important;
+      max-width: none !important;
+      max-height: none !important;
+      transform: translate(-50%, -50%) rotate(90deg) !important;
+      z-index: 60 !important;
+    }
+    #videoModal, #videoModal * { font-family: 'Khand', 'Noto Sans Devanagari', sans-serif !important; font-weight: 700; }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
@@ -37,9 +54,6 @@
   <div class="bg-gradient-to-r from-[#04283d] via-[#05344E] to-[#0a4d70] text-white shadow-sm sticky top-0 z-30">
     <div class="max-w-4xl mx-auto px-4 py-2.5 flex items-center justify-between gap-3">
       <h2 id="topTempleTitle" class="text-sm sm:text-lg font-extrabold truncate">मंदिर माहिती</h2>
-      <a id="topLiveBtn" href="index.html" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:opacity-95 text-white text-xs sm:text-sm font-extrabold shadow transition flex items-center gap-1.5 shrink-0">
-        <span>▶</span><span>लाईव्ह दर्शन घ्या</span>
-      </a>
     </div>
   </div>
 
@@ -69,9 +83,9 @@
       </div>
       <div class="bg-[#05344E] px-4 py-3.5 sm:px-6 sm:py-4 flex flex-wrap items-center justify-between gap-3">
         <h2 id="heroTempleName" class="font-khand text-xl sm:text-2xl font-bold text-white tracking-wide">लोड होत आहे...</h2>
-        <a id="heroLiveBtn" href="index.html" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:opacity-95 text-white text-xs sm:text-sm font-extrabold shadow-lg transition flex items-center gap-1.5 shrink-0">
+        <button id="heroLiveBtn" type="button" onclick="openInfoLivePlayer()" class="ml-auto px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:opacity-95 text-white text-xs sm:text-sm font-extrabold shadow-lg transition flex items-center gap-1.5 shrink-0">
           <span>▶</span><span>आत्ताच लाईव्ह दर्शन घ्या</span>
-        </a>
+        </button>
       </div>
       <div id="hiddenDarshanNotice" class="hidden bg-amber-50 border-t border-amber-200 px-4 py-2.5 sm:px-6 text-xs sm:text-sm font-bold text-amber-900 flex items-center gap-2">
         <span>⏸️</span><span>अ‍ॅडमिन सेटिंगनुसार या मंदिराचे लाईव्ह दर्शन सध्या तात्पुरते बंद/लपवलेले आहे. मंदिराची माहिती व वेळापत्रक खाली पाहू शकता.</span>
@@ -85,7 +99,7 @@
           <span class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg">🕰️</span>
           <h3 class="font-khand text-lg sm:text-xl font-bold text-[#05344E]">दैनंदिन आरती व दर्शन वेळापत्रक</h3>
         </div>
-        <div id="scheduleText" class="font-khand text-[15px] sm:text-base font-medium text-slate-800 leading-relaxed whitespace-pre-line">माहिती लोड होत आहे...</div>
+        <div id="scheduleText" class="font-khand text-[17px] sm:text-lg font-medium text-slate-800 leading-relaxed whitespace-pre-line">माहिती लोड होत आहे...</div>
       </section>
 
       <section class="bg-white rounded-2xl border border-sky-200/80 shadow-sm p-4 sm:p-5 space-y-3">
@@ -93,7 +107,7 @@
           <span class="w-8 h-8 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center text-lg">🛕</span>
           <h3 class="font-khand text-lg sm:text-xl font-bold text-[#05344E]">मंदिराचा इतिहास व महत्त्व</h3>
         </div>
-        <div id="historyText" class="font-khand text-[15px] sm:text-base font-medium text-slate-800 leading-relaxed whitespace-pre-line">माहिती लोड होत आहे...</div>
+        <div id="historyText" class="font-khand text-[17px] sm:text-lg font-medium text-slate-800 leading-relaxed whitespace-pre-line">माहिती लोड होत आहे...</div>
       </section>
     </div>
 
@@ -106,10 +120,71 @@
         </div>
         <a id="officialSiteLink" href="#" target="_blank" rel="noopener noreferrer" class="hidden px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-[#05344E] transition">अधिकृत संकेतस्थळ ↗</a>
       </div>
-      <div id="addressText" class="font-khand text-[15px] sm:text-base font-medium text-slate-800 leading-relaxed whitespace-pre-line">माहिती लोड होत आहे...</div>
+      <div id="addressText" class="font-khand text-[17px] sm:text-lg font-medium text-slate-800 leading-relaxed whitespace-pre-line">माहिती लोड होत आहे...</div>
       <div id="infoUpdatedAtBadge" class="hidden text-[11px] sm:text-xs font-semibold text-slate-500 pt-1"></div>
     </section>
   </main>
+
+  <!-- Video Popup Modal (Inline Live Darshan Player) -->
+  <div id="videoModal" class="hidden fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-3 sm:p-6" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div id="modalBox" class="p-[3px] bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 w-full max-w-[92vw] max-h-[86vh] max-h-[86dvh] rounded-2xl overflow-hidden shadow-[0_0_32px_rgba(245,158,11,0.45)] flex flex-col">
+      <div class="bg-black text-white w-full h-full rounded-[13px] overflow-hidden flex flex-col flex-1">
+        <div id="playerHeaderBar" class="bg-gradient-to-r from-[#031926] via-[#063854] to-[#031926] px-3 sm:px-5 py-2.5 flex items-center justify-between gap-2 border-b-2 border-amber-400/70 shrink-0 shadow-md">
+          <div class="flex items-center gap-2.5 min-w-0 flex-1">
+            <span id="playerLiveBadgeWrap" class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-red-600/90 border border-red-400/50 text-[10px] sm:text-xs text-white tracking-wider shrink-0 shadow">
+              <span id="modalLiveDot" class="live-dot inline-flex rounded-full h-2 w-2 bg-white"></span>
+              <span id="playerLiveBadgeText">LIVE</span>
+            </span>
+            <h3 id="modalTitle" class="text-base sm:text-xl font-bold text-white tracking-wide truncate drop-shadow-sm"></h3>
+          </div>
+          <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
+            <span id="modalDateTime" class="px-2.5 py-0.5 rounded-lg bg-white/10 border border-amber-300/35 text-sm sm:text-base font-bold text-amber-200 whitespace-nowrap"></span>
+            <select id="qualitySelect" aria-label="व्हिडिओ क्वालिटी" class="hidden px-2 py-1 rounded-lg bg-neutral-800 text-white border border-white/40 text-xs font-semibold cursor-pointer focus:outline-none">
+              <option value="-1">Auto</option>
+            </select>
+            <button id="playerShareBtn" type="button" aria-label="शेअर करा" title="WhatsApp / शेअर करा" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-white flex items-center justify-center transition cursor-pointer shrink-0">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            </button>
+            <button id="playerMuteBtn" type="button" aria-label="आवाज चालू किंवा बंद करा" title="आवाज चालू / बंद" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-white flex items-center justify-center transition cursor-pointer shrink-0">
+              <svg id="muteIconOn" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+              <svg id="muteIconOff" class="hidden w-4 h-4 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+            </button>
+            <button id="closeModalBtn" type="button" aria-label="बंद करा" title="बंद करा" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-rose-500 hover:bg-rose-600 text-white flex items-center justify-center shadow-sm transition cursor-pointer shrink-0">
+              <svg class="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        </div>
+        <div id="modalStage" class="w-full aspect-video bg-black relative flex items-center justify-center overflow-hidden">
+          <div class="absolute top-1/2 -translate-y-1/2 left-0 right-0 z-20 overflow-hidden pointer-events-none select-none">
+            <div class="watermark-track text-sm sm:text-base font-semibold tracking-widest text-gray-300/45 drop-shadow-[0_1px_2px_rgba(0,0,0,0.65)]">
+              <span class="px-16">Anil Tormal</span>
+              <span class="px-16" aria-hidden="true">Anil Tormal</span>
+              <span class="px-16" aria-hidden="true">Anil Tormal</span>
+              <span class="px-16" aria-hidden="true">Anil Tormal</span>
+            </div>
+          </div>
+          <div class="absolute inset-0 z-10 bg-transparent" aria-hidden="true"></div>
+          <iframe id="youtubePlayer" class="hidden w-full h-full border-0 pointer-events-none select-none" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" title="लाईव्ह दर्शन पॉपअप"></iframe>
+          <video id="nativePlayer" class="hidden w-full h-full object-cover bg-black pointer-events-none select-none" autoplay playsinline webkit-playsinline disablePictureInPicture controlsList="nodownload noplaybackrate noremoteplayback"></video>
+          <div id="playerLoadingBadge" class="hidden absolute inset-0 z-30 bg-neutral-950/90 overflow-hidden flex items-end justify-center pb-12 sm:pb-14 pointer-events-none select-none">
+            <div class="ott-shimmer-beam absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-transparent via-amber-200/15 to-transparent"></div>
+            <span class="relative z-10 text-xs sm:text-sm font-bold text-amber-100/85 tracking-wide">🙏 दर्शन सुरू होत आहे...</span>
+          </div>
+          <div id="modalMessageBox" class="hidden absolute inset-0 z-35 bg-neutral-950/95 flex flex-col items-center justify-center text-center p-6 space-y-3">
+            <div class="text-4xl">🛕</div>
+            <h4 id="modalMessageTitle" class="text-base sm:text-lg font-extrabold text-amber-300">सध्या थेट प्रक्षेपण उपलब्ध नाही</h4>
+            <p id="modalMessageText" class="text-xs sm:text-sm text-neutral-300 max-w-md">मंदिराचे लाईव्ह दर्शन सध्या बंद आहे किंवा इंटरनेट कनेक्शन तपासा.</p>
+          </div>
+          <div id="playerTickerBar" class="absolute bottom-0 left-0 right-0 z-20 overflow-hidden py-1.5 pointer-events-none select-none border-t border-white/15" style="background-color: #05344E;">
+            <div class="marquee-track text-xs sm:text-sm font-bold tracking-wide" style="color: #D6DBD2;">
+              <span class="px-8">अस्वीकरण: या पोर्टलवरील सर्व लाईव्ह दर्शनाचे प्रक्षेपण संबंधित देवस्थान व अधिकृत तृतीय-पक्ष माध्यमांच्या माध्यमातून दाखवले जात आहे.</span>
+              <span class="px-8" aria-hidden="true">अस्वीकरण: या पोर्टलवरील सर्व लाईव्ह दर्शनाचे प्रक्षेपण संबंधित देवस्थान व अधिकृत तृतीय-पक्ष माध्यमांच्या माध्यमातून दाखवले जात आहे.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- मुख्य पेजसारखा लीगल लिंक्स बार व फुटर -->
   <div id="legalLinksBar" class="w-full bg-[#05344E] text-white border-t border-white/15 py-2.5 px-3">
@@ -251,10 +326,7 @@
     }
 
     const params = new URLSearchParams(window.location.search);
-    const templeId = params.get('id') || 'pandharpur';
-    const liveHref = 'index.html?play=' + encodeURIComponent(templeId);
-    document.getElementById('topLiveBtn').href = liveHref;
-    document.getElementById('heroLiveBtn').href = liveHref;
+    let templeId = params.get('id') || 'pandharpur';
 
 
     function formatMarathiDateTime(ts) {
@@ -327,8 +399,249 @@
       }
       return null;
     }
+
+
+    const DEFAULT_TEMPLE_STREAMS = {
+  "pandharpur": {
+    "streamUrl": "https://cdn1.itekrfid.com/hls/local/index.m3u8",
+    "streamType": "hls",
+    "title": "श्री विठ्ठल रुक्मिणी, पंढरपूर"
+  },
+  "kolhapur": {
+    "streamUrl": "https://s122.ipcamlive.com/streams/7au3lhnveuabdrh7x/stream.m3u8",
+    "streamType": "hls",
+    "title": "श्री अंबाबाई महालक्ष्मी, कोल्हापूर"
+  },
+  "tuljapur": {
+    "streamUrl": "https://cdndp.cdn.jio.com/Tulja_Bhavani/Tulja_Bhavani_600.m3u8?cdt=ld9mx1QCVFS8sqls8x1rug",
+    "streamType": "hls",
+    "title": "श्री तुळजाभवानी, तुळजापूर"
+  },
+  "shirdi": {
+    "streamUrl": "https://cam.pc.cdn.bitgravity.com/cam/live/feed008/Saibaba/temple/feed/playlist_108k.m3u8",
+    "streamType": "hls",
+    "title": "श्री साईबाबा, शिर्डी"
+  },
+  "dagdusheth": {
+    "streamUrl": "https://dagdusheth2.shemaroo.com/Dagdusheth_Ganpati/Stream1/chunklist_w1236105352.m3u8",
+    "streamType": "hls",
+    "title": "दगडूशेठ गणपती, पुणे"
+  },
+  "siddhivinayak": {
+    "streamUrl": "",
+    "streamType": "auto",
+    "title": "श्री सिद्धिविनायक, मुंबई"
+  }
+};
+    let infoHlsInstance = null;
+    let infoClockTimer = null;
+    let infoStreamTimeout = null;
+    let currentTempleMetaForPlay = null;
+
+    function detectStreamType(url, hint) {
+      if (hint && hint !== 'auto') return hint;
+      if (!url) return 'none';
+      const u = url.toLowerCase();
+      if (u.includes('youtube.com') || u.includes('youtu.be')) return 'youtube';
+      if (u.includes('facebook.com') || u.includes('fb.watch')) return 'facebook';
+      if (u.includes('.m3u8')) return 'hls';
+      if (u.includes('.mp4') || u.includes('.webm')) return 'video';
+      return 'iframe';
+    }
+    function extractYouTubeIdInfo(url) {
+      const m = (url || '').match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|live\/|shorts\/))([A-Za-z0-9_-]{11})/);
+      return m ? m[1] : '';
+    }
+    function syncInfoMuteIcon() {
+      const vid = document.getElementById('nativePlayer');
+      const onI = document.getElementById('muteIconOn');
+      const offI = document.getElementById('muteIconOff');
+      if (!vid || !onI || !offI) return;
+      onI.classList.toggle('hidden', Boolean(vid.muted));
+      offI.classList.toggle('hidden', !vid.muted);
+    }
+    function cleanupInfoPlayer() {
+      if (infoStreamTimeout) { clearTimeout(infoStreamTimeout); infoStreamTimeout = null; }
+      if (infoHlsInstance) { try { infoHlsInstance.destroy(); } catch (_) {} infoHlsInstance = null; }
+      const yt = document.getElementById('youtubePlayer');
+      const vid = document.getElementById('nativePlayer');
+      const qSel = document.getElementById('qualitySelect');
+      const msg = document.getElementById('modalMessageBox');
+      const load = document.getElementById('playerLoadingBadge');
+      if (yt) { yt.src = 'about:blank'; yt.classList.add('hidden'); }
+      if (vid) { try { vid.pause(); } catch (_) {} vid.removeAttribute('src'); vid.load(); vid.classList.add('hidden'); }
+      if (qSel) { qSel.innerHTML = '<option value="-1">Auto</option>'; qSel.classList.add('hidden'); }
+      if (msg) msg.classList.add('hidden');
+      if (load) load.classList.add('hidden');
+    }
+    function closeInfoLiveModal() {
+      cleanupInfoPlayer();
+      if (infoClockTimer) { clearInterval(infoClockTimer); infoClockTimer = null; }
+      const m = document.getElementById('videoModal');
+      if (m) m.classList.add('hidden');
+    }
+    const MARATHI_DAYS_INFO = ['रविवार', 'सोमवार', 'मंगळवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'];
+    function startInfoClock() {
+      const el = document.getElementById('modalDateTime');
+      const tick = () => {
+        if (!el) return;
+        const now = new Date();
+        const dd = String(now.getDate()).padStart(2, '0');
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const yyyy = now.getFullYear();
+        const dayName = MARATHI_DAYS_INFO[now.getDay()];
+        let hrs = now.getHours();
+        const mins = String(now.getMinutes()).padStart(2, '0');
+        const secs = String(now.getSeconds()).padStart(2, '0');
+        const ampm = hrs >= 12 ? 'PM' : 'AM';
+        hrs = hrs % 12 || 12;
+        el.textContent = `${dd}/${mm}/${yyyy} (${dayName}) ${String(hrs).padStart(2, '0')}:${mins}:${secs} ${ampm}`;
+      };
+      tick();
+      if (infoClockTimer) clearInterval(infoClockTimer);
+      infoClockTimer = setInterval(tick, 1000);
+    }
+    function sizeInfoModalToScreen() {
+      const box = document.getElementById('modalBox');
+      const stage = document.getElementById('modalStage');
+      if (!box || !stage) return;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      box.classList.remove('modal-always-horizontal-rotated');
+      stage.classList.remove('aspect-video');
+      stage.classList.add('flex-1', 'min-h-0', 'h-full');
+      if (vh > vw) {
+        box.classList.add('modal-always-horizontal-rotated');
+        box.style.width = Math.round(vh * 0.92) + 'px';
+        box.style.height = Math.round(vw * 0.90) + 'px';
+      } else {
+        box.style.width = Math.round(Math.min(vw * 0.90, 920)) + 'px';
+        box.style.height = Math.round(Math.min(vh * 0.86, 560)) + 'px';
+      }
+    }
+    window.addEventListener('resize', () => {
+      const m = document.getElementById('videoModal');
+      if (m && !m.classList.contains('hidden')) sizeInfoModalToScreen();
+    });
+
+    function openInfoLivePlayer() {
+      const meta = currentTempleMetaForPlay || {};
+      const def = DEFAULT_TEMPLE_STREAMS[templeId] || {};
+      const title = meta.shortTitle || meta.name || def.title || document.getElementById('heroTempleName').textContent || 'लाईव्ह दर्शन';
+      const url = (typeof meta.streamUrl === 'string' && meta.streamUrl.trim()) ? meta.streamUrl.trim() : (def.streamUrl || '').trim();
+      const type = detectStreamType(url, meta.streamType || def.streamType);
+
+      cleanupInfoPlayer();
+      startInfoClock();
+      const sfx = (window.__playerCfg && window.__playerCfg.titleSuffix !== undefined) ? window.__playerCfg.titleSuffix : '• Live Darshan';
+      document.getElementById('modalTitle').textContent = (!sfx || title.includes(sfx)) ? title : (title + ' ' + sfx);
+      document.getElementById('videoModal').classList.remove('hidden');
+      sizeInfoModalToScreen();
+      const load = document.getElementById('playerLoadingBadge');
+      const msg = document.getElementById('modalMessageBox');
+      const dot = document.getElementById('modalLiveDot');
+      const yt = document.getElementById('youtubePlayer');
+      const vid = document.getElementById('nativePlayer');
+      const qSel = document.getElementById('qualitySelect');
+
+      const showOffline = (text) => {
+        if (load) load.classList.add('hidden');
+        if (msg) msg.classList.remove('hidden');
+        if (text) document.getElementById('modalMessageText').textContent = text;
+        if (dot) { dot.classList.remove('bg-red-500'); dot.classList.add('bg-amber-400'); }
+      };
+
+      if (type === 'none') {
+        showOffline('या मंदिराचे थेट प्रक्षेपण सध्या उपलब्ध नाही.');
+        return;
+      }
+      if (dot) { dot.classList.remove('bg-amber-400'); dot.classList.add('bg-red-500'); }
+      if (load) load.classList.remove('hidden');
+
+      if (type === 'youtube') {
+        const vidId = extractYouTubeIdInfo(url);
+        if (!vidId) { showOffline('अवैध YouTube लिंक.'); return; }
+        yt.src = `https://www.youtube-nocookie.com/embed/${vidId}?autoplay=1&controls=0&disablekb=1&fs=0&rel=0&modestbranding=1`;
+        yt.classList.remove('hidden');
+        if (load) load.classList.add('hidden');
+        return;
+      }
+      if (type === 'facebook') {
+        yt.src = url.includes('facebook.com/plugins/video.php') ? url : `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&autoplay=1&mute=0`;
+        yt.classList.remove('hidden');
+        if (load) load.classList.add('hidden');
+        return;
+      }
+      if (type === 'iframe') {
+        yt.src = url;
+        yt.classList.remove('hidden');
+        if (load) load.classList.add('hidden');
+        return;
+      }
+
+      vid.classList.remove('hidden');
+      vid.onplaying = () => { if (load) load.classList.add('hidden'); if (infoStreamTimeout) clearTimeout(infoStreamTimeout); };
+      if (type === 'hls') {
+        infoStreamTimeout = setTimeout(() => {
+          if (vid.readyState < 2 && !document.getElementById('videoModal').classList.contains('hidden')) showOffline();
+        }, 9000);
+        if (window.Hls && Hls.isSupported()) {
+          infoHlsInstance = new Hls({ enableWorker: true, manifestLoadingMaxRetry: 2, levelLoadingMaxRetry: 2 });
+          infoHlsInstance.loadSource(url);
+          infoHlsInstance.attachMedia(vid);
+          infoHlsInstance.on(Hls.Events.MANIFEST_PARSED, (ev, data) => {
+            const lvls = (data && data.levels) ? data.levels : (infoHlsInstance.levels || []);
+            if (lvls.length > 1) {
+              qSel.innerHTML = '<option value="-1">Auto</option>';
+              lvls.forEach((l, i) => {
+                const o = document.createElement('option');
+                o.value = String(i);
+                o.textContent = l.height ? `${l.height}p` : `${Math.round((l.bitrate || 0)/1000)} kbps`;
+                qSel.appendChild(o);
+              });
+              qSel.classList.remove('hidden');
+              qSel.onchange = () => { if (infoHlsInstance) infoHlsInstance.currentLevel = Number(qSel.value); };
+            }
+            vid.play().catch(() => { vid.muted = true; syncInfoMuteIcon(); vid.play().catch(() => {}); });
+          });
+          infoHlsInstance.on(Hls.Events.ERROR, (ev, data) => {
+            if (data.fatal) {
+              if (infoHlsInstance) { infoHlsInstance.destroy(); infoHlsInstance = null; }
+              if (vid.canPlayType('application/vnd.apple.mpegurl')) { vid.src = url; vid.play().catch(() => {}); }
+              else showOffline();
+            }
+          });
+        } else if (vid.canPlayType('application/vnd.apple.mpegurl')) {
+          vid.src = url;
+          vid.play().catch(() => {});
+        } else {
+          showOffline('तुमचा ब्राउझर HLS स्ट्रीमला सपोर्ट करत नाही.');
+        }
+        return;
+      }
+      vid.src = url;
+      vid.play().catch(() => {});
+    }
+
+    document.getElementById('closeModalBtn').addEventListener('click', closeInfoLiveModal);
+    document.getElementById('videoModal').addEventListener('click', (e) => { if (e.target.id === 'videoModal') closeInfoLiveModal(); });
+    document.getElementById('playerMuteBtn').addEventListener('click', () => {
+      const vid = document.getElementById('nativePlayer');
+      if (!vid) return;
+      vid.muted = !vid.muted;
+      syncInfoMuteIcon();
+    });
+    document.getElementById('playerShareBtn').addEventListener('click', async () => {
+      const title = document.getElementById('modalTitle').textContent || 'लाईव्ह दर्शन';
+      const url = window.location.href;
+      if (navigator.share) {
+        try { await navigator.share({ title, text: `🙏 ${title} — लाईव्ह दर्शन घ्या`, url }); return; } catch (_) {}
+      }
+      window.open('https://wa.me/?text=' + encodeURIComponent(`🙏 ${title} — लाईव्ह दर्शन घ्या: ${url}`), '_blank', 'noopener,noreferrer');
+    });
 
     function applyInfoToPage(info, templeMeta) {
+      currentTempleMetaForPlay = templeMeta || null;
       const title = (templeMeta && (templeMeta.shortTitle || templeMeta.name)) || (info && info.title) || 'मंदिर माहिती';
       document.title = title + ' — मंदिर माहिती';
       document.getElementById('topTempleTitle').textContent = title;
@@ -425,6 +738,74 @@
         }
       });
       db.ref('siteConfig/ads').on('value', (snap) => renderInfoAdBanner(snap.val()));
+      
+    function applyMasterConfigGlobal(m) {
+      if (!m || m.enabled === false) {
+        document.documentElement.style.fontSize = '';
+        return;
+      }
+      if (m.fontFamily) document.body.style.fontFamily = m.fontFamily;
+      if (m.fontScale) document.documentElement.style.fontSize = (16 * (Number(m.fontScale) / 100)).toFixed(2) + 'px';
+      const c = m.colors || {};
+      if (c.pageBg) document.body.style.backgroundColor = c.pageBg;
+      if (c.text) document.body.style.color = c.text;
+      const hdr = document.getElementById('appHeader');
+      if (hdr && c.headerBg) hdr.style.backgroundColor = c.headerBg;
+      const ftr = document.getElementById('appFooter');
+      if (ftr && c.footerBg) ftr.style.backgroundColor = c.footerBg;
+      const llb = document.getElementById('legalLinksBar');
+      if (llb && c.primary) llb.style.backgroundColor = c.primary;
+      const pBar = document.getElementById('panchangBar');
+      if (pBar && c.primary) pBar.style.backgroundColor = c.primary;
+      document.querySelectorAll('.temple-title-bar').forEach(el => { if (c.primary) el.style.backgroundColor = c.primary; });
+    }
+
+      db.ref('siteConfig/master').on('value', (s) => applyMasterConfigGlobal(s.val()));
+      db.ref('siteConfig/player').on('value', (snap) => {
+        const p = snap.val();
+        if (!p || typeof p !== 'object') return;
+        window.__playerCfg = p;
+        const vm = document.getElementById('videoModal');
+        const box = document.getElementById('modalBox');
+        const hdr = document.getElementById('playerHeaderBar');
+        const lbWrap = document.getElementById('playerLiveBadgeWrap');
+        const lbText = document.getElementById('playerLiveBadgeText');
+        const mTitle = document.getElementById('modalTitle');
+        const dtEl = document.getElementById('modalDateTime');
+        const shBtn = document.getElementById('playerShareBtn');
+        const mtBtn = document.getElementById('playerMuteBtn');
+        const ldEl = document.querySelector('#playerLoadingBadge span');
+        const tBar = document.getElementById('playerTickerBar');
+        const tTrack = document.querySelector('#playerTickerBar .marquee-track');
+        const wmTrack = document.querySelector('.watermark-track');
+        if (p.fontFamily && vm) vm.style.setProperty('font-family', p.fontFamily, 'important');
+        if (hdr && p.headerBgColor) hdr.style.background = p.headerBgColor;
+        if (hdr && p.headerBorderColor) hdr.style.borderBottomColor = p.headerBorderColor;
+        if (mTitle && p.titleTextColor) mTitle.style.color = p.titleTextColor;
+        if (mTitle && p.titleFontSize) mTitle.style.fontSize = p.titleFontSize + 'px';
+        if (lbWrap && p.showLiveBadge !== undefined) lbWrap.classList.toggle('hidden', !p.showLiveBadge);
+        if (lbText && p.liveBadgeText) lbText.textContent = p.liveBadgeText;
+        if (dtEl) {
+          if (p.showDateTime !== undefined) dtEl.classList.toggle('hidden', !p.showDateTime);
+          if (p.dateTimeColor) dtEl.style.color = p.dateTimeColor;
+          if (p.dateTimeBgColor) dtEl.style.backgroundColor = p.dateTimeBgColor;
+          if (p.dateTimeFontSize) dtEl.style.fontSize = p.dateTimeFontSize + 'px';
+        }
+        if (shBtn && p.showShareBtn !== undefined) shBtn.classList.toggle('hidden', !p.showShareBtn);
+        if (mtBtn && p.showMuteBtn !== undefined) mtBtn.classList.toggle('hidden', !p.showMuteBtn);
+        if (box && p.modalBorderColor) box.style.background = p.modalBorderColor;
+        if (ldEl && p.loadingText) ldEl.textContent = p.loadingText;
+        if (tBar && p.tickerBgColor) tBar.style.backgroundColor = p.tickerBgColor;
+        if (tTrack) {
+          if (p.tickerTextColor) tTrack.style.color = p.tickerTextColor;
+          if (p.tickerText) tTrack.querySelectorAll('span').forEach(sp => sp.textContent = p.tickerText);
+        }
+        if (wmTrack) {
+          if (p.watermarkColor) wmTrack.style.color = p.watermarkColor;
+          if (p.watermarkOpacity !== undefined) wmTrack.style.opacity = String(p.watermarkOpacity);
+          if (p.watermarkText) wmTrack.querySelectorAll('span').forEach(sp => sp.textContent = p.watermarkText);
+        }
+      });
       db.ref('siteConfig/header').once('value', (snap) => {
         const h = snap.val() || {};
         if (h.title) document.getElementById('headerTitle').textContent = h.title;

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>मास्टर थीम व फॉन्ट सेटिंग्ज — लाईव्ह दर्शन अ‍ॅडमिन</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Akshar:wght@400;600;700&family=Amiko:wght@400;600;700&family=Amita:wght@400;700&family=Anek+Devanagari:wght@400;600;700&family=Arya:wght@400;700&family=Asar&family=Bakbak+One&family=Baloo+2:wght@500;600;700&family=Biryani:wght@400;600;700&family=Cambay:wght@400;700&family=Dekko&family=Eczar:wght@400;600;700&family=Glegoo:wght@400;700&family=Gotu&family=Halant:wght@400;600;700&family=Hind:wght@400;600;700&family=Inknut+Antiqua:wght@400;600;700&family=Inter:wght@400;600;700&family=Jaldi:wght@400;700&family=Kadwa:wght@400;700&family=Kalam:wght@400;700&family=Karma:wght@400;600;700&family=Khand:wght@500;600;700&family=Khula:wght@400;600;700&family=Kurale&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@500;600;700&family=Martel+Sans:wght@400;600;700&family=Martel:wght@400;600;700&family=Modak&family=Mukta:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&family=Noto+Serif+Devanagari:wght@400;600;700&family=Palanquin+Dark:wght@400;600;700&family=Palanquin:wght@400;600;700&family=Playpen+Sans+Deva:wght@400;600;700&family=Poppins:wght@400;500;600;700&family=Pragati+Narrow:wght@400;700&family=Rajdhani:wght@500;600;700&family=Rhodium+Libre&family=Rozha+One&family=Sahitya:wght@400;700&family=Sarala:wght@400;700&family=Sumana:wght@400;700&family=Sura:wght@400;700&family=Teko:wght@500;600;700&family=Tillana:wght@500;600;700&family=Tiro+Devanagari+Hindi:ital@0;1&family=Tiro+Devanagari+Marathi:ital@0;1&family=Tiro+Devanagari+Sanskrit:ital@0;1&family=Vesper+Libre:wght@400;700&family=Yatra+One&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+  <header id="adminTopHeader"></header>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6">
+    <div id="authGateMsg" class="p-6 rounded-2xl bg-white border border-slate-200 text-center text-sm font-semibold text-slate-600 shadow-sm">
+      ⏳ अ‍ॅडमिन तपासणी सुरू आहे...
+    </div>
+
+    <div id="pageContent" class="hidden space-y-5 fade-in-up">
+      <!-- मास्टर कंट्रोल व ग्लोबल फॉन्ट -->
+      <section class="bg-white rounded-3xl border border-slate-200/90 shadow-md p-4 sm:p-6 space-y-5">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-3.5 border-b border-slate-100">
+          <div>
+            <div class="flex items-center gap-2.5"><span class="w-9 h-9 rounded-2xl bg-gradient-to-br from-fuchsia-600 to-purple-700 text-white flex items-center justify-center text-lg shadow-sm">🎛️</span><h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">मास्टर सेटिंग — संपूर्ण वेबसाईट थीम व फॉन्ट</h2></div>
+            <p class="text-xs text-slate-500">येथे केलेले बदल मुख्य पेज, मंदिर माहिती पेज व संपूर्ण वेबसाईटवर एकाच वेळी लागू होतात.</p>
+          </div>
+          <label for="masterEnabledToggle" class="flex items-center gap-2.5 cursor-pointer select-none px-3.5 py-2 rounded-xl bg-emerald-50 border border-emerald-200">
+            <input id="masterEnabledToggle" type="checkbox" class="toggle-pill" checked />
+            <span class="text-xs sm:text-sm font-extrabold text-emerald-900">मास्टर सेटिंग चालू</span>
+          </label>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">संपूर्ण वेबसाईटचा मुख्य फॉन्ट (५० देवनागरी फॉन्ट्स)</label>
+            <select id="masterFontSelect" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white"></select>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between text-xs font-bold text-slate-700 mb-1">
+              <span>संपूर्ण वेबसाईट फॉन्ट साईज (Global Scale)</span>
+              <span id="masterFontScaleVal" class="px-2.5 py-0.5 rounded-md bg-slate-100 text-[#05344E] font-extrabold">100%</span>
+            </div>
+            <input id="masterFontScale" type="range" min="85" max="125" step="5" value="100" class="w-full accent-[#05344E] cursor-pointer mt-2" />
+            <div class="flex flex-wrap items-center gap-1.5 mt-2">
+              <button type="button" onclick="setScalePreset(90)" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-[#05344E] hover:text-white text-[11px] font-bold cursor-pointer transition">लहान (90%)</button>
+              <button type="button" onclick="setScalePreset(100)" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-[#05344E] hover:text-white text-[11px] font-bold cursor-pointer transition">सामान्य (100%)</button>
+              <button type="button" onclick="setScalePreset(110)" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-[#05344E] hover:text-white text-[11px] font-bold cursor-pointer transition">मोठा (110%)</button>
+              <button type="button" onclick="setScalePreset(120)" class="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-[#05344E] hover:text-white text-[11px] font-bold cursor-pointer transition">अति-मोठा (120%)</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ४ तयार थीम्स + नवीन थीम तयार करा -->
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-100">
+          <div class="flex items-center gap-2.5"><span class="w-9 h-9 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 text-white flex items-center justify-center text-lg shadow-sm">🎨</span><h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">तयार वेबसाईट थीम्स (४ मुख्य + कस्टम थीम्स)</h2></div>
+          <button id="openCustomThemeBtn" type="button" class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs sm:text-sm font-bold cursor-pointer transition">➕ नवीन थीम तयार करा</button>
+        </div>
+
+        <div id="themeCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3"></div>
+
+        <!-- नवीन थीम तयार / रंग संपादन पॅनल -->
+        <div id="customThemeBox" class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h3 class="text-xs sm:text-sm font-extrabold text-[#05344E]">🖌️ निवडलेल्या / नवीन थीमचे रंग संपादन</h3>
+            <div class="flex items-center gap-2">
+              <input id="customThemeName" type="text" class="px-3 py-1.5 rounded-xl border border-slate-300 bg-white text-xs font-bold" placeholder="नवीन थीमचे नाव (उदा. कार्तिक उत्सव)" />
+              <button id="saveAsCustomThemeBtn" type="button" class="px-3 py-1.5 rounded-xl bg-[#05344E] hover:bg-[#04273b] text-white text-xs font-bold cursor-pointer">💾 यादीत जोडा</button>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">मुख्य रंग (Primary)</label>
+              <div class="flex items-center gap-1.5">
+                <button id="swPrimary" type="button" class="w-8 h-8 rounded-lg border border-slate-300 shrink-0 cursor-pointer"></button>
+                <input id="colPrimary" type="text" class="w-full px-2 py-1.5 rounded-lg border border-slate-300 text-xs font-mono" value="#05344E" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">बटण / अ‍ॅक्सेंट</label>
+              <div class="flex items-center gap-1.5">
+                <button id="swAccent" type="button" class="w-8 h-8 rounded-lg border border-slate-300 shrink-0 cursor-pointer"></button>
+                <input id="colAccent" type="text" class="w-full px-2 py-1.5 rounded-lg border border-slate-300 text-xs font-mono" value="#F59E0B" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">पेज पार्श्वभूमी</label>
+              <div class="flex items-center gap-1.5">
+                <button id="swPageBg" type="button" class="w-8 h-8 rounded-lg border border-slate-300 shrink-0 cursor-pointer"></button>
+                <input id="colPageBg" type="text" class="w-full px-2 py-1.5 rounded-lg border border-slate-300 text-xs font-mono" value="#F8FAFC" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">हेडर पार्श्वभूमी</label>
+              <div class="flex items-center gap-1.5">
+                <button id="swHeaderBg" type="button" class="w-8 h-8 rounded-lg border border-slate-300 shrink-0 cursor-pointer"></button>
+                <input id="colHeaderBg" type="text" class="w-full px-2 py-1.5 rounded-lg border border-slate-300 text-xs font-mono" value="#FFFFFF" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">मुख्य मजकूर रंग</label>
+              <div class="flex items-center gap-1.5">
+                <button id="swText" type="button" class="w-8 h-8 rounded-lg border border-slate-300 shrink-0 cursor-pointer"></button>
+                <input id="colText" type="text" class="w-full px-2 py-1.5 rounded-lg border border-slate-300 text-xs font-mono" value="#0F172A" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">फुटर पार्श्वभूमी</label>
+              <div class="flex items-center gap-1.5">
+                <button id="swFooterBg" type="button" class="w-8 h-8 rounded-lg border border-slate-300 shrink-0 cursor-pointer"></button>
+                <input id="colFooterBg" type="text" class="w-full px-2 py-1.5 rounded-lg border border-slate-300 text-xs font-mono" value="#000000" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- लाईव्ह मिनी वेबसाईट प्रिव्ह्यू -->
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-3">
+        <div class="flex items-center gap-2.5"><span class="w-9 h-9 rounded-2xl bg-gradient-to-br from-[#05344E] to-[#0a4d70] text-white flex items-center justify-center text-lg shadow-sm">👁️</span><h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">संपूर्ण वेबसाईट लाईव्ह प्रिव्ह्यू</h2></div>
+        <div id="liveSitePreview" class="rounded-2xl border-2 border-slate-300 overflow-hidden shadow-inner transition-all">
+          <div id="pvHeader" class="px-4 py-3 border-b-2 border-black flex items-center justify-between">
+            <div class="font-extrabold text-base">🛕 श्री. लाईव्ह दर्शन पोर्टल</div>
+            <span id="pvBadge" class="px-2.5 py-1 rounded-lg text-xs font-bold text-white">लाईव्ह सुरू</span>
+          </div>
+          <div id="pvBody" class="p-4 space-y-3">
+            <div id="pvPanchang" class="px-3 py-1.5 rounded-xl text-xs font-bold text-white">🗓️ आजचे पंचांग: मार्गशीर्ष शुद्ध नवमी • गुरुवार</div>
+            <div class="grid grid-cols-3 gap-2.5">
+              <div class="rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm">
+                <div class="h-14 bg-amber-100 flex items-center justify-center text-xl">🙏</div>
+                <div id="pvCard1" class="px-2 py-1.5 text-[11px] font-bold text-white text-center truncate">पंढरपूर</div>
+              </div>
+              <div class="rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm">
+                <div class="h-14 bg-orange-100 flex items-center justify-center text-xl">🛕</div>
+                <div id="pvCard2" class="px-2 py-1.5 text-[11px] font-bold text-white text-center truncate">कोल्हापूर</div>
+              </div>
+              <div class="rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm">
+                <div class="h-14 bg-sky-100 flex items-center justify-center text-xl">✨</div>
+                <div id="pvCard3" class="px-2 py-1.5 text-[11px] font-bold text-white text-center truncate">शिर्डी</div>
+              </div>
+            </div>
+          </div>
+          <div id="pvFooter" class="px-4 py-2 text-[11px] font-semibold text-white text-center">अस्वीकरण व कॉपीराइट सूचना: सर्व मंदिरांचे थेट दर्शन एकाच ठिकाणी</div>
+        </div>
+      </section>
+
+      <div class="sticky bottom-3 z-20 flex justify-end">
+        <button id="saveMasterBtn" type="button" class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-sm font-bold cursor-pointer shadow-lg transition">💾 मास्टर सेटिंग संपूर्ण वेबसाईटवर लागू करा</button>
+      </div>
+    </div>
+  </main>
+
+  <div id="toastBox" class="hidden"></div>
+
+  <script src="admin-common.js"></script>
+  <script>
+    renderAdminShell('master', 'मास्टर थीम व फॉन्ट सेटिंग्ज');
+    populateFontSelect('masterFontSelect', 'liveSitePreview');
+
+    const BUILTIN_THEMES = [
+  {
+    "id": "royal_navy",
+    "name": "१. राजेशाही निळा व सुवर्ण",
+    "desc": "मूळ अधिकृत लूक — गडद निळा व सोनेरी",
+    "primary": "#05344E",
+    "accent": "#F59E0B",
+    "pageBg": "#F8FAFC",
+    "headerBg": "#FFFFFF",
+    "text": "#0F172A",
+    "footerBg": "#000000"
+  },
+  {
+    "id": "sacred_saffron",
+    "name": "२. पवित्र भगवा व केशरी",
+    "desc": "भक्तिमय केशरी व उबदार मंदिर थीम",
+    "primary": "#7C2D12",
+    "accent": "#EA580C",
+    "pageBg": "#FFF7ED",
+    "headerBg": "#FFFBEB",
+    "text": "#431407",
+    "footerBg": "#431407"
+  },
+  {
+    "id": "tulsi_pearl",
+    "name": "३. पावन तुळशी हिरवा व मोती",
+    "desc": "शांत, प्रसन्न व स्वच्छ हिरवी छटा",
+    "primary": "#064E3B",
+    "accent": "#059669",
+    "pageBg": "#F0FDF4",
+    "headerBg": "#ECFDF5",
+    "text": "#064E3B",
+    "footerBg": "#022C22"
+  },
+  {
+    "id": "devotional_maroon",
+    "name": "४. भक्ती मरून व चंदन",
+    "desc": "उत्सव व देवस्थान परंपरागत रंगछटा",
+    "primary": "#6B1D2F",
+    "accent": "#D97706",
+    "pageBg": "#FDF8F6",
+    "headerBg": "#FFF1F2",
+    "text": "#3B0A16",
+    "footerBg": "#3B0A16"
+  }
+];
+    let customThemes = [];
+    let selectedThemeId = 'royal_navy';
+
+    bindColorPicker('colPrimary', 'swPrimary', '#05344E');
+    bindColorPicker('colAccent', 'swAccent', '#F59E0B');
+    bindColorPicker('colPageBg', 'swPageBg', '#F8FAFC');
+    bindColorPicker('colHeaderBg', 'swHeaderBg', '#FFFFFF');
+    bindColorPicker('colText', 'swText', '#0F172A');
+    bindColorPicker('colFooterBg', 'swFooterBg', '#000000');
+
+    const scaleSlider = document.getElementById('masterFontScale');
+    const scaleVal = document.getElementById('masterFontScaleVal');
+    const fontSel = document.getElementById('masterFontSelect');
+
+    window.setScalePreset = function(v) {
+      scaleSlider.value = v;
+      scaleVal.textContent = v + "%";
+      updateLivePreview();
+    };
+    function updateLivePreview() {
+      const pv = document.getElementById('liveSitePreview');
+      const p = document.getElementById('colPrimary').value.trim() || '#05344E';
+      const a = document.getElementById('colAccent').value.trim() || '#F59E0B';
+      const bg = document.getElementById('colPageBg').value.trim() || '#F8FAFC';
+      const hbg = document.getElementById('colHeaderBg').value.trim() || '#FFFFFF';
+      const txt = document.getElementById('colText').value.trim() || '#0F172A';
+      const fbg = document.getElementById('colFooterBg').value.trim() || '#000000';
+      pv.style.fontFamily = fontSel.value;
+      pv.style.fontSize = scaleSlider.value + '%';
+      pv.style.backgroundColor = bg;
+      pv.style.color = txt;
+      document.getElementById('pvHeader').style.backgroundColor = hbg;
+      document.getElementById('pvBadge').style.backgroundColor = a;
+      document.getElementById('pvPanchang').style.backgroundColor = p;
+      document.getElementById('pvCard1').style.backgroundColor = p;
+      document.getElementById('pvCard2').style.backgroundColor = p;
+      document.getElementById('pvCard3').style.backgroundColor = p;
+      document.getElementById('pvFooter').style.backgroundColor = fbg;
+    }
+
+    function applyThemeToInputs(t) {
+      selectedThemeId = t.id;
+      const setC = (id, sw, val) => {
+        document.getElementById(id).value = val;
+        document.getElementById(sw).style.backgroundColor = val;
+      };
+      setC('colPrimary', 'swPrimary', t.primary);
+      setC('colAccent', 'swAccent', t.accent);
+      setC('colPageBg', 'swPageBg', t.pageBg);
+      setC('colHeaderBg', 'swHeaderBg', t.headerBg);
+      setC('colText', 'swText', t.text);
+      setC('colFooterBg', 'swFooterBg', t.footerBg);
+      renderThemeCards();
+      updateLivePreview();
+    }
+
+    function renderThemeCards() {
+      const all = [...BUILTIN_THEMES, ...customThemes];
+      const grid = document.getElementById('themeCardsGrid');
+      grid.innerHTML = all.map(t => `
+        <button type="button" onclick="window.__selectMasterTheme('${t.id}')" class="text-left p-3.5 rounded-2xl border-2 transition cursor-pointer ${selectedThemeId === t.id ? 'border-[#05344E] bg-sky-50/70 shadow-md' : 'border-slate-200 bg-white hover:border-slate-300'}">
+          <div class="flex items-center justify-between gap-2 mb-2">
+            <span class="text-xs font-extrabold text-[#05344E]">${t.name}</span>
+            ${selectedThemeId === t.id ? '<span class="px-1.5 py-0.5 rounded bg-[#05344E] text-white text-[10px] font-bold">सक्रिय</span>' : ''}
+          </div>
+          <p class="text-[11px] text-slate-500 mb-2.5">${t.desc || 'कस्टम थीम'}</p>
+          <div class="flex items-center gap-1.5">
+            <span class="w-5 h-5 rounded-full border border-black/15" style="background:${t.primary}"></span>
+            <span class="w-5 h-5 rounded-full border border-black/15" style="background:${t.accent}"></span>
+            <span class="w-5 h-5 rounded-full border border-black/15" style="background:${t.pageBg}"></span>
+            <span class="w-5 h-5 rounded-full border border-black/15" style="background:${t.footerBg}"></span>
+          </div>
+        </button>
+      `).join('');
+    }
+
+    window.__selectMasterTheme = (id) => {
+      const found = [...BUILTIN_THEMES, ...customThemes].find(x => x.id === id);
+      if (found) applyThemeToInputs(found);
+    };
+
+    ['colPrimary','colAccent','colPageBg','colHeaderBg','colText','colFooterBg'].forEach(id => {
+      document.getElementById(id).addEventListener('input', updateLivePreview);
+    });
+    fontSel.addEventListener('change', updateLivePreview);
+    scaleSlider.addEventListener('input', () => {
+      scaleVal.textContent = scaleSlider.value + '%';
+      updateLivePreview();
+    });
+
+    document.getElementById('openCustomThemeBtn').addEventListener('click', () => {
+      document.getElementById('customThemeName').focus();
+      document.getElementById('customThemeBox').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+
+    document.getElementById('saveAsCustomThemeBtn').addEventListener('click', () => {
+      const name = document.getElementById('customThemeName').value.trim();
+      if (!name) { showToast('कृपया नवीन थीमचे नाव टाका.', true); return; }
+      const newT = {
+        id: 'custom_' + Date.now(),
+        name,
+        desc: 'स्वतः तयार केलेली थीम',
+        primary: document.getElementById('colPrimary').value.trim(),
+        accent: document.getElementById('colAccent').value.trim(),
+        pageBg: document.getElementById('colPageBg').value.trim(),
+        headerBg: document.getElementById('colHeaderBg').value.trim(),
+        text: document.getElementById('colText').value.trim(),
+        footerBg: document.getElementById('colFooterBg').value.trim()
+      };
+      customThemes.push(newT);
+      selectedThemeId = newT.id;
+      document.getElementById('customThemeName').value = '';
+      renderThemeCards();
+      showToast('✅ "' + name + '" यादीत जोडली! आता सेव्ह बटण दाबा.');
+    });
+
+    renderThemeCards();
+    updateLivePreview();
+
+    initAdminGuard(() => {
+      fbDb.ref('siteConfig/master').on('value', (snap) => {
+        const m = snap.val();
+        if (!m || typeof m !== 'object') return;
+        document.getElementById('masterEnabledToggle').checked = m.enabled !== false;
+        if (m.fontFamily) fontSel.value = m.fontFamily;
+        if (m.fontScale) {
+          scaleSlider.value = m.fontScale;
+          scaleVal.textContent = m.fontScale + '%';
+        }
+        if (Array.isArray(m.customThemes)) customThemes = m.customThemes;
+        if (m.themeId) selectedThemeId = m.themeId;
+        if (m.colors) {
+          applyThemeToInputs({
+            id: selectedThemeId,
+            primary: m.colors.primary || '#05344E',
+            accent: m.colors.accent || '#F59E0B',
+            pageBg: m.colors.pageBg || '#F8FAFC',
+            headerBg: m.colors.headerBg || '#FFFFFF',
+            text: m.colors.text || '#0F172A',
+            footerBg: m.colors.footerBg || '#000000'
+          });
+        } else {
+          renderThemeCards();
+          updateLivePreview();
+        }
+      });
+    });
+
+    document.getElementById('saveMasterBtn').addEventListener('click', async () => {
+      const payload = {
+        enabled: document.getElementById('masterEnabledToggle').checked,
+        fontFamily: fontSel.value,
+        fontScale: Number(scaleSlider.value),
+        themeId: selectedThemeId,
+        colors: {
+          primary: document.getElementById('colPrimary').value.trim(),
+          accent: document.getElementById('colAccent').value.trim(),
+          pageBg: document.getElementById('colPageBg').value.trim(),
+          headerBg: document.getElementById('colHeaderBg').value.trim(),
+          text: document.getElementById('colText').value.trim(),
+          footerBg: document.getElementById('colFooterBg').value.trim()
+        },
+        customThemes
+      };
+      try {
+        await fbDb.ref('siteConfig/master').set(payload);
+        showToast('✅ मास्टर सेटिंग संपूर्ण वेबसाईटवर लागू झाली!');
+      } catch (err) {
+        showToast('❌ त्रुटी: ' + err.message, true);
+      }
+    });
+  </script>
+</body>
+</html>

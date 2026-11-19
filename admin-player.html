@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>प्लेयर, टिकर व वॉटरमार्क — लाईव्ह दर्शन अ‍ॅडमिन</title>
+  <title>व्हिडिओ प्लेयर सेटिंग्ज — लाईव्ह दर्शन अ‍ॅडमिन</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Akshar:wght@400;600;700&family=Amiko:wght@400;600;700&family=Amita:wght@400;700&family=Anek+Devanagari:wght@400;600;700&family=Arya:wght@400;700&family=Asar&family=Bakbak+One&family=Baloo+2:wght@500;600;700&family=Biryani:wght@400;600;700&family=Cambay:wght@400;700&family=Dekko&family=Eczar:wght@400;600;700&family=Glegoo:wght@400;700&family=Gotu&family=Halant:wght@400;600;700&family=Hind:wght@400;600;700&family=Inknut+Antiqua:wght@400;600;700&family=Inter:wght@400;600;700&family=Jaldi:wght@400;700&family=Kadwa:wght@400;700&family=Kalam:wght@400;700&family=Karma:wght@400;600;700&family=Khand:wght@500;600;700&family=Khula:wght@400;600;700&family=Kurale&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Laila:wght@500;600;700&family=Martel+Sans:wght@400;600;700&family=Martel:wght@400;600;700&family=Modak&family=Mukta:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&family=Noto+Serif+Devanagari:wght@400;600;700&family=Palanquin+Dark:wght@400;600;700&family=Palanquin:wght@400;600;700&family=Playpen+Sans+Deva:wght@400;600;700&family=Poppins:wght@400;500;600;700&family=Pragati+Narrow:wght@400;700&family=Rajdhani:wght@500;600;700&family=Rhodium+Libre&family=Rozha+One&family=Sahitya:wght@400;700&family=Sarala:wght@400;700&family=Sumana:wght@400;700&family=Sura:wght@400;700&family=Teko:wght@500;600;700&family=Tillana:wght@500;600;700&family=Tiro+Devanagari+Hindi:ital@0;1&family=Tiro+Devanagari+Marathi:ital@0;1&family=Tiro+Devanagari+Sanskrit:ital@0;1&family=Vesper+Libre:wght@400;700&family=Yatra+One&display=swap" rel="stylesheet" />
@@ -21,8 +21,125 @@
     </div>
 
     <div id="pageContent" class="hidden space-y-5 fade-in-up">
+      <!-- 1. व्हिडिओ प्लेयर हेडर पट्टी व शीर्षक -->
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
-        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E] pb-2 border-b border-slate-100">📺 चालणारी पट्टी (Ticker) व ऑफलाईन संदेश</h2>
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-100">
+          <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🎬 व्हिडिओ प्लेयर हेडर पट्टी व शीर्षक</h2>
+          <span class="text-[11px] font-semibold text-slate-500">येथील बदल मुख्य पेज व माहिती पेज दोन्ही प्लेअरवर लागू होतात</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">मंदिराच्या नावापुढील मजकूर (Suffix)</label>
+            <input id="titleSuffix" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" value="• Live Darshan" placeholder="• Live Darshan (रिकामे ठेवल्यास दिसणार नाही)" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">LIVE बॅजचा मजकूर</label>
+            <input id="liveBadgeText" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" value="LIVE" placeholder="LIVE" />
+          </div>
+
+          <div class="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200">
+            <span class="text-xs font-bold text-slate-700">🔴 LIVE बॅज दाखवा</span>
+            <input id="showLiveBadge" type="checkbox" class="toggle-pill" checked />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">हेडर पट्टी रंग (Background)</label>
+            <div class="flex items-center gap-2">
+              <button id="swatchHeaderBg" type="button" class="w-10 h-10 rounded-xl border border-slate-300 shrink-0 cursor-pointer shadow-sm"></button>
+              <input id="headerBgColor" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono" value="#063854" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">हेडर तळाची बॉर्डर रंग</label>
+            <div class="flex items-center gap-2">
+              <button id="swatchHeaderBorder" type="button" class="w-10 h-10 rounded-xl border border-slate-300 shrink-0 cursor-pointer shadow-sm"></button>
+              <input id="headerBorderColor" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono" value="#FBBF24" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">मंदिर नावाचा रंग</label>
+            <div class="flex items-center gap-2">
+              <button id="swatchTitleText" type="button" class="w-10 h-10 rounded-xl border border-slate-300 shrink-0 cursor-pointer shadow-sm"></button>
+              <input id="titleTextColor" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono" value="#FFFFFF" />
+            </div>
+          </div>
+
+          <div class="sm:col-span-2 lg:col-span-3">
+            <div class="flex items-center justify-between text-xs font-bold text-slate-700 mb-1">
+              <span>मंदिराच्या नावाचा फॉन्ट साईज</span>
+              <span id="titleFontSizeVal" class="px-2 py-0.5 rounded-md bg-slate-100 text-[#05344E]">18px</span>
+            </div>
+            <input id="titleFontSize" type="range" min="13" max="26" step="1" value="18" class="w-full accent-[#05344E] cursor-pointer" />
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. दिनांक, वार, वेळ व बटणे -->
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
+        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E] pb-2 border-b border-slate-100">🕒 दिनांक-वार-वेळ व नियंत्रण बटणे</h2>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200">
+            <span class="text-xs font-bold text-slate-700">📅 दिनांक, वार व वेळ दाखवा</span>
+            <input id="showDateTime" type="checkbox" class="toggle-pill" checked />
+          </div>
+
+          <div class="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200">
+            <span class="text-xs font-bold text-slate-700">📤 शेअर बटण दाखवा</span>
+            <input id="showShareBtn" type="checkbox" class="toggle-pill" checked />
+          </div>
+
+          <div class="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200">
+            <span class="text-xs font-bold text-slate-700">🔊 आवाज (Mute) बटण दाखवा</span>
+            <input id="showMuteBtn" type="checkbox" class="toggle-pill" checked />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">दिनांक-वार-वेळ मजकूर रंग</label>
+            <div class="flex items-center gap-2">
+              <button id="swatchDtText" type="button" class="w-10 h-10 rounded-xl border border-slate-300 shrink-0 cursor-pointer shadow-sm"></button>
+              <input id="dateTimeColor" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono" value="#FDE68A" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">दिनांक-वार-वेळ पिल रंग</label>
+            <div class="flex items-center gap-2">
+              <button id="swatchDtBg" type="button" class="w-10 h-10 rounded-xl border border-slate-300 shrink-0 cursor-pointer shadow-sm"></button>
+              <input id="dateTimeBgColor" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono" value="#144763" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">प्लेअर बाह्य बॉर्डर रंग</label>
+            <div class="flex items-center gap-2">
+              <button id="swatchModalBorder" type="button" class="w-10 h-10 rounded-xl border border-slate-300 shrink-0 cursor-pointer shadow-sm"></button>
+              <input id="modalBorderColor" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono" value="#F59E0B" />
+            </div>
+          </div>
+
+          <div class="sm:col-span-2 lg:col-span-3">
+            <div class="flex items-center justify-between text-xs font-bold text-slate-700 mb-1">
+              <span>दिनांक-वार-वेळ फॉन्ट साईज</span>
+              <span id="dateTimeFontSizeVal" class="px-2 py-0.5 rounded-md bg-slate-100 text-[#05344E]">15px</span>
+            </div>
+            <input id="dateTimeFontSize" type="range" min="11" max="20" step="1" value="15" class="w-full accent-[#05344E] cursor-pointer" />
+          </div>
+
+          <div class="sm:col-span-2 lg:col-span-3">
+            <label class="block text-xs font-bold text-slate-700 mb-1">व्हिडिओ लोड होतानाचा संदेश (Loading Text)</label>
+            <input id="loadingText" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" value="🙏 दर्शन सुरू होत आहे..." />
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. चालणारी पट्टी (Ticker), ऑफलाईन संदेश व फॉन्ट -->
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
+        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E] pb-2 border-b border-slate-100">📺 चालणारी पट्टी (Ticker), फॉन्ट व ऑफलाईन संदेश</h2>
 
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">चालणाऱ्या पट्टीतील मजकूर (Ticker Text)</label>
@@ -36,9 +153,9 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="sm:col-span-2">
-            <label class="block text-xs font-bold text-slate-700 mb-1">प्लेयर व टिकर फॉन्ट (५० देवनागरी फॉन्ट्स)</label>
+            <label class="block text-xs font-bold text-slate-700 mb-1">संपूर्ण प्लेयर फॉन्ट (बाय डिफॉल्ट Khand Bold)</label>
             <select id="playerFontSelect" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white"></select>
-            <div id="playerFontPreview" class="mt-2 px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm text-[#05344E]">🙏 अखंड हरिनाम सप्ताह व लाईव्ह दर्शन</div>
+            <div id="playerFontPreview" class="mt-2 px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold text-[#05344E]">🙏 श्री विठ्ठल रुक्मिणी, पंढरपूर • Live Darshan</div>
           </div>
 
           <div>
@@ -53,12 +170,13 @@
             <label class="block text-xs font-bold text-slate-700 mb-1">टिकर मजकूर रंग</label>
             <div class="flex items-center gap-2">
               <button id="swatchPlayerText" type="button" class="w-10 h-10 rounded-xl border border-slate-300 shrink-0 cursor-pointer shadow-sm"></button>
-              <input id="tickerTextColor" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono" value="#FFFFFF" />
+              <input id="tickerTextColor" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono" value="#D6DBD2" />
             </div>
           </div>
         </div>
       </section>
 
+      <!-- 4. वॉटरमार्क सेटिंग्ज -->
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
         <h2 class="text-base sm:text-lg font-extrabold text-[#05344E] pb-2 border-b border-slate-100">💧 वॉटरमार्क सेटिंग्ज</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -84,7 +202,7 @@
       </section>
 
       <div class="sticky bottom-3 z-20 flex justify-end">
-        <button id="savePlayerBtn" type="button" class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-sm font-bold cursor-pointer shadow-lg transition">💾 प्लेयर सेटिंग्ज सेव्ह करा</button>
+        <button id="savePlayerBtn" type="button" class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-sm font-bold cursor-pointer shadow-lg transition">💾 सर्व प्लेयर सेटिंग्ज सेव्ह करा</button>
       </div>
     </div>
   </main>
@@ -93,40 +211,68 @@
 
   <script src="admin-common.js"></script>
   <script>
-    renderAdminShell('player', 'प्लेयर, टिकर व वॉटरमार्क');
+    renderAdminShell('player', 'व्हिडिओ प्लेयर सेटिंग्ज');
     populateFontSelect('playerFontSelect', 'playerFontPreview');
+    document.getElementById('playerFontSelect').value = "'Khand', sans-serif";
+    document.getElementById('playerFontPreview').style.fontFamily = "'Khand', sans-serif";
+
+    bindColorPicker('headerBgColor', 'swatchHeaderBg', '#063854');
+    bindColorPicker('headerBorderColor', 'swatchHeaderBorder', '#FBBF24');
+    bindColorPicker('titleTextColor', 'swatchTitleText', '#FFFFFF');
+    bindColorPicker('dateTimeColor', 'swatchDtText', '#FDE68A');
+    bindColorPicker('dateTimeBgColor', 'swatchDtBg', '#144763');
+    bindColorPicker('modalBorderColor', 'swatchModalBorder', '#F59E0B');
     bindColorPicker('tickerBgColor', 'swatchPlayerBg', '#05344E');
-    bindColorPicker('tickerTextColor', 'swatchPlayerText', '#FFFFFF');
+    bindColorPicker('tickerTextColor', 'swatchPlayerText', '#D6DBD2');
     bindColorPicker('watermarkColor', 'swatchWatermark', '#FFFFFF');
 
     const opSlider = document.getElementById('watermarkOpacity');
     const opVal = document.getElementById('watermarkOpacityVal');
-    opSlider.addEventListener('input', () => {
-      opVal.textContent = Math.round(Number(opSlider.value) * 100) + '%';
-    });
+    opSlider.addEventListener('input', () => { opVal.textContent = Math.round(Number(opSlider.value) * 100) + '%'; });
+
+    const titleFsSlider = document.getElementById('titleFontSize');
+    const titleFsVal = document.getElementById('titleFontSizeVal');
+    titleFsSlider.addEventListener('input', () => { titleFsVal.textContent = titleFsSlider.value + 'px'; });
+
+    const dtFsSlider = document.getElementById('dateTimeFontSize');
+    const dtFsVal = document.getElementById('dateTimeFontSizeVal');
+    dtFsSlider.addEventListener('input', () => { dtFsVal.textContent = dtFsSlider.value + 'px'; });
 
     initAdminGuard(() => {
       fbDb.ref('siteConfig/player').on('value', (snap) => {
         const p = snap.val() || {};
+        if (p.titleSuffix !== undefined) document.getElementById('titleSuffix').value = p.titleSuffix;
+        if (p.liveBadgeText !== undefined) document.getElementById('liveBadgeText').value = p.liveBadgeText;
+        if (p.showLiveBadge !== undefined) document.getElementById('showLiveBadge').checked = Boolean(p.showLiveBadge);
+        if (p.showDateTime !== undefined) document.getElementById('showDateTime').checked = Boolean(p.showDateTime);
+        if (p.showShareBtn !== undefined) document.getElementById('showShareBtn').checked = Boolean(p.showShareBtn);
+        if (p.showMuteBtn !== undefined) document.getElementById('showMuteBtn').checked = Boolean(p.showMuteBtn);
+        if (p.loadingText !== undefined) document.getElementById('loadingText').value = p.loadingText;
+
+        const setColor = (inId, swId, val) => {
+          if (!val) return;
+          document.getElementById(inId).value = val;
+          document.getElementById(swId).style.backgroundColor = val;
+        };
+        setColor('headerBgColor', 'swatchHeaderBg', p.headerBgColor);
+        setColor('headerBorderColor', 'swatchHeaderBorder', p.headerBorderColor);
+        setColor('titleTextColor', 'swatchTitleText', p.titleTextColor);
+        setColor('dateTimeColor', 'swatchDtText', p.dateTimeColor);
+        setColor('dateTimeBgColor', 'swatchDtBg', p.dateTimeBgColor);
+        setColor('modalBorderColor', 'swatchModalBorder', p.modalBorderColor);
+        setColor('tickerBgColor', 'swatchPlayerBg', p.tickerBgColor);
+        setColor('tickerTextColor', 'swatchPlayerText', p.tickerTextColor);
+        setColor('watermarkColor', 'swatchWatermark', p.watermarkColor);
+
+        if (p.titleFontSize) { titleFsSlider.value = p.titleFontSize; titleFsVal.textContent = p.titleFontSize + 'px'; }
+        if (p.dateTimeFontSize) { dtFsSlider.value = p.dateTimeFontSize; dtFsVal.textContent = p.dateTimeFontSize + 'px'; }
         if (p.tickerText !== undefined) document.getElementById('tickerText').value = p.tickerText;
         if (p.offlineMessage !== undefined) document.getElementById('offlineMessage').value = p.offlineMessage;
         if (p.fontFamily) {
           document.getElementById('playerFontSelect').value = p.fontFamily;
           document.getElementById('playerFontPreview').style.fontFamily = p.fontFamily;
         }
-        if (p.tickerBgColor) {
-          document.getElementById('tickerBgColor').value = p.tickerBgColor;
-          document.getElementById('swatchPlayerBg').style.backgroundColor = p.tickerBgColor;
-        }
-        if (p.tickerTextColor) {
-          document.getElementById('tickerTextColor').value = p.tickerTextColor;
-          document.getElementById('swatchPlayerText').style.backgroundColor = p.tickerTextColor;
-        }
         if (p.watermarkText !== undefined) document.getElementById('watermarkText').value = p.watermarkText;
-        if (p.watermarkColor) {
-          document.getElementById('watermarkColor').value = p.watermarkColor;
-          document.getElementById('swatchWatermark').style.backgroundColor = p.watermarkColor;
-        }
         if (p.watermarkOpacity !== undefined) {
           opSlider.value = p.watermarkOpacity;
           opVal.textContent = Math.round(Number(p.watermarkOpacity) * 100) + '%';
@@ -136,6 +282,21 @@
 
     document.getElementById('savePlayerBtn').addEventListener('click', async () => {
       const payload = {
+        titleSuffix: document.getElementById('titleSuffix').value.trim(),
+        liveBadgeText: document.getElementById('liveBadgeText').value.trim() || 'LIVE',
+        showLiveBadge: document.getElementById('showLiveBadge').checked,
+        showDateTime: document.getElementById('showDateTime').checked,
+        showShareBtn: document.getElementById('showShareBtn').checked,
+        showMuteBtn: document.getElementById('showMuteBtn').checked,
+        headerBgColor: document.getElementById('headerBgColor').value.trim(),
+        headerBorderColor: document.getElementById('headerBorderColor').value.trim(),
+        titleTextColor: document.getElementById('titleTextColor').value.trim(),
+        titleFontSize: Number(titleFsSlider.value),
+        dateTimeColor: document.getElementById('dateTimeColor').value.trim(),
+        dateTimeBgColor: document.getElementById('dateTimeBgColor').value.trim(),
+        dateTimeFontSize: Number(dtFsSlider.value),
+        modalBorderColor: document.getElementById('modalBorderColor').value.trim(),
+        loadingText: document.getElementById('loadingText').value.trim() || '🙏 दर्शन सुरू होत आहे...',
         fontFamily: document.getElementById('playerFontSelect').value,
         tickerBgColor: document.getElementById('tickerBgColor').value.trim(),
         tickerTextColor: document.getElementById('tickerTextColor').value.trim(),
@@ -151,7 +312,7 @@
 
       try {
         await fbDb.ref('siteConfig/player').update(payload);
-        showToast('✅ प्लेयर सेटिंग्ज सेव्ह झाल्या!');
+        showToast('✅ सर्व व्हिडिओ प्लेयर सेटिंग्ज सेव्ह झाल्या!');
       } catch (err) {
         showToast('❌ त्रुटी: ' + err.message, true);
       }

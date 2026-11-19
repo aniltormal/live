@@ -125,6 +125,7 @@
     .admin-view-anim {
       animation: adminFadeSlide 0.18s ease-out;
     }
+    #videoModal, #videoModal * { font-family: 'Khand', 'Noto Sans Devanagari', sans-serif !important; font-weight: 700; }
   </style>
 </head>
 <body id="appBody" class="bg-white text-black min-h-screen flex flex-col transition-colors duration-300">
@@ -298,15 +299,16 @@
     <div id="modalBox" class="p-[3px] bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 w-full max-w-[92vw] max-h-[86vh] max-h-[86dvh] rounded-2xl overflow-hidden shadow-[0_0_32px_rgba(245,158,11,0.45)] flex flex-col">
       <div class="bg-black text-white w-full h-full rounded-[13px] overflow-hidden flex flex-col flex-1">
       <!-- Modal Header -->
-      <div class="bg-neutral-950 px-3 sm:px-5 py-2.5 flex items-center justify-between gap-2 border-b border-white/20 shrink-0">
-        <div class="flex items-center gap-2 min-w-0 flex-1">
-          <span class="relative flex h-2.5 w-2.5 shrink-0">
-            <span id="modalLiveDot" class="live-dot relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+      <div id="playerHeaderBar" class="bg-gradient-to-r from-[#031926] via-[#063854] to-[#031926] px-3 sm:px-5 py-2.5 flex items-center justify-between gap-2 border-b-2 border-amber-400/70 shrink-0 shadow-md">
+        <div class="flex items-center gap-2.5 min-w-0 flex-1">
+          <span id="playerLiveBadgeWrap" class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-red-600/90 border border-red-400/50 text-[10px] sm:text-xs text-white tracking-wider shrink-0 shadow">
+            <span id="modalLiveDot" class="live-dot inline-flex rounded-full h-2 w-2 bg-white"></span>
+            <span id="playerLiveBadgeText">LIVE</span>
           </span>
-          <h3 id="modalTitle" class="text-xs sm:text-base font-bold text-white truncate"></h3>
+          <h3 id="modalTitle" class="text-base sm:text-xl font-bold text-white tracking-wide truncate drop-shadow-sm"></h3>
         </div>
-        <div class="flex items-center gap-2 sm:gap-3 shrink-0">
-          <span id="modalDateTime" class="text-xs sm:text-sm font-bold text-white whitespace-nowrap"></span>
+        <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
+          <span id="modalDateTime" class="px-2.5 py-0.5 rounded-lg bg-white/10 border border-amber-300/35 text-sm sm:text-base font-bold text-amber-200 whitespace-nowrap"></span>
           <select id="qualitySelect" aria-label="व्हिडिओ क्वालिटी" title="व्हिडिओ क्वालिटी"
             class="hidden px-2 py-1 rounded-lg bg-neutral-800 text-white border border-white/40 text-xs font-semibold cursor-pointer focus:outline-none">
             <option value="-1">Auto</option>
@@ -1947,7 +1949,9 @@
       currentOpenTempleId = temple.id;
       startModalClock();
       cleanupPopupPlayer();
-      el.modalTitle.textContent = temple.buttonTitle;
+      const sfx = (window.__playerCfg && window.__playerCfg.titleSuffix !== undefined) ? window.__playerCfg.titleSuffix : '• Live Darshan';
+      const rawT = temple.buttonTitle || 'मंदिर';
+      el.modalTitle.textContent = (!sfx || rawT.includes(sfx)) ? rawT : (rawT + ' ' + sfx);
       el.videoModal.classList.remove('hidden');
       renderPlayerTempleDock(temple.id);
       showPlayerLoading(true);
@@ -2653,10 +2657,59 @@
           hideAppLoader();
         });
 
-        // Listen for Player ticker, font, colors, offline message & watermark updates for all visitors
+        // Listen for full Video Player Settings (header, title, clock, buttons, ticker, font & watermark)
+        
+    function applyMasterConfigGlobal(m) {
+      if (!m || m.enabled === false) {
+        document.documentElement.style.fontSize = '';
+        return;
+      }
+      if (m.fontFamily) document.body.style.fontFamily = m.fontFamily;
+      if (m.fontScale) document.documentElement.style.fontSize = (16 * (Number(m.fontScale) / 100)).toFixed(2) + 'px';
+      const c = m.colors || {};
+      if (c.pageBg) document.body.style.backgroundColor = c.pageBg;
+      if (c.text) document.body.style.color = c.text;
+      const hdr = document.getElementById('appHeader');
+      if (hdr && c.headerBg) hdr.style.backgroundColor = c.headerBg;
+      const ftr = document.getElementById('appFooter');
+      if (ftr && c.footerBg) ftr.style.backgroundColor = c.footerBg;
+      const llb = document.getElementById('legalLinksBar');
+      if (llb && c.primary) llb.style.backgroundColor = c.primary;
+      const pBar = document.getElementById('panchangBar');
+      if (pBar && c.primary) pBar.style.backgroundColor = c.primary;
+      document.querySelectorAll('.temple-title-bar').forEach(el => { if (c.primary) el.style.backgroundColor = c.primary; });
+    }
+
+        fbDb.ref('siteConfig/master').on('value', (s) => applyMasterConfigGlobal(s.val()));
         fbDb.ref('siteConfig/player').on('value', (snapshot) => {
           const p = snapshot.val();
           if (p && typeof p === 'object') {
+            window.__playerCfg = p;
+            const vm = document.getElementById('videoModal');
+            const hdr = document.getElementById('playerHeaderBar');
+            const lbWrap = document.getElementById('playerLiveBadgeWrap');
+            const lbText = document.getElementById('playerLiveBadgeText');
+            const dtEl = document.getElementById('modalDateTime');
+            const shBtn = document.getElementById('playerShareBtn');
+            const mtBtn = document.getElementById('playerMuteBtn');
+            const ldEl = document.querySelector('#playerLoadingBadge span');
+            if (p.fontFamily && vm) vm.style.setProperty('font-family', p.fontFamily, 'important');
+            if (hdr && p.headerBgColor) hdr.style.background = p.headerBgColor;
+            if (hdr && p.headerBorderColor) hdr.style.borderBottomColor = p.headerBorderColor;
+            if (el.modalTitle && p.titleTextColor) el.modalTitle.style.color = p.titleTextColor;
+            if (el.modalTitle && p.titleFontSize) el.modalTitle.style.fontSize = p.titleFontSize + 'px';
+            if (lbWrap && p.showLiveBadge !== undefined) lbWrap.classList.toggle('hidden', !p.showLiveBadge);
+            if (lbText && p.liveBadgeText) lbText.textContent = p.liveBadgeText;
+            if (dtEl) {
+              if (p.showDateTime !== undefined) dtEl.classList.toggle('hidden', !p.showDateTime);
+              if (p.dateTimeColor) dtEl.style.color = p.dateTimeColor;
+              if (p.dateTimeBgColor) dtEl.style.backgroundColor = p.dateTimeBgColor;
+              if (p.dateTimeFontSize) dtEl.style.fontSize = p.dateTimeFontSize + 'px';
+            }
+            if (shBtn && p.showShareBtn !== undefined) shBtn.classList.toggle('hidden', !p.showShareBtn);
+            if (mtBtn && p.showMuteBtn !== undefined) mtBtn.classList.toggle('hidden', !p.showMuteBtn);
+            if (el.modalBox && p.modalBorderColor) el.modalBox.style.background = p.modalBorderColor;
+            if (ldEl && p.loadingText) ldEl.textContent = p.loadingText;
             if (p.tickerText) setMarqueeText(el.playerTickerTrack, p.tickerText);
             if (p.fontFamily) {
               el.playerTickerTrack.style.fontFamily = p.fontFamily;

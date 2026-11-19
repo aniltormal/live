@@ -65,6 +65,13 @@
         <div id="linksContainer" class="space-y-2.5"></div>
       </section>
 
+      <section id="adminTabLivePreview" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-2">
+        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">👁️ भाविक काऊंटर व लिंक्स प्रिव्ह्यू</h2>
+        <div class="p-3 rounded-xl bg-[#05344E] text-white flex items-center justify-between">
+          <span id="pvVisBadge" class="px-3 py-1 rounded-full bg-white/15 border border-amber-300 text-xs font-bold text-amber-200">👁️ एकूण भाविक : १</span>
+          <span class="px-3 py-1 rounded-lg bg-[#25D366] text-xs font-bold">WhatsApp</span>
+        </div>
+      </section>
       <div class="sticky bottom-3 z-20 flex justify-end">
         <button id="saveVisLinksBtn" type="button" class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-sm font-bold cursor-pointer shadow-lg transition">💾 भाविक व लिंक्स सेव्ह करा</button>
       </div>
@@ -163,6 +170,13 @@
         showToast('❌ त्रुटी: ' + err.message, true);
       }
     });
+
+    setInterval(() => {
+      const b = document.getElementById('pvVisBadge');
+      const l = document.getElementById('visitorLabelInput');
+      const c = document.getElementById('visitorCountInput');
+      if (b && l && c) b.textContent = `${l.value || '👁️ एकूण भाविक :'} ${Number(c.value || 1).toLocaleString('mr-IN')}`;
+    }, 500);
   </script>
 </body>
 </html>

@@ -126,6 +126,10 @@
         </div>
       </section>
 
+      <section id="adminTabLivePreview" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-2">
+        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">👁️ जाहिरात स्थिती प्रिव्ह्यू</h2>
+        <div id="pvAdsStatus" class="text-xs sm:text-sm font-bold text-slate-700"></div>
+      </section>
       <div class="sticky bottom-3 z-20 flex justify-end">
         <button id="saveAdsBtn" type="button" class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-sm font-bold cursor-pointer shadow-lg transition">💾 सर्व जाहिरात सेटिंग्ज सेव्ह करा</button>
       </div>
@@ -322,6 +326,15 @@
         showToast('❌ त्रुटी: ' + err.message, true);
       }
     });
+
+    setInterval(() => {
+      const el = document.getElementById('pvAdsStatus');
+      if (!el) return;
+      const b = document.getElementById('bannerEnabledToggle')?.checked;
+      const p = document.getElementById('preRollEnabledToggle')?.checked;
+      const s = document.getElementById('splashEnabledToggle')?.checked;
+      el.textContent = `स्लायडिंग बॅनर: ${b ? 'चालू ✅' : 'बंद ❌'} • प्री-रोल जाहिरात: ${p ? 'चालू ✅' : 'बंद ❌'} • स्प्लॅश पॉपअप: ${s ? 'चालू ✅' : 'बंद ❌'}`;
+    }, 600);
   </script>
 </body>
 </html>

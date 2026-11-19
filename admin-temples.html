@@ -75,6 +75,11 @@
       </section>
 
       <!-- सर्वात शेवटी एकच Save बटण -->
+      <section id="adminTabLivePreview" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-2">
+        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">👁️ मुख्य पेजवरील दृश्य क्रम प्रिव्ह्यू</h2>
+        <p class="text-xs text-slate-600">वर लपवलेली (`🙈`) मंदिरे वगळता बाकी सर्व मंदिरे येथे निवडलेल्या क्रमानुसार मुख्य पेजवर दिसतात.</p>
+        <div id="pvTemplesSummary" class="flex flex-wrap gap-2 pt-1"></div>
+      </section>
       <div class="sticky bottom-3 z-20 flex justify-end">
         <button id="saveAllTemplesBtn" type="button" class="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-sm font-extrabold cursor-pointer shadow-xl transition">💾 सर्व मंदिरे सेव्ह करा</button>
       </div>
@@ -383,6 +388,12 @@
         showToast('❌ त्रुटी: ' + err.message, true);
       }
     });
+
+    setInterval(() => {
+      const box = document.getElementById('pvTemplesSummary');
+      if (!box || typeof templesList === 'undefined') return;
+      box.innerHTML = templesList.filter(t => !t.hidden && !t.deleted).map((t, i) => `<span class="px-3 py-1 rounded-full bg-[#05344E] text-white text-xs font-bold">${i+1}. ${t.shortTitle || t.name}</span>`).join('') || '<span class="text-xs text-slate-500">कोणतेही दृश्य मंदिर नाही</span>';
+    }, 800);
   </script>
 </body>
 </html>

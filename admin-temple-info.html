@@ -37,7 +37,7 @@
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div>
               <p class="text-xs sm:text-sm font-extrabold text-[#05344E]">🌐 इंटरनेटवरून अद्ययावत माहिती मिळवा (नवीन व जुन्या मंदिरांसाठी)</p>
-              <p class="text-[11px] text-slate-600">नवीन मंदिर अ‍ॅड केल्यावर किंवा माहिती अपडेट करण्यासाठी बटण दाबा; तसेच वेळोवेळी स्वयंचलित अपडेट सेट करा.</p>
+              <p class="text-[11px] text-slate-600">सध्या मुख्य बटण <strong>मराठी/इंग्रजी विकिपीडिया</strong>वरून माहिती आणते; तसेच खाली तुम्ही कोणत्याही <strong>विशिष्ट वेबसाईटची लिंक</strong> देऊनही माहिती आणू शकता.</p>
             </div>
             <span id="lastUpdatedLabel" class="text-[11px] font-bold text-slate-500"></span>
           </div>
@@ -45,6 +45,10 @@
             <input id="wikiSearchInput" type="text" class="flex-1 min-w-[200px] px-3 py-2 rounded-xl border border-sky-300 bg-white text-xs sm:text-sm" placeholder="मंदिराचे नाव (उदा. त्र्यंबकेश्वर मंदिर, नाशिक)" />
             <button id="fetchInternetInfoBtn" type="button" class="px-3.5 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs sm:text-sm font-bold cursor-pointer transition shrink-0">🌐 इंटरनेटवरून माहिती आणा</button>
             <button id="resetOfficialInfoBtn" type="button" class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs sm:text-sm font-bold cursor-pointer transition shrink-0">🔄 अधिकृत माहिती ताजी करा</button>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 pt-1.5 border-t border-sky-200/60">
+            <input id="customSourceUrlInput" type="url" class="flex-1 min-w-[200px] px-3 py-2 rounded-xl border border-indigo-300 bg-white text-xs sm:text-sm" placeholder="विशिष्ट वेबसाईट लिंक पेस्ट करा (उदा. https://sai.org.in/)" />
+            <button id="fetchCustomUrlBtn" type="button" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-bold cursor-pointer transition shrink-0">🔗 या लिंकवरून माहिती आणा</button>
           </div>
           <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-sky-200/70">
             <label for="autoRefreshToggle" class="flex items-center gap-2.5 cursor-pointer select-none">
@@ -103,6 +107,19 @@
         </div>
       </section>
 
+      <section id="adminTabLivePreview" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-3">
+        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">👁️ माहिती पेज लाईव्ह प्रिव्ह्यू (सेव्ह करण्यापूर्वी तपासा)</h2>
+        <div class="rounded-2xl border border-slate-300 overflow-hidden bg-slate-50">
+          <div class="bg-[#05344E] text-white px-4 py-2.5 flex items-center justify-between">
+            <span id="pvTiName" class="font-bold text-base">निवडलेले मंदिर</span>
+            <span class="px-3 py-1 rounded-lg bg-amber-500 text-xs font-bold">▶ आत्ताच लाईव्ह दर्शन घ्या</span>
+          </div>
+          <div class="p-3 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div class="bg-white p-3 rounded-xl border border-amber-200"><div class="font-bold text-[#05344E] mb-1">🕰️ आरती वेळापत्रक</div><div id="pvTiSched" class="text-slate-700 whitespace-pre-line line-clamp-4"></div></div>
+            <div class="bg-white p-3 rounded-xl border border-sky-200"><div class="font-bold text-[#05344E] mb-1">🛕 इतिहास व महत्त्व</div><div id="pvTiHist" class="text-slate-700 whitespace-pre-line line-clamp-4"></div></div>
+          </div>
+        </div>
+      </section>
       <div class="sticky bottom-3 z-20 flex justify-end">
         <button id="saveTempleInfoBtn" type="button" class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-sm font-bold cursor-pointer shadow-lg transition">💾 मंदिराची माहिती सेव्ह करा</button>
       </div>
@@ -328,6 +345,69 @@
 
     sel.addEventListener('change', () => loadTempleInfo(sel.value));
 
+    
+    async function fetchFromCustomWebsite(url) {
+      const cleanUrl = (url || '').trim();
+      if (!/^https?:\/\//i.test(cleanUrl)) throw new Error('कृपया https:// ने सुरू होणारी योग्य लिंक टाका.');
+      let rawText = '';
+      try {
+        const jinaUrl = 'https://r.jina.ai/' + cleanUrl;
+        const r = await fetch(jinaUrl);
+        if (r.ok) rawText = await r.text();
+      } catch (_) {}
+      if (!rawText) {
+        const aoUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(cleanUrl);
+        const r2 = await fetch(aoUrl);
+        if (!r2.ok) throw new Error('वेबसाईटवरून माहिती वाचता आली नाही.');
+        const html = await r2.text();
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        doc.querySelectorAll('script, style, nav, header, footer').forEach(e => e.remove());
+        rawText = (doc.body && doc.body.innerText) || '';
+      }
+      const lines = rawText
+        .split(/\r?\n/)
+        .map(l => l.replace(/[#*`>|]/g, '').trim())
+        .filter(l => l.length > 20 && !/^http/i.test(l) && !/markdown content|url source|title:/i.test(l));
+
+      const schedLines = [];
+      const infoLines = [];
+      const timeRx = /(\d{1,2}[:.]\d{2}|\b(?:am|pm)\b|aarti|darshan|आरती|दर्शन|पहाटे|सकाळ|दुपार|सायं|रात्री)/i;
+      lines.forEach((l) => {
+        if (timeRx.test(l) && schedLines.length < 12) schedLines.push('• ' + l);
+        else if (infoLines.length < 8) infoLines.push(l);
+      });
+      return {
+        schedule: schedLines.join('\n'),
+        history: infoLines.join('\n\n').slice(0, 1800)
+      };
+    }
+
+    document.getElementById('fetchCustomUrlBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('fetchCustomUrlBtn');
+      const url = (document.getElementById('customSourceUrlInput').value || '').trim();
+      if (!url) { showToast('कृपया आधी वेबसाईटची लिंक पेस्ट करा.', true); return; }
+      const orig = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = '⏳ वेबसाईट वाचत आहे...';
+      try {
+        const res = await fetchFromCustomWebsite(url);
+        if (!res.schedule && !res.history) {
+          showToast('या लिंकवरून पुरेसा मजकूर मिळाला नाही; दुसरे पेज किंवा थेट माहिती टाकून पहा.', true);
+        } else {
+          if (res.schedule) document.getElementById('infoScheduleInput').value = res.schedule;
+          if (res.history) document.getElementById('infoHistoryInput').value = res.history;
+          const siteEl = document.getElementById('infoWebsiteInput');
+          if (siteEl && !siteEl.value.trim()) siteEl.value = url;
+          showToast('✅ विशिष्ट वेबसाईटवरून माहिती आणली! तपासून "सेव्ह करा" दाबा.');
+        }
+      } catch (e) {
+        showToast('❌ त्रुटी: ' + e.message, true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = orig;
+      }
+    });
+
     document.getElementById('fetchInternetInfoBtn').addEventListener('click', async () => {
       const btn = document.getElementById('fetchInternetInfoBtn');
       const q = (wikiInput.value || templeNameMap[sel.value] || '').trim();
@@ -394,6 +474,19 @@
         showToast('❌ त्रुटी: ' + err.message, true);
       }
     });
+
+    function updateTiTabPreview() {
+      const s = document.getElementById('infoTempleSelect');
+      document.getElementById('pvTiName').textContent = (s && s.options[s.selectedIndex]) ? s.options[s.selectedIndex].text : 'मंदिर';
+      document.getElementById('pvTiSched').textContent = document.getElementById('infoScheduleInput').value || 'वेळापत्रक रिकामे आहे';
+      document.getElementById('pvTiHist').textContent = document.getElementById('infoHistoryInput').value || 'इतिहास रिकामा आहे';
+    }
+    document.querySelectorAll('#pageContent input, #pageContent select, #pageContent textarea').forEach(el => {
+      el.addEventListener('input', updateTiTabPreview);
+      el.addEventListener('change', updateTiTabPreview);
+    });
+    setTimeout(updateTiTabPreview, 300);
+
   </script>
 </body>
 </html>

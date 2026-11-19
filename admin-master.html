@@ -6,7 +6,7 @@
   <title>मास्टर थीम व फॉन्ट सेटिंग्ज — लाईव्ह दर्शन अ‍ॅडमिन</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Akshar:wght@400;600;700&family=Amiko:wght@400;600;700&family=Amita:wght@400;700&family=Anek+Devanagari:wght@400;600;700&family=Arya:wght@400;700&family=Asar&family=Bakbak+One&family=Baloo+2:wght@500;600;700&family=Biryani:wght@400;600;700&family=Cambay:wght@400;700&family=Dekko&family=Eczar:wght@400;600;700&family=Glegoo:wght@400;700&family=Gotu&family=Halant:wght@400;600;700&family=Hind:wght@400;600;700&family=Inknut+Antiqua:wght@400;600;700&family=Inter:wght@400;600;700&family=Jaldi:wght@400;700&family=Kadwa:wght@400;700&family=Kalam:wght@400;700&family=Karma:wght@400;600;700&family=Khand:wght@500;600;700&family=Khula:wght@400;600;700&family=Kurale&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@500;600;700&family=Martel+Sans:wght@400;600;700&family=Martel:wght@400;600;700&family=Modak&family=Mukta:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&family=Noto+Serif+Devanagari:wght@400;600;700&family=Palanquin+Dark:wght@400;600;700&family=Palanquin:wght@400;600;700&family=Playpen+Sans+Deva:wght@400;600;700&family=Poppins:wght@400;500;600;700&family=Pragati+Narrow:wght@400;700&family=Rajdhani:wght@500;600;700&family=Rhodium+Libre&family=Rozha+One&family=Sahitya:wght@400;700&family=Sarala:wght@400;700&family=Sumana:wght@400;700&family=Sura:wght@400;700&family=Teko:wght@500;600;700&family=Tillana:wght@500;600;700&family=Tiro+Devanagari+Hindi:ital@0;1&family=Tiro+Devanagari+Marathi:ital@0;1&family=Tiro+Devanagari+Sanskrit:ital@0;1&family=Vesper+Libre:wght@400;700&family=Yatra+One&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@500;600;700&family=Martel+Sans:wght@400;600;700&family=Martel:wght@400;600;700&family=Modak&family=Mukta:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&family=Noto+Serif+Devanagari:wght@400;600;700&family=Palanquin+Dark:wght@400;600;700&family=Palanquin:wght@400;600;700&family=Playpen+Sans+Deva:wght@400;600;700&family=Poppins:wght@400;500;600;700&family=Pragati+Narrow:wght@400;700&family=Rajdhani:wght@500;600;700&family=Rhodium+Libre&family=Rozha+One&family=Sahitya:wght@400;700&family=Sarala:wght@400;700&family=Sumana:wght@400;700&family=Sura:wght@400;700&family=Teko:wght@500;600;700&family=Tillana:wght@500;600;700&family=Tiro+Devanagari+Hindi:ital@0;1&family=Tiro+Devanagari+Marathi:ital@0;1&family=Tiro+Devanagari+Sanskrit:ital@0;1&family=Vesper+Libre:wght@400;700&family=Gajraj+One&family=Shrikhand&family=Yatra+One&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -236,7 +236,8 @@
       const hbg = document.getElementById('colHeaderBg').value.trim() || '#FFFFFF';
       const txt = document.getElementById('colText').value.trim() || '#0F172A';
       const fbg = document.getElementById('colFooterBg').value.trim() || '#000000';
-      pv.style.fontFamily = fontSel.value;
+      pv.style.setProperty('font-family', fontSel.value, 'important');
+      pv.querySelectorAll('*').forEach(el => el.style.setProperty('font-family', fontSel.value, 'important'));
       pv.style.fontSize = scaleSlider.value + '%';
       pv.style.backgroundColor = bg;
       pv.style.color = txt;

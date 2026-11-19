@@ -6,7 +6,7 @@
   <title>लेआउट, कॉलम व बटणे — लाईव्ह दर्शन अ‍ॅडमिन</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Akshar:wght@400;600;700&family=Amiko:wght@400;600;700&family=Amita:wght@400;700&family=Anek+Devanagari:wght@400;600;700&family=Arya:wght@400;700&family=Asar&family=Bakbak+One&family=Baloo+2:wght@500;600;700&family=Biryani:wght@400;600;700&family=Cambay:wght@400;700&family=Dekko&family=Eczar:wght@400;600;700&family=Glegoo:wght@400;700&family=Gotu&family=Halant:wght@400;600;700&family=Hind:wght@400;600;700&family=Inknut+Antiqua:wght@400;600;700&family=Inter:wght@400;600;700&family=Jaldi:wght@400;700&family=Kadwa:wght@400;700&family=Kalam:wght@400;700&family=Karma:wght@400;600;700&family=Khand:wght@500;600;700&family=Khula:wght@400;600;700&family=Kurale&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@500;600;700&family=Martel+Sans:wght@400;600;700&family=Martel:wght@400;600;700&family=Modak&family=Mukta:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&family=Noto+Serif+Devanagari:wght@400;600;700&family=Palanquin+Dark:wght@400;600;700&family=Palanquin:wght@400;600;700&family=Playpen+Sans+Deva:wght@400;600;700&family=Poppins:wght@400;500;600;700&family=Pragati+Narrow:wght@400;700&family=Rajdhani:wght@500;600;700&family=Rhodium+Libre&family=Rozha+One&family=Sahitya:wght@400;700&family=Sarala:wght@400;700&family=Sumana:wght@400;700&family=Sura:wght@400;700&family=Teko:wght@500;600;700&family=Tillana:wght@500;600;700&family=Tiro+Devanagari+Hindi:ital@0;1&family=Tiro+Devanagari+Marathi:ital@0;1&family=Tiro+Devanagari+Sanskrit:ital@0;1&family=Vesper+Libre:wght@400;700&family=Yatra+One&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@500;600;700&family=Martel+Sans:wght@400;600;700&family=Martel:wght@400;600;700&family=Modak&family=Mukta:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&family=Noto+Serif+Devanagari:wght@400;600;700&family=Palanquin+Dark:wght@400;600;700&family=Palanquin:wght@400;600;700&family=Playpen+Sans+Deva:wght@400;600;700&family=Poppins:wght@400;500;600;700&family=Pragati+Narrow:wght@400;700&family=Rajdhani:wght@500;600;700&family=Rhodium+Libre&family=Rozha+One&family=Sahitya:wght@400;700&family=Sarala:wght@400;700&family=Sumana:wght@400;700&family=Sura:wght@400;700&family=Teko:wght@500;600;700&family=Tillana:wght@500;600;700&family=Tiro+Devanagari+Hindi:ital@0;1&family=Tiro+Devanagari+Marathi:ital@0;1&family=Tiro+Devanagari+Sanskrit:ital@0;1&family=Vesper+Libre:wght@400;700&family=Gajraj+One&family=Shrikhand&family=Yatra+One&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -188,6 +188,20 @@
         </div>
       </section>
 
+      <section id="adminTabLivePreview" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-3">
+        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">👁️ लेआउट, पंचांग व कार्ड बटण लाईव्ह प्रिव्ह्यू</h2>
+        <div class="rounded-2xl border border-slate-300 bg-slate-50 p-3 space-y-3">
+          <div id="pvPanchangStrip" class="px-3 py-1.5 rounded-xl text-xs font-bold text-center" style="background:#FFFBEB;color:#78350F;">🗓️ आजचे पंचांग: मार्गशीर्ष शुद्ध नवमी • गुरुवार</div>
+          <div id="pvSecBox" class="px-3 py-2 rounded-xl bg-white border border-amber-300 text-center">
+            <div id="pvSecTtl" class="text-sm font-extrabold text-[#05344E]">प्रमुख देवस्थान लाईव्ह दर्शन</div>
+          </div>
+          <div id="pvCardsGrid" class="grid grid-cols-3 gap-2">
+            <div class="rounded-xl overflow-hidden border border-slate-200 bg-white"><div class="h-12 bg-amber-100 flex items-center justify-center">🛕</div><div class="pvCardBtn px-2 py-1 text-center text-xs font-bold truncate" style="background:#05344E;color:#FFFFFF;">पंढरपूर</div></div>
+            <div class="rounded-xl overflow-hidden border border-slate-200 bg-white"><div class="h-12 bg-orange-100 flex items-center justify-center">🙏</div><div class="pvCardBtn px-2 py-1 text-center text-xs font-bold truncate" style="background:#05344E;color:#FFFFFF;">कोल्हापूर</div></div>
+            <div class="rounded-xl overflow-hidden border border-slate-200 bg-white"><div class="h-12 bg-sky-100 flex items-center justify-center">✨</div><div class="pvCardBtn px-2 py-1 text-center text-xs font-bold truncate" style="background:#05344E;color:#FFFFFF;">शिर्डी</div></div>
+          </div>
+        </div>
+      </section>
       <div class="sticky bottom-3 z-20 flex justify-end">
         <button id="saveLayoutBtn" type="button" class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-sm font-bold cursor-pointer shadow-lg transition">💾 लेआउट व बटणे सेव्ह करा</button>
       </div>
@@ -286,6 +300,31 @@
         showToast('❌ त्रुटी: ' + err.message, true);
       }
     });
+
+    function updateLayoutTabPreview() {
+      const ps = document.getElementById('pvPanchangStrip');
+      const pt = document.getElementById('showPanchangBarToggle');
+      if (ps && pt) {
+        ps.classList.toggle('hidden', !pt.checked);
+        ps.style.backgroundColor = document.getElementById('panchangBgColor').value || '#FFFBEB';
+        ps.style.color = document.getElementById('panchangTextColor').value || '#78350F';
+        ps.style.fontFamily = document.getElementById('panchangFontSelect').value;
+      }
+      const cols = document.getElementById('gridColsSelect') ? document.getElementById('gridColsSelect').value : '3';
+      const grid = document.getElementById('pvCardsGrid');
+      if (grid) grid.className = `grid grid-cols-${cols || 3} gap-2`;
+      document.querySelectorAll('.pvCardBtn').forEach(b => {
+        b.style.backgroundColor = document.getElementById('btnBgColor').value || '#05344E';
+        b.style.color = document.getElementById('btnTextColor').value || '#FFFFFF';
+        b.style.fontFamily = document.getElementById('btnFontSelect').value;
+      });
+    }
+    document.querySelectorAll('#pageContent input, #pageContent select').forEach(el => {
+      el.addEventListener('input', updateLayoutTabPreview);
+      el.addEventListener('change', updateLayoutTabPreview);
+    });
+    setTimeout(updateLayoutTabPreview, 200);
+
   </script>
 </body>
 </html>

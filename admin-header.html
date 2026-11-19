@@ -6,7 +6,7 @@
   <title>हेडर, लोगो व फुटर — लाईव्ह दर्शन अ‍ॅडमिन</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Akshar:wght@400;600;700&family=Amiko:wght@400;600;700&family=Amita:wght@400;700&family=Anek+Devanagari:wght@400;600;700&family=Arya:wght@400;700&family=Asar&family=Bakbak+One&family=Baloo+2:wght@500;600;700&family=Biryani:wght@400;600;700&family=Cambay:wght@400;700&family=Dekko&family=Eczar:wght@400;600;700&family=Glegoo:wght@400;700&family=Gotu&family=Halant:wght@400;600;700&family=Hind:wght@400;600;700&family=Inknut+Antiqua:wght@400;600;700&family=Inter:wght@400;600;700&family=Jaldi:wght@400;700&family=Kadwa:wght@400;700&family=Kalam:wght@400;700&family=Karma:wght@400;600;700&family=Khand:wght@500;600;700&family=Khula:wght@400;600;700&family=Kurale&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@500;600;700&family=Martel+Sans:wght@400;600;700&family=Martel:wght@400;600;700&family=Modak&family=Mukta:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&family=Noto+Serif+Devanagari:wght@400;600;700&family=Palanquin+Dark:wght@400;600;700&family=Palanquin:wght@400;600;700&family=Playpen+Sans+Deva:wght@400;600;700&family=Poppins:wght@400;500;600;700&family=Pragati+Narrow:wght@400;700&family=Rajdhani:wght@500;600;700&family=Rhodium+Libre&family=Rozha+One&family=Sahitya:wght@400;700&family=Sarala:wght@400;700&family=Sumana:wght@400;700&family=Sura:wght@400;700&family=Teko:wght@500;600;700&family=Tillana:wght@500;600;700&family=Tiro+Devanagari+Hindi:ital@0;1&family=Tiro+Devanagari+Marathi:ital@0;1&family=Tiro+Devanagari+Sanskrit:ital@0;1&family=Vesper+Libre:wght@400;700&family=Yatra+One&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@500;600;700&family=Martel+Sans:wght@400;600;700&family=Martel:wght@400;600;700&family=Modak&family=Mukta:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&family=Noto+Serif+Devanagari:wght@400;600;700&family=Palanquin+Dark:wght@400;600;700&family=Palanquin:wght@400;600;700&family=Playpen+Sans+Deva:wght@400;600;700&family=Poppins:wght@400;500;600;700&family=Pragati+Narrow:wght@400;700&family=Rajdhani:wght@500;600;700&family=Rhodium+Libre&family=Rozha+One&family=Sahitya:wght@400;700&family=Sarala:wght@400;700&family=Sumana:wght@400;700&family=Sura:wght@400;700&family=Teko:wght@500;600;700&family=Tillana:wght@500;600;700&family=Tiro+Devanagari+Hindi:ital@0;1&family=Tiro+Devanagari+Marathi:ital@0;1&family=Tiro+Devanagari+Sanskrit:ital@0;1&family=Vesper+Libre:wght@400;700&family=Gajraj+One&family=Shrikhand&family=Yatra+One&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -151,6 +151,23 @@
         </div>
       </section>
 
+      <section id="adminTabLivePreview" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-3">
+        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">👁️ हेडर, फुटर व लोडिंग स्क्रीन लाईव्ह प्रिव्ह्यू</h2>
+        <div class="rounded-2xl border border-slate-300 overflow-hidden shadow-inner">
+          <div class="bg-gradient-to-r from-[#031926] via-[#05344E] to-[#084160] text-white px-4 py-2.5 border-b-2 border-amber-400 flex items-center justify-between">
+            <div class="min-w-0">
+              <div id="pvHdrTitle" class="text-lg font-bold truncate">श्री. लाईव्ह दर्शन पोर्टल</div>
+              <div id="pvHdrSub" class="text-[11px] text-amber-100 truncate">सर्व मंदिरांचे थेट दर्शन एकाच ठिकाणी</div>
+            </div>
+            <span class="px-2.5 py-1 rounded-lg bg-white/10 text-xs">☰</span>
+          </div>
+          <div id="pvLoaderMini" class="p-3 text-center border-b border-slate-200" style="background:#FFF7E6;">
+            <div id="pvLoaderMiniTtl" class="text-sm font-bold text-[#05344E]">🙏 लाईव्ह दर्शन पोर्टल मध्ये आपले स्वागत आहे 🙏</div>
+            <div id="pvLoaderMiniSub" class="text-xs text-amber-800">॥ सर्व देवांचे दर्शन, एकाच ठिकाणी ॥</div>
+          </div>
+          <div id="pvFtrBar" class="px-4 py-2 text-xs font-semibold truncate" style="background:#000000;color:#FFFFFF;">अस्वीकरण व कॉपीराइट सूचना...</div>
+        </div>
+      </section>
       <div class="sticky bottom-3 z-20 flex justify-end">
         <button id="saveHeaderBtn" type="button" class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-sm font-bold cursor-pointer shadow-lg transition">💾 हेडर व फुटर सेव्ह करा</button>
       </div>
@@ -297,6 +314,39 @@
         showToast('❌ त्रुटी: ' + err.message, true);
       }
     });
+
+    function updateHeaderTabPreview() {
+      const t = document.getElementById('pvHdrTitle'), s = document.getElementById('pvHdrSub');
+      const ht = document.getElementById('headerTitleInput'), hs = document.getElementById('headerSubtitleInput');
+      const hideHT = document.getElementById('hideHeaderTextToggle');
+      if (t && ht) {
+        t.textContent = ht.value || 'श्री. लाईव्ह दर्शन पोर्टल';
+        t.style.fontFamily = document.getElementById('headerFontSelect').value;
+        t.classList.toggle('hidden', Boolean(hideHT && hideHT.checked));
+      }
+      if (s && hs) {
+        s.textContent = hs.value || 'सर्व मंदिरांचे थेट दर्शन एकाच ठिकाणी';
+        s.classList.toggle('hidden', Boolean(hideHT && hideHT.checked));
+      }
+      const f = document.getElementById('pvFtrBar');
+      if (f) {
+        f.textContent = document.getElementById('footerTextInput').value || 'अस्वीकरण व कॉपीराइट सूचना...';
+        f.style.backgroundColor = document.getElementById('footerBgColor').value || '#000000';
+        f.style.color = document.getElementById('footerTextColor').value || '#FFFFFF';
+      }
+      const lm = document.getElementById('pvLoaderMini');
+      if (lm) lm.style.background = document.getElementById('loaderBgColor').value || '#FFF7E6';
+      const lmt = document.getElementById('pvLoaderMiniTtl');
+      if (lmt) lmt.textContent = document.getElementById('loaderTitleInput').value || '🙏 लाईव्ह दर्शन पोर्टल मध्ये आपले स्वागत आहे 🙏';
+      const lms = document.getElementById('pvLoaderMiniSub');
+      if (lms) lms.textContent = document.getElementById('loaderSubtitleInput').value || '॥ सर्व देवांचे दर्शन, एकाच ठिकाणी ॥';
+    }
+    document.querySelectorAll('#pageContent input, #pageContent select, #pageContent textarea').forEach(el => {
+      el.addEventListener('input', updateHeaderTabPreview);
+      el.addEventListener('change', updateHeaderTabPreview);
+    });
+    setTimeout(updateHeaderTabPreview, 200);
+
   </script>
 </body>
 </html>

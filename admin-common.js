@@ -1,3 +1,40 @@
+
+(function applyAdminKhandBold() {
+  if (!document.getElementById('adminKhandFontLink')) {
+    const lnk = document.createElement('link');
+    lnk.id = 'adminKhandFontLink';
+    lnk.rel = 'stylesheet';
+    lnk.href = 'https://fonts.googleapis.com/css2?family=Khand:wght@500;600;700&display=swap';
+    document.head.appendChild(lnk);
+  }
+  if (!document.getElementById('adminKhandGlobalStyle')) {
+    const st = document.createElement('style');
+    st.id = 'adminKhandGlobalStyle';
+    st.textContent = `
+      body, button, input, select, textarea, h1, h2, h3, h4, p, span, a, label {
+        font-family: 'Khand', 'Noto Sans Devanagari', sans-serif;
+        font-weight: 700;
+      }
+      #liveSitePreview, #liveSitePreview *, [id$="Preview"], [id$="Preview"] * {
+        font-family: inherit;
+      }
+      .font-mono {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+      }
+      body { font-size: 16px; line-height: 1.4; }
+      button, a.rounded-xl, a.rounded-2xl {
+        line-height: 1.3 !important;
+        letter-spacing: 0.02em;
+      }
+      .text-xs { font-size: 0.875rem !important; line-height: 1.35 !important; }
+      .text-\[11px\] { font-size: 0.8rem !important; line-height: 1.3 !important; }
+      .text-sm { font-size: 1rem !important; line-height: 1.4 !important; }
+      .text-base { font-size: 1.125rem !important; line-height: 1.4 !important; }
+    `;
+    document.head.appendChild(st);
+  }
+})();
+
 const FIREBASE_CONFIG = {
   apiKey: 'AIzaSyCI1oILspru4DCLuUQvNohtKArFVVMy4Xc',
   authDomain: 'livedarshan-204ed.firebaseapp.com',
@@ -59,7 +96,9 @@ const TOP_50_DEVANAGARI_FONTS = [
   ["'Biryani', sans-serif", "४७. Biryani (आधुनिक डिस्प्ले)"],
   ["'Bakbak One', cursive", "४८. Bakbak One (भव्य हेडलाईन)"],
   ["'Akshar', sans-serif", "४९. Akshar (संतुलित देवनागरी)"],
-  ["'Playpen Sans Deva', cursive", "५०. Playpen Sans Deva (नैसर्गिक हस्तलिखित)"]
+  ["'Playpen Sans Deva', cursive", "५०. Playpen Sans Deva (नैसर्गिक हस्तलिखित)"],
+      ["'Shrikhand', cursive", "५१. Shrikhand (आकर्षक मराठी डिस्प्ले)"],
+      ["'Gajraj One', cursive", "५२. Gajraj One (भव्य देवनागरी मथळे)"],
 ];
 
 const fbApp = firebase.apps.length ? firebase.app() : firebase.initializeApp(FIREBASE_CONFIG);
@@ -415,7 +454,7 @@ function initAdminGuard(onAuthed, isLoginPage = false) {
         item.type = 'button';
         const isSel = idx === sel.selectedIndex;
         item.className = 'mdrop-item' + (isSel ? ' active' : '');
-        if (opt.value && opt.value.includes("'")) item.style.fontFamily = opt.value;
+        // keep dropdown fast & freeze-free
         item.innerHTML = `<span class="truncate">${opt.textContent}</span>${isSel ? '<span class="text-xs font-extrabold">✓</span>' : ''}`;
         item.addEventListener('click', () => {
           sel.selectedIndex = idx;
@@ -480,7 +519,7 @@ function initAdminGuard(onAuthed, isLoginPage = false) {
     setTimeout(() => window.upgradeAllSelects(), 80);
     const mo = new MutationObserver((muts) => {
       muts.forEach(m => m.addedNodes.forEach(n => {
-        if (n.nodeType === 1) {
+        if (n.nodeType === 1 && !n.classList.contains('mdrop-item') && !n.classList.contains('mdrop-menu') && !n.classList.contains('mdrop-wrap')) {
           if (n.tagName === 'SELECT') window.upgradeSelectToModern(n);
           else if (n.querySelectorAll) window.upgradeAllSelects(n);
         }

@@ -139,16 +139,11 @@
 
       <!-- 3. चालणारी पट्टी (Ticker), ऑफलाईन संदेश व फॉन्ट -->
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
-        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E] pb-2 border-b border-slate-100">📺 चालणारी पट्टी (Ticker), फॉन्ट व ऑफलाईन संदेश</h2>
+        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E] pb-2 border-b border-slate-100">📺 चालणारी पट्टी (Ticker) व प्लेयर फॉन्ट</h2>
 
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">चालणाऱ्या पट्टीतील मजकूर (Ticker Text)</label>
           <textarea id="tickerText" rows="2" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" placeholder="🙏 भक्तांसाठी अखंड लाईव्ह दर्शन सेवा..."></textarea>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">स्ट्रीम बंद असल्यास दिसणारा संदेश (Offline Message)</label>
-          <input id="offlineMessage" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" placeholder="सध्या हे मंदिर लाईव्ह नाही, कृपया थोड्या वेळाने प्रयत्न करा." />
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -201,6 +196,61 @@
         </div>
       </section>
 
+      <!-- 5. व्हिडिओ सुरू न झाल्यास दिसणारा मेसेज स्टाईल (स्वतंत्र विभाग) -->
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
+        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E] pb-2 border-b border-slate-100">⚠️ ५. व्हिडिओ सुरू न झाल्यास दिसणाऱ्या मेसेजची स्टाईल</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-bold text-slate-700 mb-1">मेसेज ओळ १ (मुख्य शीर्षक)</label>
+            <input id="offlineTitle" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" value="🙏 सध्या लाईव्ह दर्शन तात्पुरते बंद आहे" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-bold text-slate-700 mb-1">मेसेज ओळ २ (तपशीलवार संदेश)</label>
+            <textarea id="offlineMessage" rows="2" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm">मंदिराची दैनंदिन पूजा/नैवेद्य वेळ किंवा तांत्रिक कारणास्तव प्रक्षेपण थांबलेले असू शकते. कृपया थोड्या वेळाने पुन्हा प्रयत्न करा.</textarea>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">ओळ १ रंग (शीर्षक)</label>
+            <div class="flex items-center gap-2">
+              <button id="swatchOfflineTitle" type="button" class="w-10 h-10 rounded-xl border border-slate-300 shrink-0 cursor-pointer shadow-sm"></button>
+              <input id="offlineTitleColor" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono" value="#FDE68A" />
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center justify-between text-xs font-bold text-slate-700 mb-1">
+              <span>ओळ १ फॉन्ट साईज (शीर्षक)</span>
+              <span id="offlineTitleFsVal" class="px-2 py-0.5 rounded-md bg-slate-100 text-[#05344E]">18px</span>
+            </div>
+            <input id="offlineTitleSize" type="range" min="14" max="32" step="1" value="18" class="w-full accent-[#05344E] cursor-pointer mt-3" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">ओळ २ रंग (संदेश)</label>
+            <div class="flex items-center gap-2">
+              <button id="swatchOfflineText" type="button" class="w-10 h-10 rounded-xl border border-slate-300 shrink-0 cursor-pointer shadow-sm"></button>
+              <input id="offlineTextColor" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono" value="#FEF3C7" />
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center justify-between text-xs font-bold text-slate-700 mb-1">
+              <span>ओळ २ फॉन्ट साईज (संदेश)</span>
+              <span id="offlineFsVal" class="px-2 py-0.5 rounded-md bg-slate-100 text-[#05344E]">14px</span>
+            </div>
+            <input id="offlineFontSize" type="range" min="11" max="24" step="1" value="14" class="w-full accent-[#05344E] cursor-pointer mt-3" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">मेसेज फॉन्ट (५२ देवनागरी फॉन्ट्स)</label>
+            <select id="offlineFontSelect" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white"></select>
+            <div id="offlineFontPreview" class="mt-2 px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-[#05344E] truncate">🙏 सध्या लाईव्ह दर्शन तात्पुरते बंद आहे</div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">मेसेज पार्श्वभूमी रंग (Background)</label>
+            <div class="flex items-center gap-2">
+              <button id="swatchOfflineBg" type="button" class="w-10 h-10 rounded-xl border border-slate-300 shrink-0 cursor-pointer shadow-sm"></button>
+              <input id="offlineBgColor" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono" value="#0A0A0A" />
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="adminTabLivePreview" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-3">
         <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">👁️ व्हिडिओ प्लेयर लाईव्ह प्रिव्ह्यू (सेव्ह करण्यापूर्वी तपासा)</h2>
         <div id="pvPlayerBorder" class="p-[3px] rounded-2xl bg-amber-500 shadow-md overflow-hidden max-w-2xl mx-auto">
@@ -224,6 +274,10 @@
             </div>
           </div>
         </div>
+        <div id="pvOfflineBox" class="max-w-2xl mx-auto rounded-xl border border-slate-700 p-4 text-center space-y-1 transition-all" style="background:#0A0A0A;color:#FDE68A;">
+          <div id="pvOfflineTitle" class="font-bold">🙏 सध्या लाईव्ह दर्शन तात्पुरते बंद आहे</div>
+          <div id="pvOfflineSub" class="text-xs opacity-85">सध्या हे मंदिर लाईव्ह नाही, कृपया थोड्या वेळाने प्रयत्न करा.</div>
+        </div>
       </section>
       <div class="sticky bottom-3 z-20 flex justify-end">
         <button id="savePlayerBtn" type="button" class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-sm font-bold cursor-pointer shadow-lg transition">💾 सर्व प्लेयर सेटिंग्ज सेव्ह करा</button>
@@ -237,6 +291,7 @@
   <script>
     renderAdminShell('player', 'व्हिडिओ प्लेयर सेटिंग्ज');
     populateFontSelect('playerFontSelect', 'playerFontPreview');
+    populateFontSelect('offlineFontSelect', 'offlineFontPreview');
     document.getElementById('playerFontSelect').value = "'Khand', sans-serif";
     document.getElementById('playerFontPreview').style.fontFamily = "'Khand', sans-serif";
 
@@ -249,7 +304,16 @@
     bindColorPicker('tickerBgColor', 'swatchPlayerBg', '#05344E');
     bindColorPicker('tickerTextColor', 'swatchPlayerText', '#D6DBD2');
     bindColorPicker('watermarkColor', 'swatchWatermark', '#FFFFFF');
+    bindColorPicker('offlineTitleColor', 'swatchOfflineTitle', '#FDE68A');
+    bindColorPicker('offlineTextColor', 'swatchOfflineText', '#FEF3C7');
+    bindColorPicker('offlineBgColor', 'swatchOfflineBg', '#0A0A0A');
 
+    const offTtlFsSlider = document.getElementById('offlineTitleSize');
+    const offTtlFsVal = document.getElementById('offlineTitleFsVal');
+    offTtlFsSlider.addEventListener('input', () => { offTtlFsVal.textContent = offTtlFsSlider.value + 'px'; });
+    const offFsSlider = document.getElementById('offlineFontSize');
+    const offFsVal = document.getElementById('offlineFsVal');
+    offFsSlider.addEventListener('input', () => { offFsVal.textContent = offFsSlider.value + 'px'; });
     const opSlider = document.getElementById('watermarkOpacity');
     const opVal = document.getElementById('watermarkOpacityVal');
     opSlider.addEventListener('input', () => { opVal.textContent = Math.round(Number(opSlider.value) * 100) + '%'; });
@@ -291,7 +355,17 @@
         if (p.titleFontSize) { titleFsSlider.value = p.titleFontSize; titleFsVal.textContent = p.titleFontSize + 'px'; }
         if (p.dateTimeFontSize) { dtFsSlider.value = p.dateTimeFontSize; dtFsVal.textContent = p.dateTimeFontSize + 'px'; }
         if (p.tickerText !== undefined) document.getElementById('tickerText').value = p.tickerText;
+        if (p.offlineTitle !== undefined) document.getElementById('offlineTitle').value = p.offlineTitle;
         if (p.offlineMessage !== undefined) document.getElementById('offlineMessage').value = p.offlineMessage;
+        if (p.offlineFontFamily) {
+          document.getElementById('offlineFontSelect').value = p.offlineFontFamily;
+          document.getElementById('offlineFontPreview').style.fontFamily = p.offlineFontFamily;
+        }
+        if (p.offlineFontSize) { offFsSlider.value = p.offlineFontSize; offFsVal.textContent = p.offlineFontSize + 'px'; }
+        if (p.offlineTitleSize) { offTtlFsSlider.value = p.offlineTitleSize; offTtlFsVal.textContent = p.offlineTitleSize + 'px'; }
+        setColor('offlineTitleColor', 'swatchOfflineTitle', p.offlineTitleColor);
+        setColor('offlineTextColor', 'swatchOfflineText', p.offlineTextColor);
+        setColor('offlineBgColor', 'swatchOfflineBg', p.offlineBgColor);
         if (p.fontFamily) {
           document.getElementById('playerFontSelect').value = p.fontFamily;
           document.getElementById('playerFontPreview').style.fontFamily = p.fontFamily;
@@ -332,6 +406,14 @@
       const wmText = document.getElementById('watermarkText').value.trim();
       if (tText) payload.tickerText = tText;
       if (offMsg) payload.offlineMessage = offMsg;
+      const offTtl = document.getElementById('offlineTitle').value.trim();
+      if (offTtl) payload.offlineTitle = offTtl;
+      payload.offlineFontFamily = document.getElementById('offlineFontSelect').value;
+      payload.offlineFontSize = Number(offFsSlider.value) || 16;
+      payload.offlineTitleSize = Number(offTtlFsSlider.value) || 18;
+      payload.offlineTitleColor = document.getElementById('offlineTitleColor').value.trim();
+      payload.offlineTextColor = document.getElementById('offlineTextColor').value.trim();
+      payload.offlineBgColor = document.getElementById('offlineBgColor').value.trim();
       if (wmText) payload.watermarkText = wmText;
 
       try {
@@ -343,6 +425,25 @@
     });
 
     function updatePlayerTabPreview() {
+      const offBox = document.getElementById('pvOfflineBox');
+      const offTtlEl = document.getElementById('pvOfflineTitle');
+      const offSubEl = document.getElementById('pvOfflineSub');
+      if (offBox && offTtlEl && offSubEl) {
+        const offF = document.getElementById('offlineFontSelect')?.value || "'Khand', sans-serif";
+        const offTtlSz = (document.getElementById('offlineTitleSize')?.value || 18) + 'px';
+        const offSz = (document.getElementById('offlineFontSize')?.value || 14) + 'px';
+        const offTtlCol = document.getElementById('offlineTitleColor')?.value || '#FDE68A';
+        const offCol = document.getElementById('offlineTextColor')?.value || '#FEF3C7';
+        const offBg = document.getElementById('offlineBgColor')?.value || '#0A0A0A';
+        offBox.style.fontFamily = offF;
+        offBox.style.backgroundColor = offBg;
+        offTtlEl.style.fontSize = offTtlSz;
+        offTtlEl.style.color = offTtlCol;
+        offSubEl.style.fontSize = offSz;
+        offSubEl.style.color = offCol;
+        offTtlEl.textContent = document.getElementById('offlineTitle')?.value || '🙏 सध्या लाईव्ह दर्शन तात्पुरते बंद आहे';
+        offSubEl.textContent = document.getElementById('offlineMessage')?.value || 'मंदिराची दैनंदिन पूजा/नैवेद्य वेळ किंवा तांत्रिक कारणास्तव प्रक्षेपण थांबलेले असू शकते. कृपया थोड्या वेळाने पुन्हा प्रयत्न करा.';
+      }
       const box = document.getElementById('adminTabLivePreview');
       if (!box) return;
       const f = document.getElementById('playerFontSelect').value;

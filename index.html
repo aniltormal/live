@@ -2655,7 +2655,7 @@
             if (h.title) el.headerTitle.textContent = h.title;
             if (h.subtitle) el.headerSubtitle.textContent = h.subtitle;
             if (h.fontFamily) {
-              el.headerTitle.style.fontFamily = h.fontFamily;
+              if (!h.fontFamily.includes('Noto Sans Devanagari')) el.headerTitle.style.fontFamily = h.fontFamily;
               el.headerSubtitle.style.fontFamily = h.fontFamily;
             }
             if (h.textColor) {

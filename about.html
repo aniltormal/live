@@ -12,6 +12,7 @@
   <style>
     body { font-family: 'Noto Sans Devanagari', sans-serif; }
     .font-khand { font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; }
+    #headerTitle { font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; font-weight: 700; }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
@@ -82,6 +83,20 @@
     try {
       const app = firebase.apps.length ? firebase.app() : firebase.initializeApp(FIREBASE_CONFIG);
       const db = firebase.database();
+            db.ref('siteConfig/visitors').on('value', (snap) => {
+        const v = snap.val();
+        if (!v || typeof v !== 'object') return;
+        const badge = document.getElementById('visitorCounterBadge');
+        const lbl = document.getElementById('visitorLabelSpan');
+        const cnt = document.getElementById('visitorCountText');
+        if (!badge) return;
+        badge.classList.toggle('hidden', v.enabled === false);
+        if (lbl && v.label) lbl.textContent = v.label;
+        if (cnt) cnt.textContent = (Number(v.count) || 1).toLocaleString('mr-IN');
+        const dot = badge.querySelector('span');
+        if (dot) dot.classList.toggle('animate-ping', v.flash !== false);
+        badge.classList.toggle('animate-pulse', v.flash !== false);
+      });
       db.ref('siteConfig/header').on('value', (snap) => {
         const h = snap.val() || {};
         const t = document.getElementById('headerTitle');
@@ -89,7 +104,7 @@
         const l = document.getElementById('headerLogoImg');
         if (t && h.title) t.textContent = h.title;
         if (s && h.subtitle) s.textContent = h.subtitle;
-        if (t && h.fontFamily) t.style.fontFamily = h.fontFamily;
+        if (t && h.fontFamily && !h.fontFamily.includes('Noto Sans Devanagari')) t.style.fontFamily = h.fontFamily;
         if (t && h.textColor && h.textColor.toLowerCase() !== '#000000') t.style.color = h.textColor;
         if (l && h.logoImage) l.src = h.logoImage;
       });

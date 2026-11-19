@@ -2523,23 +2523,12 @@
       const sub = document.getElementById('appLoaderSubtitle');
       const frm = document.getElementById('appLoaderFrame');
       const bar = document.getElementById('appLoaderBarFill');
-      const rawBg = (l.bgColor || '').trim().toLowerCase();
-      const isLegacyCream = !rawBg || rawBg === '#fffdf7' || rawBg === '#fffbeb' || rawBg === '#fef3c7' || rawBg === '#f5e6c8' || rawBg.includes('fffdf7') || rawBg.includes('f5e6c8') || rawBg.includes('fef3c7');
-      if (ov && !isLegacyCream) {
-        ov.style.background = l.bgColor;
-        const hex = rawBg.replace('#', '');
-        if (hex.length === 6) {
-          const r = parseInt(hex.slice(0, 2), 16), g = parseInt(hex.slice(2, 4), 16), b = parseInt(hex.slice(4, 6), 16);
-          const lum = (0.299 * r + 0.587 * g + 0.114 * b);
-          const isLightBg = lum > 155;
-          if (ttl) ttl.style.color = isLightBg ? '#05344E' : '#FDE68A';
-          if (sub) sub.style.color = isLightBg ? '#92400E' : '#FEF3C7';
-          ov.querySelectorAll('svg').forEach(sv => {
-            sv.style.color = isLightBg ? '#05344E' : '';
-          });
-        }
+      // Keep approved Royal Navy & Gold loading screen design; never let old light/cream Firebase bgColor overwrite it
+      if (ov) {
+        ov.style.background = 'radial-gradient(circle at 50% 42%, #0a4d70 0%, #05344E 48%, #02111b 100%)';
       }
-      if (img && l.image) img.src = l.image;
+      if (ttl) ttl.style.color = '#FDE68A';
+      if (sub) sub.style.color = '#FEF3C7';
       if (ttl && l.title) ttl.textContent = l.title;
       if (sub && l.subtitle) sub.textContent = l.subtitle;
       if (frm && l.accentColor) frm.style.borderColor = l.accentColor;

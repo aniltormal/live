@@ -13,8 +13,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Akshar:wght@400;600;700&family=Amiko:wght@400;600;700&family=Amita:wght@400;700&family=Anek+Devanagari:wght@400;600;700&family=Arya:wght@400;700&family=Asar&family=Bakbak+One&family=Baloo+2:wght@500;600;700&family=Biryani:wght@400;600;700&family=Cambay:wght@400;700&family=Dekko&family=Eczar:wght@400;600;700&family=Glegoo:wght@400;700&family=Gotu&family=Halant:wght@400;600;700&family=Hind:wght@400;600;700&family=Inknut+Antiqua:wght@400;600;700&family=Inter:wght@400;600;700&family=Jaldi:wght@400;700&family=Kadwa:wght@400;700&family=Kalam:wght@400;700&family=Karma:wght@400;600;700&family=Khand:wght@500;600;700&family=Khula:wght@400;600;700&family=Kurale&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Laila:wght@500;600;700&family=Martel+Sans:wght@400;600;700&family=Martel:wght@400;600;700&family=Modak&family=Mukta:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700;800;900&family=Noto+Serif+Devanagari:wght@400;600;700&family=Palanquin+Dark:wght@400;600;700&family=Palanquin:wght@400;600;700&family=Playpen+Sans+Deva:wght@400;600;700&family=Poppins:wght@400;500;600;700&family=Pragati+Narrow:wght@400;700&family=Rajdhani:wght@500;600;700&family=Rhodium+Libre&family=Rozha+One&family=Sahitya:wght@400;700&family=Sarala:wght@400;700&family=Sumana:wght@400;700&family=Sura:wght@400;700&family=Teko:wght@500;600;700&family=Tillana:wght@500;600;700&family=Tiro+Devanagari+Hindi:ital@0;1&family=Tiro+Devanagari+Marathi:ital@0;1&family=Tiro+Devanagari+Sanskrit:ital@0;1&family=Vesper+Libre:wght@400;700&family=Gajraj+One&family=Shrikhand&family=Yatra+One&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Khand:wght@500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Tiro+Devanagari+Marathi:ital@0;1&display=swap" rel="stylesheet" />
   <style>
     body {
       font-family: 'Noto Sans Devanagari', 'Inter', system-ui, -apple-system, sans-serif;
@@ -197,21 +196,13 @@
           </button>
           <div id="menuTempleInfoList" class="hidden bg-white px-2 py-1.5 space-y-1 border-t border-slate-100"></div>
         </div>
-        <a href="panchang.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition">
-          <span>🗓️</span><span>आजचे पंचांग व सणवार</span>
-        </a>
-        <a href="contact.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition">
-          <span>📢</span><span>जाहिरात व संपर्क</span>
-        </a>
-        <a href="about.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition">
-          <span>ℹ️</span><span>आमच्याबद्दल</span>
-        </a>
-                <a href="legal-links.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition">
-          <span>🔗</span><span>कायदेशीर समस्या व पोर्टल दुवे</span>
-        </a>
-        <a href="disclaimer.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition">
-          <span>📄</span><span>नियम व अस्वीकरण</span>
-        </a>
+        <div id="mobileMenuDynamicLinks" class="space-y-1.5">
+          <a href="panchang.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>🗓️</span><span>आजचे पंचांग व सणवार</span></a>
+          <a href="contact.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📢</span><span>जाहिरात व संपर्क</span></a>
+          <a href="about.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>ℹ️</span><span>आमच्याबद्दल</span></a>
+          <a href="legal-links.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>🔗</span><span>कायदेशीर समस्या व पोर्टल दुवे</span></a>
+          <a href="disclaimer.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📄</span><span>नियम व अस्वीकरण</span></a>
+        </div>
       </nav>
       <div id="mobileMenuFooter" class="px-4 py-2.5 bg-slate-100 border-t border-slate-200 text-[11px] text-slate-500 text-center font-semibold">
         श्री. लाईव्ह दर्शन पोर्टल
@@ -2391,6 +2382,18 @@
       if (bar && l.accentColor) bar.style.background = l.accentColor;
     }
 
+    const __loadedGoogleFonts = new Set(['Khand', 'Noto Sans Devanagari', 'Tiro Devanagari Marathi']);
+    function ensureGoogleFontLoaded(fontFamilyStr) {
+      if (!fontFamilyStr || typeof fontFamilyStr !== 'string') return;
+      const primary = fontFamilyStr.split(',')[0].replace(/['"]/g, '').trim();
+      if (!primary || __loadedGoogleFonts.has(primary) || ['sans-serif', 'serif', 'monospace', 'cursive', 'system-ui'].includes(primary.toLowerCase())) return;
+      __loadedGoogleFonts.add(primary);
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://fonts.googleapis.com/css2?family=' + encodeURIComponent(primary).replace(/%20/g, '+') + ':wght@400;500;600;700&display=swap';
+      document.head.appendChild(link);
+    }
+
     function applyCachedSiteConfig() {
       try {
         const raw = localStorage.getItem('ld_site_cache_v1');
@@ -2405,9 +2408,21 @@
           const hideHT = Boolean(c.header.hideHeaderText);
           if (el.headerTitle) el.headerTitle.classList.toggle('hidden', hideHT);
         }
+        if (c.master) {
+          try { if (typeof applyMasterConfigGlobal === 'function') applyMasterConfigGlobal(c.master); } catch (e) {}
+        }
+        if (c.header && c.header.fontFamily) ensureGoogleFontLoaded(c.header.fontFamily);
         if (c.layout) {
           Object.assign(siteLayoutConfig, c.layout);
+          if (c.layout.panchangFontFamily) ensureGoogleFontLoaded(c.layout.panchangFontFamily);
+          if (c.layout.devoteeTickerFontFamily) ensureGoogleFontLoaded(c.layout.devoteeTickerFontFamily);
+          if (c.layout.btnFontFamily) ensureGoogleFontLoaded(c.layout.btnFontFamily);
           applyLayoutToPage();
+        }
+        if (c.ads && typeof c.ads === 'object') {
+          siteAdsConfig.bannerEnabled = Boolean(c.ads.bannerEnabled);
+          siteAdsConfig.bannerSlides = Array.isArray(c.ads.bannerSlides) ? c.ads.bannerSlides : [];
+          renderMainAdBanner();
         }
         return true;
       } catch (e) {
@@ -2522,6 +2537,25 @@
           }
         });
 
+        function renderDynamicMenuLinks(items) {
+          const box = document.getElementById('mobileMenuDynamicLinks');
+          if (!box || !Array.isArray(items) || !items.length) return;
+          const esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+          const linkCls = isDark
+            ? 'flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-800 text-slate-100 transition'
+            : 'flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition';
+          box.innerHTML = items.filter(it => it && it.enabled !== false && it.label && it.url).map(it =>
+            `<a href="${esc(it.url)}" class="${linkCls}"><span>${esc(it.icon || '📄')}</span><span>${esc(it.label)}</span></a>`
+          ).join('');
+        }
+        fbDb.ref('siteConfig/menuLinks').on('value', (snapshot) => {
+          const m = snapshot.val();
+          if (m && Array.isArray(m.items) && m.items.length) {
+            renderDynamicMenuLinks(m.items);
+            updateSiteCache('menuLinks', m.items);
+          }
+        });
+
         // Live Visitors Counter & Footer Links (Stored in siteConfig so Mobile & PC both work 100%)
         initVisitorsAndLegalLinksSync();
 
@@ -2531,6 +2565,7 @@
           if (h && typeof h === 'object') {
             if (h.title && el.headerTitle) el.headerTitle.textContent = h.title;
             if (h.fontFamily && el.headerTitle) {
+              ensureGoogleFontLoaded(h.fontFamily);
               if (!h.fontFamily.includes('Noto Sans Devanagari')) el.headerTitle.style.fontFamily = h.fontFamily;
             }
             if (h.bgColor && el.appHeader) el.appHeader.style.background = h.bgColor;
@@ -2591,6 +2626,10 @@
             siteAdsConfig.splashFrequency = a.splashFrequency || 'daily';
             renderMainAdBanner();
             maybeShowSplashAd();
+            updateSiteCache('ads', {
+              bannerEnabled: siteAdsConfig.bannerEnabled,
+              bannerSlides: siteAdsConfig.bannerSlides
+            });
           }
         });
 
@@ -2599,13 +2638,13 @@
           const l = snapshot.val();
           if (l && typeof l === 'object') {
             if (typeof l.showPanchangBar === 'boolean') siteLayoutConfig.showPanchangBar = l.showPanchangBar;
-            if (l.panchangFontFamily) siteLayoutConfig.panchangFontFamily = l.panchangFontFamily;
+            if (l.panchangFontFamily) { ensureGoogleFontLoaded(l.panchangFontFamily); siteLayoutConfig.panchangFontFamily = l.panchangFontFamily; }
             if (l.panchangFontSize) siteLayoutConfig.panchangFontSize = l.panchangFontSize;
             if (typeof l.panchangTextColor === 'string') siteLayoutConfig.panchangTextColor = l.panchangTextColor;
             if (typeof l.panchangBgColor === 'string') siteLayoutConfig.panchangBgColor = l.panchangBgColor;
             if (typeof l.showDevoteeTicker === 'boolean') siteLayoutConfig.showDevoteeTicker = l.showDevoteeTicker;
             if (typeof l.devoteeTickerText === 'string') siteLayoutConfig.devoteeTickerText = l.devoteeTickerText;
-            if (l.devoteeTickerFontFamily) siteLayoutConfig.devoteeTickerFontFamily = l.devoteeTickerFontFamily;
+            if (l.devoteeTickerFontFamily) { ensureGoogleFontLoaded(l.devoteeTickerFontFamily); siteLayoutConfig.devoteeTickerFontFamily = l.devoteeTickerFontFamily; }
             if (l.devoteeTickerSpeed) siteLayoutConfig.devoteeTickerSpeed = l.devoteeTickerSpeed;
             if (typeof l.devoteeTickerTextColor === 'string') siteLayoutConfig.devoteeTickerTextColor = l.devoteeTickerTextColor;
             if (typeof l.devoteeTickerBgColor === 'string') siteLayoutConfig.devoteeTickerBgColor = l.devoteeTickerBgColor;
@@ -2613,7 +2652,7 @@
             if (l.headerSize) siteLayoutConfig.headerSize = l.headerSize;
             if (l.featuredHeight) siteLayoutConfig.featuredHeight = l.featuredHeight;
             if (l.cardHeight) siteLayoutConfig.cardHeight = l.cardHeight;
-            if (l.btnFontFamily) siteLayoutConfig.btnFontFamily = l.btnFontFamily;
+            if (l.btnFontFamily) { ensureGoogleFontLoaded(l.btnFontFamily); siteLayoutConfig.btnFontFamily = l.btnFontFamily; }
             if (l.btnFontSize) siteLayoutConfig.btnFontSize = l.btnFontSize;
             if (typeof l.btnTextColor === 'string') siteLayoutConfig.btnTextColor = l.btnTextColor;
             if (typeof l.btnBgColor === 'string') siteLayoutConfig.btnBgColor = l.btnBgColor;
@@ -2626,6 +2665,7 @@
         // Listen for full Video Player Settings (header, title, clock, buttons, ticker, font & watermark)
         
     function applyMasterConfigGlobal(m) {
+      if (m && m.fontFamily) ensureGoogleFontLoaded(m.fontFamily);
       if (!m || m.enabled === false) {
         document.documentElement.style.fontSize = '';
         return;

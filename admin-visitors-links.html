@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>भाविक काऊंटर व १० लिंक्स — लाईव्ह दर्शन अ‍ॅडमिन</title>
+  <title>भाविक काऊंटर व मेनू लिंक्स — लाईव्ह दर्शन अ‍ॅडमिन</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Khand:wght@500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -20,6 +20,23 @@
     </div>
 
     <div id="pageContent" class="hidden space-y-5 fade-in-up">
+      <!-- मेनू लिंक्स व नवीन पेज व्यवस्थापन -->
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-2 border-b border-slate-100">
+          <div>
+            <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">☰ पोर्टल मेनू लिंक्स व नवीन पेज व्यवस्थापन</h2>
+            <p class="text-xs text-slate-500">मुख्य पेजवरील ☰ मेनूमधील सर्व लिंक्स एडिट करा किंवा नवीन मेनू व त्याचे स्वतंत्र पेज तयार करा</p>
+          </div>
+          <button id="addMenuBtn" type="button" class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold cursor-pointer shadow-sm transition">+ नवीन मेनू व पेज जोडा</button>
+        </div>
+
+        <div class="p-3 rounded-xl bg-amber-50/70 border border-amber-200 text-xs text-amber-900 font-semibold">
+          💡 <strong>टीप:</strong> "मुख्य पेज (🏠)" आणि "आरती वेळापत्रक व माहिती (🕰️)" हे मेनूच्या वर स्थिर राहतील. खालील सर्व मेनू लिंक्स तुम्ही एडिट, बंद/चालू, वर-खाली किंवा नवीन जोडू शकता — नवीन मेनू जोडल्यास त्यासाठी आपोआप <code class="px-1 py-0.5 rounded bg-white border border-amber-300">page.html?id=...</code> हे स्वतंत्र पेज तयार होते.
+        </div>
+
+        <div id="menuLinksContainer" class="space-y-3"></div>
+      </section>
+
       <!-- भाविक काऊंटर -->
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
         <div class="flex items-center justify-between gap-2 pb-2 border-b border-slate-100">
@@ -46,34 +63,32 @@
         </div>
       </section>
 
-      <!-- तळाच्या १० लिंक्स -->
-      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
-        <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-100">
-          <div>
-            <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🔗 तळाच्या लिंक्स (Legal & Info Links)</h2>
-            <p class="text-xs text-slate-500">मुख्य पेजच्या फुटरवर दिसणाऱ्या लिंक्स</p>
+      <!-- तळाचा लाईव्ह प्रिव्ह्यू -->
+      <section id="adminTabLivePreview" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-3">
+        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">👁️ भाविक काऊंटर व पोर्टल मेनू लाईव्ह प्रिव्ह्यू</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+          <!-- Mini Menu Drawer Preview -->
+          <div class="rounded-2xl border border-slate-300 bg-white overflow-hidden shadow-sm">
+            <div class="bg-gradient-to-r from-[#031926] via-[#05344E] to-[#084160] text-white px-3.5 py-2.5 border-b-2 border-amber-400 flex items-center justify-between">
+              <span class="font-bold text-sm">🛕 पोर्टल मेनू</span>
+              <span class="text-xs text-amber-300">✕</span>
+            </div>
+            <div id="pvMenuList" class="p-2.5 space-y-1 text-xs font-bold"></div>
           </div>
-          <div class="flex items-center gap-3">
-            <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
-              <span>पट्टी दाखवा</span>
-              <span class="toggle-pill"><input id="linksEnabled" type="checkbox" checked /><span class="knob"></span></span>
-            </label>
-            <button id="addLinkBtn" type="button" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-[#05344E] cursor-pointer">+ लिंक जोडा</button>
+
+          <!-- Visitor Counter Bar Preview -->
+          <div class="space-y-2">
+            <div class="text-xs font-bold text-slate-600">तळाची भाविक काऊंटर पट्टी:</div>
+            <div class="p-3 rounded-xl bg-[#05344E] text-white flex items-center justify-between">
+              <span id="pvVisBadge" class="px-3 py-1 rounded-full bg-white/15 border border-amber-300 text-xs font-bold text-amber-200">👁️ एकूण भाविक : १</span>
+              <span class="px-3 py-1 rounded-lg bg-[#25D366] text-xs font-bold">WhatsApp</span>
+            </div>
           </div>
         </div>
-
-        <div id="linksContainer" class="space-y-2.5"></div>
       </section>
 
-      <section id="adminTabLivePreview" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-2">
-        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">👁️ भाविक काऊंटर व लिंक्स प्रिव्ह्यू</h2>
-        <div class="p-3 rounded-xl bg-[#05344E] text-white flex items-center justify-between">
-          <span id="pvVisBadge" class="px-3 py-1 rounded-full bg-white/15 border border-amber-300 text-xs font-bold text-amber-200">👁️ एकूण भाविक : १</span>
-          <span class="px-3 py-1 rounded-lg bg-[#25D366] text-xs font-bold">WhatsApp</span>
-        </div>
-      </section>
       <div class="sticky bottom-3 z-20 flex justify-end">
-        <button id="saveVisLinksBtn" type="button" class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-sm font-bold cursor-pointer shadow-lg transition">💾 भाविक व लिंक्स सेव्ह करा</button>
+        <button id="saveVisMenuBtn" type="button" class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-sm font-bold cursor-pointer shadow-lg transition">💾 भाविक व मेनू लिंक्स सेव्ह करा</button>
       </div>
     </div>
   </main>
@@ -82,51 +97,193 @@
 
   <script src="admin-common.js"></script>
   <script>
-    renderAdminShell('visitors', 'भाविक काऊंटर व १० लिंक्स');
+    renderAdminShell('visitors', 'भाविक काऊंटर व मेनू लिंक्स');
 
-    const DEFAULT_LINKS = [
-      { label: 'आमच्याबद्दल', url: 'about.html', enabled: true },
-      { label: 'संपर्क', url: 'contact.html', enabled: true },
-      { label: 'जाहिरात', url: 'advertising.html', enabled: true },
-      { label: 'गोपनीयता', url: 'privacy.html', enabled: true },
-      { label: 'अटी', url: 'terms.html', enabled: true },
-      { label: 'अस्वीकरण', url: 'disclaimer.html', enabled: true },
-      { label: 'कुकीज', url: 'cookies.html', enabled: true },
-      { label: 'कॉपीराइट', url: 'copyright.html', enabled: true },
-      { label: 'मजकूर काढणे', url: 'content-removal.html', enabled: true },
-      { label: 'बाह्य लिंक्स', url: 'third-party-links.html', enabled: true }
+    const DEFAULT_MENU_LINKS = [
+      { id: 'panchang', icon: '🗓️', label: 'आजचे पंचांग व सणवार', url: 'panchang.html', enabled: true, isCustomPage: false },
+      { id: 'contact', icon: '📢', label: 'जाहिरात व संपर्क', url: 'contact.html', enabled: true, isCustomPage: false },
+      { id: 'about', icon: 'ℹ️', label: 'आमच्याबद्दल', url: 'about.html', enabled: true, isCustomPage: false },
+      { id: 'legal', icon: '🔗', label: 'कायदेशीर समस्या व पोर्टल दुवे', url: 'legal-links.html', enabled: true, isCustomPage: false },
+      { id: 'disclaimer', icon: '📄', label: 'नियम व अस्वीकरण', url: 'disclaimer.html', enabled: true, isCustomPage: false }
     ];
+
+    let menuItemsState = [];
 
     function esc(s) {
       return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
-    function renderLinks(items) {
-      const box = document.getElementById('linksContainer');
-      box.innerHTML = (items || []).map((it, idx) => `
-        <div class="link-row grid grid-cols-12 gap-2 items-center bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-          <div class="col-span-2 sm:col-span-1 flex justify-center">
-            <label class="toggle-pill"><input type="checkbox" class="l-en" ${it.enabled !== false ? 'checked' : ''} /><span class="knob"></span></label>
-          </div>
-          <input type="text" class="l-lbl col-span-5 sm:col-span-4 px-3 py-2 rounded-lg border border-slate-300 text-xs font-bold bg-white" value="${esc(it.label)}" placeholder="नाव" />
-          <input type="text" class="l-url col-span-4 sm:col-span-6 px-3 py-2 rounded-lg border border-slate-300 text-xs font-mono bg-white" value="${esc(it.url)}" placeholder="page.html" />
-          <button type="button" class="l-del col-span-1 text-center text-rose-600 font-bold text-sm hover:bg-rose-50 py-1.5 rounded-lg cursor-pointer" title="काढा">✕</button>
-        </div>
-      `).join('');
-
-      box.querySelectorAll('.l-del').forEach((btn) => {
-        btn.addEventListener('click', () => btn.closest('.link-row').remove());
+    function collectMenuFromDom() {
+      const rows = Array.from(document.querySelectorAll('#menuLinksContainer .menu-row'));
+      return rows.map((r) => {
+        const id = r.dataset.itemId || ('p_' + Date.now());
+        const isCustom = r.dataset.isCustom === 'true';
+        const item = {
+          id,
+          enabled: r.querySelector('.m-en').checked,
+          icon: r.querySelector('.m-icon').value.trim() || '📄',
+          label: r.querySelector('.m-lbl').value.trim(),
+          url: r.querySelector('.m-url').value.trim(),
+          isCustomPage: isCustom
+        };
+        if (isCustom) {
+          item.pageTitle = r.querySelector('.m-ptitle').value.trim() || item.label;
+          item.pageContent = r.querySelector('.m-pbody').value;
+          item.ctaLabel = r.querySelector('.m-pcta-lbl').value.trim();
+          item.ctaUrl = r.querySelector('.m-pcta-url').value.trim();
+        }
+        return item;
       });
     }
 
-    document.getElementById('addLinkBtn').addEventListener('click', () => {
-      const rows = Array.from(document.querySelectorAll('#linksContainer .link-row')).map(r => ({
-        enabled: r.querySelector('.l-en').checked,
-        label: r.querySelector('.l-lbl').value,
-        url: r.querySelector('.l-url').value
-      }));
-      rows.push({ label: 'नवीन लिंक', url: 'page.html', enabled: true });
-      renderLinks(rows);
+    function renderMenuItems(items) {
+      menuItemsState = Array.isArray(items) && items.length ? items : DEFAULT_MENU_LINKS.map(x => ({ ...x }));
+      const box = document.getElementById('menuLinksContainer');
+      box.innerHTML = menuItemsState.map((it, idx) => {
+        const isCustom = Boolean(it.isCustomPage || (it.url && it.url.indexOf('page.html?id=') !== -1));
+        const itemId = it.id || ('m_' + idx + '_' + Date.now());
+        const urlVal = it.url || (isCustom ? `page.html?id=${itemId}` : '');
+        return `
+          <div class="menu-row rounded-2xl border ${isCustom ? 'border-amber-300 bg-amber-50/30' : 'border-slate-200 bg-slate-50/70'} p-3 space-y-2.5" data-item-id="${esc(itemId)}" data-is-custom="${isCustom ? 'true' : 'false'}">
+            <div class="grid grid-cols-12 gap-2 items-center">
+              <div class="col-span-2 sm:col-span-1 flex justify-center">
+                <label class="toggle-pill"><input type="checkbox" class="m-en" ${it.enabled !== false ? 'checked' : ''} /><span class="knob"></span></label>
+              </div>
+              ${isCustom ? `
+                <input type="text" class="m-icon col-span-2 sm:col-span-1 px-2 py-2 rounded-lg border border-slate-300 text-center text-sm bg-white" value="${esc(it.icon || '📄')}" placeholder="📄" title="आयकॉन" />
+                <input type="text" class="m-lbl col-span-8 sm:col-span-4 px-3 py-2 rounded-lg border border-slate-300 text-xs sm:text-sm font-bold bg-white" value="${esc(it.label)}" placeholder="मेनूचे नाव" />
+                <input type="hidden" class="m-url" value="${esc(urlVal)}" />
+                <div class="col-span-8 sm:col-span-4 px-3 py-2 rounded-lg bg-emerald-50 border border-emerald-200 text-[11px] font-bold text-emerald-800 truncate">✅ स्वतंत्र पेज आपोआप तयार होईल</div>
+                <div class="col-span-4 sm:col-span-2 flex items-center justify-end gap-1">
+                  <button type="button" class="m-up px-2 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-xs font-bold cursor-pointer" title="वर घ्या">▲</button>
+                  <button type="button" class="m-down px-2 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-xs font-bold cursor-pointer" title="खाली घ्या">▼</button>
+                  <button type="button" class="m-del px-2 py-1.5 rounded-lg bg-white border border-rose-200 text-rose-600 hover:bg-rose-50 text-xs font-bold cursor-pointer" title="काढा">✕</button>
+                </div>
+              ` : `
+                <input type="hidden" class="m-icon" value="${esc(it.icon || '📄')}" />
+                <input type="hidden" class="m-lbl" value="${esc(it.label)}" />
+                <input type="hidden" class="m-url" value="${esc(urlVal)}" />
+                <div class="col-span-7 sm:col-span-9 flex items-center gap-2.5 min-w-0 px-2">
+                  <span class="text-base shrink-0">${esc(it.icon || '📄')}</span>
+                  <span class="text-xs sm:text-sm font-bold text-[#05344E] truncate">${esc(it.label)}</span>
+                  <span class="hidden sm:inline-block px-2 py-0.5 rounded-full bg-slate-200/80 text-[10px] font-semibold text-slate-600 shrink-0">मूळ मेनू</span>
+                </div>
+                <div class="col-span-3 sm:col-span-2 flex items-center justify-end gap-1">
+                  <button type="button" class="m-up px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-xs font-bold cursor-pointer" title="वर घ्या">▲</button>
+                  <button type="button" class="m-down px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-xs font-bold cursor-pointer" title="खाली घ्या">▼</button>
+                </div>
+              `}
+            </div>
+            ${isCustom ? `
+              <div class="pt-2 border-t border-amber-200/80 space-y-2">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <span class="text-[11px] font-extrabold text-amber-900">📝 या नवीन मेनूच्या पेजवरील मजकूर</span>
+                  <a href="${esc(urlVal)}" target="_blank" class="text-[11px] font-bold text-[#05344E] underline">सेव्ह केल्यावर पेज पहा ↗</a>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <input type="text" class="m-ptitle px-3 py-2 rounded-lg border border-amber-200 bg-white text-xs font-bold" value="${esc(it.pageTitle || it.label)}" placeholder="पेजचे मुख्य शीर्षक" />
+                  <div class="grid grid-cols-2 gap-2">
+                    <input type="text" class="m-pcta-lbl px-2.5 py-2 rounded-lg border border-amber-200 bg-white text-xs" value="${esc(it.ctaLabel || '')}" placeholder="बटण नाव (ऐच्छिक)" />
+                    <input type="text" class="m-pcta-url px-2.5 py-2 rounded-lg border border-amber-200 bg-white text-xs font-mono" value="${esc(it.ctaUrl || '')}" placeholder="बटण लिंक (ऐच्छिक)" />
+                  </div>
+                </div>
+                <textarea rows="3" class="m-pbody w-full px-3 py-2 rounded-lg border border-amber-200 bg-white text-xs leading-relaxed" placeholder="या पेजवर दाखवायचा संपूर्ण मजकूर येथे लिहा...">${esc(it.pageContent || '')}</textarea>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+
+      box.querySelectorAll('.m-up').forEach((btn, i) => {
+        btn.addEventListener('click', () => {
+          const list = collectMenuFromDom();
+          if (i > 0) {
+            [list[i - 1], list[i]] = [list[i], list[i - 1]];
+            renderMenuItems(list);
+          }
+        });
+      });
+      box.querySelectorAll('.m-down').forEach((btn, i) => {
+        btn.addEventListener('click', () => {
+          const list = collectMenuFromDom();
+          if (i < list.length - 1) {
+            [list[i + 1], list[i]] = [list[i], list[i + 1]];
+            renderMenuItems(list);
+          }
+        });
+      });
+      box.querySelectorAll('.m-del').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const row = btn.closest('.menu-row');
+          const allRows = Array.from(box.querySelectorAll('.menu-row'));
+          const idx = allRows.indexOf(row);
+          if (idx !== -1) {
+            const list = collectMenuFromDom();
+            list.splice(idx, 1);
+            renderMenuItems(list);
+          }
+        });
+      });
+      box.querySelectorAll('input, textarea').forEach((inp) => {
+        inp.addEventListener('input', updatePreview);
+        inp.addEventListener('change', updatePreview);
+      });
+      updatePreview();
+    }
+
+    document.getElementById('addMenuBtn').addEventListener('click', () => {
+      const list = collectMenuFromDom();
+      const newId = 'p_' + Date.now();
+      list.push({
+        id: newId,
+        icon: '📌',
+        label: 'नवीन पेज',
+        url: `page.html?id=${newId}`,
+        enabled: true,
+        isCustomPage: true,
+        pageTitle: 'नवीन पेज शीर्षक',
+        pageContent: 'येथे या नवीन पेजची माहिती लिहा.',
+        ctaLabel: '',
+        ctaUrl: ''
+      });
+      renderMenuItems(list);
+    });
+
+    function updatePreview() {
+      const pvMenu = document.getElementById('pvMenuList');
+      if (pvMenu) {
+        const current = document.querySelectorAll('#menuLinksContainer .menu-row').length
+          ? collectMenuFromDom()
+          : menuItemsState;
+        const fixedTop = `
+          <div class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-amber-50 text-[#05344E] border border-amber-200/70"><span>🏠</span><span>सर्व मंदिरे (मुख्य पेज)</span></div>
+          <div class="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-slate-50 text-[#05344E] border border-slate-200"><span>🕰️ आरती वेळापत्रक व माहिती</span><span class="text-[10px]">▼</span></div>
+        `;
+        const dyn = current.filter(it => it.enabled !== false && it.label).map(it => `
+          <div class="flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg hover:bg-slate-100 text-slate-800">
+            <span class="flex items-center gap-2 truncate"><span>${esc(it.icon || '📄')}</span><span class="truncate">${esc(it.label)}</span></span>
+            ${it.isCustomPage ? '<span class="text-[9px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 shrink-0">नवीन पेज</span>' : ''}
+          </div>
+        `).join('');
+        pvMenu.innerHTML = fixedTop + dyn;
+      }
+
+      const b = document.getElementById('pvVisBadge');
+      const en = document.getElementById('visEnabled');
+      const l = document.getElementById('visLabel');
+      const c = document.getElementById('visCount');
+      if (b && l && c) {
+        b.classList.toggle('opacity-40', en && !en.checked);
+        b.textContent = `👁️ ${l.value.trim() || 'एकूण भाविक'} : ${Number(c.value || 0).toLocaleString('mr-IN')}`;
+      }
+    }
+
+    ['visEnabled', 'visLabel', 'visCount', 'visFlash'].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('input', updatePreview);
+        el.addEventListener('change', updatePreview);
+      }
     });
 
     initAdminGuard(() => {
@@ -136,24 +293,17 @@
         if (v.label) document.getElementById('visLabel').value = v.label;
         if (v.count !== undefined) document.getElementById('visCount').value = v.count;
         document.getElementById('visFlash').checked = v.flash !== false;
+        updatePreview();
       });
 
-      fbDb.ref('siteConfig/legalLinks').on('value', (snap) => {
-        const l = snap.val() || {};
-        document.getElementById('linksEnabled').checked = l.enabled !== false;
-        renderLinks(Array.isArray(l.items) && l.items.length ? l.items : DEFAULT_LINKS);
+      fbDb.ref('siteConfig/menuLinks').on('value', (snap) => {
+        const m = snap.val() || {};
+        renderMenuItems(Array.isArray(m.items) && m.items.length ? m.items : DEFAULT_MENU_LINKS);
       });
     });
 
-    document.getElementById('saveVisLinksBtn').addEventListener('click', async () => {
-      const items = [];
-      document.querySelectorAll('#linksContainer .link-row').forEach((r) => {
-        const label = r.querySelector('.l-lbl').value.trim();
-        const url = r.querySelector('.l-url').value.trim();
-        const enabled = r.querySelector('.l-en').checked;
-        if (label && url) items.push({ label, url, enabled });
-      });
-
+    document.getElementById('saveVisMenuBtn').addEventListener('click', async () => {
+      const items = collectMenuFromDom().filter(it => it.label && it.url);
       try {
         await fbDb.ref('siteConfig/visitors').set({
           enabled: document.getElementById('visEnabled').checked,
@@ -161,22 +311,12 @@
           count: Math.max(0, Number(document.getElementById('visCount').value) || 0),
           flash: document.getElementById('visFlash').checked
         });
-        await fbDb.ref('siteConfig/legalLinks').set({
-          enabled: document.getElementById('linksEnabled').checked,
-          items
-        });
-        showToast('✅ भाविक काऊंटर व लिंक्स सेव्ह झाल्या!');
+        await fbDb.ref('siteConfig/menuLinks').set({ items });
+        showToast('✅ भाविक काऊंटर व मेनू लिंक्स सेव्ह झाल्या!');
       } catch (err) {
         showToast('❌ त्रुटी: ' + err.message, true);
       }
     });
-
-    setInterval(() => {
-      const b = document.getElementById('pvVisBadge');
-      const l = document.getElementById('visitorLabelInput');
-      const c = document.getElementById('visitorCountInput');
-      if (b && l && c) b.textContent = `${l.value || '👁️ एकूण भाविक :'} ${Number(c.value || 1).toLocaleString('mr-IN')}`;
-    }, 500);
   </script>
 </body>
 </html>

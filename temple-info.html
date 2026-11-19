@@ -16,7 +16,7 @@
     @keyframes marquee-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
     .marquee-track { display: flex; width: max-content; animation: marquee-scroll 18s linear infinite; }
     @keyframes live-pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.45; transform: scale(1.25); } }
-    .live-dot { animation: live-pulse 1.4s ease-in-out infinite; }
+    .live-dot { animation: none !important; transform: none !important; }
     @keyframes watermark-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
     .watermark-track { display: flex; width: max-content; animation: watermark-scroll 22s linear infinite; }
     @keyframes ott-shimmer-sweep { 0% { transform: translateX(-100%); } 100% { transform: translateX(200%); } }
@@ -129,7 +129,7 @@
   <div id="videoModal" class="hidden fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-3 sm:p-6" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div id="modalBox" class="p-[3px] bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 w-full max-w-[92vw] max-h-[86vh] max-h-[86dvh] rounded-2xl overflow-hidden shadow-[0_0_32px_rgba(245,158,11,0.45)] flex flex-col">
       <div class="bg-black text-white w-full h-full rounded-[13px] overflow-hidden flex flex-col flex-1">
-        <div id="playerHeaderBar" class="bg-gradient-to-r from-[#031926] via-[#063854] to-[#031926] px-3 sm:px-5 py-2.5 flex items-center justify-between gap-2 border-b-2 border-amber-400/70 shrink-0 shadow-md">
+        <div id="playerHeaderBar" class="relative z-50 isolate bg-gradient-to-r from-[#031926] via-[#063854] to-[#031926] px-3 sm:px-5 py-2.5 flex items-center justify-between gap-2 border-b-2 border-amber-400/70 shrink-0 shadow-md">
           <div class="flex items-center gap-2.5 min-w-0 flex-1">
             <span id="playerLiveBadgeWrap" class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-red-600/90 border border-red-400/50 text-[10px] sm:text-xs text-white tracking-wider shrink-0 shadow">
               <span id="modalLiveDot" class="live-dot inline-flex rounded-full h-2 w-2 bg-white"></span>
@@ -138,7 +138,7 @@
             <h3 id="modalTitle" class="text-base sm:text-xl font-bold text-white tracking-wide truncate drop-shadow-sm"></h3>
           </div>
           <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
-            <span id="modalDateTime" class="px-2.5 py-0.5 rounded-lg bg-white/10 border border-amber-300/35 text-sm sm:text-base font-bold text-amber-200 whitespace-nowrap"></span>
+            <span id="modalDateTime" class="px-2 py-0.5 rounded-lg bg-white/10 border border-amber-300/35 text-xs sm:text-sm font-bold text-amber-200 whitespace-nowrap shrink-0"></span>
             <select id="qualitySelect" aria-label="व्हिडिओ क्वालिटी" class="hidden px-2 py-1 rounded-lg bg-neutral-800 text-white border border-white/40 text-xs font-semibold cursor-pointer focus:outline-none">
               <option value="-1">Auto</option>
             </select>
@@ -149,7 +149,7 @@
               <svg id="muteIconOn" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
               <svg id="muteIconOff" class="hidden w-4 h-4 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
             </button>
-            <button id="closeModalBtn" type="button" aria-label="बंद करा" title="बंद करा" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-rose-500 hover:bg-rose-600 text-white flex items-center justify-center shadow-sm transition cursor-pointer shrink-0">
+            <button id="closeModalBtn" type="button" onclick="closeInfoLiveModal()" aria-label="बंद करा" title="बंद करा" class="relative z-50 touch-manipulation w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-rose-500 hover:bg-rose-600 active:scale-95 text-white flex items-center justify-center shadow-sm transition cursor-pointer shrink-0">
               <svg class="w-4 h-4 sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>
@@ -548,14 +548,14 @@
         if (load) load.classList.add('hidden');
         if (msg) msg.classList.remove('hidden');
         if (text) document.getElementById('modalMessageText').textContent = text;
-        if (dot) { dot.classList.remove('bg-red-500'); dot.classList.add('bg-amber-400'); }
+        
       };
 
       if (type === 'none') {
         showOffline('या मंदिराचे थेट प्रक्षेपण सध्या उपलब्ध नाही.');
         return;
       }
-      if (dot) { dot.classList.remove('bg-amber-400'); dot.classList.add('bg-red-500'); }
+      
       if (load) load.classList.remove('hidden');
 
       if (type === 'youtube') {

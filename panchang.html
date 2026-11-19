@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>आजचे पंचांग व सणवार — श्री. लाईव्ह दर्शन पोर्टल</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Khand:wght@500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <style>
+    body { font-family: 'Noto Sans Devanagari', sans-serif; }
+    .font-khand { font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+  <header class="bg-gradient-to-r from-[#031926] via-[#05344E] to-[#084160] text-white border-b-2 border-amber-400/80 shadow-md sticky top-0 z-30">
+    <div class="max-w-4xl mx-auto px-4 py-2.5 flex items-center justify-between gap-3">
+      <a href="index.html" class="flex items-center gap-2.5 min-w-0">
+        <span class="w-9 h-9 rounded-full bg-amber-400/20 border-2 border-amber-400 flex items-center justify-center text-lg shrink-0">🛕</span>
+        <div class="min-w-0">
+          <h1 class="font-khand text-lg sm:text-2xl font-bold tracking-wide text-white leading-tight truncate">श्री. लाईव्ह दर्शन पोर्टल</h1>
+          <p class="text-[11px] text-amber-100/85 truncate">आजचे पंचांग, शुभवेळ व प्रमुख उत्सव</p>
+        </div>
+      </a>
+      <a href="index.html" class="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs sm:text-sm font-bold transition shrink-0">← मुख्य पेज</a>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-4xl w-full mx-auto p-4 sm:p-6 space-y-5">
+        <section class="bg-gradient-to-r from-[#05344E] to-[#0a4d70] text-white rounded-3xl p-5 sm:p-6 shadow-md space-y-2">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <h2 class="font-khand text-2xl sm:text-3xl font-bold">🗓️ आजचे संपूर्ण पंचांग व सणवार</h2>
+        <span id="panchangTodayDate" class="px-3 py-1 rounded-full bg-amber-500 text-white text-xs sm:text-sm font-bold"></span>
+      </div>
+      <p id="panchangSummaryLine" class="text-sm sm:text-base text-amber-100 font-medium"></p>
+    </section>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <section class="bg-white rounded-2xl border border-amber-200 shadow-sm p-5 space-y-2.5">
+        <h3 class="font-khand text-xl font-bold text-[#05344E] border-b border-amber-100 pb-2">☀️ आजचा दिनविशेष व शुभवेळ</h3>
+        <ul class="space-y-2 text-sm sm:text-base text-slate-700 font-khand">
+          <li>• <strong>वार:</strong> <span id="pDay"></span></li>
+          <li>• <strong>सूर्योदय / सूर्यास्त (अंदाजे):</strong> सकाळी ६:३८ / सायंकाळी ६:०२</li>
+          <li>• <strong>अभिजित मुहूर्त:</strong> दुपारी ११:५६ ते १२:४४</li>
+          <li>• <strong>राहुकाळ:</strong> दिवसातील १.५ तास (वारानुसार)</li>
+        </ul>
+      </section>
+      <section class="bg-white rounded-2xl border border-sky-200 shadow-sm p-5 space-y-2.5">
+        <h3 class="font-khand text-xl font-bold text-[#05344E] border-b border-sky-100 pb-2">🛕 एकादशी व प्रमुख उत्सव</h3>
+        <ul class="space-y-2 text-sm sm:text-base text-slate-700 font-khand">
+          <li>• <strong>प्रबोधिनी / कार्तिकी एकादशी:</strong> पंढरपूर विशेष यात्रा व २४ तास दर्शन</li>
+          <li>• <strong>संकष्टी चतुर्थी:</strong> पुणे दगडूशेठ व मुंबई सिद्धिविनायक विशेष आरती</li>
+          <li>• <strong>पौर्णिमा व अमावास्या:</strong> कोल्हापूर व तुळजापूर विशेष अलंकार पूजा</li>
+          <li>• <strong>गुरुवार:</strong> शिर्डी श्री साईबाबा पालखी सोहळा</li>
+        </ul>
+      </section>
+    </div>
+  </main>
+
+  <footer class="bg-black text-white border-t border-white/15 py-3 px-4 text-center text-xs text-neutral-300">
+    © श्री. लाईव्ह दर्शन पोर्टल • संपर्क: ९९७५५७१५८५ • सर्व मंदिरांचे थेट दर्शन एकाच ठिकाणी
+  </footer>
+  <script>
+    const d = new Date();
+    const days = ['रविवार','सोमवार','मंगळवार','बुधवार','गुरुवार','शुक्रवार','शनिवार'];
+    const months = ['जानेवारी','फेब्रुवारी','मार्च','एप्रिल','मे','जून','जुलै','ऑगस्ट','सप्टेंबर','ऑक्टोबर','नोव्हेंबर','डिसेंबर'];
+    document.getElementById('panchangTodayDate').textContent = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+    document.getElementById('pDay').textContent = days[d.getDay()];
+    document.getElementById('panchangSummaryLine').textContent = `आज ${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()} — शुभ दर्शन व मंगलमयी दिन!`;
+  </script>
+</body>
+</html>

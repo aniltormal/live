@@ -100,6 +100,57 @@
         </div>
       </section>
 
+
+      <!-- लोडिंग स्क्रीन सेटिंग्ज -->
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-100">
+          <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">⏳ लोडिंग स्क्रीन (Splash Loader) सेटिंग्ज</h2>
+          <button id="resetLoaderImgBtn" type="button" class="px-2.5 py-1 rounded-lg bg-amber-50 border border-amber-300 hover:bg-amber-100 text-[11px] font-bold text-amber-900 cursor-pointer">🔄 मूळ विठ्ठल-रुक्मिणी फोटो वापरा</button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="sm:col-span-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 p-3 rounded-2xl bg-amber-50/70 border border-amber-200">
+            <div class="w-24 h-24 rounded-xl border-2 border-amber-400 bg-white p-1 flex items-center justify-center overflow-hidden shrink-0">
+              <img id="loaderImgPreview" src="" alt="लोडिंग फोटो" class="hidden w-full h-full object-contain rounded-lg" />
+              <span id="loaderImgFallback" class="text-3xl">🛕</span>
+            </div>
+            <div class="flex-1 space-y-2">
+              <label for="loaderImgFile" class="flex flex-col items-center justify-center px-3 py-2 rounded-xl border-2 border-dashed border-amber-400 bg-white/80 hover:bg-amber-100/60 cursor-pointer transition text-center">
+                <span class="text-xs font-extrabold text-amber-900">📁 लोडिंग स्क्रीनसाठी नवीन फोटो अपलोड करा</span>
+                <input id="loaderImgFile" type="file" accept="image/*" class="hidden" />
+              </label>
+              <input id="loaderImageUrl" type="url" class="w-full px-3 py-2 rounded-xl border border-amber-300 bg-white text-xs" placeholder="किंवा फोटोची URL लिंक पेस्ट करा (रिकामे ठेवल्यास विठ्ठल-रुक्मिणी फोटो दिसेल)" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">स्वागत शीर्षक (एका ओळीत)</label>
+            <input id="loaderTitleInput" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" value="🙏 लाईव्ह दर्शन पोर्टल मध्ये आपले स्वागत आहे 🙏" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">उप-ओळ (Subtitle)</label>
+            <input id="loaderSubtitleInput" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" value="॥ सर्व देवांचे दर्शन, एकाच ठिकाणी ॥" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">लोडिंग स्क्रीन पार्श्वभूमी रंग</label>
+            <div class="flex items-center gap-2">
+              <button id="swatchLoaderBg" type="button" class="w-10 h-10 rounded-xl border border-slate-300 shrink-0 cursor-pointer shadow-sm"></button>
+              <input id="loaderBgColor" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono" value="#FFF7E6" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">फ्रेम व प्रोग्रेस बार रंग</label>
+            <div class="flex items-center gap-2">
+              <button id="swatchLoaderAccent" type="button" class="w-10 h-10 rounded-xl border border-slate-300 shrink-0 cursor-pointer shadow-sm"></button>
+              <input id="loaderAccentColor" type="text" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-mono" value="#F59E0B" />
+            </div>
+          </div>
+        </div>
+      </section>
+
       <div class="sticky bottom-3 z-20 flex justify-end">
         <button id="saveHeaderBtn" type="button" class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-sm font-bold cursor-pointer shadow-lg transition">💾 हेडर व फुटर सेव्ह करा</button>
       </div>
@@ -115,6 +166,51 @@
     bindColorPicker('headerTextColor', 'swatchHeaderText', '#FFFFFF');
     bindColorPicker('footerBgColor', 'swatchFooterBg', '#05344E');
     bindColorPicker('footerTextColor', 'swatchFooterText', '#FFFFFF');
+
+    bindColorPicker('loaderBgColor', 'swatchLoaderBg', '#FFF7E6');
+    bindColorPicker('loaderAccentColor', 'swatchLoaderAccent', '#F59E0B');
+
+    const loaderImgPrev = document.getElementById('loaderImgPreview');
+    const loaderImgFb = document.getElementById('loaderImgFallback');
+    const loaderImgUrl = document.getElementById('loaderImageUrl');
+    const loaderImgFile = document.getElementById('loaderImgFile');
+
+    function syncLoaderImgPreview(src) {
+      const s = (src || '').trim();
+      if (s) {
+        loaderImgPrev.src = s;
+        loaderImgPrev.classList.remove('hidden');
+        loaderImgFb.classList.add('hidden');
+      } else {
+        loaderImgPrev.src = '';
+        loaderImgPrev.classList.add('hidden');
+        loaderImgFb.classList.remove('hidden');
+      }
+    }
+
+    if (loaderImgFile) {
+      loaderImgFile.addEventListener('change', async (e) => {
+        const f = e.target.files && e.target.files[0];
+        if (!f) return;
+        try {
+          const dataUrl = await compressImageToDataUrl(f, 800, 0.85);
+          loaderImgUrl.value = dataUrl;
+          syncLoaderImgPreview(dataUrl);
+          showToast('🖼️ लोडिंग फोटो तयार आहे! खालील सेव्ह बटण दाबा.');
+        } catch (err) {
+          showToast('❌ ' + err.message, true);
+        }
+      });
+    }
+    if (loaderImgUrl) {
+      loaderImgUrl.addEventListener('input', () => syncLoaderImgPreview(loaderImgUrl.value));
+    }
+    document.getElementById('resetLoaderImgBtn').addEventListener('click', () => {
+      loaderImgUrl.value = '';
+      syncLoaderImgPreview('');
+      showToast('🔄 मूळ विठ्ठल-रुक्मिणी फोटो पूर्ववत केला. सेव्ह बटण दाबा.');
+    });
+
 
     document.getElementById('headerBannerFile').addEventListener('change', (e) => {
       if (e.target.files[0]) document.getElementById('headerBannerLabel').textContent = '✅ निवडलेला बॅनर: ' + e.target.files[0].name;
@@ -139,6 +235,14 @@
         document.getElementById('hideHeaderTextToggle').checked = !!h.hideHeaderText;
       });
 
+      fbDb.ref('siteConfig/loader').on('value', (snap) => {
+        const l = snap.val() || {};
+        if (l.title !== undefined) document.getElementById('loaderTitleInput').value = l.title;
+        if (l.subtitle !== undefined) document.getElementById('loaderSubtitleInput').value = l.subtitle;
+        if (l.image !== undefined) { loaderImgUrl.value = l.image; syncLoaderImgPreview(l.image); }
+        if (l.bgColor) { document.getElementById('loaderBgColor').value = l.bgColor; document.getElementById('swatchLoaderBg').style.backgroundColor = l.bgColor; }
+        if (l.accentColor) { document.getElementById('loaderAccentColor').value = l.accentColor; document.getElementById('swatchLoaderAccent').style.backgroundColor = l.accentColor; }
+      });
       fbDb.ref('siteConfig/footer').on('value', (snap) => {
         const f = snap.val() || {};
         if (f.text !== undefined) document.getElementById('footerText').value = f.text;
@@ -181,6 +285,13 @@
         if (lFile) headerPayload.logoImage = await compressImageFile(lFile, 320, 320, 0.85);
         await fbDb.ref('siteConfig/header').update(headerPayload);
         await fbDb.ref('siteConfig/footer').update(footerPayload);
+        await fbDb.ref('siteConfig/loader').update({
+          title: document.getElementById('loaderTitleInput').value.trim(),
+          subtitle: document.getElementById('loaderSubtitleInput').value.trim(),
+          image: loaderImgUrl ? loaderImgUrl.value.trim() : '',
+          bgColor: document.getElementById('loaderBgColor').value.trim(),
+          accentColor: document.getElementById('loaderAccentColor').value.trim()
+        });
         showToast('✅ हेडर व फुटर यशस्वीरित्या सेव्ह झाले!');
       } catch (err) {
         showToast('❌ त्रुटी: ' + err.message, true);

@@ -28,10 +28,16 @@
             <div class="flex items-center gap-2.5"><span class="w-9 h-9 rounded-2xl bg-gradient-to-br from-fuchsia-600 to-purple-700 text-white flex items-center justify-center text-lg shadow-sm">🎛️</span><h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">मास्टर सेटिंग — संपूर्ण वेबसाईट थीम व फॉन्ट</h2></div>
             <p class="text-xs text-slate-500">येथे केलेले बदल मुख्य पेज, मंदिर माहिती पेज व संपूर्ण वेबसाईटवर एकाच वेळी लागू होतात.</p>
           </div>
-          <label for="masterEnabledToggle" class="flex items-center gap-2.5 cursor-pointer select-none px-3.5 py-2 rounded-xl bg-emerald-50 border border-emerald-200">
-            <input id="masterEnabledToggle" type="checkbox" class="toggle-pill" checked />
-            <span class="text-xs sm:text-sm font-extrabold text-emerald-900">मास्टर सेटिंग चालू</span>
-          </label>
+          <div class="flex flex-wrap items-center gap-2">
+            <label for="masterEnabledToggle" class="flex items-center gap-2.5 cursor-pointer select-none px-3.5 py-2 rounded-xl bg-emerald-50 border border-emerald-200">
+              <input id="masterEnabledToggle" type="checkbox" class="toggle-pill" checked />
+              <span class="text-xs sm:text-sm font-extrabold text-emerald-900">मास्टर सेटिंग चालू</span>
+            </label>
+            <label for="masterApplyColorsToggle" class="flex items-center gap-2.5 cursor-pointer select-none px-3.5 py-2 rounded-xl bg-amber-50 border border-amber-200">
+              <input id="masterApplyColorsToggle" type="checkbox" class="toggle-pill" />
+              <span class="text-xs sm:text-sm font-extrabold text-amber-900">रंग थीम लागू करा (हेडर व पेज रंग)</span>
+            </label>
+          </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -353,6 +359,7 @@
         const m = snap.val();
         if (!m || typeof m !== 'object') return;
         document.getElementById('masterEnabledToggle').checked = m.enabled !== false;
+        document.getElementById('masterApplyColorsToggle').checked = m.applyColors === true;
         if (m.fontFamily) fontSel.value = m.fontFamily;
         if (m.fontScale) {
           scaleSlider.value = m.fontScale;
@@ -380,6 +387,7 @@
     document.getElementById('saveMasterBtn').addEventListener('click', async () => {
       const payload = {
         enabled: document.getElementById('masterEnabledToggle').checked,
+        applyColors: document.getElementById('masterApplyColorsToggle').checked,
         fontFamily: fontSel.value,
         fontScale: Number(scaleSlider.value),
         themeId: selectedThemeId,
@@ -413,6 +421,7 @@
       if (resetModal) resetModal.classList.add('hidden');
       const defaultMaster = {
         enabled: false,
+        applyColors: false,
         fontFamily: "'Khand', 'Noto Sans Devanagari', sans-serif",
         fontScale: 100,
         themeId: 'royal_navy',
@@ -455,6 +464,7 @@
         await fbDb.ref('siteConfig/header').update(defaultHeader);
         await fbDb.ref('siteConfig/layout').update(defaultLayout);
         document.getElementById('masterEnabledToggle').checked = false;
+        document.getElementById('masterApplyColorsToggle').checked = false;
         fontSel.value = defaultMaster.fontFamily;
         scaleSlider.value = 100;
         scaleVal.textContent = '100%';

@@ -36,6 +36,12 @@
           </div>
         </div>
 
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">स्लायडिंग जाहिरात मजकूर फॉन्ट (५२ फॉन्ट्स)</label>
+            <select id="bannerFontSelect" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm bg-white"></select>
+          </div>
+        </div>
         <div id="bannerSlotsContainer" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
 
       </section>
@@ -74,6 +80,10 @@
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">जाहिरात मजकूर (पर्यायी)</label>
             <input id="preRollText" type="text" placeholder="जाहिरात शीर्षक किंवा संदेश" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">प्री-रोल मजकूर फॉन्ट (५२ फॉन्ट्स)</label>
+            <select id="preRollFontSelect" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm bg-white"></select>
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">प्री-रोल फोटो किंवा व्हिडिओ अपलोड</label>
@@ -133,9 +143,13 @@
             <label class="block text-xs font-bold text-slate-700 mb-1">क्लिक लिंक (URL)</label>
             <input id="splashLink" type="url" placeholder="https://..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
           </div>
-          <div class="sm:col-span-2">
+          <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">पॉपअप मजकूर (पर्यायी)</label>
             <input id="splashText" type="text" placeholder="विशेष सूचना किंवा जाहिरात" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">पॉपअप मजकूर फॉन्ट (५२ फॉन्ट्स)</label>
+            <select id="splashFontSelect" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm bg-white"></select>
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">स्प्लॅश फोटो किंवा व्हिडिओ अपलोड</label>
@@ -175,6 +189,9 @@
   <script src="admin-common.js"></script>
   <script>
     renderAdminShell('ads', 'जाहिरात नियंत्रण');
+    populateFontSelect('bannerFontSelect');
+    populateFontSelect('preRollFontSelect');
+    populateFontSelect('splashFontSelect');
 
 
     let currentAds = { bannerSlides: [{}, {}, {}] };
@@ -190,6 +207,8 @@
         const idx = Number(card.dataset.slot);
         if (!currentAds.bannerSlides[idx]) currentAds.bannerSlides[idx] = {};
         currentAds.bannerSlides[idx].link = card.querySelector('.slot-link').value.trim();
+        const stInp = card.querySelector('.slot-text');
+        if (stInp) currentAds.bannerSlides[idx].text = stInp.value.trim();
       });
     }
 
@@ -219,6 +238,7 @@
           </label>
 
           <input type="url" class="slot-link w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white focus:outline-none focus:border-[#05344E]" value="${esc(s.link)}" placeholder="लिंक (https://...)" />
+          <input type="text" class="slot-text w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white focus:outline-none focus:border-[#05344E]" value="${esc(s.text)}" placeholder="बॅनरवरील मजकूर (पर्यायी)" />
         </div>
       `).join('');
 
@@ -350,6 +370,7 @@
       showAdMediaPreview('splash', '', false);
     });
 
+    renderSlots(currentAds.bannerSlides);
     initAdminGuard(() => {
       fbDb.ref('siteConfig/ads').on('value', (snap) => {
         const ads = snap.val() || {};
@@ -361,6 +382,7 @@
         }
 
         document.getElementById('bannerEnabled').checked = !!ads.bannerEnabled;
+        if (ads.bannerFontFamily) document.getElementById('bannerFontSelect').value = ads.bannerFontFamily;
 
         renderSlots(currentAds.bannerSlides);
 
@@ -369,6 +391,7 @@
         document.getElementById('preRollSkipAfter').value = String(ads.preRollSkipAfter || 5);
         document.getElementById('preRollLink').value = ads.preRollLink || '';
         document.getElementById('preRollText').value = ads.preRollText || '';
+        if (ads.preRollFontFamily) document.getElementById('preRollFontSelect').value = ads.preRollFontFamily;
         document.getElementById('preRollVideoUrl').value = ads.preRollVideoUrl || '';
         if (ads.preRollVideoUrl || ads.preRollVideo) {
           showAdMediaPreview('preRoll', ads.preRollVideoUrl || ads.preRollVideo, true);
@@ -382,6 +405,7 @@
         document.getElementById('splashFreq').value = ads.splashFrequency || 'always';
         document.getElementById('splashLink').value = ads.splashLink || '';
         document.getElementById('splashText').value = ads.splashText || '';
+        if (ads.splashFontFamily) document.getElementById('splashFontSelect').value = ads.splashFontFamily;
         document.getElementById('splashVideoUrl').value = ads.splashVideoUrl || '';
         if (ads.splashVideoUrl || ads.splashVideo) {
           showAdMediaPreview('splash', ads.splashVideoUrl || ads.splashVideo, true);
@@ -400,9 +424,11 @@
           const prev = (currentAds.bannerSlides && currentAds.bannerSlides[i]) || {};
           const file = slotPendingFiles[i];
           const img = file ? await compressImageFile(file, 900, 320, 0.82) : (prev.image || '');
+          const stEl = cards[i].querySelector('.slot-text');
           slides.push({
             image: img,
-            link: cards[i].querySelector('.slot-link').value.trim()
+            link: cards[i].querySelector('.slot-link').value.trim(),
+            text: stEl ? stEl.value.trim() : ''
           });
         }
 
@@ -447,12 +473,14 @@
 
         const payload = Object.assign({}, currentAds, {
           bannerEnabled: document.getElementById('bannerEnabled').checked,
+          bannerFontFamily: document.getElementById('bannerFontSelect').value,
           bannerSlides: slides,
           preRollEnabled: document.getElementById('preRollEnabled').checked,
           preRollDuration: Math.max(2, Math.min(60, Number(document.getElementById('preRollDuration').value) || 10)),
           preRollSkipAfter: Number(document.getElementById('preRollSkipAfter').value) || 5,
           preRollLink: document.getElementById('preRollLink').value.trim(),
           preRollText: document.getElementById('preRollText').value.trim(),
+          preRollFontFamily: document.getElementById('preRollFontSelect').value,
           preRollImage,
           preRollVideo,
           preRollVideoUrl: preVideoUrlInput,
@@ -463,6 +491,7 @@
           splashFrequency: document.getElementById('splashFreq').value,
           splashLink: document.getElementById('splashLink').value.trim(),
           splashText: document.getElementById('splashText').value.trim(),
+          splashFontFamily: document.getElementById('splashFontSelect').value,
           splashImage,
           splashVideo,
           splashVideoUrl: splVideoUrlInput,

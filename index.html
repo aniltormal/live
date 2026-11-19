@@ -361,8 +361,9 @@
           <span>📲</span><span>होम स्क्रीनवर शॉर्टकट जोडा</span>
         </button>
       </nav>
-      <div id="mobileMenuFooter" class="px-4 py-2.5 bg-slate-100 border-t border-slate-200 text-[11px] text-slate-500 text-center font-semibold">
-        श्री. लाईव्ह दर्शन पोर्टल
+      <div id="mobileMenuFooter" class="px-4 py-3 bg-gradient-to-r from-[#031926] via-[#05344E] to-[#031926] border-t-2 border-amber-400/80 text-center space-y-0.5">
+        <div class="text-xs font-extrabold tracking-wide text-amber-300">दर्शन सेतू . लाईव्ह<sup class="text-[9px] text-amber-200 ml-0.5">™</sup></div>
+        <div class="text-[10px] font-semibold text-slate-300">© २०२६ DARSHAN SETU® • सर्व हक्क राखीव</div>
       </div>
     </div>
   </div>
@@ -1537,8 +1538,8 @@
       }
       if (menuFtr) {
         menuFtr.className = isDark
-          ? 'px-4 py-2.5 bg-neutral-950 border-t border-neutral-800 text-[11px] text-neutral-400 text-center font-semibold'
-          : 'px-4 py-2.5 bg-slate-100 border-t border-slate-200 text-[11px] text-slate-500 text-center font-semibold';
+          ? 'px-4 py-3 bg-neutral-950 border-t-2 border-amber-500/60 text-center space-y-0.5'
+          : 'px-4 py-3 bg-gradient-to-r from-[#031926] via-[#05344E] to-[#084160] border-t-2 border-amber-400 text-center space-y-0.5';
       }
 
       if (typeof applyHeaderTextColorForTheme === 'function') applyHeaderTextColorForTheme();
@@ -2595,6 +2596,11 @@
           try { if (typeof applyMasterConfigGlobal === 'function') applyMasterConfigGlobal(c.master); } catch (e) {}
         }
         if (c.header && c.header.fontFamily) ensureGoogleFontLoaded(c.header.fontFamily);
+        if (c.footer) {
+          if (c.footer.bgColor && el.appFooter) el.appFooter.style.backgroundColor = c.footer.bgColor;
+          if (c.footer.textColor && el.footerMarqueeTrack) el.footerMarqueeTrack.style.color = c.footer.textColor;
+          if (c.footer.fontFamily && el.footerMarqueeTrack) { ensureGoogleFontLoaded(c.footer.fontFamily); el.footerMarqueeTrack.style.fontFamily = c.footer.fontFamily; }
+        }
         if (c.layout) {
           Object.assign(siteLayoutConfig, c.layout);
           if (c.layout.panchangFontFamily) ensureGoogleFontLoaded(c.layout.panchangFontFamily);
@@ -2790,7 +2796,11 @@
             }
             if (f.bgColor) el.appFooter.style.backgroundColor = f.bgColor;
             if (f.textColor) el.footerMarqueeTrack.style.color = f.textColor;
-            if (f.fontFamily) el.footerMarqueeTrack.style.fontFamily = f.fontFamily;
+            if (f.fontFamily) {
+              ensureGoogleFontLoaded(f.fontFamily);
+              el.footerMarqueeTrack.style.fontFamily = f.fontFamily;
+            }
+            updateSiteCache('footer', f);
           }
         });
 
@@ -2799,6 +2809,8 @@
           const a = snapshot.val();
           if (a && typeof a === 'object') {
             siteAdsConfig.bannerEnabled = Boolean(a.bannerEnabled);
+            siteAdsConfig.bannerFontFamily = a.bannerFontFamily || '';
+            if (siteAdsConfig.bannerFontFamily) ensureGoogleFontLoaded(siteAdsConfig.bannerFontFamily);
             siteAdsConfig.bannerSlides = Array.isArray(a.bannerSlides) ? a.bannerSlides : [];
             siteAdsConfig.preRollEnabled = Boolean(a.preRollEnabled);
             siteAdsConfig.preRollImage = a.preRollImage || '';
@@ -2808,6 +2820,8 @@
             siteAdsConfig.preRollSkipAfter = Number(a.preRollSkipAfter) || 5;
             siteAdsConfig.preRollLink = a.preRollLink || '';
             siteAdsConfig.preRollText = a.preRollText || '';
+            siteAdsConfig.preRollFontFamily = a.preRollFontFamily || '';
+            if (siteAdsConfig.preRollFontFamily) ensureGoogleFontLoaded(siteAdsConfig.preRollFontFamily);
             siteAdsConfig.preRollDuration = Number(a.preRollDuration) || 10;
             siteAdsConfig.splashEnabled = Boolean(a.splashEnabled);
             siteAdsConfig.splashImage = a.splashImage || '';
@@ -2817,6 +2831,8 @@
             siteAdsConfig.splashSkipAfter = Number(a.splashSkipAfter) || 5;
             siteAdsConfig.splashLink = a.splashLink || '';
             siteAdsConfig.splashText = a.splashText || '';
+            siteAdsConfig.splashFontFamily = a.splashFontFamily || '';
+            if (siteAdsConfig.splashFontFamily) ensureGoogleFontLoaded(siteAdsConfig.splashFontFamily);
             siteAdsConfig.splashDuration = Number(a.splashDuration) || 10;
             siteAdsConfig.splashFrequency = a.splashFrequency || 'daily';
             renderMainAdBanner();
@@ -2878,6 +2894,18 @@
       }
       if (m.fontFamily) document.body.style.fontFamily = m.fontFamily;
       if (m.fontScale) document.documentElement.style.fontSize = (16 * (Number(m.fontScale) / 100)).toFixed(2) + 'px';
+      if (m.applyColors !== true) {
+        if (!isDark) {
+          document.body.style.backgroundColor = '';
+          document.body.style.color = '';
+        }
+        if (hdr) { hdr.style.backgroundImage = ''; hdr.style.backgroundColor = ''; }
+        if (ftr) ftr.style.backgroundColor = '';
+        if (llb) llb.style.backgroundColor = '';
+        if (pBar) pBar.style.backgroundColor = '';
+        document.querySelectorAll('.temple-title-bar').forEach(el => { el.style.backgroundColor = ''; });
+        return;
+      }
       const c = m.colors || {};
       if (!isDark) {
         if (c.pageBg) document.body.style.backgroundColor = c.pageBg;
@@ -3590,6 +3618,13 @@
         img.alt = `जाहिरात ${idx + 1}`;
         img.className = 'w-full h-full object-cover';
         a.appendChild(img);
+        if (slide.text && slide.text.trim()) {
+          const cap = document.createElement('div');
+          cap.className = 'absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 via-black/45 to-transparent px-3 py-2 text-white text-xs sm:text-sm font-bold truncate text-center';
+          cap.textContent = slide.text.trim();
+          if (siteAdsConfig.bannerFontFamily) cap.style.fontFamily = siteAdsConfig.bannerFontFamily;
+          a.appendChild(cap);
+        }
         el.mainAdTrack.appendChild(a);
       });
 
@@ -3717,6 +3752,7 @@
       configureAdLink(el.preRollLinkEl, siteAdsConfig.preRollLink);
       if (siteAdsConfig.preRollText) {
         el.preRollTextEl.textContent = siteAdsConfig.preRollText;
+        if (siteAdsConfig.preRollFontFamily) { ensureGoogleFontLoaded(siteAdsConfig.preRollFontFamily); el.preRollTextEl.style.fontFamily = siteAdsConfig.preRollFontFamily; }
         el.preRollTextWrap.classList.remove('hidden');
       } else {
         el.preRollTextWrap.classList.add('hidden');
@@ -3838,6 +3874,7 @@
       configureAdLink(el.splashAdLinkEl, siteAdsConfig.splashLink);
       if (siteAdsConfig.splashText) {
         el.splashAdTextEl.textContent = siteAdsConfig.splashText;
+        if (siteAdsConfig.splashFontFamily) { ensureGoogleFontLoaded(siteAdsConfig.splashFontFamily); el.splashAdTextEl.style.fontFamily = siteAdsConfig.splashFontFamily; }
         el.splashAdTextWrap.classList.remove('hidden');
       } else {
         el.splashAdTextWrap.classList.add('hidden');

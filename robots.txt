@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /admin-master.html
+Disallow: /admin-temples.html
+Disallow: /admin-temple-info.html
+Disallow: /admin-header.html
+Disallow: /admin-player.html
+Disallow: /admin-layout.html
+Disallow: /admin-ads.html
+Disallow: /admin-visitors-links.html
+
+Sitemap: https://darshansetu.live/sitemap.xml

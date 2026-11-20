@@ -531,7 +531,7 @@
       }).join('');
 
       // 4. Upcoming Marathi Festivals & Vrat dates (2026-2027)
-      const upcoming = festivals.filter(f => f.date >= todayISO).slice(0, 6);
+      const upcoming = festivals.filter(f => f.date > todayISO).slice(0, 6);
       const listToShow = upcoming.length ? upcoming : festivals.slice(-6);
       const cardPalettes = [
         { card: 'border-sky-300 bg-gradient-to-br from-sky-50 to-white shadow-sm', pill: 'bg-[#05344E] text-white shadow-sm' },
@@ -558,15 +558,11 @@
             </div>
             <div class="flex items-center justify-between gap-2">
               <div class="text-base text-[#05344E]">${f.name}</div>
-              <span class="fest-arrow inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] shrink-0 transition shadow-xs ${isPandharpur ? 'bg-orange-100 text-[#9A3412] border border-orange-300' : 'bg-[#05344E]/10 text-[#05344E] border border-[#05344E]/25'}">📖 सविस्तर वाचा ▾</span>
+              <span class="fest-arrow inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold shrink-0 transition shadow-sm ${isPandharpur ? 'bg-[#EA580C] text-white border border-[#EA580C]' : 'bg-[#05344E] text-white border border-[#05344E]'}">📖 सविस्तर वाचा ▾</span>
             </div>
             <div class="text-xs text-slate-600">${f.note}</div>
-            <div class="fest-detail hidden mt-2 pt-2.5 border-t border-slate-200/90 space-y-2 text-xs text-slate-700 leading-relaxed">
+            <div class="fest-detail hidden mt-2 pt-2.5 border-t border-slate-200/90 text-xs text-slate-700 leading-relaxed">
               <p>${f.details || f.note}</p>
-              <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
-                <button type="button" onclick="event.stopPropagation(); window.openPanchangLivePlayer && window.openPanchangLivePlayer('${tId}')" class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[11px] shadow-sm cursor-pointer">▶ आत्ताच लाईव्ह दर्शन घ्या</button>
-                <button type="button" class="fest-min-btn inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#05344E]/10 hover:bg-[#05344E] text-[#05344E] hover:text-white border border-[#05344E]/20 text-[11px] transition cursor-pointer">✕ बंद करा</button>
-              </div>
             </div>
           </div>`;
       }).join('');
@@ -581,8 +577,9 @@
           card.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
           if (arr) {
             arr.textContent = willOpen ? '✕ बंद करा' : '📖 सविस्तर वाचा ▾';
-            arr.classList.toggle('bg-[#05344E]', willOpen);
-            arr.classList.toggle('text-white', willOpen);
+            arr.style.backgroundColor = willOpen ? '#DC2626' : '';
+            arr.style.color = willOpen ? '#FFFFFF' : '';
+            arr.style.borderColor = willOpen ? '#DC2626' : '';
           }
         };
         card.addEventListener('click', (e) => {

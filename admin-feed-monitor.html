@@ -15,7 +15,6 @@
 
   <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-5 py-5 space-y-5">
     <div id="adminAuthGate" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 text-center">
-      <div class="text-3xl mb-2">🔐</div>
       <div id="authGateMsg" class="text-sm font-bold text-slate-600">अ‍ॅडमिन तपासणी सुरू आहे...</div>
     </div>
 
@@ -62,7 +61,10 @@
             <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">📡 १. मंदिरांच्या अधिकृत वेबसाईट्स जोडा (Feed Discovery Sources)</h2>
             <p class="text-xs text-slate-500">येथे जोडलेल्या वेबसाईट्स GitHub Actions + Playwright द्वारे नियमित स्कॅन होऊन M3U8, DASH व YouTube Live लिंक्स आपोआप अपडेट होतात.</p>
           </div>
-          <button id="toggleAddSourceBtn" type="button" class="px-3.5 py-2 rounded-xl bg-[#05344E] hover:opacity-95 text-white text-xs font-bold cursor-pointer shadow-sm">➕ नवीन वेबसाईट जोडा</button>
+          <div class="flex flex-wrap items-center gap-2">
+            <button id="fixTempleIdsBtn" type="button" class="px-3.5 py-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 text-xs font-extrabold cursor-pointer shadow-sm">🔧 मंदिर ID व नावे जुळवा</button>
+            <button id="toggleAddSourceBtn" type="button" class="px-3.5 py-2 rounded-xl bg-[#05344E] hover:opacity-95 text-white text-xs font-bold cursor-pointer shadow-sm">➕ नवीन वेबसाईट जोडा</button>
+          </div>
         </div>
 
         <!-- नवीन स्त्रोत फॉर्म -->
@@ -141,7 +143,9 @@
         </div>
       </section>
 
-
+      <div class="sticky bottom-3 z-20 flex justify-end">
+        <button id="saveFeedMonitorBtn" type="button" class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-sm font-bold cursor-pointer shadow-lg transition">💾 ऑटो फीड मॉनिटर सेटिंग्ज सेव्ह करा</button>
+      </div>
     </div>
   </main>
 
@@ -193,6 +197,44 @@
       sel.innerHTML = items.map(t => `<option value="${esc(t.id)}">${esc(t.title)} (${esc(t.id)})</option>`).join('');
     }
     renderTempleSelect();
+
+    const CANONICAL_MATCHERS = [
+      { id: 'pandharpur', keywords: ['पंढरपूर', 'विठ्ठल', 'pandharpur', 'vitthal'] },
+      { id: 'kolhapur', keywords: ['कोल्हापूर', 'अंबाबाई', 'महालक्ष्मी', 'kolhapur', 'mahalaxmi', 'ambabai'] },
+      { id: 'tuljapur', keywords: ['तुळजापूर', 'तुळजाभवानी', 'tuljapur', 'tulja'] },
+      { id: 'shirdi', keywords: ['शिर्डी', 'साईबाबा', 'shirdi', 'saibaba'] },
+      { id: 'dagdusheth', keywords: ['दगडूशेठ', 'गणपती', 'पुणे', 'dagdusheth'] },
+      { id: 'siddhivinayak', keywords: ['सिद्धिविनायक', 'मुंबई', 'siddhivinayak'] }
+    ];
+
+    document.getElementById('fixTempleIdsBtn').addEventListener('click', async () => {
+      if (!templesMap || !Object.keys(templesMap).length) {
+        showToast('⚠️ Firebase मध्ये मंदिरे सापडली नाहीत.', true);
+        return;
+      }
+      if (!confirm('सर्व मुख्य मंदिरांचे ID त्यांच्या नावाप्रमाणे (उदा. kolhapur = कोल्हापूर, tuljapur = तुळजापूर) Firebase मध्ये जुळवायचे का?')) return;
+      try {
+        const entries = Object.entries(templesMap).filter(([, v]) => v && !v.deleted);
+        const updates = {};
+        let fixedCount = 0;
+        entries.forEach(([curId, data]) => {
+          const text = ((data.shortTitle || '') + ' ' + (data.buttonTitle || '') + ' ' + (data.streamUrl || '')).toLowerCase();
+          const match = CANONICAL_MATCHERS.find(m => m.keywords.some(k => text.includes(k)));
+          if (match && match.id !== curId && CANONICAL_MATCHERS.some(m => m.id === curId)) {
+            updates[match.id] = Object.assign({}, data, { id: match.id });
+            fixedCount++;
+          }
+        });
+        if (!fixedCount) {
+          showToast('✅ सर्व मंदिर IDs आधीच नावाप्रमाणे बरोबर आहेत!');
+          return;
+        }
+        await fbDb.ref('temples').update(updates);
+        showToast(`✅ ${fixedCount} मंदिरांचे ID नावाप्रमाणे दुरुस्त केले!`);
+      } catch (err) {
+        showToast('❌ त्रुटी: ' + err.message, true);
+      }
+    });
 
     document.getElementById('toggleAddSourceBtn').addEventListener('click', () => {
       document.getElementById('addSourceForm').classList.toggle('hidden');
@@ -378,6 +420,26 @@
           `;
         }).join('');
       });
+    });
+
+    document.getElementById('saveFeedMonitorBtn').addEventListener('click', async () => {
+      try {
+        const masterOn = document.getElementById('masterFeedToggle').checked;
+        await fbDb.ref('feedDiscovery/settings/masterEnabled').set(masterOn);
+        const srcUpdates = {};
+        document.querySelectorAll('#sourcesListBox [data-sid]').forEach(row => {
+          const sid = row.dataset.sid;
+          srcUpdates[`${sid}/enabled`] = row.querySelector('.src-toggle-en').checked;
+          srcUpdates[`${sid}/autoPublish`] = row.querySelector('.src-toggle-auto').checked;
+          srcUpdates[`${sid}/manualLock`] = row.querySelector('.src-toggle-lock').checked;
+        });
+        if (Object.keys(srcUpdates).length) {
+          await fbDb.ref('feedDiscovery/sources').update(srcUpdates);
+        }
+        showToast('✅ ऑटो फीड मॉनिटरच्या सर्व सेटिंग्ज सेव्ह झाल्या!');
+      } catch (err) {
+        showToast('❌ त्रुटी: ' + err.message, true);
+      }
     });
   </script>
 </body>

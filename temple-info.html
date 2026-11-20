@@ -846,7 +846,7 @@
         if (hdr) { hdr.style.backgroundImage = ''; hdr.style.backgroundColor = ''; }
         if (ftr) ftr.style.backgroundColor = '';
         if (llb) llb.style.backgroundColor = '';
-        if (pBar) pBar.style.backgroundColor = '';
+        if (pBar) { pBar.style.background = '#FFFBEB'; pBar.style.color = '#05344E'; }
         document.querySelectorAll('.temple-title-bar').forEach(el => { el.style.backgroundColor = ''; });
         return;
       }

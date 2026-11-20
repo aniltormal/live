@@ -2161,7 +2161,7 @@
       currentOpenTempleId = temple.id;
       startModalClock();
       cleanupPopupPlayer();
-      const sfx = (window.__playerCfg && window.__playerCfg.titleSuffix !== undefined) ? window.__playerCfg.titleSuffix : '• Live Darshan';
+      const sfx = (window.__playerCfg && typeof window.__playerCfg.titleSuffix === 'string' && window.__playerCfg.titleSuffix.trim()) ? window.__playerCfg.titleSuffix.trim() : '• Live Darshan';
       const rawT = temple.buttonTitle || 'मंदिर';
       el.modalTitle.textContent = (!sfx || rawT.includes(sfx)) ? rawT : (rawT + ' ' + sfx);
       el.videoModal.classList.remove('hidden');

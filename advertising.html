@@ -237,7 +237,7 @@
         }
 
         const pBox = document.getElementById('adPvPreRollBox');
-        const pr = ads.preRoll || {};
+        const pr = { image: ads.preRollImage || (ads.preRoll && ads.preRoll.image) || '', videoUrl: ads.preRollVideo || ads.preRollVideoUrl || (ads.preRoll && ads.preRoll.videoUrl) || '', text: ads.preRollText || (ads.preRoll && ads.preRoll.text) || '' };
         if (pBox && (pr.image || pr.videoUrl || pr.text)) {
           pBox.className = 'w-1/4 shrink-0 rounded-xl border border-emerald-200 overflow-hidden relative bg-black min-h-[90px] sm:min-h-[112px]';
           pBox.innerHTML = `
@@ -248,7 +248,7 @@
         }
 
         const sBox = document.getElementById('adPvSplashBox');
-        const sp = ads.splash || {};
+        const sp = { image: ads.splashImage || (ads.splash && ads.splash.image) || '', videoUrl: ads.splashVideo || ads.splashVideoUrl || (ads.splash && ads.splash.videoUrl) || '', text: ads.splashText || (ads.splash && ads.splash.text) || '' };
         if (sBox && (sp.image || sp.videoUrl || sp.text)) {
           sBox.className = 'w-1/4 shrink-0 rounded-xl border border-indigo-200 overflow-hidden relative bg-neutral-900 min-h-[90px] sm:min-h-[112px]';
           sBox.innerHTML = `

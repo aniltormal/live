@@ -236,29 +236,38 @@
             <div class="ott-shimmer-beam absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-transparent via-amber-200/15 to-transparent"></div>
             <span class="relative z-10 text-xs sm:text-sm font-bold text-amber-100/85 tracking-wide">🙏 दर्शन सुरू होत आहे...</span>
           </div>
+                    <!-- OTT Quick Temple Switcher Dock (Auto-hides after 4s, tap stage to show) -->
+          <div id="playerTempleDock" class="absolute bottom-9 sm:bottom-10 left-2 right-2 z-40 transition-opacity duration-300 opacity-100">
+            <div id="playerTempleDockInner" class="flex items-center gap-2 overflow-x-auto px-2.5 py-2 rounded-2xl bg-black/70 backdrop-blur-md border border-white/15 shadow-xl" style="scrollbar-width:none;"></div>
+          </div>
           <div id="modalMessageBox" class="hidden absolute inset-0 z-35 bg-neutral-950/95 flex flex-col items-center justify-center text-center p-6 space-y-3">
             <div class="text-4xl">🛕</div>
             <h4 id="modalMessageTitle" class="text-base sm:text-lg font-extrabold text-amber-300">🙏 सध्या लाईव्ह दर्शन तात्पुरते बंद आहे</h4>
             <p id="modalMessageText" class="text-xs sm:text-sm text-neutral-300 max-w-md">मंदिराची दैनंदिन पूजा/नैवेद्य वेळ किंवा तांत्रिक कारणास्तव प्रक्षेपण थांबलेले असू शकते. कृपया थोड्या वेळाने पुन्हा प्रयत्न करा.</p>
           </div>
-                    <!-- Pre-Roll Ad Overlay -->
+          <!-- Pre-Roll Ad Overlay -->
           <div id="preRollOverlay" class="hidden absolute inset-0 z-40 bg-black flex flex-col items-center justify-center">
-            <a id="preRollLinkEl" href="#" target="_blank" rel="noopener noreferrer" class="relative w-full h-full flex items-center justify-center">
-              <img id="preRollImgEl" src="" alt="जाहिरात" class="w-full h-full object-contain bg-black" />
-              <video id="preRollVideoEl" src="" playsinline autoplay muted class="hidden w-full h-full object-contain bg-black"></video>
-              <div id="preRollTextWrap" class="hidden absolute bottom-12 left-3 right-3 bg-black/70 rounded-lg px-3 py-1.5 text-center">
-                <p id="preRollTextEl" class="text-xs sm:text-sm font-bold text-white"></p>
-              </div>
-            </a>
-            <div class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full bg-black/75 border border-white/25 text-white text-[11px] font-bold">
-              <span id="preRollCountdownLabel">जाहिरात • दर्शन 5 सेकंदात सुरू होईल...</span>
+          <a id="preRollLinkEl" href="#" target="_blank" rel="noopener noreferrer" class="relative w-full h-full flex items-center justify-center">
+            <img id="preRollImgEl" src="" alt="जाहिरात" class="w-full h-full object-cover" />
+            <video id="preRollVideoEl" src="" playsinline autoplay muted class="hidden w-full h-full object-contain bg-black"></video>
+            <div id="preRollTextWrap" class="hidden absolute bottom-12 left-3 right-3 bg-black/70 rounded-lg px-3 py-1.5 text-center">
+              <p id="preRollTextEl" class="text-xs sm:text-sm font-bold text-white"></p>
             </div>
-            <button id="preRollSkipBtn" type="button" class="hidden absolute bottom-3 right-3 px-3 py-1.5 rounded-full bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold shadow cursor-pointer">⏭ स्किप करा</button>
-            <div class="absolute bottom-0 inset-x-0 h-1 bg-white/20">
-              <div id="preRollProgressFill" class="h-full w-0 bg-amber-400 transition-all duration-300"></div>
-            </div>
+          </a>
+          <div class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full bg-black/75 border border-white/25 text-white text-[11px] sm:text-xs font-bold">
+            <span id="preRollCountdownLabel">जाहिरात • दर्शन 5 सेकंदात सुरू होईल...</span>
           </div>
-          <div id="playerTickerBar" class="absolute bottom-0 left-0 right-0 z-20 overflow-hidden py-1.5 pointer-events-none select-none border-t border-white/15" style="background-color: #05344E;">
+          <button id="preRollMuteBtn" type="button" class="hidden absolute top-2.5 right-2.5 px-2.5 py-1 rounded-full bg-black/75 border border-white/25 text-white text-xs font-bold cursor-pointer">🔇 आवाज</button>
+          <button id="preRollSkipBtn" type="button"
+            class="hidden absolute bottom-3.5 right-0 bg-black/85 hover:bg-black text-white pl-4 pr-3.5 py-2 rounded-l-full border border-r-0 border-white/30 text-xs sm:text-sm font-extrabold shadow-xl transition flex items-center gap-1.5">
+            ⏳ ५ सेकंदात स्किप करा
+          </button>
+          <div id="preRollProgressWrap" class="hidden absolute bottom-0 inset-x-0 h-1 bg-white/20">
+            <div id="preRollProgressFill" class="h-full w-0 bg-amber-400 transition-all duration-300"></div>
+          </div>
+        </div>
+
+                  <div id="playerTickerBar" class="absolute bottom-0 left-0 right-0 z-20 overflow-hidden py-1.5 pointer-events-none select-none border-t border-white/15" style="background-color: #05344E;">
             <div class="marquee-track text-xs sm:text-sm font-bold tracking-wide" style="color: #D6DBD2;">
               <span class="px-8">अस्वीकरण: या पोर्टलवरील सर्व लाईव्ह दर्शनाचे प्रक्षेपण संबंधित देवस्थान व अधिकृत तृतीय-पक्ष माध्यमांच्या माध्यमातून दाखवले जात आहे.</span>
               <span class="px-8" aria-hidden="true">अस्वीकरण: या पोर्टलवरील सर्व लाईव्ह दर्शनाचे प्रक्षेपण संबंधित देवस्थान व अधिकृत तृतीय-पक्ष माध्यमांच्या माध्यमातून दाखवले जात आहे.</span>
@@ -636,6 +645,52 @@
       if (m && !m.classList.contains('hidden')) sizeInfoModalToScreen();
     });
 
+    let __infoDockTimer = null;
+    function showInfoOttDockTemporarily() {
+      const d = document.getElementById('playerTempleDock');
+      if (!d) return;
+      d.classList.remove('opacity-0', 'pointer-events-none');
+      d.classList.add('opacity-100');
+      clearTimeout(__infoDockTimer);
+      __infoDockTimer = setTimeout(() => {
+        d.classList.add('opacity-0', 'pointer-events-none');
+        d.classList.remove('opacity-100');
+      }, 4000);
+    }
+    function renderInfoTempleDock(activeId) {
+      const inner = document.getElementById('playerTempleDockInner');
+      if (!inner) return;
+      const fallback = Object.keys(DEFAULT_TEMPLE_STREAMS).map(k => ({
+        id: k,
+        shortTitle: DEFAULT_TEMPLE_STREAMS[k].title || k,
+        streamUrl: DEFAULT_TEMPLE_STREAMS[k].streamUrl || ''
+      }));
+      const list = (Array.isArray(window.__allTemplesForDock) && window.__allTemplesForDock.length)
+        ? window.__allTemplesForDock.filter(t => t && !t.deleted && !t.hidden)
+        : fallback;
+      inner.innerHTML = '';
+      list.forEach(t => {
+        const isAct = t.id === activeId;
+        const pill = document.createElement('button');
+        pill.type = 'button';
+        pill.className = `shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[11px] sm:text-xs font-bold transition cursor-pointer ${isAct ? 'bg-amber-500/35 border-amber-400 text-white shadow' : 'bg-white/10 border-white/20 text-neutral-200 hover:bg-white/20'}`;
+        const imgHtml = t.image ? `<img src="${t.image}" alt="" class="w-5 h-5 rounded-full object-cover shrink-0" />` : '<span>🛕</span>';
+        pill.innerHTML = `${imgHtml}<span class="max-w-[120px] truncate">${t.shortTitle || t.buttonTitle || t.name || t.id}</span>`;
+        pill.addEventListener('click', (e) => {
+          e.preventDefault(); e.stopPropagation();
+          if (t.id !== templeId) {
+            templeId = t.id;
+            currentTempleMetaForPlay = t;
+            openInfoLivePlayer();
+          }
+          showInfoOttDockTemporarily();
+        });
+        inner.appendChild(pill);
+      });
+      showInfoOttDockTemporarily();
+    }
+    const __hs = document.getElementById('playerHoverShield');
+    if (__hs) __hs.addEventListener('click', showInfoOttDockTemporarily);
     function openInfoLivePlayer() {
       const meta = currentTempleMetaForPlay || {};
       const def = DEFAULT_TEMPLE_STREAMS[templeId] || {};
@@ -645,9 +700,11 @@
 
       cleanupInfoPlayer();
       startInfoClock();
-      const sfx = (window.__playerCfg && window.__playerCfg.titleSuffix !== undefined) ? window.__playerCfg.titleSuffix : '• Live Darshan';
+      const sfx = (window.__playerCfg && typeof window.__playerCfg.titleSuffix === 'string' && window.__playerCfg.titleSuffix.trim()) ? window.__playerCfg.titleSuffix.trim() : '• Live Darshan';
+      window.__rawModalTitle = title;
       document.getElementById('modalTitle').textContent = (!sfx || title.includes(sfx)) ? title : (title + ' ' + sfx);
       document.getElementById('videoModal').classList.remove('hidden');
+      renderInfoTempleDock(templeId);
       sizeInfoModalToScreen();
       const load = document.getElementById('playerLoadingBadge');
       const msg = document.getElementById('modalMessageBox');
@@ -745,28 +802,52 @@
         if (load) load.classList.add('hidden');
         const prImg = document.getElementById('preRollImgEl');
         const prVid = document.getElementById('preRollVideoEl');
+        const prMute = document.getElementById('preRollMuteBtn');
         const prLink = document.getElementById('preRollLinkEl');
         const prTxtW = document.getElementById('preRollTextWrap');
         const prTxt = document.getElementById('preRollTextEl');
         const prLbl = document.getElementById('preRollCountdownLabel');
         const prSkip = document.getElementById('preRollSkipBtn');
+        const prProgW = document.getElementById('preRollProgressWrap');
         const prFill = document.getElementById('preRollProgressFill');
-        const dur = Math.max(2, Number(prCfg.duration) || 5);
-        const skipAfter = Number(prCfg.skipAfter || 0);
-        if (prLink) prLink.href = prCfg.link || '#';
+        const dur = Math.max(2, Math.min(60, Number(prCfg.duration) || 10));
+        const skipAfter = Math.min(dur, Math.max(1, Number(prCfg.skipAfter) || 5));
+        if (prLink) {
+          if (prCfg.link) { prLink.href = prCfg.link; prLink.classList.remove('pointer-events-none'); }
+          else { prLink.removeAttribute('href'); prLink.classList.add('pointer-events-none'); }
+        }
         if (prCfg.videoUrl) {
           prImg.classList.add('hidden');
           prVid.src = prCfg.videoUrl;
+          prVid.muted = true;
           prVid.classList.remove('hidden');
           prVid.play().catch(() => {});
+          if (prMute) {
+            prMute.classList.remove('hidden');
+            prMute.textContent = '🔇 आवाज';
+            prMute.onclick = (ev) => { ev.preventDefault(); ev.stopPropagation(); prVid.muted = !prVid.muted; prMute.textContent = prVid.muted ? '🔇 आवाज' : '🔊 म्यूट'; };
+          }
+          if (prProgW) prProgW.classList.remove('hidden');
         } else {
-          prVid.classList.add('hidden');
+          if (prVid) prVid.classList.add('hidden');
+          if (prMute) prMute.classList.add('hidden');
           prImg.src = prCfg.image;
           prImg.classList.remove('hidden');
+          if (prProgW) prProgW.classList.remove('hidden');
         }
         if (prCfg.text && prTxtW && prTxt) {
           prTxt.textContent = prCfg.text;
-          if (prCfg.fontFamily) prTxt.style.fontFamily = prCfg.fontFamily;
+          if (prCfg.fontFamily) {
+            const fm = String(prCfg.fontFamily).match(/'([^']+)'/);
+            const fnm = fm ? fm[1] : String(prCfg.fontFamily).split(',')[0].trim();
+            if (fnm && !document.getElementById('gf-' + fnm.toLowerCase().replace(/[^a-z0-9]+/g, '-'))) {
+              const lk = document.createElement('link');
+              lk.id = 'gf-' + fnm.toLowerCase().replace(/[^a-z0-9]+/g, '-'); lk.rel = 'stylesheet';
+              lk.href = 'https://fonts.googleapis.com/css2?family=' + encodeURIComponent(fnm).replace(/%20/g, '+') + ':wght@400;600;700;800&display=swap';
+              document.head.appendChild(lk);
+            }
+            prTxt.style.fontFamily = prCfg.fontFamily;
+          }
           prTxtW.classList.remove('hidden');
         } else if (prTxtW) { prTxtW.classList.add('hidden'); }
         prSkip.classList.add('hidden');
@@ -786,7 +867,7 @@
           rem -= 1;
           const elapsed = dur - rem;
           if (prFill) prFill.style.width = Math.min(100, Math.round((elapsed / dur) * 100)) + '%';
-          if (skipAfter > 0 && elapsed >= skipAfter) prSkip.classList.remove('hidden');
+          if (elapsed >= skipAfter) { prSkip.textContent = '⏭ स्किप करा'; prSkip.classList.remove('hidden'); }
           if (rem <= 0) { finishPr(); return; }
           if (prLbl) prLbl.textContent = `जाहिरात • दर्शन ${rem} सेकंदात सुरू होईल...`;
         }, 1000);
@@ -942,7 +1023,20 @@
     }
 
       db.ref('siteConfig/master').on('value', (s) => applyMasterConfigGlobal(s.val()));
-      db.ref('siteConfig/ads').on('value', (s) => { const a = s.val() || {}; window.__preRollAdCfg = a.preRoll || null; });
+      db.ref('siteConfig/ads').on('value', (s) => {
+        const a = s.val() || {};
+        const nested = a.preRoll || {};
+        window.__preRollAdCfg = {
+          enabled: a.preRollEnabled !== undefined ? Boolean(a.preRollEnabled) : Boolean(nested.enabled),
+          image: a.preRollImage || nested.image || '',
+          videoUrl: a.preRollVideo || a.preRollVideoUrl || nested.videoUrl || '',
+          duration: Number(a.preRollDuration || nested.duration || 5),
+          skipAfter: Number(a.preRollSkipAfter !== undefined ? a.preRollSkipAfter : (nested.skipAfter || 0)),
+          link: a.preRollLink || nested.link || '',
+          text: a.preRollText || nested.text || '',
+          fontFamily: a.preRollFontFamily || nested.fontFamily || ''
+        };
+      });
       db.ref('siteConfig/player').on('value', (snap) => {
         const p = snap.val();
         if (!p || typeof p !== 'object') return;
@@ -978,6 +1072,7 @@
         if (p.fontFamily && vm) vm.style.setProperty('font-family', p.fontFamily, 'important');
         if (hdr && p.headerBgColor) hdr.style.background = p.headerBgColor;
         if (hdr && p.headerBorderColor) hdr.style.borderBottomColor = p.headerBorderColor;
+        if (mTitle && window.__rawModalTitle && p.titleSuffix !== undefined) { const sfx = (typeof p.titleSuffix === 'string' && p.titleSuffix.trim()) ? p.titleSuffix.trim() : '• Live Darshan'; mTitle.textContent = window.__rawModalTitle.includes(sfx) ? window.__rawModalTitle : (window.__rawModalTitle + ' ' + sfx); }
         if (mTitle && p.titleTextColor) mTitle.style.color = p.titleTextColor;
         if (mTitle && p.titleFontSize) mTitle.style.fontSize = p.titleFontSize + 'px';
         if (lbWrap && p.showLiveBadge !== undefined) lbWrap.classList.toggle('hidden', !p.showLiveBadge);
@@ -1145,6 +1240,7 @@
           }
         });
         db.ref('temples').on('value', (snap) => {
+          const _td = snap.val(); if (_td && typeof _td === 'object') { window.__allTemplesForDock = Object.keys(_td).map(k => Object.assign({ id: k }, _td[k])).sort((a,b) => (Number(a.order)||999)-(Number(b.order)||999)); }
           const data = snap.val();
           if (!data || typeof data !== 'object') return;
           const map = {};

@@ -127,15 +127,15 @@ const fbDb = firebase.database();
 
 function renderAdminShell(activeKey, pageTitle) {
   const navItems = [
-    { key: 'master', href: 'admin-master.html', icon: '🎛️', label: 'मास्टर सेटिंग' },
-  { key: 'temples', href: 'admin-temples.html', icon: '🛕', label: 'मंदिरे' },
+    { key: 'temples', href: 'admin-temples.html', icon: '🛕', label: 'मंदिरे' },
+    { key: 'feedmonitor', href: 'admin-feed-monitor.html', icon: '📡', label: 'ऑटो फीड मॉनिटर' },
     { key: 'templeinfo', href: 'admin-temple-info.html', icon: '📝', label: 'मंदिर माहिती' },
+    { key: 'ads', href: 'admin-ads.html', icon: '📢', label: 'जाहिराती' },
+    { key: 'visitors', href: 'admin-visitors-links.html', icon: '🔗', label: 'भाविक व लिंक्स' },
     { key: 'header', href: 'admin-header.html', icon: '🎨', label: 'हेडर व फुटर' },
     { key: 'player', href: 'admin-player.html', icon: '📺', label: 'व्हिडिओ प्लेयर' },
     { key: 'layout', href: 'admin-layout.html', icon: '🧩', label: 'लेआउट व बटणे' },
-    { key: 'ads', href: 'admin-ads.html', icon: '📢', label: 'जाहिराती' },
-    { key: 'visitors', href: 'admin-visitors-links.html', icon: '🔗', label: 'भाविक व लिंक्स' },
-    { key: 'feedmonitor', href: 'admin-feed-monitor.html', icon: '📡', label: 'ऑटो फीड मॉनिटर' }
+    { key: 'master', href: 'admin-master.html', icon: '🎛️', label: 'मास्टर सेटिंग' }
   ];
 
   const header = document.getElementById('adminTopHeader');

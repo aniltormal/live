@@ -36,6 +36,44 @@
     #appHeader .hdr-inner { min-height: 68px; padding: 10px 14px; }
     #headerEmblem { width: 46px !important; height: 46px !important; }
     #headerTitle { font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; font-weight: 700; font-size: clamp(26px, 6.8vw, 40px) !important; line-height: 1.25 !important; }
+  
+    .hv-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.64); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 9999; }
+    .hv-backdrop.open { display: flex; }
+    .hv-modal { width: 100%; max-width: 415px; background: #ffffff; border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.75); overflow: hidden; box-shadow: 0 32px 64px -16px rgba(15, 23, 42, 0.45); animation: hvPopIn 0.22s cubic-bezier(0.16, 1, 0.3, 1); }
+    @keyframes hvPopIn { from { opacity: 0; transform: translateY(12px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .hv-header { background: linear-gradient(135deg, #0f172a 0%, #05344e 100%); color: #ffffff; padding: 15px 18px; display: flex; align-items: center; justify-content: space-between; }
+    .hv-header-left { display: flex; align-items: center; gap: 10px; text-align: left; }
+    .hv-shield { width: 38px; height: 38px; border-radius: 12px; background: linear-gradient(135deg, rgba(251, 191, 36, 0.22), rgba(234, 88, 12, 0.22)); border: 1px solid rgba(251, 191, 36, 0.4); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .hv-header-title { font-size: 19px; font-weight: 700; line-height: 1.1; }
+    .hv-header-sub { font-size: 12.5px; color: #cbd5e1; font-weight: 600; }
+    .hv-close { background: #ef4444; color: #ffffff; border: none; border-radius: 999px; padding: 5px 12px; font-family: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer; }
+    .hv-body { padding: 18px 18px 20px; text-align: center; }
+    .hv-instruction { margin: 0 0 12px; font-size: 16.5px; color: #1e293b; font-weight: 600; }
+    .captcha-shell { position: relative; background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 16px; padding: 6px; margin-bottom: 12px; box-shadow: inset 0 1px 3px rgba(15, 23, 42, 0.06); }
+    #captchaCanvas { width: 100%; height: 76px; border-radius: 11px; display: block; }
+    .hv-refresh-btn { position: absolute; right: 12px; bottom: 12px; width: 36px; height: 36px; border: 1.5px solid rgba(255, 255, 255, 0.85); background: linear-gradient(135deg, #05344e 0%, #0f172a 100%); color: #ffffff; border-radius: 999px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.28); transition: transform 0.2s ease, background 0.2s ease; }
+    .hv-refresh-btn:hover { background: linear-gradient(135deg, #ea580c 0%, #f59e0b 100%); transform: scale(1.08); }
+    .hv-refresh-btn:active { transform: scale(0.94); }
+    .hv-refresh-btn svg { width: 17px; height: 17px; transition: transform 0.4s ease; }
+    .hv-refresh-btn:hover svg { transform: rotate(180deg); }
+    .case-notice { display: flex; align-items: center; justify-content: center; gap: 8px; background: #fff7ed; border: 1px solid #fed7aa; border-radius: 10px; padding: 6px 10px; margin-bottom: 12px; font-size: 13.5px; font-weight: 600; color: #9a3412; }
+    .aa-pill { display: inline-flex; align-items: center; justify-content: center; background: #ea580c; color: #ffffff; font-family: 'Courier New', monospace; font-size: 12px; font-weight: 700; padding: 2px 7px; border-radius: 6px; letter-spacing: 0.5px; flex-shrink: 0; }
+    .input-shell { position: relative; display: flex; align-items: center; background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 14px; padding: 0 12px; margin-bottom: 8px; transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease; }
+    .input-shell:focus-within { background: #ffffff; border-color: #05344e; box-shadow: 0 0 0 4px rgba(5, 52, 78, 0.10); }
+    .input-icon { color: #64748b; display: flex; align-items: center; flex-shrink: 0; }
+    .hv-code-input { flex: 1; min-width: 0; border: none; background: transparent; padding: 11px 8px; font-family: 'Courier New', monospace; font-size: 21px; font-weight: 700; letter-spacing: 6px; text-align: center; color: #0f172a; outline: none; }
+    .hv-code-input::placeholder { font-family: 'Khand', sans-serif; font-size: 16px; letter-spacing: 0.5px; color: #94a3b8; font-weight: 600; }
+    .char-counter { font-family: 'Courier New', monospace; font-size: 12.5px; font-weight: 700; color: #64748b; background: #e2e8f0; padding: 3px 8px; border-radius: 999px; flex-shrink: 0; }
+    .hv-error { color: #dc2626; font-size: 14px; font-weight: 700; min-height: 22px; margin-bottom: 10px; }
+    .hv-verify-btn { width: 100%; border: none; border-radius: 14px; padding: 12px 16px; background: linear-gradient(135deg, #ea580c 0%, #f59e0b 100%); color: #ffffff; font-family: inherit; font-size: 18px; font-weight: 700; cursor: pointer; box-shadow: 0 10px 22px -6px rgba(234, 88, 12, 0.48); transition: transform 0.15s ease, filter 0.15s ease; }
+    .hv-verify-btn:hover { filter: brightness(1.04); }
+    .hv-verify-btn:active { transform: scale(0.98); }
+    .verified-box { display: none; padding: 16px; background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border: 1.5px solid #86efac; border-radius: 16px; }
+    .verified-box.show { display: block; }
+    .verified-title { color: #15803d; font-size: 20px; font-weight: 700; margin-bottom: 12px; }
+    .hv-open-mail-btn { width: 100%; border: none; border-radius: 12px; padding: 12px 16px; font-family: inherit; font-size: 17px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #05344e 0%, #0f172a 100%); color: #ffffff; box-shadow: 0 8px 18px -6px rgba(5, 52, 78, 0.45); }
+    .hv-open-mail-btn:hover { filter: brightness(1.08); }
+
   </style>
   <link rel="manifest" href="manifest.json" />
 </head>
@@ -149,10 +187,10 @@
 
     <section class="bg-white rounded-2xl border border-sky-200 shadow-sm p-5 sm:p-6 space-y-3">
       <h3 class="font-khand text-xl font-bold text-[#05344E] border-b border-slate-200 pb-2">💬 थेट संपर्क माध्यमे</h3>
-      <a href="mailto:contact.livedarshan@gmail.com?subject=%E0%A4%A6%E0%A4%B0%E0%A5%8D%E0%A4%B6%E0%A4%A8%20%E0%A4%B8%E0%A5%87%E0%A4%A4%E0%A5%82%20%E0%A4%B2%E0%A4%BE%E0%A4%88%E0%A4%B5%E0%A5%8D%E0%A4%B9%20-%20%E0%A4%9C%E0%A4%BE%E0%A4%B9%E0%A4%BF%E0%A4%B0%E0%A4%BE%E0%A4%A4%20%E0%A4%9A%E0%A5%8C%E0%A4%95%E0%A4%B6%E0%A5%80" class="flex items-center justify-center gap-2.5 px-5 py-3.5 rounded-2xl bg-[#05344E] hover:bg-[#084160] text-white font-bold shadow transition">
-        <span>✉️</span>
-        <span>ईमेल करा: contact.livedarshan@gmail.com</span>
-      </a>
+      <button type="button" onclick="openVerifyModal()" class="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-bold px-5 py-2.5 text-sm shadow transition cursor-pointer">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <span>ईमेल करा</span>
+        </button>
     </section>
   </main>
 
@@ -372,5 +410,225 @@
       });
     }
   </script>
+
+  <div id="hvBackdrop" class="hv-backdrop" role="dialog" aria-modal="true" aria-labelledby="hvTitle">
+    <div class="hv-modal">
+      <div class="hv-header">
+        <div class="hv-header-left">
+          <div class="hv-shield">🛡️</div>
+          <div>
+            <div id="hvTitle" class="hv-header-title">मानवी पडताळणी</div>
+            <div class="hv-header-sub">स्पॅम संरक्षण • दर्शन सेतू लाईव्ह</div>
+          </div>
+        </div>
+        <button type="button" class="hv-close" onclick="closeVerifyModal()">✕ बंद करा</button>
+      </div>
+      <div class="hv-body">
+        <div id="challengeSection">
+          <p class="hv-instruction">ईमेल उघडण्यासाठी चित्रातील ५-अक्षरी कोड खाली प्रविष्ट करा:</p>
+          <div class="captcha-shell">
+            <canvas id="captchaCanvas" width="330" height="76"></canvas>
+            <button type="button" class="hv-refresh-btn" onclick="generateCaptcha()" title="नवीन कोड घ्या" aria-label="नवीन कोड घ्या">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12a9 9 0 1 1-2.64-6.36"/>
+                <polyline points="21 3 21 9 15 9"/>
+              </svg>
+            </button>
+          </div>
+          <div class="case-notice">
+            <span class="aa-pill">Aa</span>
+            <span><strong>Case-Sensitive:</strong> मोठी (A-Z) व छोटी (a-z) अक्षरे तंतोतंत तशीच टाका</span>
+          </div>
+          <div class="input-shell">
+            <span class="input-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </span>
+            <input id="captchaInput" class="hv-code-input" type="text" inputmode="text" maxlength="5" placeholder="येथे कोड टाका" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+            <span id="charCounter" class="char-counter">0/5</span>
+          </div>
+          <div id="hvError" class="hv-error"></div>
+          <button type="button" class="hv-verify-btn" onclick="verifyCaptcha()">✓ पडताळणी पूर्ण करा</button>
+        </div>
+        <div id="verifiedSection" class="verified-box">
+          <div class="verified-title">✓ पडताळणी पूर्ण झाली!</div>
+          <a id="openMailLink" href="#" class="hv-open-mail-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <span>ईमेल करा</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const _E = atob('Y29udGFjdC5saXZlZGFyc2hhbkBnbWFpbC5jb20=');
+      const _SUBJ = 'दर्शन सेतू लाईव्ह — जाहिरात चौकशी';
+      const UPPER = 'ABDEFGHJKMNPQRTUY';
+      const LOWER = 'abdefghjkmnpqrtuy';
+      const DIGITS = '23456789';
+      const ALL_CHARS = UPPER + LOWER + DIGITS;
+      let currentCode = '';
+
+      function updateCounter() {
+        const inp = document.getElementById('captchaInput');
+        const cnt = document.getElementById('charCounter');
+        if (inp && cnt) cnt.textContent = inp.value.length + '/5';
+      }
+
+      window.generateCaptcha = function() {
+        const picks = [
+          UPPER.charAt(Math.floor(Math.random() * UPPER.length)),
+          LOWER.charAt(Math.floor(Math.random() * LOWER.length)),
+          DIGITS.charAt(Math.floor(Math.random() * DIGITS.length)),
+          ALL_CHARS.charAt(Math.floor(Math.random() * ALL_CHARS.length)),
+          ALL_CHARS.charAt(Math.floor(Math.random() * ALL_CHARS.length))
+        ];
+        for (let i = picks.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [picks[i], picks[j]] = [picks[j], picks[i]];
+        }
+        currentCode = picks.join('');
+
+        const canvas = document.getElementById('captchaCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        grad.addColorStop(0, '#e2e8f0');
+        grad.addColorStop(0.5, '#e5e7eb');
+        grad.addColorStop(1, '#cbd5e1');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.strokeStyle = 'rgba(51, 65, 85, 0.14)';
+        ctx.lineWidth = 1;
+        for (let gx = -canvas.height; gx < canvas.width + canvas.height; gx += 14) {
+          ctx.beginPath();
+          ctx.moveTo(gx, 0);
+          ctx.lineTo(gx + canvas.height * 0.6, canvas.height);
+          ctx.stroke();
+        }
+
+        const lineColors = ['#475569', '#64748b', '#334155', '#0f172a', '#94a3b8'];
+        for (let i = 0; i < 10; i++) {
+          ctx.strokeStyle = lineColors[i % lineColors.length];
+          ctx.globalAlpha = 0.36;
+          ctx.lineWidth = 1.2 + Math.random() * 1.2;
+          ctx.beginPath();
+          ctx.moveTo(0, Math.random() * canvas.height);
+          ctx.bezierCurveTo(
+            canvas.width * 0.3, Math.random() * canvas.height,
+            canvas.width * 0.7, Math.random() * canvas.height,
+            canvas.width, Math.random() * canvas.height
+          );
+          ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+
+        for (let i = 0; i < 100; i++) {
+          ctx.fillStyle = lineColors[i % lineColors.length];
+          ctx.globalAlpha = 0.30 + Math.random() * 0.25;
+          ctx.beginPath();
+          ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, 0.8 + Math.random() * 1.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+
+        const charColors = ['#1e293b', '#334155', '#0f172a', '#374151', '#1e3a8a'];
+        const fonts = ['Georgia, serif', 'Courier New, monospace', 'Trebuchet MS, sans-serif', 'Times New Roman, serif'];
+        for (let i = 0; i < 5; i++) {
+          ctx.save();
+          const x = 34 + i * 58 + (Math.random() * 6 - 3);
+          const y = 39 + (Math.random() * 12 - 6);
+          const angle = (Math.random() * 0.86) - 0.43;
+          const skewX = (Math.random() * 0.42) - 0.21;
+          const skewY = (Math.random() * 0.24) - 0.12;
+          const fSize = Math.floor(28 + Math.random() * 6);
+          const fontFam = fonts[Math.floor(Math.random() * fonts.length)];
+
+          ctx.translate(x, y);
+          ctx.rotate(angle);
+          ctx.transform(1, skewY, skewX, 1, 0, 0);
+          ctx.font = 'bold ' + fSize + 'px ' + fontFam;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+
+          ctx.strokeStyle = 'rgba(241, 245, 249, 0.55)';
+          ctx.lineWidth = 1.8;
+          ctx.strokeText(currentCode[i], 0, 0);
+
+          ctx.fillStyle = charColors[Math.floor(Math.random() * charColors.length)];
+          ctx.fillText(currentCode[i], 0, 0);
+          ctx.restore();
+        }
+
+        for (let i = 0; i < 5; i++) {
+          ctx.strokeStyle = lineColors[i % lineColors.length];
+          ctx.globalAlpha = 0.42;
+          ctx.lineWidth = 1.2 + Math.random() * 1.1;
+          ctx.beginPath();
+          ctx.moveTo(4, Math.random() * canvas.height);
+          ctx.bezierCurveTo(
+            canvas.width * 0.35, Math.random() * canvas.height,
+            canvas.width * 0.65, Math.random() * canvas.height,
+            canvas.width - 4, Math.random() * canvas.height
+          );
+          ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+
+        const inp = document.getElementById('captchaInput');
+        if (inp) inp.value = '';
+        updateCounter();
+        const err = document.getElementById('hvError');
+        if (err) err.textContent = '';
+      };
+
+      window.openVerifyModal = function() {
+        document.getElementById('challengeSection').style.display = 'block';
+        document.getElementById('verifiedSection').classList.remove('show');
+        document.getElementById('hvBackdrop').classList.add('open');
+        window.generateCaptcha();
+        setTimeout(() => {
+          const inp = document.getElementById('captchaInput');
+          if (inp) inp.focus();
+        }, 100);
+      };
+
+      window.closeVerifyModal = function() {
+        document.getElementById('hvBackdrop').classList.remove('open');
+      };
+
+      window.verifyCaptcha = function() {
+        const inp = document.getElementById('captchaInput');
+        const val = inp ? inp.value.trim() : '';
+        if (!val || val !== currentCode) {
+          window.generateCaptcha();
+          document.getElementById('hvError').textContent = '❌ कोड जुळला नाही (Upper/Lower case तपासा), नवीन कोड टाका.';
+          if (inp) inp.focus();
+          return;
+        }
+        document.getElementById('challengeSection').style.display = 'none';
+        document.getElementById('openMailLink').href = 'mailto:' + _E + '?subject=' + encodeURIComponent(_SUBJ);
+        document.getElementById('verifiedSection').classList.add('show');
+      };
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const inp = document.getElementById('captchaInput');
+        if (inp) {
+          inp.addEventListener('input', updateCounter);
+          inp.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') window.verifyCaptcha();
+          });
+        }
+      });
+    })();
+  </script>
+
 </body>
 </html>

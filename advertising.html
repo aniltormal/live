@@ -30,7 +30,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
   <style>
-    body { font-family: 'Noto Sans Devanagari', sans-serif; }
+    body, body * { font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; font-weight: 700; }
     .font-khand { font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; }
     #headerTitle { font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; font-weight: 700; }
     @media (min-width: 1024px) { html { font-size: 18px; } }
@@ -76,7 +76,8 @@
         </div>
         <div id="mobileMenuDynamicLinks" class="space-y-1.5">
           <a href="panchang.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>🗓️</span><span>आजचे पंचांग व सणवार</span></a>
-          <a href="contact.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📢</span><span>जाहिरात व संपर्क</span></a>
+          <a href="advertising.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📢</span><span>जाहिरात द्या</span></a>
+          <a href="contact.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📞</span><span>संपर्क करा</span></a>
           <a href="about.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>ℹ️</span><span>आमच्याबद्दल</span></a>
           <a href="legal-links.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>🔗</span><span>कायदेशीर समस्या व पोर्टल दुवे</span></a>
           <a href="disclaimer.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📄</span><span>नियम व अस्वीकरण</span></a>
@@ -88,26 +89,67 @@
       </div>
     </div>
   </div>
-
-
   <main class="flex-1 max-w-7xl xl:max-w-[1400px] w-full mx-auto p-4 sm:p-6 space-y-5">
-        <section class="bg-white rounded-3xl border border-slate-200 shadow-md p-5 sm:p-7 space-y-4">
-      <h2 class="font-khand text-2xl sm:text-3xl font-bold text-[#05344E]">📢 जाहिरात व संपर्क</h2>
-      <p class="text-sm sm:text-base text-slate-700 leading-relaxed">
-        <strong>दर्शन सेतू लाईव्ह</strong> वर तुमच्या व्यवसायाची, दुकानाची किंवा धार्मिक उपक्रमाची जाहिरात प्रसिद्ध करण्यासाठी तसेच तांत्रिक मदतीसाठी खालील माध्यमातून थेट संपर्क साधा.
+    <section class="bg-gradient-to-r from-[#031926] via-[#05344E] to-[#0a4d70] text-white rounded-3xl p-5 sm:p-6 shadow-md border border-amber-400/30 space-y-2">
+      <h2 class="font-khand text-2xl sm:text-3xl font-bold text-amber-200">📢 दर्शन सेतू लाईव्ह वर जाहिरात द्या</h2>
+      <p class="text-sm sm:text-base text-slate-200 leading-relaxed">
+        दररोज हजारो भाविकांपर्यंत तुमचा व्यवसाय, दुकान, हॉटेल, ट्रॅव्हल्स, प्रसाद सेवा किंवा धार्मिक उपक्रम पोहोचवण्यासाठी <strong>दर्शन सेतू लाईव्ह</strong> वर प्रायोजक जाहिरात प्रसिद्ध करा.
       </p>
-      <div class="pt-2">
-        <a href="mailto:contact.livedarshan@gmail.com?subject=%E0%A4%B2%E0%A4%BE%E0%A4%88%E0%A4%B5%E0%A5%8D%E0%A4%B9%20%E0%A4%A6%E0%A4%B0%E0%A5%8D%E0%A4%B6%E0%A4%A8%20%E0%A4%AA%E0%A5%8B%E0%A4%B0%E0%A5%8D%E0%A4%9F%E0%A4%B2%20-%20%E0%A4%9C%E0%A4%BE%E0%A4%B9%E0%A4%BF%E0%A4%B0%E0%A4%BE%E0%A4%A4%20%E0%A4%B5%20%E0%A4%B8%E0%A4%82%E0%A4%AA%E0%A4%B0%E0%A5%8D%E0%A4%95" class="flex items-center justify-center gap-2.5 px-5 py-4 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white font-bold shadow-md transition">
-          <span class="text-lg">✉️</span>
-          <span>ईमेल करा: contact.livedarshan@gmail.com</span>
-        </a>
+    </section>
+
+    <section class="space-y-4">
+      <!-- Slot 1: Sliding Banner (75% left text, 25% right fit-to-box live preview) -->
+      <div class="bg-white rounded-2xl border border-sky-200 shadow-sm p-4 sm:p-5 flex flex-row items-stretch gap-3 sm:gap-5">
+        <div class="w-3/4 min-w-0 space-y-1.5 flex flex-col justify-center">
+          <div class="self-start inline-flex px-2.5 py-0.5 rounded-full bg-[#05344E] text-white text-xs font-bold">स्लॉट १</div>
+          <h3 class="font-khand text-lg sm:text-xl font-bold text-[#05344E]">🖼️ स्लायडिंग बॅनर जाहिरात</h3>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">मुख्य पेज व मंदिर माहिती पेजच्या शीर्षस्थानी सतत फिरणाऱ्या स्लायडरमध्ये तुमचा फोटो, मजकूर व थेट वेबसाईट/WhatsApp लिंक.</p>
+        </div>
+        <div id="adPvBannerBox" class="w-1/4 shrink-0 rounded-xl border border-sky-200 overflow-hidden relative bg-gradient-to-br from-[#05344E] via-[#0a4d70] to-amber-600 min-h-[90px] sm:min-h-[112px] flex flex-col justify-between p-2 text-white">
+          <span class="self-start px-1.5 py-0.5 rounded bg-black/55 text-[8px] font-bold leading-none">प्रायोजक</span>
+          <div class="text-[10px] font-extrabold leading-tight truncate">बॅनर प्रिव्ह्यू</div>
+        </div>
       </div>
-      <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 space-y-1.5 text-sm text-amber-950">
-        <p class="font-bold">उपलब्ध जाहिरात प्रकार:</p>
-        <p>• मुख्य पेज व माहिती पेजवरील स्लायडिंग बॅनर जाहिरात</p>
-        <p>• दर्शन सुरू होण्यापूर्वीची प्री-रोल (Pre-Roll) जाहिरात</p>
-        <p>• पोर्टल उघडतानाचा स्प्लॅश पॉपअप बॅनर</p>
+
+      <!-- Slot 2: Pre-Roll Video Ad (75% left text, 25% right fit-to-box live preview) -->
+      <div class="bg-white rounded-2xl border border-emerald-200 shadow-sm p-4 sm:p-5 flex flex-row items-stretch gap-3 sm:gap-5">
+        <div class="w-3/4 min-w-0 space-y-1.5 flex flex-col justify-center">
+          <div class="self-start inline-flex px-2.5 py-0.5 rounded-full bg-emerald-700 text-white text-xs font-bold">स्लॉट २</div>
+          <h3 class="font-khand text-lg sm:text-xl font-bold text-[#05344E]">🎬 प्री-रोल (Pre-Roll) जाहिरात</h3>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">प्रत्येक भाविक थेट दर्शन प्लेयर उघडल्यावर व्हिडिओ सुरू होण्यापूर्वी ५ सेकंदांची लक्ष वेधून घेणारी जाहिरात.</p>
+        </div>
+        <div id="adPvPreRollBox" class="w-1/4 shrink-0 rounded-xl border border-emerald-200 overflow-hidden relative bg-gradient-to-br from-emerald-900 to-neutral-950 min-h-[90px] sm:min-h-[112px] flex flex-col justify-between p-2 text-white">
+          <div class="flex items-center justify-between gap-1 text-[8px]">
+            <span class="px-1 py-0.5 rounded bg-amber-400 text-black font-extrabold leading-none">जाहिरात</span>
+            <span class="px-1 py-0.5 rounded bg-white/20 text-white font-bold leading-none">Skip</span>
+          </div>
+          <div class="text-[10px] font-bold text-amber-200 text-center truncate">▶ प्री-रोल</div>
+        </div>
       </div>
+
+      <!-- Slot 3: Splash Popup Ad (75% left text, 25% right fit-to-box live preview) -->
+      <div class="bg-white rounded-2xl border border-indigo-200 shadow-sm p-4 sm:p-5 flex flex-row items-stretch gap-3 sm:gap-5">
+        <div class="w-3/4 min-w-0 space-y-1.5 flex flex-col justify-center">
+          <div class="self-start inline-flex px-2.5 py-0.5 rounded-full bg-indigo-700 text-white text-xs font-bold">स्लॉट ३</div>
+          <h3 class="font-khand text-lg sm:text-xl font-bold text-[#05344E]">✨ स्प्लॅश पॉपअप जाहिरात</h3>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">वेबसाईट किंवा अ‍ॅप उघडताच भाविकांना सर्वप्रथम दिसणारा विशेष प्रायोजक पॉपअप बॅनर.</p>
+        </div>
+        <div id="adPvSplashBox" class="w-1/4 shrink-0 rounded-xl border border-indigo-200 overflow-hidden relative bg-gradient-to-br from-indigo-700 to-[#05344E] min-h-[90px] sm:min-h-[112px] flex flex-col justify-between p-2 text-white">
+          <div class="flex items-center justify-between">
+            <span class="px-1 py-0.5 rounded bg-white/20 text-white text-[8px] font-bold leading-none">पॉपअप</span>
+            <span class="text-[9px] font-bold text-white/90 leading-none">✕</span>
+          </div>
+          <div class="text-[10px] font-bold text-center truncate">✨ स्प्लॅश</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-white rounded-2xl border border-sky-200 shadow-sm p-5 sm:p-6 space-y-3">
+      <h3 class="font-khand text-xl font-bold text-[#05344E] border-b border-slate-200 pb-2">💬 थेट संपर्क माध्यमे</h3>
+      <a href="mailto:contact.livedarshan@gmail.com?subject=%E0%A4%A6%E0%A4%B0%E0%A5%8D%E0%A4%B6%E0%A4%A8%20%E0%A4%B8%E0%A5%87%E0%A4%A4%E0%A5%82%20%E0%A4%B2%E0%A4%BE%E0%A4%88%E0%A4%B5%E0%A5%8D%E0%A4%B9%20-%20%E0%A4%9C%E0%A4%BE%E0%A4%B9%E0%A4%BF%E0%A4%B0%E0%A4%BE%E0%A4%A4%20%E0%A4%9A%E0%A5%8C%E0%A4%95%E0%A4%B6%E0%A5%80" class="flex items-center justify-center gap-2.5 px-5 py-3.5 rounded-2xl bg-[#05344E] hover:bg-[#084160] text-white font-bold shadow transition">
+        <span>✉️</span>
+        <span>ईमेल करा: contact.livedarshan@gmail.com</span>
+      </a>
     </section>
   </main>
 
@@ -176,6 +218,42 @@
           t.style.color = h.textColor;
         }
         if (l && h.logoImage) l.src = h.logoImage;
+      });
+            db.ref('siteConfig/ads').on('value', (snap) => {
+        const ads = snap.val() || {};
+        const escAd = (s) => String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+        const bBox = document.getElementById('adPvBannerBox');
+        const slides = Array.isArray(ads.bannerSlides) ? ads.bannerSlides.filter(x => x && (x.image || x.text)) : [];
+        if (bBox && slides.length) {
+          const s = slides[0];
+          bBox.className = 'w-1/4 shrink-0 rounded-xl border border-sky-200 overflow-hidden relative bg-[#05344E] min-h-[90px] sm:min-h-[112px]';
+          bBox.innerHTML = `
+            ${s.image ? `<img src="${escAd(s.image)}" alt="बॅनर जाहिरात" class="absolute inset-0 w-full h-full object-contain bg-[#05344E]" />` : ''}
+            <span class="absolute top-1 left-1 px-1 py-0.5 rounded bg-black/65 text-amber-200 text-[7px] font-bold leading-none z-10">प्रायोजक</span>
+            ${s.text ? `<div class="absolute inset-x-0 bottom-0 bg-black/65 text-white text-[8px] font-bold px-1 py-0.5 truncate text-center z-10">${escAd(s.text)}</div>` : ''}`;
+        }
+
+        const pBox = document.getElementById('adPvPreRollBox');
+        const pr = ads.preRoll || {};
+        if (pBox && (pr.image || pr.videoUrl || pr.text)) {
+          pBox.className = 'w-1/4 shrink-0 rounded-xl border border-emerald-200 overflow-hidden relative bg-black min-h-[90px] sm:min-h-[112px]';
+          pBox.innerHTML = `
+            ${pr.image ? `<img src="${escAd(pr.image)}" alt="प्री-रोल जाहिरात" class="absolute inset-0 w-full h-full object-contain bg-black" />` : (pr.videoUrl ? `<video src="${escAd(pr.videoUrl)}" muted playsinline class="absolute inset-0 w-full h-full object-contain bg-black"></video>` : '')}
+            <span class="absolute top-1 left-1 px-1 py-0.5 rounded bg-amber-400 text-black text-[7px] font-extrabold leading-none z-10">जाहिरात</span>
+            <span class="absolute top-1 right-1 px-1 py-0.5 rounded bg-black/70 text-white text-[7px] font-bold leading-none z-10">Skip</span>
+            ${pr.text ? `<div class="absolute inset-x-0 bottom-0 bg-black/65 text-amber-200 text-[8px] font-bold px-1 py-0.5 truncate text-center z-10">${escAd(pr.text)}</div>` : ''}`;
+        }
+
+        const sBox = document.getElementById('adPvSplashBox');
+        const sp = ads.splash || {};
+        if (sBox && (sp.image || sp.videoUrl || sp.text)) {
+          sBox.className = 'w-1/4 shrink-0 rounded-xl border border-indigo-200 overflow-hidden relative bg-neutral-900 min-h-[90px] sm:min-h-[112px]';
+          sBox.innerHTML = `
+            ${sp.image ? `<img src="${escAd(sp.image)}" alt="स्प्लॅश जाहिरात" class="absolute inset-0 w-full h-full object-contain bg-neutral-900" />` : (sp.videoUrl ? `<video src="${escAd(sp.videoUrl)}" muted playsinline class="absolute inset-0 w-full h-full object-contain bg-neutral-900"></video>` : '')}
+            <span class="absolute top-1 right-1 w-3.5 h-3.5 rounded-full bg-black/75 text-white text-[8px] font-bold flex items-center justify-center leading-none z-10">✕</span>
+            ${sp.text ? `<div class="absolute inset-x-0 bottom-0 bg-black/65 text-white text-[8px] font-bold px-1 py-0.5 truncate text-center z-10">${escAd(sp.text)}</div>` : ''}`;
+        }
       });
       db.ref('siteConfig/master').on('value', (snap) => {
         const m = snap.val();

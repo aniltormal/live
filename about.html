@@ -24,15 +24,18 @@
   <meta name="twitter:image" content="https://darshansetu.live/og-logo.jpg" />
   <!-- End SEO Meta Tags -->
 
+  <link rel="manifest" href="manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Khand:wght@500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
   <style>
-    body { font-family: 'Noto Sans Devanagari', sans-serif; }
+    body, body * { font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; font-weight: 700; }
     .font-khand { font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; }
     #headerTitle { font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; font-weight: 700; }
+    html { font-size: 17.5px; }
+    @media (min-width: 1024px) { html { font-size: 19px; } }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
@@ -44,24 +47,108 @@
           <h1 id="headerTitle" class="font-khand bg-gradient-to-r from-white via-amber-200 to-amber-400 bg-clip-text text-transparent leading-[1.3] pt-0.5 tracking-[0.04em] truncate" style="font-size: clamp(24px, 6.4vw, 38px);">दर्शन सेतू लाईव्ह</h1>
         </div>
       </a>
-      <a href="index.html" aria-label="मुख्य पेज" title="मुख्य पेज" class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-amber-500 hover:bg-amber-600 text-white shadow-md border border-amber-300/60 flex items-center justify-center transition hover:scale-105 shrink-0">
+      <div class="flex items-center gap-2 shrink-0">
+        <a href="index.html" aria-label="मुख्य पेज" title="मुख्य पेज" class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-amber-500 hover:bg-amber-600 text-white shadow-md border border-amber-300/60 flex items-center justify-center transition hover:scale-105 shrink-0">
         <svg class="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M3 10.5L12 3l9 7.5"/>
           <path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/>
         </svg>
       </a>
+        <button id="menuOpenBtn" type="button" onclick="window.openPortalMenu && window.openPortalMenu()" aria-label="मेनू उघडा" class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white/10 hover:bg-white/20 border border-amber-300/40 text-amber-200 flex items-center justify-center shadow-sm transition cursor-pointer shrink-0">
+          <svg class="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
     </div>
   </header>
 
-  <main class="flex-1 max-w-4xl w-full mx-auto p-4 sm:p-6 space-y-5">
-        <section class="bg-white rounded-3xl border border-slate-200 shadow-md p-5 sm:p-7 space-y-4">
-      <h2 class="font-khand text-2xl sm:text-3xl font-bold text-[#05344E]">🛕 आमच्याबद्दल (About Us)</h2>
-      <p class="text-sm sm:text-base text-slate-700 leading-relaxed">
-        <strong>दर्शन सेतू लाईव्ह</strong> हे महाराष्ट्रातील आणि देशभरातील लाखो भाविकांना घरबसल्या प्रमुख देवस्थानांचे थेट दर्शन, आरती वेळापत्रक, इतिहास आणि प्रवास माहिती एकाच ठिकाणी उपलब्ध करून देणारे भक्तिमय डिजिटल व्यासपीठ आहे.
+  <!-- ☰ Hamburger Slide-Out Menu Drawer -->
+  <div id="mobileMenuDrawer" class="hidden fixed inset-0 z-50 bg-black/55 opacity-0 transition-opacity duration-300 flex justify-end" role="dialog" aria-modal="true">
+    <div id="mobileMenuPanel" class="w-60 sm:w-64 max-w-[70vw] h-full bg-white text-slate-900 shadow-2xl flex flex-col overflow-hidden transition-all duration-300 ease-out translate-x-full">
+      <div class="bg-gradient-to-r from-[#031926] via-[#05344E] to-[#084160] text-white px-4 py-3.5 border-b-2 border-amber-400 flex items-center justify-between">
+        <div class="font-khand text-lg font-bold tracking-wide">🛕 पोर्टल मेनू</div>
+        <button id="menuCloseBtn" type="button" onclick="window.closePortalMenu && window.closePortalMenu()" aria-label="मेनू बंद करा" class="w-8 h-8 rounded-lg bg-white/15 hover:bg-white/25 text-white flex items-center justify-center font-bold cursor-pointer">✕</button>
+      </div>
+      <nav id="mobileMenuNav" class="flex-1 overflow-y-auto p-3 space-y-1.5 text-sm font-bold">
+        <div class="rounded-xl border border-slate-200 overflow-hidden">
+          <button id="menuTempleInfoToggle" type="button" onclick="window.togglePortalMenuInfo && window.togglePortalMenuInfo()" class="w-full flex items-center justify-between px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100 text-[#05344E] cursor-pointer">
+            <span class="flex items-center gap-3"><span>🕰️</span><span>आरती वेळापत्रक व माहिती</span></span>
+            <span id="menuTempleInfoArrow" class="text-xs">▼</span>
+          </button>
+          <div id="menuTempleInfoList" class="hidden bg-white px-2 py-1.5 space-y-1 border-t border-slate-100"></div>
+        </div>
+        <div id="mobileMenuDynamicLinks" class="space-y-1.5">
+          <a href="panchang.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>🗓️</span><span>आजचे पंचांग व सणवार</span></a>
+          <a href="advertising.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📢</span><span>जाहिरात द्या</span></a>
+          <a href="contact.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📞</span><span>संपर्क करा</span></a>
+          <a href="about.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>ℹ️</span><span>आमच्याबद्दल</span></a>
+          <a href="legal-links.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>🔗</span><span>कायदेशीर समस्या व पोर्टल दुवे</span></a>
+          <a href="disclaimer.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📄</span><span>नियम व अस्वीकरण</span></a>
+        </div>
+      </nav>
+      <div id="mobileMenuFooter" class="px-4 py-3 bg-gradient-to-r from-[#031926] via-[#05344E] to-[#031926] border-t-2 border-amber-400/80 text-center space-y-0.5">
+        <div class="text-xs font-extrabold tracking-wide text-amber-300">दर्शन सेतू . लाईव्ह<sup class="text-[9px] text-amber-200 ml-0.5">™</sup></div>
+        <div class="text-[10px] font-semibold text-slate-300">© २०२६ DARSHAN SETU® • सर्व हक्क राखीव</div>
+      </div>
+    </div>
+  </div>
+  <main class="flex-1 max-w-7xl xl:max-w-[1400px] w-full mx-auto p-4 sm:p-6 space-y-5">
+    <section class="bg-gradient-to-r from-[#031926] via-[#05344E] to-[#0a4d70] text-white rounded-3xl p-5 sm:p-7 shadow-md border border-amber-400/30 space-y-2.5">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="px-2.5 py-0.5 rounded-full bg-[#EA580C] text-white text-xs font-bold">🚩 दर्शनाचा डिजिटल सेतू</span>
+        <span class="text-xs font-bold text-amber-200">darshansetu.live</span>
+      </div>
+      <h2 class="font-khand text-2xl sm:text-3xl font-bold text-amber-200">🛕 आमच्याबद्दल (About Us)</h2>
+      <p class="text-sm sm:text-base text-slate-100 leading-relaxed">
+        <strong>दर्शन सेतू लाईव्ह</strong> हे महाराष्ट्रातील आणि देशभरातील लाखो भाविकांना घरबसल्या प्रमुख देवस्थानांचे थेट दर्शन, आरती वेळापत्रक, इतिहास, दैनिक मराठी पंचांग आणि प्रवास माहिती एकाच ठिकाणी उपलब्ध करून देणारे भक्तिमय डिजिटल व्यासपीठ आहे.
       </p>
+    </section>
+
+    <section class="bg-white rounded-2xl border border-sky-200 shadow-sm p-5 sm:p-6 space-y-2.5">
+      <h3 class="font-khand text-xl font-bold text-[#05344E] border-b border-slate-200 pb-2">🙏 आमचा सेवाभावी उद्देश</h3>
       <p class="text-sm sm:text-base text-slate-700 leading-relaxed">
-        पंढरपूर, कोल्हापूर, तुळजापूर, शिर्डी, पुणे दगडूशेठ गणपती आणि मुंबई सिद्धिविनायक यांसारख्या जागृत देवस्थानांचे अधिकृत लाईव्ह दर्शन भाविकांना विनामूल्य पाहता येते.
+        ज्येष्ठ नागरिक, दिव्यांग बांधव, तसेच नोकरी-व्यवसायानिमित्त घरापासून दूर किंवा परदेशात राहणारे अनेक भाविक प्रत्यक्ष मंदिरात दर्शनासाठी जाऊ शकत नाहीत. अशा सर्व भाविकांना <strong>श्री विठ्ठल-रुक्मिणी (पंढरपूर), श्री महालक्ष्मी (कोल्हापूर), श्री तुळजाभवानी (तुळजापूर), श्री साईबाबा (शिर्डी), श्रीमंत दगडूशेठ हलवाई गणपती (पुणे) आणि श्री सिद्धिविनायक (मुंबई)</strong> यांसारख्या जागृत देवस्थानांचे अधिकृत लाईव्ह दर्शन <strong>पूर्णपणे विनामूल्य</strong> व कोणत्याही अडथळ्याविना घेता यावे, हा या उपक्रमाचा शुद्ध हेतू आहे.
       </p>
+    </section>
+
+    <section class="space-y-3">
+      <h3 class="font-khand text-xl font-bold text-[#05344E] px-1">✨ पोर्टलवरील प्रमुख सुविधा</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+        <a href="index.html" class="group relative block bg-white rounded-2xl border border-sky-200 hover:border-[#05344E] shadow-sm hover:shadow-md p-4 space-y-2 transition">
+          <div class="flex items-start justify-between gap-2">
+            <span class="text-2xl">📺</span>
+            <span class="inline-flex items-center gap-1 px-3.5 py-1 rounded-full bg-gradient-to-r from-[#05344E] to-[#0a4d70] text-white text-xs sm:text-sm font-bold shadow-md group-hover:scale-105 transition">पहा <span aria-hidden="true">↗</span></span>
+          </div>
+          <h4 class="font-khand text-lg font-bold text-[#05344E]">२४×७ थेट दर्शन</h4>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">एकाच क्लिकवर सर्व प्रमुख मंदिरांचे अधिकृत लाईव्ह प्रक्षेपण त्वरित पाहण्याची सोय.</p>
+        </a>
+
+        <a href="temple-info.html?id=pandharpur" class="group relative block bg-white rounded-2xl border border-emerald-200 hover:border-emerald-600 shadow-sm hover:shadow-md p-4 space-y-2 transition">
+          <div class="flex items-start justify-between gap-2">
+            <span class="text-2xl">🕰️</span>
+            <span class="inline-flex items-center gap-1 px-3.5 py-1 rounded-full bg-gradient-to-r from-emerald-600 to-teal-700 text-white text-xs sm:text-sm font-bold shadow-md group-hover:scale-105 transition">वेळापत्रक <span aria-hidden="true">↗</span></span>
+          </div>
+          <h4 class="font-khand text-lg font-bold text-[#05344E]">आरती वेळापत्रक व इतिहास</h4>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">प्रत्येक मंदिराची काकड आरती, महापूजा, शेजारती वेळ तसेच प्रवास व पत्ता माहिती.</p>
+        </a>
+
+        <a href="panchang.html" class="group relative block bg-white rounded-2xl border border-amber-300 border-l-4 border-l-[#EA580C] hover:border-[#EA580C] shadow-sm hover:shadow-md p-4 space-y-2 transition">
+          <div class="flex items-start justify-between gap-2">
+            <span class="text-2xl">🗓️</span>
+            <span class="inline-flex items-center gap-1 px-3.5 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs sm:text-sm font-bold shadow-md group-hover:scale-105 transition">पंचांग पहा <span aria-hidden="true">↗</span></span>
+          </div>
+          <h4 class="font-khand text-lg font-bold text-[#05344E]">दैनिक पंचांग व सणवार</h4>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">दररोजची तिथी, नक्षत्र, सूर्योदय-सूर्यास्त, राहुकाळ आणि एकादशी व प्रमुख उत्सव यादी.</p>
+        </a>
+
+        <button type="button" onclick="window.openAboutInstallModal && window.openAboutInstallModal()" class="group relative block w-full text-left bg-white rounded-2xl border border-indigo-200 hover:border-indigo-600 shadow-sm hover:shadow-md p-4 space-y-2 transition cursor-pointer">
+          <div class="flex items-start justify-between gap-2">
+            <span class="text-2xl">📱</span>
+            <span class="inline-flex items-center gap-1 px-3.5 py-1 rounded-full bg-gradient-to-r from-indigo-600 to-purple-700 text-white text-xs sm:text-sm font-bold shadow-md group-hover:scale-105 transition">अ‍ॅप इन्स्टॉल <span aria-hidden="true">↗</span></span>
+          </div>
+          <h4 class="font-khand text-lg font-bold text-[#05344E]">अ‍ॅपसारखा अनुभव (PWA)</h4>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">कोणतेही मोठे अ‍ॅप डाउनलोड न करता थेट मोबाईल होम-स्क्रीनवर इन्स्टॉल करण्याची सुविधा.</p>
+        </button>
+      </div>
     </section>
   </main>
 
@@ -143,6 +230,155 @@
         if (ftr && c.footerBg) ftr.style.backgroundColor = c.footerBg;
       });
     } catch (_) {}
+  </script>
+  <script>
+    (function initSubpagePortalMenu() {
+      const DEFAULT_TEMPLES_MENU = [
+        { id: 'pandharpur', shortTitle: 'श्री विठ्ठल-रुक्मिणी, पंढरपूर' },
+        { id: 'kolhapur', shortTitle: 'महालक्ष्मी मंदिर, कोल्हापूर' },
+        { id: 'tuljapur', shortTitle: 'तुळजाभवानी मंदिर, तुळजापूर' },
+        { id: 'shirdi', shortTitle: 'साईबाबा मंदिर, शिर्डी' },
+        { id: 'dagdusheth', shortTitle: 'दगडूशेठ गणपती, पुणे' },
+        { id: 'siddhivinayak', shortTitle: 'सिद्धिविनायक, मुंबई' }
+      ];
+      function esc(s) {
+        return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      }
+      function renderTempleMenu(list) {
+        const box = document.getElementById('menuTempleInfoList');
+        if (!box) return;
+        box.innerHTML = (list || []).filter(t => t && !t.deleted && !t.hidden).map(t =>
+          `<a href="temple-info.html?id=${encodeURIComponent(t.id)}" class="block px-3 py-1.5 rounded-lg text-xs font-bold truncate ${t.id === 'pandharpur' ? 'border-l-4 border-[#EA580C] bg-orange-50/90 text-[#9A3412] hover:bg-orange-100' : 'text-slate-700 hover:bg-amber-50 hover:text-[#05344E]'}">${t.id === 'pandharpur' ? '🚩' : '🛕'} ${esc(t.shortTitle || t.name || t.id)}</a>`
+        ).join('');
+      }
+      renderTempleMenu(DEFAULT_TEMPLES_MENU);
+
+      window.openPortalMenu = function() {
+        const d = document.getElementById('mobileMenuDrawer');
+        const p = document.getElementById('mobileMenuPanel');
+        if (!d) return;
+        d.classList.remove('hidden');
+        requestAnimationFrame(() => {
+          d.classList.remove('opacity-0');
+          if (p) p.classList.remove('translate-x-full');
+        });
+      };
+      window.closePortalMenu = function() {
+        const d = document.getElementById('mobileMenuDrawer');
+        const p = document.getElementById('mobileMenuPanel');
+        if (!d) return;
+        d.classList.add('opacity-0');
+        if (p) p.classList.add('translate-x-full');
+        setTimeout(() => d.classList.add('hidden'), 280);
+      };
+      window.togglePortalMenuInfo = function() {
+        const box = document.getElementById('menuTempleInfoList');
+        const arr = document.getElementById('menuTempleInfoArrow');
+        if (!box) return;
+        const hidden = box.classList.toggle('hidden');
+        if (arr) arr.textContent = hidden ? '▼' : '▲';
+      };
+
+      const drawer = document.getElementById('mobileMenuDrawer');
+      if (drawer) {
+        drawer.addEventListener('click', (e) => {
+          if (e.target === drawer) window.closePortalMenu();
+        });
+      }
+
+      if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
+        const db = firebase.database();
+        db.ref('siteConfig/menuLinks').on('value', (snap) => {
+          const m = snap.val();
+          const box = document.getElementById('mobileMenuDynamicLinks');
+          if (box && m && Array.isArray(m.items) && m.items.length) {
+            box.innerHTML = m.items.filter(it => it && it.enabled !== false && it.label && it.url).map(it =>
+              `<a href="${esc(it.url)}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>${esc(it.icon || '📄')}</span><span>${esc(it.label)}</span></a>`
+            ).join('');
+          }
+        });
+        db.ref('temples').on('value', (snap) => {
+          const data = snap.val();
+          if (!data || typeof data !== 'object') return;
+          const map = {};
+          DEFAULT_TEMPLES_MENU.forEach(t => { map[t.id] = { ...t }; });
+          Object.keys(data).forEach(k => {
+            if (data[k] && typeof data[k] === 'object') {
+              map[k] = Object.assign(map[k] || { id: k }, data[k], { id: k });
+            }
+          });
+          const arr = Object.values(map).sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
+          renderTempleMenu(arr);
+        });
+      }
+    })();
+  </script>
+  <!-- PWA Add to Home Screen Popup Modal -->
+  <div id="aboutInstallModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4" role="dialog" aria-modal="true">
+    <div class="w-full max-w-md rounded-3xl bg-white text-slate-900 shadow-2xl border-2 border-amber-400 overflow-hidden">
+      <div class="bg-gradient-to-r from-[#031926] via-[#05344E] to-[#084160] text-white px-5 py-4 flex items-center justify-between border-b-2 border-amber-400">
+        <div class="flex items-center gap-2.5">
+          <span class="text-xl">📲</span>
+          <h3 class="font-khand text-xl font-bold text-amber-200">अ‍ॅप होम-स्क्रीनवर जोडा</h3>
+        </div>
+        <button type="button" onclick="window.closeAboutInstallModal && window.closeAboutInstallModal()" aria-label="बंद करा" class="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center cursor-pointer">✕</button>
+      </div>
+      <div class="p-5 space-y-4">
+        <p class="text-sm text-slate-700 leading-relaxed">
+          <strong>दर्शन सेतू लाईव्ह</strong> हे वेब-अ‍ॅप तुमच्या मोबाईलच्या होम-स्क्रीनवर जोडून घ्या; फक्त एका टॅपवर दररोजचे लाईव्ह दर्शन व पंचांग पाहता येईल.
+        </p>
+        <button id="aboutTriggerInstallBtn" type="button" onclick="window.triggerAboutPwaInstall && window.triggerAboutPwaInstall()" class="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white text-sm sm:text-base font-bold shadow-md flex items-center justify-center gap-2 cursor-pointer transition">
+          <span>➕</span>
+          <span>Add to Home Screen (अ‍ॅप इन्स्टॉल करा)</span>
+        </button>
+        <div id="aboutInstallGuide" class="rounded-2xl bg-sky-50 border border-sky-200 p-3.5 text-xs text-slate-700 space-y-1.5">
+          <div class="text-[#05344E] font-bold">📌 मॅन्युअल पद्धत (ब्राउझर मेनूमधून):</div>
+          <p>• <strong>Android (Chrome):</strong> वरच्या उजव्या कोपऱ्यातील <strong>⋮</strong> मेनूवर क्लिक करून <strong>"Add to Home screen"</strong> किंवा <strong>"Install app"</strong> निवडा.</p>
+          <p>• <strong>iPhone (Safari):</strong> खालच्या <strong>Share (⎙)</strong> बटणावर क्लिक करून <strong>"Add to Home Screen"</strong> निवडा.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function initAboutPwaInstall() {
+      let deferredPrompt = null;
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+      }
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+      });
+      window.openAboutInstallModal = function() {
+        const m = document.getElementById('aboutInstallModal');
+        if (m) m.classList.remove('hidden');
+      };
+      window.closeAboutInstallModal = function() {
+        const m = document.getElementById('aboutInstallModal');
+        if (m) m.classList.add('hidden');
+      };
+      window.triggerAboutPwaInstall = async function() {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          try { await deferredPrompt.userChoice; } catch (_) {}
+          deferredPrompt = null;
+          window.closeAboutInstallModal();
+        } else {
+          const g = document.getElementById('aboutInstallGuide');
+          if (g) {
+            g.classList.add('ring-2', 'ring-amber-400', 'bg-amber-50');
+            setTimeout(() => g.classList.remove('ring-2', 'ring-amber-400', 'bg-amber-50'), 1800);
+          }
+        }
+      };
+      const modal = document.getElementById('aboutInstallModal');
+      if (modal) {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) window.closeAboutInstallModal();
+        });
+      }
+    })();
   </script>
 </body>
 </html>

@@ -20,6 +20,21 @@
     </div>
 
     <div id="pageContent" class="hidden space-y-5">
+      <!-- मास्टर टॉगल (संपूर्ण ऑटो फीड मॉनिटर चालू/बंद) -->
+      <section class="bg-white rounded-2xl border-2 border-[#05344E]/20 shadow-sm p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
+        <div class="space-y-0.5">
+          <div class="flex items-center gap-2">
+            <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">⚡ ऑटो फीड मॉनिटर प्रणाली (Master Control)</h2>
+            <span id="masterStateBadge" class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-rose-100 text-rose-800">🔴 बंद (मॅन्युअल मोड)</span>
+          </div>
+          <p class="text-xs text-slate-500">बंद असल्यास सर्व मंदिरांच्या लिंक्स मॅन्युअली चालतील; चालू केल्यावर स्वयंचलित स्कॅनिंग व अपडेट सुरू होईल.</p>
+        </div>
+        <label class="flex items-center gap-2.5 cursor-pointer select-none px-4 py-2 rounded-xl bg-slate-100 border border-slate-200">
+          <span class="toggle-pill"><input id="masterFeedToggle" type="checkbox" /><span class="knob"></span></span>
+          <span id="masterToggleText" class="text-xs sm:text-sm font-extrabold text-slate-700">बंद</span>
+        </label>
+      </section>
+
       <!-- सारांश कार्ड्स (Monitoring Summary) -->
       <section class="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4">
@@ -126,16 +141,7 @@
         </div>
       </section>
 
-      <!-- ४. ₹० Free Tier GitHub Actions सेटअप मार्गदर्शन -->
-      <section class="bg-gradient-to-br from-sky-50 via-white to-amber-50/50 rounded-2xl border border-sky-200 shadow-sm p-4 sm:p-6 space-y-2.5">
-        <h2 class="text-sm sm:text-base font-extrabold text-[#05344E]">⚙️ ₹० Free Tier सेटअप (फक्त १ वेळा करा)</h2>
-        <ol class="list-decimal list-inside text-xs text-slate-700 space-y-1.5 leading-relaxed">
-          <li><strong>Firebase Console</strong> मध्ये <em>Project Settings → Service Accounts → Generate New Private Key</em> वर क्लिक करून JSON फाईल डाउनलोड करा.</li>
-          <li>तुमच्या <strong>GitHub Repository</strong> मध्ये <em>Settings → Secrets and variables → Actions → New repository secret</em> मध्ये जा.</li>
-          <li>Secret चे नाव <code class="px-1.5 py-0.5 rounded bg-slate-200 font-mono text-[11px]">FIREBASE_SERVICE_ACCOUNT_JSON</code> ठेवा आणि डाउनलोड केलेल्या JSON मधील संपूर्ण मजकूर तिथे पेस्ट करून सेव्ह करा.</li>
-          <li>GitHub मधील <strong>Actions</strong> टॅबमध्ये जाऊन <em>Live Darshan Automatic Feed Discovery</em> चालू करा — आता दर तासाला सिस्टीम आपोआप फीड्स तपासून वेबसाईट अपडेट करेल!</li>
-        </ol>
-      </section>
+
     </div>
   </main>
 
@@ -300,7 +306,37 @@
       }
     });
 
+    function syncMasterBadge(isOn) {
+      const b = document.getElementById('masterStateBadge');
+      const t = document.getElementById('masterToggleText');
+      if (isOn) {
+        b.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-800';
+        b.textContent = '🟢 चालू (स्वयंचलित सक्रिय)';
+        t.textContent = 'चालू';
+      } else {
+        b.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-rose-100 text-rose-800';
+        b.textContent = '🔴 बंद (मॅन्युअल मोड)';
+        t.textContent = 'बंद';
+      }
+    }
+
+    document.getElementById('masterFeedToggle').addEventListener('change', async (e) => {
+      const checked = e.target.checked;
+      syncMasterBadge(checked);
+      try {
+        await fbDb.ref('feedDiscovery/settings/masterEnabled').set(checked);
+        showToast(checked ? '🟢 ऑटो फीड मॉनिटर प्रणाली चालू केली!' : '🔴 ऑटो फीड मॉनिटर बंद (मॅन्युअल मोड सक्रिय)');
+      } catch (err) {
+        showToast('❌ त्रुटी: ' + err.message, true);
+      }
+    });
+
     initAdminGuard(() => {
+      fbDb.ref('feedDiscovery/settings/masterEnabled').on('value', (snap) => {
+        const isOn = snap.val() === true;
+        document.getElementById('masterFeedToggle').checked = isOn;
+        syncMasterBadge(isOn);
+      });
       fbDb.ref('temples').on('value', (snap) => {
         templesMap = snap.val() || {};
         renderTempleSelect();

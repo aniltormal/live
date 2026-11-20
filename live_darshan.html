@@ -370,9 +370,9 @@
 
   <!-- Automatic Daily Marathi Panchang Strip -->
   <div id="panchangBar" class="w-full bg-gradient-to-r from-amber-50 via-orange-50/80 to-amber-50 border-b border-amber-200/80 text-[#05344E] px-2 sm:px-3 py-1.5 text-center transition-colors duration-300">
-    <div id="panchangInner" class="max-w-7xl xl:max-w-[1400px] mx-auto flex items-center justify-center gap-1.5 font-bold whitespace-nowrap overflow-hidden" style="font-size: clamp(11px, 3.1vw, 15px);">
+    <div id="panchangInner" class="max-w-7xl xl:max-w-[1400px] mx-auto flex items-center justify-center gap-1.5 font-bold leading-snug" style="font-size: clamp(11px, 3.1vw, 15px);">
       <span>🗓️</span>
-      <span id="panchangText" class="truncate">आजचे पंचांग: लोड होत आहे...</span>
+      <span id="panchangText">आजचे पंचांग: लोड होत आहे...</span>
     </div>
   </div>
 
@@ -1643,9 +1643,14 @@
         if (siteLayoutConfig.btnBgColor) {
           btn.style.backgroundColor = siteLayoutConfig.btnBgColor;
         }
-        btn.className = (isFeaturedTop && siteLayoutConfig.gridCols !== '1' ? 'col-span-full ' : '') + (isDark
-          ? 'group w-full rounded-2xl overflow-hidden bg-neutral-900 hover:bg-neutral-800 border-2 border-white/30 hover:border-white shadow-lg transition-all duration-200 flex flex-col cursor-pointer text-center'
-          : 'group w-full rounded-2xl overflow-hidden bg-white hover:bg-neutral-50 border-2 border-black/80 hover:border-black shadow-sm hover:shadow-xl transition-all duration-200 flex flex-col cursor-pointer text-center');
+        const isPandharpur = temple.id === 'pandharpur';
+        btn.className = (isFeaturedTop && siteLayoutConfig.gridCols !== '1' ? 'col-span-full ' : '') + (isPandharpur
+          ? (isDark
+              ? 'group w-full rounded-2xl overflow-hidden bg-neutral-900 hover:bg-neutral-800 border-2 border-[#EA580C] ring-2 ring-[#EA580C]/45 shadow-lg transition-all duration-200 flex flex-col cursor-pointer text-center'
+              : 'group w-full rounded-2xl overflow-hidden bg-white hover:bg-neutral-50 border-2 border-[#EA580C] ring-2 ring-[#EA580C]/40 shadow-md hover:shadow-xl transition-all duration-200 flex flex-col cursor-pointer text-center')
+          : (isDark
+              ? 'group w-full rounded-2xl overflow-hidden bg-neutral-900 hover:bg-neutral-800 border-2 border-white/30 hover:border-white shadow-lg transition-all duration-200 flex flex-col cursor-pointer text-center'
+              : 'group w-full rounded-2xl overflow-hidden bg-white hover:bg-neutral-50 border-2 border-black/80 hover:border-black shadow-sm hover:shadow-xl transition-all duration-200 flex flex-col cursor-pointer text-center'));
 
         const hasUrl = Boolean((temple.streamUrl || '').trim());
         const detected = streamStatusMap[temple.id];
@@ -1666,8 +1671,9 @@
           <div class="${imgBoxClass}">
             <img src="${temple.image}" alt="${temple.shortTitle}" class="${imgFitClass}" />
             <div class="absolute inset-0 bg-white/15 pointer-events-none"></div>
-            <div class="absolute top-2 left-2">
+            <div class="absolute top-2 left-2 flex items-center gap-1.5 flex-wrap">
               ${badgeHtml}
+              ${isPandharpur ? '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-[#EA580C] text-white border border-orange-300/80 text-[10px] sm:text-xs font-bold shadow">🚩 पंढरपूर विशेष</span>' : ''}
             </div>
             <a href="temple-info.html?id=${encodeURIComponent(temple.id)}" onclick="event.stopPropagation();" aria-label="मंदिर माहिती" title="मंदिर माहिती व वेळापत्रक"
               class="absolute top-2 right-2 z-10 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white hover:bg-amber-50 text-[#05344E] border-2 border-[#05344E] flex items-center justify-center shadow-md hover:scale-110 transition-all duration-200">
@@ -1947,7 +1953,9 @@
         const toMrDigits = (n) => String(n).replace(/\d/g, d => '०१२३४५६७८९'[d]);
 
         const dateStr = `${vaarNames[now.getDay()]}, ${toMrDigits(now.getDate())} ${mrMonths[m]} ${toMrDigits(now.getFullYear())}`;
-        elText.textContent = `आजचे पंचांग: ${maas} ${paksha} ${tithiName} • ${dateStr}`;
+        elText.textContent = (tithiName === 'एकादशी') ? `🚩 आज पावन एकादशी (पंढरपूर विशेष) • ${maas} ${paksha} • ${dateStr}` : `आजचे पंचांग: ${maas} ${paksha} ${tithiName} • ${dateStr}`;
+        const pBarEl = document.getElementById('panchangBar');
+        if (pBarEl && tithiName === 'एकादशी') { pBarEl.classList.add('border-l-4', 'border-l-[#EA580C]'); }
       } catch (_) {}
     }
     updateAutoMarathiPanchang();

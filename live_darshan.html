@@ -1895,6 +1895,7 @@
     el.nativePlayer.addEventListener('loadedmetadata', syncStageAspectToVideo);
     el.nativePlayer.addEventListener('resize', syncStageAspectToVideo);
     el.nativePlayer.addEventListener('playing', hideOfflineMessage);
+    el.nativePlayer.addEventListener('canplay', hideOfflineMessage);
     el.nativePlayer.addEventListener('loadeddata', hideOfflineMessage);
     el.nativePlayer.addEventListener('error', () => {
       if (!el.nativePlayer.classList.contains('hidden') && el.nativePlayer.getAttribute('src')) {
@@ -2220,7 +2221,7 @@
           if (el.nativePlayer.readyState < 2 && !el.videoModal.classList.contains('hidden')) {
             showOfflineMessage();
           }
-        }, 8000);
+        }, 15000);
         if (window.Hls && Hls.isSupported()) {
           hlsInstance = new Hls({
             enableWorker: true,

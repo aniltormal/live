@@ -238,8 +238,8 @@
           </div>
           <div id="modalMessageBox" class="hidden absolute inset-0 z-35 bg-neutral-950/95 flex flex-col items-center justify-center text-center p-6 space-y-3">
             <div class="text-4xl">🛕</div>
-            <h4 id="modalMessageTitle" class="text-base sm:text-lg font-extrabold text-amber-300">सध्या थेट प्रक्षेपण उपलब्ध नाही</h4>
-            <p id="modalMessageText" class="text-xs sm:text-sm text-neutral-300 max-w-md">मंदिराचे लाईव्ह दर्शन सध्या बंद आहे किंवा इंटरनेट कनेक्शन तपासा.</p>
+            <h4 id="modalMessageTitle" class="text-base sm:text-lg font-extrabold text-amber-300">🙏 सध्या लाईव्ह दर्शन तात्पुरते बंद आहे</h4>
+            <p id="modalMessageText" class="text-xs sm:text-sm text-neutral-300 max-w-md">मंदिराची दैनंदिन पूजा/नैवेद्य वेळ किंवा तांत्रिक कारणास्तव प्रक्षेपण थांबलेले असू शकते. कृपया थोड्या वेळाने पुन्हा प्रयत्न करा.</p>
           </div>
           <div id="playerTickerBar" class="absolute bottom-0 left-0 right-0 z-20 overflow-hidden py-1.5 pointer-events-none select-none border-t border-white/15" style="background-color: #05344E;">
             <div class="marquee-track text-xs sm:text-sm font-bold tracking-wide" style="color: #D6DBD2;">
@@ -672,11 +672,13 @@
       }
 
       vid.classList.remove('hidden');
-      vid.onplaying = () => { if (load) load.classList.add('hidden'); if (infoStreamTimeout) clearTimeout(infoStreamTimeout); };
+      const hideMsg = () => { if (load) load.classList.add('hidden'); if (msg) msg.classList.add('hidden'); if (infoStreamTimeout) clearTimeout(infoStreamTimeout); };
+      vid.onplaying = hideMsg;
+      vid.oncanplay = hideMsg;
       if (type === 'hls') {
         infoStreamTimeout = setTimeout(() => {
           if (vid.readyState < 2 && !document.getElementById('videoModal').classList.contains('hidden')) showOffline();
-        }, 9000);
+        }, 15000);
         if (window.Hls && Hls.isSupported()) {
           infoHlsInstance = new Hls({ enableWorker: true, manifestLoadingMaxRetry: 2, levelLoadingMaxRetry: 2 });
           infoHlsInstance.loadSource(url);
@@ -902,6 +904,14 @@
           if (p.tickerTextColor) tTrack.style.color = p.tickerTextColor;
           if (p.tickerText) tTrack.querySelectorAll('span').forEach(sp => sp.textContent = p.tickerText);
         }
+        const offTtl = document.getElementById('modalMessageTitle');
+        const offMsg = document.getElementById('modalMessageText');
+        if (offTtl) {
+          if (p.offlineTitle) offTtl.textContent = p.offlineTitle;
+          if (p.offlineTitleColor) offTtl.style.color = p.offlineTitleColor;
+          if (p.offlineTitleSize) offTtl.style.fontSize = p.offlineTitleSize + 'px';
+        }
+        if (offMsg && p.offlineMessage) offMsg.textContent = p.offlineMessage;
         if (wmTrack) {
           if (p.watermarkColor) wmTrack.style.color = p.watermarkColor;
           if (p.watermarkOpacity !== undefined) wmTrack.style.opacity = String(p.watermarkOpacity);

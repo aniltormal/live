@@ -195,13 +195,50 @@
       const pageId = (params.get('id') || '').trim();
       const iconEl = document.getElementById('customPageIcon');
       const titleEl = document.getElementById('customPageTitle');
-      const bodyEl = document.getElementById('customPageBody');
+      
+    function sanitizeEmailsToContact(root) {
+      if (!root) return;
+      root.querySelectorAll('a[href^="mailto:"]').forEach(a => {
+        a.href = 'contact.html';
+        a.removeAttribute('target');
+        a.textContent = 'Contact';
+        a.className = 'underline font-bold text-[#EA580C] hover:text-[#05344E]';
+      });
+      const emailRe = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+      const nodes = [];
+      let n;
+      while ((n = walker.nextNode())) {
+        if (n.parentElement && n.parentElement.tagName !== 'SCRIPT' && emailRe.test(n.nodeValue)) {
+          nodes.push(n);
+        }
+        emailRe.lastIndex = 0;
+      }
+      nodes.forEach(textNode => {
+        const frag = document.createDocumentFragment();
+        const parts = textNode.nodeValue.split(emailRe);
+        const matches = textNode.nodeValue.match(emailRe) || [];
+        parts.forEach((part, idx) => {
+          if (part) frag.appendChild(document.createTextNode(part));
+          if (idx < matches.length) {
+            const link = document.createElement('a');
+            link.href = 'contact.html';
+            link.textContent = 'Contact';
+            link.className = 'underline font-bold text-[#EA580C] hover:text-[#05344E]';
+            frag.appendChild(link);
+          }
+        });
+        textNode.parentNode.replaceChild(frag, textNode);
+      });
+    }
+
+    const bodyEl = document.getElementById('customPageBody');
       const ctaWrap = document.getElementById('customPageCtaWrap');
       const ctaBtn = document.getElementById('customPageCtaBtn');
 
       if (!pageId) {
         if (titleEl) titleEl.textContent = 'पेज सापडले नाही';
-        if (bodyEl) bodyEl.textContent = 'हे पेज उपलब्ध नाही किंवा लिंक चुकीची आहे. कृपया मुख्य पेजवर परत जा.';
+        if (bodyEl) bodyEl.textContent = 'हे पेज उपलब्ध नाही किंवा लिंक चुकीची आहे. कृपया मुख्य पेजवर परत जा.'; sanitizeEmailsToContact(bodyEl);
         return;
       }
 
@@ -213,7 +250,7 @@
           const found = items.find((it) => it && (it.id === pageId || (it.url && it.url.indexOf('id=' + pageId) !== -1)));
           if (!found) {
             if (titleEl) titleEl.textContent = 'पेज सापडले नाही';
-            if (bodyEl) bodyEl.textContent = 'हा मेनू पर्याय काढला गेला असावा किंवा अद्याप सेव्ह केलेला नाही.';
+            if (bodyEl) bodyEl.textContent = 'हा मेनू पर्याय काढला गेला असावा किंवा अद्याप सेव्ह केलेला नाही.'; sanitizeEmailsToContact(bodyEl);
             return;
           }
           const pTitle = (found.pageTitle || found.label || 'माहिती').trim();
@@ -221,7 +258,7 @@
           document.title = pTitle + ' — दर्शन सेतू लाईव्ह';
           if (iconEl && found.icon) iconEl.textContent = found.icon;
           if (titleEl) titleEl.textContent = pTitle;
-          if (bodyEl) bodyEl.textContent = pBody;
+          if (bodyEl) bodyEl.textContent = pBody; sanitizeEmailsToContact(bodyEl);
           if (ctaWrap && ctaBtn && found.ctaLabel && found.ctaUrl) {
             ctaBtn.textContent = found.ctaLabel;
             ctaBtn.href = found.ctaUrl;

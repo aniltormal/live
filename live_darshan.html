@@ -2162,8 +2162,8 @@
       startModalClock();
       cleanupPopupPlayer();
       const sfx = (window.__playerCfg && typeof window.__playerCfg.titleSuffix === 'string' && window.__playerCfg.titleSuffix.trim()) ? window.__playerCfg.titleSuffix.trim() : '• Live Darshan';
-      const rawT = temple.buttonTitle || 'मंदिर';
-      el.modalTitle.textContent = (!sfx || rawT.includes(sfx)) ? rawT : (rawT + ' ' + sfx);
+      const rawT = (temple.buttonTitle || temple.shortTitle || 'मंदिर').replace(/(\s*[•|.\-]?\s*Live Darshan)+$/i, '').trim();
+      el.modalTitle.textContent = (!sfx || rawT.toLowerCase().includes(sfx.toLowerCase())) ? rawT : (rawT + ' ' + sfx);
       el.videoModal.classList.remove('hidden');
       renderPlayerTempleDock(temple.id);
       showPlayerLoading(true);
@@ -4452,7 +4452,7 @@
   <div id="pwaInstallBanner" class="hidden fixed bottom-14 left-3 right-3 sm:left-auto sm:right-4 sm:max-w-sm z-40 rounded-2xl bg-gradient-to-r from-[#031926] via-[#05344E] to-[#084160] text-white border-2 border-amber-400 shadow-2xl p-3 flex items-center gap-3">
     <img src="icon-192.png" alt="लाईव्ह दर्शन" class="w-11 h-11 rounded-xl border border-amber-400/80 shrink-0 bg-white object-cover" />
     <div class="flex-1 min-w-0">
-      <div class="text-xs sm:text-sm font-extrabold text-amber-300 truncate">श्री. लाईव्ह दर्शन अ‍ॅप</div>
+      <div class="text-xs sm:text-sm font-extrabold text-amber-300 truncate">दर्शन सेतू लाईव्ह अ‍ॅप</div>
       <div id="pwaInstallDesc" class="text-[11px] text-slate-200 leading-snug">थेट मोबाईल होम स्क्रीनवर शॉर्टकट जोडा</div>
     </div>
     <button id="pwaInstallActionBtn" type="button" class="shrink-0 px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-[#031926] text-xs font-extrabold cursor-pointer shadow">जोडा</button>

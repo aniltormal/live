@@ -247,7 +247,7 @@
         const box = document.getElementById('menuTempleInfoList');
         if (!box) return;
         box.innerHTML = (list || []).filter(t => t && !t.deleted && !t.hidden).map(t =>
-          `<a href="temple-info.html?id=${encodeURIComponent(t.id)}" class="block px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700 hover:bg-amber-50 hover:text-[#05344E] truncate">🛕 ${esc(t.shortTitle || t.name || t.id)}</a>`
+          `<a href="temple-info.html?id=${encodeURIComponent(t.id)}" class="block px-3 py-1.5 rounded-lg text-xs font-bold truncate ${t.id === 'pandharpur' ? 'border-l-4 border-[#EA580C] bg-orange-50/90 text-[#9A3412] hover:bg-orange-100' : 'text-slate-700 hover:bg-amber-50 hover:text-[#05344E]'}">${t.id === 'pandharpur' ? '🚩' : '🛕'} ${esc(t.shortTitle || t.name || t.id)}</a>`
         ).join('');
       }
       renderTempleMenu(DEFAULT_TEMPLES_MENU);

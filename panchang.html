@@ -30,10 +30,11 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
   <style>
-    body { font-family: 'Noto Sans Devanagari', sans-serif; }
+    body, body * { font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; font-weight: 700; }
     .font-khand { font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; }
     #headerTitle { font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; font-weight: 700; }
-    @media (min-width: 1024px) { html { font-size: 18px; } }
+    html { font-size: 17.5px; }
+    @media (min-width: 1024px) { html { font-size: 19px; } }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
@@ -88,37 +89,94 @@
       </div>
     </div>
   </div>
-
-
   <main class="flex-1 max-w-7xl xl:max-w-[1400px] w-full mx-auto p-4 sm:p-6 space-y-5">
-        <section class="bg-gradient-to-r from-[#05344E] to-[#0a4d70] text-white rounded-3xl p-5 sm:p-6 shadow-md space-y-2">
+    <!-- Hero Panchang Header -->
+    <section class="bg-gradient-to-r from-[#031926] via-[#05344E] to-[#0a4d70] text-white rounded-3xl p-5 sm:p-6 shadow-md border border-amber-400/30 space-y-2.5">
       <div class="flex flex-wrap items-center justify-between gap-2">
-        <h2 class="font-khand text-2xl sm:text-3xl font-bold">🗓️ आजचे संपूर्ण पंचांग व सणवार</h2>
-        <span id="panchangTodayDate" class="px-3 py-1 rounded-full bg-amber-500 text-white text-xs sm:text-sm font-bold"></span>
+        <h2 class="font-khand text-2xl sm:text-3xl font-bold text-amber-200">🗓️ आजचे संपूर्ण पंचांग व सणवार</h2>
+        <div class="flex flex-wrap items-center gap-2">
+          <span id="panchangShakaBadge" class="px-3 py-1 rounded-full bg-white/15 border border-amber-300/40 text-amber-100 text-xs font-bold"></span>
+          <span id="panchangTodayDate" class="px-3.5 py-1 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white border border-emerald-300/60 text-xs sm:text-sm font-bold shadow-md"></span>
+        </div>
       </div>
       <p id="panchangSummaryLine" class="text-sm sm:text-base text-amber-100 font-medium"></p>
     </section>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <section class="bg-white rounded-2xl border border-amber-200 shadow-sm p-5 space-y-2.5">
-        <h3 class="font-khand text-xl font-bold text-[#05344E] border-b border-amber-100 pb-2">☀️ आजचा दिनविशेष व शुभवेळ</h3>
-        <ul class="space-y-2 text-sm sm:text-base text-slate-700 font-khand">
-          <li>• <strong>वार:</strong> <span id="pDay"></span></li>
-          <li>• <strong>सूर्योदय / सूर्यास्त (अंदाजे):</strong> सकाळी ६:३८ / सायंकाळी ६:०२</li>
-          <li>• <strong>अभिजित मुहूर्त:</strong> दुपारी ११:५६ ते १२:४४</li>
-          <li>• <strong>राहुकाळ:</strong> दिवसातील १.५ तास (वारानुसार)</li>
-        </ul>
+    <!-- 5-Anga Panchang Quick Cards -->
+    <section class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div class="bg-white rounded-2xl border border-sky-200 shadow-sm p-3.5 space-y-1">
+        <div class="text-[11px] font-bold text-[#05344E]">🌙 तिथी व पक्ष</div>
+        <div id="pTithi" class="font-khand text-lg font-bold text-[#05344E] leading-snug">—</div>
+      </div>
+      <div class="bg-white rounded-2xl border border-sky-200 shadow-sm p-3.5 space-y-1">
+        <div class="text-[11px] font-bold text-sky-700">📅 वार व मराठी मास</div>
+        <div id="pVaarMaas" class="font-khand text-lg font-bold text-[#05344E] leading-snug">—</div>
+      </div>
+      <div class="bg-white rounded-2xl border border-emerald-200 shadow-sm p-3.5 space-y-1">
+        <div class="text-[11px] font-bold text-emerald-700">✨ नक्षत्र (अंदाजे)</div>
+        <div id="pNakshatra" class="font-khand text-lg font-bold text-[#05344E] leading-snug">—</div>
+      </div>
+      <div class="bg-white rounded-2xl border border-violet-200 shadow-sm p-3.5 space-y-1">
+        <div class="text-[11px] font-bold text-violet-700">🔮 योग व करण</div>
+        <div id="pYogaKarana" class="font-khand text-lg font-bold text-[#05344E] leading-snug">—</div>
+      </div>
+      <div class="bg-white rounded-2xl border border-rose-200 shadow-sm p-3.5 space-y-1 col-span-2 sm:col-span-1">
+        <div class="text-[11px] font-bold text-rose-700">♈ चंद्रराशी व दिशाशूळ</div>
+        <div id="pRashiDisha" class="font-khand text-lg font-bold text-[#05344E] leading-snug">—</div>
+      </div>
+    </section>
+
+    <!-- Sunrise/Sunset & Muhurat + Day Special -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <section class="bg-white rounded-2xl border border-sky-200 shadow-sm p-5 space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+          <h3 class="font-khand text-xl font-bold text-[#05344E]">☀️ सूर्योदय, शुभ मुहूर्त व राहुकाळ</h3>
+          <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-sky-50 text-[#05344E] border border-sky-200">महाराष्ट्र प्रमाणवेळ</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-sm font-khand">
+          <div class="rounded-xl bg-sky-50/70 border border-sky-200 px-3.5 py-2.5 flex items-center justify-between">
+            <span class="font-bold text-slate-700">🌅 सूर्योदय</span>
+            <span id="pSunrise" class="font-bold text-[#05344E]">—</span>
+          </div>
+          <div class="rounded-xl bg-indigo-50/60 border border-indigo-200 px-3.5 py-2.5 flex items-center justify-between">
+            <span class="font-bold text-slate-700">🌇 सूर्यास्त</span>
+            <span id="pSunset" class="font-bold text-[#05344E]">—</span>
+          </div>
+          <div class="rounded-xl bg-emerald-50/70 border border-emerald-200 px-3.5 py-2.5 flex items-center justify-between">
+            <span class="font-bold text-emerald-900">🪔 ब्रह्म मुहूर्त</span>
+            <span id="pBrahma" class="font-bold text-emerald-800">—</span>
+          </div>
+          <div class="rounded-xl bg-emerald-50/70 border border-emerald-200 px-3.5 py-2.5 flex items-center justify-between">
+            <span class="font-bold text-emerald-900">✅ अभिजित मुहूर्त</span>
+            <span id="pAbhijit" class="font-bold text-emerald-800">—</span>
+          </div>
+          <div class="rounded-xl bg-rose-50/80 border border-rose-200 px-3.5 py-2.5 flex items-center justify-between">
+            <span class="font-bold text-rose-900">⛔ राहुकाळ (अशुभ)</span>
+            <span id="pRahukaal" class="font-bold text-rose-700">—</span>
+          </div>
+          <div class="rounded-xl bg-slate-50 border border-slate-200 px-3.5 py-2.5 flex items-center justify-between">
+            <span class="font-bold text-slate-700">⚠️ यमगंड काळ</span>
+            <span id="pYamagand" class="font-bold text-slate-800">—</span>
+          </div>
+        </div>
+        <p class="text-[11px] text-slate-500 leading-relaxed">* टीप: तिथी, नक्षत्र व सूर्योदय-सूर्यास्त वेळा महाराष्ट्राच्या मध्य प्रमाणवेळेनुसार खगोलीय गणिताने दाखवल्या आहेत; शहरानुसार २–५ मिनिटांचा फरक असू शकतो.</p>
       </section>
-      <section class="bg-white rounded-2xl border border-sky-200 shadow-sm p-5 space-y-2.5">
-        <h3 class="font-khand text-xl font-bold text-[#05344E] border-b border-sky-100 pb-2">🛕 एकादशी व प्रमुख उत्सव</h3>
-        <ul class="space-y-2 text-sm sm:text-base text-slate-700 font-khand">
-          <li>• <strong>प्रबोधिनी / कार्तिकी एकादशी:</strong> पंढरपूर विशेष यात्रा व २४ तास दर्शन</li>
-          <li>• <strong>संकष्टी चतुर्थी:</strong> पुणे दगडूशेठ व मुंबई सिद्धिविनायक विशेष आरती</li>
-          <li>• <strong>पौर्णिमा व अमावास्या:</strong> कोल्हापूर व तुळजापूर विशेष अलंकार पूजा</li>
-          <li>• <strong>गुरुवार:</strong> शिर्डी श्री साईबाबा पालखी सोहळा</li>
-        </ul>
+
+      <!-- Today's Special Temple Darshan + Vrat -->
+      <section class="bg-white rounded-2xl border border-sky-200 shadow-sm p-5 space-y-3">
+        <h3 class="font-khand text-xl font-bold text-[#05344E] border-b border-sky-100 pb-2">🛕 आजचे विशेष मंदिर दर्शन व वार महत्त्व</h3>
+        <div id="todayTempleSpecialBox" class="space-y-3"></div>
       </section>
     </div>
+
+    <!-- Upcoming Festivals & Vrat List -->
+    <section class="bg-white rounded-2xl border border-sky-200 shadow-sm p-5 space-y-3">
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-2">
+        <h3 class="font-khand text-xl font-bold text-[#05344E]">🎉 आगामी प्रमुख सण, एकादशी व उत्सव</h3>
+        <span class="text-xs font-bold text-sky-800">आजच्या तारखेनुसार अद्ययावत यादी</span>
+      </div>
+      <div id="upcomingFestivalsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+    </section>
   </main>
 
   <!-- Visitor Counter & WhatsApp Bar -->
@@ -144,12 +202,250 @@
     © दर्शन सेतू लाईव्ह • सर्व मंदिरांचे थेट दर्शन एकाच ठिकाणी
   </footer>
   <script>
-    const d = new Date();
-    const days = ['रविवार','सोमवार','मंगळवार','बुधवार','गुरुवार','शुक्रवार','शनिवार'];
-    const months = ['जानेवारी','फेब्रुवारी','मार्च','एप्रिल','मे','जून','जुलै','ऑगस्ट','सप्टेंबर','ऑक्टोबर','नोव्हेंबर','डिसेंबर'];
-    document.getElementById('panchangTodayDate').textContent = `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
-    document.getElementById('pDay').textContent = days[d.getDay()];
-    document.getElementById('panchangSummaryLine').textContent = `आज ${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()} — शुभ दर्शन व मंगलमयी दिन!`;
+    (function renderDetailedMarathiPanchang() {
+      const now = new Date();
+      const mrDigits = (n) => String(n).replace(/\d/g, d => '०१२३४५६७८९'[d]);
+      const pad2 = (n) => String(n).padStart(2, '0');
+      const minsToMrTime = (totalMins) => {
+        let m = Math.round(totalMins);
+        m = ((m % 1440) + 1440) % 1440;
+        const h24 = Math.floor(m / 60);
+        const mm = m % 60;
+        const period = h24 < 12 ? 'सकाळी' : (h24 < 16 ? 'दुपारी' : (h24 < 20 ? 'सायंकाळी' : 'रात्री'));
+        const h12 = h24 % 12 === 0 ? 12 : h24 % 12;
+        return `${period} ${mrDigits(h12)}:${mrDigits(pad2(mm))}`;
+      };
+      const fmtClock = (totalMins) => {
+        let m = Math.round(totalMins);
+        m = ((m % 1440) + 1440) % 1440;
+        const h24 = Math.floor(m / 60);
+        const mm = m % 60;
+        const h12 = h24 % 12 === 0 ? 12 : h24 % 12;
+        return `${mrDigits(h12)}:${mrDigits(pad2(mm))}`;
+      };
+
+      const days = ['रविवार','सोमवार','मंगळवार','बुधवार','गुरुवार','शुक्रवार','शनिवार'];
+      const months = ['जानेवारी','फेब्रुवारी','मार्च','एप्रिल','मे','जून','जुलै','ऑगस्ट','सप्टेंबर','ऑक्टोबर','नोव्हेंबर','डिसेंबर'];
+      const dayIdx = now.getDay();
+      const dateLabel = `${mrDigits(now.getDate())} ${months[now.getMonth()]} ${mrDigits(now.getFullYear())}`;
+
+      // 1. Lunar calculations (Tithi, Nakshatra, Yoga, Karana, Rashi)
+      const jd = now.getTime() / 86400000 + 2440587.5;
+      const synodic = 29.530588853;
+      const daysSinceNew = jd - 2451550.259722;
+      const age = ((daysSinceNew % synodic) + synodic) % synodic;
+      const tithiIdx = Math.min(29, Math.floor((age / synodic) * 30));
+      const isShukla = tithiIdx < 15;
+      const paksha = isShukla ? 'शुक्ल पक्ष' : 'कृष्ण पक्ष';
+      const tithiNames = [
+        'प्रतिपदा', 'द्वितीया', 'तृतीया', 'चतुर्थी', 'पंचमी',
+        'षष्ठी', 'सप्तमी', 'अष्टमी', 'नवमी', 'दशमी',
+        'एकादशी', 'द्वादशी', 'त्रयोदशी', 'चतुर्दशी', 'पौर्णिमा'
+      ];
+      const tithiName = (tithiIdx === 29) ? 'अमावास्या' : tithiNames[tithiIdx % 15];
+
+      const maasNames = ['चैत्र', 'वैशाख', 'ज्येष्ठ', 'आषाढ', 'श्रावण', 'भाद्रपद', 'आश्विन', 'कार्तिक', 'मार्गशीर्ष', 'पौष', 'माघ', 'फाल्गुन'];
+      const maasMap = [9, 10, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8];
+      const maas = maasNames[maasMap[now.getMonth()]];
+      const shakaYear = now.getFullYear() - (now.getMonth() < 2 || (now.getMonth() === 2 && now.getDate() < 22) ? 79 : 78);
+
+      // Approximate sidereal Moon & Sun longitudes (deg) for Nakshatra, Yoga, Karana, Rashi
+      const d2000 = jd - 2451545.0;
+      const sunMean = (280.460 + 0.9856474 * d2000) % 360;
+      const sunAnom = ((357.528 + 0.9856003 * d2000) % 360) * Math.PI / 180;
+      const sunLon = (sunMean + 1.915 * Math.sin(sunAnom) + 0.020 * Math.sin(2 * sunAnom) - 24.0 + 360) % 360;
+      const moonLon = ((sunLon + (age / synodic) * 360) % 360 + 360) % 360;
+
+      const nakshatras = [
+        'अश्विनी','भरणी','कृत्तिका','रोहिणी','मृगशीर्ष','आर्द्रा','पुनर्वसू','पुष्य','आश्लेषा',
+        'मघा','पूर्वा फाल्गुनी','उत्तरा फाल्गुनी','हस्त','चित्रा','स्वाती','विशाखा','अनुराधा','ज्येष्ठा',
+        'मूळ','पूर्वाषाढा','उत्तराषाढा','श्रवण','धनिष्ठा','शततारका','पूर्वा भाद्रपदा','उत्तरा भाद्रपदा','रेवती'
+      ];
+      const nakIdx = Math.floor(moonLon / (360 / 27)) % 27;
+
+      const yogas = [
+        'विष्कंभ','प्रीती','आयुष्मान','सौभाग्य','शोभन','अतिगंड','सुकर्मा','धृती','शूल',
+        'गंड','वृद्धी','ध्रुव','व्याघात','हर्षण','वज्र','सिद्धी','व्यतीपात','वरीयान',
+        'परिघ','शिव','सिद्ध','साध्य','शुभ','शुक्ल','ब्रह्म','इंद्र','वैधृती'
+      ];
+      const yogaIdx = Math.floor(((sunLon + moonLon) % 360) / (360 / 27)) % 27;
+
+      const karanas = ['किंस्तुघ्न','बव','बालव','कौलव','तैतिल','गरज','वणिज','विष्टी (भद्रा)','शकुनी','चतुष्पाद','नाग'];
+      const halfTithi = Math.floor((age / synodic) * 60);
+      let karanaName = '';
+      if (halfTithi === 0) karanaName = karanas[0];
+      else if (halfTithi >= 57) karanaName = karanas[8 + (halfTithi - 57)];
+      else karanaName = karanas[1 + ((halfTithi - 1) % 7)];
+
+      const rashis = ['मेष','वृषभ','मिथुन','कर्क','सिंह','कन्या','तुळ','वृश्चिक','धनु','मकर','कुंभ','मीन'];
+      const rashiName = rashis[Math.floor(moonLon / 30) % 12];
+      const dishaShool = ['पश्चिम', 'पूर्व', 'उत्तर', 'उत्तर', 'दक्षिण', 'पश्चिम', 'पूर्व'][dayIdx];
+
+      // 2. Solar Sunrise / Sunset for Maharashtra center (Pune/Mumbai ~19.0N, 73.8E, IST +5:30)
+      const startOfYear = new Date(now.getFullYear(), 0, 0);
+      const doy = Math.floor((now - startOfYear) / 86400000);
+      const lat = 19.0 * Math.PI / 180;
+      const decl = (-23.44 * Math.cos((2 * Math.PI / 365) * (doy + 10))) * Math.PI / 180;
+      const b = (2 * Math.PI / 364) * (doy - 81);
+      const eot = 9.87 * Math.sin(2 * b) - 7.53 * Math.cos(b) - 1.5 * Math.sin(b);
+      const cosH = Math.max(-0.99, Math.min(0.99, (Math.cos(90.833 * Math.PI / 180) - Math.sin(lat) * Math.sin(decl)) / (Math.cos(lat) * Math.cos(decl))));
+      const haDeg = Math.acos(cosH) * 180 / Math.PI;
+      const solarNoonMins = 720 + 4 * (82.5 - 73.85) - eot;
+      const sunriseMins = solarNoonMins - haDeg * 4;
+      const sunsetMins = solarNoonMins + haDeg * 4;
+      const dayDur = sunsetMins - sunriseMins;
+      const part = dayDur / 8;
+
+      const rahuSlot = [8, 2, 7, 5, 6, 4, 3][dayIdx] - 1;
+      const yamaSlot = [5, 4, 3, 2, 1, 7, 6][dayIdx] - 1;
+      const rahuStart = sunriseMins + rahuSlot * part;
+      const rahuEnd = rahuStart + part;
+      const yamaStart = sunriseMins + yamaSlot * part;
+      const yamaEnd = yamaStart + part;
+
+      // Populate Hero & 5-Anga cards
+      document.getElementById('panchangTodayDate').textContent = dateLabel;
+      document.getElementById('panchangShakaBadge').textContent = `शालिवाहन शक ${mrDigits(shakaYear)}`;
+      document.getElementById('panchangSummaryLine').textContent = `आज ${days[dayIdx]}, ${maas} ${paksha} ${tithiName} • ${dateLabel} — शुभ दर्शन व मंगलमयी दिन!`;
+
+      document.getElementById('pTithi').textContent = `${tithiName} (${paksha})`;
+      document.getElementById('pVaarMaas').textContent = `${days[dayIdx]} • ${maas} मास`;
+      document.getElementById('pNakshatra').textContent = nakshatras[nakIdx];
+      document.getElementById('pYogaKarana').textContent = `${yogas[yogaIdx]} / ${karanaName}`;
+      document.getElementById('pRashiDisha').textContent = `${rashiName} • ${dishaShool} दिशाशूळ`;
+
+      document.getElementById('pSunrise').textContent = minsToMrTime(sunriseMins);
+      document.getElementById('pSunset').textContent = minsToMrTime(sunsetMins);
+      document.getElementById('pBrahma').textContent = `${fmtClock(sunriseMins - 96)} ते ${fmtClock(sunriseMins - 48)}`;
+      document.getElementById('pAbhijit').textContent = dayIdx === 3
+        ? 'बुधवारी वर्ज्य'
+        : `${fmtClock(solarNoonMins - 24)} ते ${fmtClock(solarNoonMins + 24)}`;
+      document.getElementById('pRahukaal').textContent = `${fmtClock(rahuStart)} ते ${fmtClock(rahuEnd)}`;
+      document.getElementById('pYamagand').textContent = `${fmtClock(yamaStart)} ते ${fmtClock(yamaEnd)}`;
+
+      // 3. Multi-Event Today's Special Temple Darshan (Weekday + Tithi + Festival)
+      const festivals = [
+        { date: '2026-11-20', name: 'प्रबोधिनी / कार्तिकी एकादशी', note: 'पंढरपूर महायात्रा व २४ तास श्री विठ्ठल-रुक्मिणी दर्शन', templeId: 'pandharpur', label: 'श्री विठ्ठल-रुक्मिणी, पंढरपूर', isEkadashi: true },
+        { date: '2026-11-21', name: 'तुलसी विवाह आरंभ / द्वादशी', note: 'घरोघरी तुलसी विवाह सोहळा व पंढरपूर दर्शन', templeId: 'pandharpur', label: 'श्री विठ्ठल-रुक्मिणी, पंढरपूर' },
+        { date: '2026-11-24', name: 'त्रिपुरारी (कार्तिक) पौर्णिमा', note: 'देव दिवाळी व दीपदान उत्सव', templeId: 'kolhapur', label: 'महालक्ष्मी मंदिर, कोल्हापूर' },
+        { date: '2026-11-27', name: 'संकष्टी चतुर्थी', note: 'दगडूशेठ व सिद्धिविनायक विशेष आरती', templeId: 'dagdusheth', label: 'दगडूशेठ गणपती, पुणे' },
+        { date: '2026-12-20', name: 'मोक्षदा एकादशी / गीता जयंती', note: 'पंढरपूर श्री विठ्ठल-रुक्मिणी विशेष दर्शन व गीता पारायण', templeId: 'pandharpur', label: 'श्री विठ्ठल-रुक्मिणी, पंढरपूर', isEkadashi: true },
+        { date: '2026-12-23', name: 'श्री दत्त जयंती', note: 'मार्गशीर्ष पौर्णिमा — दत्त उपासना', templeId: 'kolhapur', label: 'महालक्ष्मी मंदिर, कोल्हापूर' },
+        { date: '2027-01-14', name: 'मकर संक्रांत', note: 'सुगड पूजन व तीळगूळ संक्रांती', templeId: 'kolhapur', label: 'महालक्ष्मी मंदिर, कोल्हापूर' },
+        { date: '2027-01-25', name: 'माघी गणेश जयंती', note: 'गणेश मंदिर विशेष जन्मोत्सव', templeId: 'siddhivinayak', label: 'सिद्धिविनायक, मुंबई' },
+        { date: '2027-03-06', name: 'महाशिवरात्री', note: 'ज्योतिर्लिंग व शिवमंदिर जागरण', templeId: 'pandharpur', label: 'श्री विठ्ठल-रुक्मिणी, पंढरपूर' },
+        { date: '2027-04-07', name: 'गुढीपाडवा (शके १९४९ प्रारंभ)', note: 'मराठी नूतन वर्ष स्वागत', templeId: 'pandharpur', label: 'श्री विठ्ठल-रुक्मिणी, पंढरपूर' },
+        { date: '2027-04-15', name: 'श्री रामनवमी', note: 'दुपारी १२ वा. श्रीराम जन्मोत्सव', templeId: 'shirdi', label: 'साईबाबा मंदिर, शिर्डी' },
+        { date: '2027-07-15', name: 'आषाढी एकादशी', note: 'पंढरपूर महायात्रा सोहळा व श्री विठ्ठल-रुक्मिणी विशेष दर्शन', templeId: 'pandharpur', label: 'श्री विठ्ठल-रुक्मिणी, पंढरपूर', isEkadashi: true }
+      ];
+      const todayISO = `${now.getFullYear()}-${pad2(now.getMonth() + 1)}-${pad2(now.getDate())}`;
+
+      const weekdaySpecials = [
+        { badge: '📅 वार विशेष', title: 'रविवार — सूर्य व श्री विठ्ठल उपासना', desc: 'रविवारी सकाळी श्री विठ्ठल-रुक्मिणी काकड आरती व दर्शनाचे विशेष महत्त्व मानले जाते.', id: 'pandharpur', label: 'श्री विठ्ठल-रुक्मिणी, पंढरपूर' },
+        { badge: '📅 वार विशेष', title: 'सोमवार — शिव व महादेव आराधना', desc: 'सोमवारी अभिषेक व शांत दर्शनासाठी सर्व मंदिरांत सकाळची आरती विशेष मानली जाते.', id: 'pandharpur', label: 'पंढरपूर लाईव्ह दर्शन' },
+        { badge: '📅 वार विशेष', title: 'मंगळवार — श्री गणेश व देवी दर्शन', desc: 'मंगळवारी श्री दगडूशेठ हलवाई गणपती, सिद्धिविनायक व श्री तुळजाभवानी दर्शनास भाविकांची मोठी गर्दी असते.', id: 'dagdusheth', label: 'दगडूशेठ गणपती, पुणे' },
+        { badge: '📅 वार विशेष', title: 'बुधवार — श्री विठ्ठल व गणेश नामस्मरण', desc: 'बुधवारी श्री विठ्ठल व गणपती दर्शनाने बुध ग्रहाची अनुकूलता व मनःशांती लाभते.', id: 'siddhivinayak', label: 'सिद्धिविनायक, मुंबई' },
+        { badge: '📅 वार विशेष', title: 'गुरुवार — श्री साईबाबा पालखी सोहळा', desc: 'दर गुरुवारी शिर्डी येथे रात्री श्री साईबाबांचा भव्य पालखी सोहळा व धूपारती होते.', id: 'shirdi', label: 'साईबाबा मंदिर, शिर्डी' },
+        { badge: '📅 वार विशेष', title: 'शुक्रवार — श्री महालक्ष्मी व तुळजाभवानी विशेष दिवस', desc: 'शुक्रवारी कोल्हापूरची करवीर निवासिनी श्री अंबाबाई व श्री तुळजाभवानी देवीच्या विशेष अलंकार पूजेचे दर्शन घ्या.', id: 'kolhapur', label: 'महालक्ष्मी मंदिर, कोल्हापूर' },
+        { badge: '📅 वार विशेष', title: 'शनिवार — श्री शनि व मारुती/देवी दर्शन', desc: 'शनिवारी संकट निवारणासाठी भक्तीभावाने नामस्मरण व सायंकाळच्या आरतीचे विशेष महत्त्व आहे.', id: 'tuljapur', label: 'तुळजाभवानी, तुळजापूर' }
+      ];
+
+      const specialEvents = [];
+      const todayFest = festivals.find(f => f.date === todayISO);
+
+      if (todayFest) {
+        specialEvents.push({
+          badge: '🚩 आजचा मुख्य सोहळा',
+          title: todayFest.name,
+          desc: `${todayFest.note} — आजच्या पावन पर्वावर थेट दर्शनाचा लाभ घ्या.`,
+          id: todayFest.templeId || 'pandharpur',
+          label: todayFest.label || 'श्री विठ्ठल-रुक्मिणी, पंढरपूर',
+          priority: true
+        });
+      } else if (tithiName === 'एकादशी') {
+        specialEvents.push({
+          badge: '🚩 एकादशी विशेष',
+          title: `${paksha} एकादशी — पंढरपूर श्री विठ्ठल-रुक्मिणी दर्शन`,
+          desc: 'आज पावन एकादशी असल्याने श्री विठ्ठल-रुक्मिणीचे थेट दर्शन व नामस्मरण करा.',
+          id: 'pandharpur',
+          label: 'श्री विठ्ठल-रुक्मिणी, पंढरपूर',
+          priority: true
+        });
+      } else if (tithiName === 'चतुर्थी') {
+        specialEvents.push({
+          badge: '🌙 तिथी विशेष',
+          title: `${isShukla ? 'विनायक' : 'संकष्टी'} चतुर्थी — गणेश विशेष दर्शन`,
+          desc: 'चतुर्थी निमित्त पुणे श्रीमंत दगडूशेठ हलवाई गणपती व मुंबई सिद्धिविनायक विशेष आरती.',
+          id: 'dagdusheth',
+          label: 'दगडूशेठ गणपती, पुणे'
+        });
+      } else if (tithiName === 'पौर्णिमा' || tithiName === 'अमावास्या') {
+        specialEvents.push({
+          badge: '🌙 तिथी विशेष',
+          title: `${tithiName} — देवी व कुलदैवत विशेष पूजा`,
+          desc: `${tithiName} निमित्त कोल्हापूर महालक्ष्मी व तुळजापूर तुळजाभवानी येथे विशेष अलंकार पूजा.`,
+          id: 'tuljapur',
+          label: 'तुळजाभवानी मंदिर, तुळजापूर'
+        });
+      } else if (tithiName === 'त्रयोदशी') {
+        specialEvents.push({
+          badge: '🌙 तिथी विशेष',
+          title: 'प्रदोष व्रत — सायंकाळ विशेष दर्शन',
+          desc: 'त्रयोदशी प्रदोष काळानिमित्त सायंकाळची आरती व भक्तीमय दर्शनाचा लाभ घ्या.',
+          id: 'pandharpur',
+          label: 'श्री विठ्ठल-रुक्मिणी, पंढरपूर'
+        });
+      }
+
+      specialEvents.push(weekdaySpecials[dayIdx]);
+
+      document.getElementById('todayTempleSpecialBox').innerHTML = specialEvents.map((sp) => {
+        const isPandharpur = sp.id === 'pandharpur' || !!sp.priority;
+        return `
+        <div class="rounded-2xl ${isPandharpur ? 'bg-gradient-to-br from-orange-50/90 via-amber-50/60 to-white border-amber-400 border-l-4 border-l-[#EA580C] ring-1 ring-amber-300/60 shadow-sm' : 'bg-slate-50/80 border-slate-200'} border p-4 space-y-2">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] ${isPandharpur ? 'bg-[#EA580C] text-white shadow-sm' : 'bg-sky-100 text-[#05344E] border border-sky-200'}">${sp.badge}</span>
+            ${isPandharpur ? '<span class="px-2.5 py-0.5 rounded-full text-[11px] bg-orange-100 text-[#9A3412] border border-orange-300">🛕 पंढरपूर विशेष</span>' : ''}
+            <span class="text-sm sm:text-base text-[#05344E]">${sp.title}</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">${sp.desc}</p>
+          <div class="pt-1 flex flex-wrap gap-2">
+            <a href="temple-info.html?id=${sp.id}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#05344E] hover:bg-[#084160] text-white text-xs transition">🛕 ${sp.label} माहिती</a>
+            <a href="index.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs transition">▶️ लाईव्ह दर्शन पहा</a>
+          </div>
+        </div>
+      `;
+      }).join('');
+
+      // 4. Upcoming Marathi Festivals & Vrat dates (2026-2027)
+      const upcoming = festivals.filter(f => f.date >= todayISO).slice(0, 6);
+      const listToShow = upcoming.length ? upcoming : festivals.slice(-6);
+      const cardPalettes = [
+        { card: 'border-sky-300 bg-gradient-to-br from-sky-50 to-white shadow-sm', pill: 'bg-[#05344E] text-white shadow-sm' },
+        { card: 'border-teal-300 bg-gradient-to-br from-teal-50 to-white shadow-sm', pill: 'bg-teal-700 text-white shadow-sm' },
+        { card: 'border-indigo-300 bg-gradient-to-br from-indigo-50 to-white shadow-sm', pill: 'bg-indigo-700 text-white shadow-sm' },
+        { card: 'border-purple-300 bg-gradient-to-br from-purple-50 to-white shadow-sm', pill: 'bg-purple-700 text-white shadow-sm' }
+      ];
+      document.getElementById('upcomingFestivalsGrid').innerHTML = listToShow.map((f, idx) => {
+        const [yy, mm, dd] = f.date.split('-').map(Number);
+        const isToday = f.date === todayISO;
+        const isEka = !!f.isEkadashi;
+        const isPandharpur = isEka || f.templeId === 'pandharpur';
+        const pal = cardPalettes[idx % cardPalettes.length];
+        return `
+          <div class="rounded-xl border ${isPandharpur ? 'border-amber-400 border-l-4 border-l-[#EA580C] bg-gradient-to-br from-orange-50/90 via-amber-50/70 to-white ring-1 ring-amber-300/60 shadow-sm' : pal.card} p-3.5 space-y-1.5">
+            <div class="flex items-center justify-between gap-2">
+              <span class="px-2.5 py-0.5 rounded-lg text-xs ${isPandharpur ? 'bg-rose-600 text-white shadow-sm' : pal.pill}">${mrDigits(dd)} ${months[mm - 1]} ${mrDigits(yy)}</span>
+              <div class="flex items-center gap-1">
+                ${isPandharpur ? '<span class="px-2 py-0.5 rounded-full bg-[#EA580C] text-white text-[10px] shadow-sm">🚩 पंढरपूर विशेष</span>' : ''}
+                ${isToday ? '<span class="px-2 py-0.5 rounded-full bg-[#05344E] text-white text-[10px]">आज</span>' : ''}
+              </div>
+            </div>
+            <div class="text-base text-[#05344E]">${f.name}</div>
+            <div class="text-xs text-slate-600">${f.note}</div>
+          </div>`;
+      }).join('');
+    })();
   </script>
   <script>
     const FIREBASE_CONFIG = {
@@ -225,7 +521,7 @@
         const box = document.getElementById('menuTempleInfoList');
         if (!box) return;
         box.innerHTML = (list || []).filter(t => t && !t.deleted && !t.hidden).map(t =>
-          `<a href="temple-info.html?id=${encodeURIComponent(t.id)}" class="block px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700 hover:bg-amber-50 hover:text-[#05344E] truncate">🛕 ${esc(t.shortTitle || t.name || t.id)}</a>`
+          `<a href="temple-info.html?id=${encodeURIComponent(t.id)}" class="block px-3 py-1.5 rounded-lg text-xs font-bold truncate ${t.id === 'pandharpur' ? 'border-l-4 border-[#EA580C] bg-orange-50/90 text-[#9A3412] hover:bg-orange-100' : 'text-slate-700 hover:bg-amber-50 hover:text-[#05344E]'}">${t.id === 'pandharpur' ? '🚩' : '🛕'} ${esc(t.shortTitle || t.name || t.id)}</a>`
         ).join('');
       }
       renderTempleMenu(DEFAULT_TEMPLES_MENU);

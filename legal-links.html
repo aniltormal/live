@@ -30,10 +30,20 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
   <style>
-    body { font-family: 'Noto Sans Devanagari', sans-serif; }
+    body, body * { font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; font-weight: 700; }
+    html { font-size: 17.5px; }
+    @media (min-width: 1024px) { html { font-size: 19px; } }
     .font-khand { font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; }
     #headerTitle { font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; font-weight: 700; }
     @media (min-width: 1024px) { html { font-size: 18px; } }
+    #legalReaderBody h1, #legalReaderBody h2.page-title { font-size: 1.45rem; line-height: 1.3; color: #0f172a; margin-bottom: 0.35rem; }
+    #legalReaderBody .meta-date { font-size: 0.78rem; color: #64748b; margin-bottom: 0.85rem; }
+    #legalReaderBody .lang-block { border-left: 3px solid #4f46e5; padding-left: 14px; margin-top: 0.75rem; space-y: 0.5rem; }
+    #legalReaderBody h2, #legalReaderBody h3 { font-size: 1.05rem; color: #05344E; margin-top: 0.85rem; margin-bottom: 0.35rem; }
+    #legalReaderBody ol { list-style: decimal; padding-left: 1.35rem; margin: 0.5rem 0; }
+    #legalReaderBody ul { list-style: disc; padding-left: 1.35rem; margin: 0.5rem 0; }
+    #legalReaderBody li { margin-bottom: 0.3rem; color: #334155; }
+    #legalReaderBody a { color: #4f46e5; text-decoration: underline; }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
@@ -100,17 +110,17 @@
     </section>
 
     <section class="bg-white rounded-3xl border border-slate-200 shadow-md p-4 sm:p-6 space-y-4">
-      <div id="allTenLinksGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5"></div>
+      <div id="allTenLinksGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3"></div>
     </section>
     <section id="legalInlineReader" class="hidden bg-white rounded-3xl border border-slate-200 shadow-md p-5 sm:p-6 space-y-4">
       <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-100">
         <h3 id="legalReaderTitle" class="font-khand text-xl sm:text-2xl font-bold text-[#05344E]">माहिती</h3>
         <div class="flex items-center gap-2">
-          <a id="legalReaderExtLink" href="#" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 border border-amber-200 text-xs font-bold text-amber-900">↗ पूर्ण पेज</a>
+          
           <button type="button" onclick="document.getElementById('legalInlineReader').classList.add('hidden')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 cursor-pointer">✕ बंद करा</button>
         </div>
       </div>
-      <div id="legalReaderBody" class="prose prose-sm sm:prose-base max-w-none text-slate-800 leading-relaxed space-y-3"></div>
+      <div id="legalReaderBody" class="text-sm sm:text-base text-slate-800 leading-relaxed space-y-4"></div>
     </section>
   </main>
 
@@ -138,19 +148,95 @@
 
   <script>
     const DEFAULT_10_LINKS = [
-      { label: 'आमच्याबद्दल', url: 'about.html', icon: 'ℹ️' },
-      { label: 'संपर्क', url: 'contact.html', icon: '📞' },
-      { label: 'जाहिरात', url: 'advertising.html', icon: '📢' },
       { label: 'गोपनीयता', url: 'privacy.html', icon: '🔒' },
       { label: 'अटी', url: 'terms.html', icon: '📜' },
-      { label: 'अस्वीकरण', url: 'disclaimer.html', icon: '⚠️' },
       { label: 'कुकीज', url: 'cookies.html', icon: '🍪' },
       { label: 'कॉपीराइट', url: 'copyright.html', icon: '©️' },
       { label: 'कंटेंट काढणे', url: 'content-removal.html', icon: '🗑️' },
       { label: 'बाह्य लिंक्स', url: 'third-party-links.html', icon: '🌐' }
     ];
+    const EXCLUDED_LEGAL_URLS = ['about.html', 'contact.html', 'advertising.html', 'disclaimer.html'];
+    const EXCLUDED_LEGAL_LABELS = ['आमच्याबद्दल', 'संपर्क', 'जाहिरात', 'अस्वीकरण'];
 
     let activePrimaryColor = '#05344E';
+
+    const LEGAL_FALLBACK_HTML = {
+      'privacy.html': `
+        <h2 class="page-title">Privacy Policy / गोपनीयता धोरण</h2>
+        <div class="meta-date">प्रभावी दिनांक / Effective date: 18 November 2026 | अद्ययावत: 18 November 2026</div>
+        <div class="lang-block">
+          <h3>मराठी</h3>
+          <p><strong>दर्शन सेतू लाईव्ह (darshansetu.live)</strong> तुमच्या गोपनीयतेचा आदर करते. आम्ही कोणतीही अनावश्यक वैयक्तिक माहिती संकलित करत नाही.</p>
+          <ol>
+            <li>पोर्टलवरील लाईव्ह दर्शन पाहण्यासाठी कोणत्याही लॉग-इन किंवा नोंदणीची आवश्यकता नाही.</li>
+            <li>थीम (Light/Dark) आणि अ‍ॅप पसंती सेव्ह करण्यासाठी केवळ तुमच्या ब्राउझरचा LocalStorage वापरला जातो.</li>
+            <li>जाहिराती व विश्लेषण (Google AdSense / Analytics) साठी केवळ निनावी तांत्रिक माहिती वापरली जाऊ शकते.</li>
+          </ol>
+        </div>`,
+      'terms.html': `
+        <h2 class="page-title">Terms & Conditions / वापरण्याच्या अटी</h2>
+        <div class="meta-date">प्रभावी दिनांक / Effective date: 18 November 2026</div>
+        <div class="lang-block">
+          <h3>मराठी</h3>
+          <p>हे पोर्टल वापरताना तुम्ही खालील अटींशी सहमत आहात:</p>
+          <ol>
+            <li>पोर्टलवरील सर्व लाईव्ह दर्शन फीड्स सेवाभावी हेतूने एकाच ठिकाणी उपलब्ध करून दिले आहेत.</li>
+            <li>तांत्रिक कारणामुळे किंवा मंदिर संस्थानाच्या वेळेनुसार प्रक्षेपण तात्पुरते बंद राहू शकते.</li>
+            <li>पोर्टलवरील डिझाइन, लोगो व मजकुराचा अनधिकृत व्यावसायिक वापर करता येणार नाही.</li>
+          </ol>
+        </div>`,
+      'cookies.html': `
+        <h2 class="page-title">Cookie Policy / कुकीज धोरण</h2>
+        <div class="meta-date">प्रभावी दिनांक / Effective date: 18 November 2026</div>
+        <div class="lang-block">
+          <h3>मराठी</h3>
+          <p>वापरकर्त्यांचा अनुभव अधिक सुरळीत करण्यासाठी पोर्टलवर मर्यादित कुकीज व ब्राउझर स्टोरेज वापरले जाते:</p>
+          <ol>
+            <li>तुमची पसंतीची थीम (Light/Dark Mode) लक्षात ठेवण्यासाठी.</li>
+            <li>अ‍ॅप इन्स्टॉल सूचना वारंवार दिसू नये म्हणून तात्पुरती नोंद ठेवण्यासाठी.</li>
+            <li>ब्राउझर सेटिंग्जमधून तुम्ही कधीही कुकीज बंद किंवा डिलीट करू शकता.</li>
+          </ol>
+        </div>`,
+      'copyright.html': `
+        <h2 class="page-title">Copyright Policy / कॉपीराइट व स्वामित्व हक्क</h2>
+        <div class="meta-date">प्रभावी दिनांक / Effective date: 18 November 2026</div>
+        <div class="lang-block">
+          <h3>मराठी</h3>
+          <p>या पोर्टलवरील सर्व मंदिरांचे थेट प्रक्षेपण (Live Feeds) हे संबंधित देवस्थान ट्रस्ट व अधिकृत संस्थानांची मालकी व स्वामित्व हक्क आहेत.</p>
+          <ol>
+            <li>पोर्टल स्वतः कोणतेही थेट प्रक्षेपण चित्रीकरण करत नाही; अधिकृत सार्वजनिक फीड्स भाविकांच्या सोयीसाठी प्रदर्शित केले आहेत.</li>
+            <li>स्वामित्व हक्कांबाबत कोणताही आक्षेप असल्यास कृपया <a href="contact.html">Contact</a> पेजवरून संपर्क साधावा.</li>
+          </ol>
+        </div>`,
+      'content-removal.html': `
+        <h2 class="page-title">Content Removal Policy / सामग्री काढण्याचे धोरण</h2>
+        <div class="meta-date">प्रभावी दिनांक / Effective date: 18 November 2026 | शेवटचे अद्ययावत / Last updated: 18 November 2026</div>
+        <p>हक्कधारक, देवस्थान प्रशासन किंवा संबंधित व्यक्तींसाठी तक्रार प्रक्रिया.</p>
+        <div class="lang-block">
+          <h3>मराठी</h3>
+          <p>एखादा दुवा/एम्बेड अनधिकृत, चुकीचा, दिशाभूल करणारा किंवा हक्कांचे उल्लंघन करणारा असल्याचे वाटत असल्यास कृपया लेखी विनंती पाठवा.</p>
+          <h3>विनंतीत द्यावयाची माहिती</h3>
+          <ol>
+            <li>तक्रारदाराचे नाव, ई-मेल आणि भूमिका/संस्थेचे नाव (लागू असल्यास).</li>
+            <li>संबंधित पेजचा पूर्ण URL आणि आक्षेप असलेल्या स्ट्रीम/सामग्रीची ओळख.</li>
+            <li>तक्रारीचे कारण आणि शक्य असल्यास पुरावा/अधिकृत स्रोत.</li>
+            <li>तक्रारदार संबंधित हक्कधारक किंवा अधिकृत प्रतिनिधी असल्याची पुष्टी.</li>
+            <li>आवश्यक असल्यास पुढील संपर्कासाठी उपलब्ध तपशील.</li>
+          </ol>
+          <p>विनंती <a href="contact.html">Contact</a> पेजवरील ई-मेलवर पाठवा. पडताळणीदरम्यान संबंधित दुवा तात्पुरता हटवण्याचा अधिकार पोर्टल व्यवस्थापन राखून ठेवते.</p>
+        </div>`,
+      'third-party-links.html': `
+        <h2 class="page-title">Third-Party Links / बाह्य लिंक्स धोरण</h2>
+        <div class="meta-date">प्रभावी दिनांक / Effective date: 18 November 2026</div>
+        <div class="lang-block">
+          <h3>मराठी</h3>
+          <p>या पोर्टलवर मंदिरांच्या अधिकृत वेबसाईट्स, YouTube चॅनेल्स आणि प्रायोजक जाहिरातींच्या बाह्य लिंक्स असू शकतात.</p>
+          <ol>
+            <li>बाह्य वेबसाईटवरील मजकूर, धोरणे किंवा सेवांसाठी संबंधित वेबसाईट जबाबदार राहील.</li>
+            <li>कोणतीही बाह्य लिंक सुरक्षित नसल्याचे आढळल्यास कृपया आम्हाला कळवा, ती त्वरित तपासली जाईल.</li>
+          </ol>
+        </div>`
+    };
 
     window.loadLegalPageInline = async function(url, label) {
       const box = document.getElementById('legalInlineReader');
@@ -167,26 +253,41 @@
       bodyEl.innerHTML = '<div class="text-sm font-semibold text-slate-500 py-4 text-center">⏳ माहिती लोड होत आहे...</div>';
       box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
+      const cleanUrl = String(url || '').split('?')[0].split('#')[0].split('/').pop();
       try {
         const res = await fetch(url, { cache: 'no-cache' });
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const html = await res.text();
         const doc = new DOMParser().parseFromString(html, 'text/html');
-        const main = doc.querySelector('main') || doc.querySelector('article') || doc.querySelector('.container') || doc.body;
+        const main = doc.querySelector('main') || doc.querySelector('article') || doc.querySelector('.card') || doc.querySelector('.container') || doc.body;
         if (!main) throw new Error('No content');
         const clone = main.cloneNode(true);
-        clone.querySelectorAll('script, style, header, nav, footer').forEach(el => el.remove());
+        clone.querySelectorAll('script, header, nav, footer').forEach(el => el.remove());
         const cleanHtml = (clone.innerHTML || '').trim();
         if (!cleanHtml) throw new Error('Empty');
         bodyEl.innerHTML = cleanHtml;
       } catch (err) {
-        bodyEl.innerHTML = `<div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-sm text-amber-950 space-y-2"><p>ही माहिती येथे लोड करता आली नाही. खालील बटणावरून थेट उघडून पहा:</p><a href="${url}" class="inline-block px-4 py-2 rounded-xl bg-[#05344E] text-white text-xs font-bold">📄 ${label} पहा ↗</a></div>`;
+        if (LEGAL_FALLBACK_HTML[cleanUrl]) {
+          bodyEl.innerHTML = LEGAL_FALLBACK_HTML[cleanUrl];
+        } else {
+          bodyEl.innerHTML = `<div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-sm text-amber-950 space-y-2"><p>ही माहिती येथे लोड करता आली नाही. खालील बटणावरून थेट उघडून पहा:</p><a href="${url}" class="inline-block px-4 py-2 rounded-xl bg-[#05344E] text-white text-xs font-bold">📄 ${label} पहा ↗</a></div>`;
+        }
       }
     };
 
     function renderAllTenLinks(items) {
       const grid = document.getElementById('allTenLinksGrid');
-      const list = (Array.isArray(items) && items.length) ? items.filter(i => i && i.enabled !== false && i.label) : DEFAULT_10_LINKS;
+      const filtered = (Array.isArray(items) && items.length)
+        ? items.filter(i => {
+            if (!i || i.enabled === false || !i.label) return false;
+            const u = String(i.url || '').toLowerCase();
+            const l = String(i.label || '').trim();
+            if (EXCLUDED_LEGAL_URLS.some(ex => u.includes(ex))) return false;
+            if (EXCLUDED_LEGAL_LABELS.some(ex => l === ex || l.includes(ex))) return false;
+            return true;
+          })
+        : DEFAULT_10_LINKS;
+      const list = filtered.length ? filtered : DEFAULT_10_LINKS;
       const icons = ['ℹ️','📞','📢','🔒','📜','⚠️','🍪','©️','🗑️','🌐'];
       grid.innerHTML = list.map((it, idx) => {
         const href = it.url || '#';

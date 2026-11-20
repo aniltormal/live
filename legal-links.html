@@ -277,35 +277,53 @@
 
     function ensureTermsPoint7(root, cleanUrl) {
       if (!root || cleanUrl !== 'terms.html') return;
-      const fullText = root.textContent || '';
-      if (!fullText.includes('लागू कायदा व न्यायालयीन अधिकारक्षेत्र')) {
-        const mrOl = root.querySelector('.lang-block ol') || root.querySelector('ol');
-        if (mrOl) {
-          const li = document.createElement('li');
-          li.setAttribute('value', '7');
-          li.innerHTML = '<strong>लागू कायदा व न्यायालयीन अधिकारक्षेत्र:</strong> या अटी व शर्ती भारतातील लागू असलेल्या कायद्यांनुसार नियंत्रित व त्यांचे अर्थनिर्णयन केले जातील. या पोर्टलच्या वापरासंदर्भात उद्भवणारे कोणतेही वाद, दावे किंवा कायदेशीर बाबी भारतीय कायद्यांच्या अधीन राहतील. अशा वादांच्या निवारणासाठी महाराष्ट्र राज्यातील संबंधित प्रादेशिक व विषयाधारित अधिकारक्षेत्र असलेल्या सक्षम न्यायालयांचे अधिकारक्षेत्र लागू राहील.';
-          mrOl.appendChild(li);
-        }
-      }
-      if (!fullText.includes('Governing Law and Jurisdiction')) {
-        const blocks = root.querySelectorAll('.lang-block');
-        const enBlock = Array.from(blocks).find(b => /english/i.test(b.textContent || ''));
-        if (enBlock) {
-          let enOl = enBlock.querySelector('ol');
-          if (!enOl) {
-            enOl = document.createElement('ol');
-            enBlock.appendChild(enOl);
+
+      const NEW_MR_HTML = '<strong>लागू कायदा व न्यायालयीन अधिकारक्षेत्र:</strong> या अटी व शर्ती भारतातील लागू असलेल्या कायद्यांनुसार नियंत्रित व त्यांचे अर्थनिर्णयन केले जातील. या पोर्टलच्या वापरासंदर्भात उद्भवणारे कोणतेही वाद, दावे किंवा कायदेशीर बाबी भारतीय कायद्यांच्या अधीन राहतील. अशा वादांच्या निवारणासाठी महाराष्ट्र राज्यातील संबंधित प्रादेशिक व विषयाधारित अधिकारक्षेत्र असलेल्या सक्षम न्यायालयांचे अधिकारक्षेत्र लागू राहील.';
+      const NEW_EN_HTML = '<strong>Governing Law and Jurisdiction:</strong> These Terms and Conditions shall be governed by and interpreted in accordance with the applicable laws of India. Any disputes, claims, or legal matters arising out of or in connection with the use of this Portal shall be subject to the laws of India. The competent courts having relevant territorial and subject-matter jurisdiction within the State of Maharashtra shall have jurisdiction to resolve such disputes.';
+
+      const blocks = Array.from(root.querySelectorAll('.lang-block'));
+      const mrBlock = blocks.find(b => /मराठी/i.test(b.textContent || '')) || root;
+      const enBlock = blocks.find(b => /english/i.test(b.textContent || ''));
+
+      // 1. Replace or remove old 7th+ items in Marathi <ol>
+      const mrOl = mrBlock ? mrBlock.querySelector('ol') : root.querySelector('ol');
+      if (mrOl) {
+        const items = Array.from(mrOl.querySelectorAll(':scope > li'));
+        items.forEach((li, idx) => {
+          const t = li.textContent || '';
+          if (idx >= 6 || li.getAttribute('value') === '7' || /अधिकारक्षेत्र|न्यायालय/.test(t)) {
+            li.remove();
           }
-          const liEn = document.createElement('li');
-          liEn.setAttribute('value', '7');
-          liEn.innerHTML = '<strong>Governing Law and Jurisdiction:</strong> These Terms and Conditions shall be governed by and interpreted in accordance with the applicable laws of India. Any disputes, claims, or legal matters arising out of or in connection with the use of this Portal shall be subject to the laws of India. The competent courts having relevant territorial and subject-matter jurisdiction within the State of Maharashtra shall have jurisdiction to resolve such disputes.';
-          enOl.appendChild(liEn);
-        } else {
-          const wrap = document.createElement('div');
-          wrap.className = 'lang-block';
-          wrap.innerHTML = '<h3>English</h3><ol><li value="7"><strong>Governing Law and Jurisdiction:</strong> These Terms and Conditions shall be governed by and interpreted in accordance with the applicable laws of India. Any disputes, claims, or legal matters arising out of or in connection with the use of this Portal shall be subject to the laws of India. The competent courts having relevant territorial and subject-matter jurisdiction within the State of Maharashtra shall have jurisdiction to resolve such disputes.</li></ol>';
-          root.appendChild(wrap);
+        });
+        const li = document.createElement('li');
+        li.setAttribute('value', '7');
+        li.innerHTML = NEW_MR_HTML;
+        mrOl.appendChild(li);
+      }
+
+      // 2. Replace or remove old 7th+ items in English <ol>
+      if (enBlock) {
+        let enOl = enBlock.querySelector('ol');
+        if (!enOl) {
+          enOl = document.createElement('ol');
+          enBlock.appendChild(enOl);
         }
+        const itemsEn = Array.from(enOl.querySelectorAll(':scope > li'));
+        itemsEn.forEach((li, idx) => {
+          const t = (li.textContent || '').toLowerCase();
+          if (idx >= 6 || li.getAttribute('value') === '7' || t.includes('jurisdiction') || t.includes('governing law')) {
+            li.remove();
+          }
+        });
+        const liEn = document.createElement('li');
+        liEn.setAttribute('value', '7');
+        liEn.innerHTML = NEW_EN_HTML;
+        enOl.appendChild(liEn);
+      } else if (!(root.textContent || '').includes('Governing Law and Jurisdiction')) {
+        const wrap = document.createElement('div');
+        wrap.className = 'lang-block';
+        wrap.innerHTML = '<h3>English</h3><ol><li value="7">' + NEW_EN_HTML + '</li></ol>';
+        root.appendChild(wrap);
       }
     }
 

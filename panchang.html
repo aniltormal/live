@@ -326,18 +326,18 @@
 
       // 3. Multi-Event Today's Special Temple Darshan (Weekday + Tithi + Festival)
       const festivals = [
-        { date: '2026-11-20', name: 'प्रबोधिनी / कार्तिकी एकादशी', note: 'पंढरपूर महायात्रा व २४ तास श्री विठ्ठल-रुक्मिणी दर्शन', templeId: 'pandharpur', label: 'श्री विठ्ठल-रुक्मिणी, पंढरपूर', isEkadashi: true },
-        { date: '2026-11-21', name: 'तुलसी विवाह आरंभ / द्वादशी', note: 'घरोघरी तुलसी विवाह सोहळा व पंढरपूर दर्शन', templeId: 'pandharpur', label: 'श्री विठ्ठल-रुक्मिणी, पंढरपूर' },
-        { date: '2026-11-24', name: 'त्रिपुरारी (कार्तिक) पौर्णिमा', note: 'देव दिवाळी व दीपदान उत्सव', templeId: 'kolhapur', label: 'महालक्ष्मी मंदिर, कोल्हापूर' },
-        { date: '2026-11-27', name: 'संकष्टी चतुर्थी', note: 'दगडूशेठ व सिद्धिविनायक विशेष आरती', templeId: 'dagdusheth', label: 'दगडूशेठ गणपती, पुणे' },
-        { date: '2026-12-20', name: 'मोक्षदा एकादशी / गीता जयंती', note: 'पंढरपूर श्री विठ्ठल-रुक्मिणी विशेष दर्शन व गीता पारायण', templeId: 'pandharpur', label: 'श्री विठ्ठल-रुक्मिणी, पंढरपूर', isEkadashi: true },
-        { date: '2026-12-23', name: 'श्री दत्त जयंती', note: 'मार्गशीर्ष पौर्णिमा — दत्त उपासना', templeId: 'kolhapur', label: 'महालक्ष्मी मंदिर, कोल्हापूर' },
-        { date: '2027-01-14', name: 'मकर संक्रांत', note: 'सुगड पूजन व तीळगूळ संक्रांती', templeId: 'kolhapur', label: 'महालक्ष्मी मंदिर, कोल्हापूर' },
-        { date: '2027-01-25', name: 'माघी गणेश जयंती', note: 'गणेश मंदिर विशेष जन्मोत्सव', templeId: 'siddhivinayak', label: 'सिद्धिविनायक, मुंबई' },
-        { date: '2027-03-06', name: 'महाशिवरात्री', note: 'ज्योतिर्लिंग व शिवमंदिर जागरण', templeId: 'pandharpur', label: 'श्री विठ्ठल-रुक्मिणी, पंढरपूर' },
-        { date: '2027-04-07', name: 'गुढीपाडवा (शके १९४९ प्रारंभ)', note: 'मराठी नूतन वर्ष स्वागत', templeId: 'pandharpur', label: 'श्री विठ्ठल-रुक्मिणी, पंढरपूर' },
-        { date: '2027-04-15', name: 'श्री रामनवमी', note: 'दुपारी १२ वा. श्रीराम जन्मोत्सव', templeId: 'shirdi', label: 'साईबाबा मंदिर, शिर्डी' },
-        { date: '2027-07-15', name: 'आषाढी एकादशी', note: 'पंढरपूर महायात्रा सोहळा व श्री विठ्ठल-रुक्मिणी विशेष दर्शन', templeId: 'pandharpur', label: 'श्री विठ्ठल-रुक्मिणी, पंढरपूर', isEkadashi: true }
+        { date: '2026-11-20', name: 'प्रबोधिनी / कार्तिकी एकादशी', note: 'पंढरपूर महायात्रा व २४ तास श्री विठ्ठल-रुक्मिणी दर्शन', templeId: 'pandharpur', label: 'श्री विठ्ठल-रुक्मिणी, पंढरपूर', isEkadashi: true, details: 'आषाढीपासून सुरू झालेला चातुर्मास प्रबोधिनी (कार्तिकी) एकादशीला समाप्त होतो. श्री विठ्ठलाची महापूजा, पंढरपूर नगरप्रदक्षिणा व अखंड हरिनाम संकीर्तनाचे विशेष महत्त्व आहे. आज भाविकांना २४ तास थेट मुखदर्शनाचा लाभ मिळतो.' },
+        { date: '2026-11-21', name: 'तुलसी विवाह आरंभ / द्वादशी', note: 'घरोघरी तुलसी विवाह सोहळा व पंढरपूर दर्शन', templeId: 'pandharpur', label: 'श्री विठ्ठल-रुक्मिणी, पंढरपूर', details: 'कार्तिक शुक्ल द्वादशीपासून पौर्णिमेपर्यंत तुळशीचे भगवान श्रीकृष्ण/विष्णू यांच्याशी मंगल विवाह लावले जातात. अंगणातील तुळशी वृंदावनाची सजावट, ऊस, आवळे व चिंचा अर्पण करून आरती केली जाते.' },
+        { date: '2026-11-24', name: 'त्रिपुरारी (कार्तिक) पौर्णिमा', note: 'देव दिवाळी व दीपदान उत्सव', templeId: 'kolhapur', label: 'महालक्ष्मी मंदिर, कोल्हापूर', details: 'कार्तिक पौर्णिमेला देव दिवाळी किंवा त्रिपुरारी पौर्णिमा म्हणतात. भगवान शंकरांनी त्रिपुरासुराचा वध केल्याच्या आनंदात मंदिरांत व नद्यांच्या काठावर दीपमाळा प्रज्वलित करून दीपदान केले जाते.' },
+        { date: '2026-11-27', name: 'संकष्टी चतुर्थी', note: 'दगडूशेठ व सिद्धिविनायक विशेष आरती', templeId: 'dagdusheth', label: 'दगडूशेठ गणपती, पुणे', details: 'कृष्ण पक्षातील चतुर्थीला संकष्टी चतुर्थी व्रत केले जाते. दिवसभर उपवास करून सायंकाळी श्री गणेशाची पूजा व चंद्रोदयानंतर अर्घ्य देऊन उपवास सोडला जातो.' },
+        { date: '2026-12-20', name: 'मोक्षदा एकादशी / गीता जयंती', note: 'पंढरपूर श्री विठ्ठल-रुक्मिणी विशेष दर्शन व गीता पारायण', templeId: 'pandharpur', label: 'श्री विठ्ठल-रुक्मिणी, पंढरपूर', isEkadashi: true, details: 'मार्गशीर्ष शुक्ल एकादशीला मोक्षदा एकादशी म्हणतात. याच पावन दिवशी भगवान श्रीकृष्णाने अर्जुनाला श्रीमद्भगवद्गीतेचा उपदेश केला, म्हणून हा दिवस गीता जयंती म्हणून साजरा केला जातो.' },
+        { date: '2026-12-23', name: 'श्री दत्त जयंती', note: 'मार्गशीर्ष पौर्णिमा — दत्त उपासना', templeId: 'kolhapur', label: 'महालक्ष्मी मंदिर, कोल्हापूर', details: 'मार्गशीर्ष पौर्णिमेला सायंकाळी श्री दत्तात्रेयांचा जन्मोत्सव साजरा होतो. गुरुचरित्र पारायण, दत्त बावन्नी व पाळणा गायन करून भक्तीभावाने पूजा केली जाते.' },
+        { date: '2027-01-14', name: 'मकर संक्रांत', note: 'सुगड पूजन व तीळगूळ संक्रांती', templeId: 'kolhapur', label: 'महालक्ष्मी मंदिर, कोल्हापूर', details: 'सूर्य मकर राशीत प्रवेश करतो, तेव्हा मकर संक्रांत साजरी होते. उत्तरायणाचा प्रारंभ मानला जातो; सुवासिनी सुगड पूजन करतात व स्नेहभाव वाढवण्यासाठी तीळगूळ दिला जातो.' },
+        { date: '2027-01-25', name: 'माघी गणेश जयंती', note: 'गणेश मंदिर विशेष जन्मोत्सव', templeId: 'siddhivinayak', label: 'सिद्धिविनायक, मुंबई', details: 'माघ शुक्ल चतुर्थी हा श्री गणेशाचा जन्मदिन म्हणून साजरा होतो. दुपारी १२ वाजता गणपती मंदिरांत विशेष जन्मोत्सव, पालखी व मोदकांचा नैवेद्य अर्पण केला जातो.' },
+        { date: '2027-03-06', name: 'महाशिवरात्री', note: 'ज्योतिर्लिंग व शिवमंदिर जागरण', templeId: 'pandharpur', label: 'श्री विठ्ठल-रुक्मिणी, पंढरपूर', details: 'माघ कृष्ण चतुर्दशीला महाशिवरात्री साजरी होते. रात्रभर चार प्रहरांची शिवपूजा, बेलपत्र अर्पण, रुद्राभिषेक व नामस्मरण करण्याचे अनन्यसाधारण महत्त्व आहे.' },
+        { date: '2027-04-07', name: 'गुढीपाडवा (शके १९४९ प्रारंभ)', note: 'मराठी नूतन वर्ष स्वागत', templeId: 'pandharpur', label: 'श्री विठ्ठल-रुक्मिणी, पंढरपूर', details: 'चैत्र शुक्ल प्रतिपदेला साडेतीन मुहूर्तांपैकी एक असलेला गुढीपाडवा साजरा होतो. घरोघरी विजयाची गुढी उभारून कडुलिंब-गुळाचा प्रसाद घेतला जातो आणि पंचांग श्रवण केले जाते.' },
+        { date: '2027-04-15', name: 'श्री रामनवमी', note: 'दुपारी १२ वा. श्रीराम जन्मोत्सव', templeId: 'shirdi', label: 'साईबाबा मंदिर, शिर्डी', details: 'चैत्र शुक्ल नवमीला दुपारी ठीक १२ वाजता प्रभू श्रीरामांचा जन्मोत्सव साजरा केला जातो. शिर्डी येथेही श्री रामनवमी उत्सव मोठ्या भक्तीभावाने साजरा होतो.' },
+        { date: '2027-07-15', name: 'आषाढी एकादशी', note: 'पंढरपूर महायात्रा सोहळा व श्री विठ्ठल-रुक्मिणी विशेष दर्शन', templeId: 'pandharpur', label: 'श्री विठ्ठल-रुक्मिणी, पंढरपूर', isEkadashi: true, details: 'आषाढ शुक्ल एकादशीला पंढरपूरची महायात्रा भरते. राज्यभरातून आलेल्या संतांच्या पालख्यांचे पंढरपुरात आगमन होते आणि चातुर्मासाची सुरुवात होते.' }
       ];
       const todayISO = `${now.getFullYear()}-${pad2(now.getMonth() + 1)}-${pad2(now.getDate())}`;
 
@@ -412,7 +412,7 @@
           <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">${sp.desc}</p>
           <div class="pt-1 flex flex-wrap gap-2">
             <a href="temple-info.html?id=${sp.id}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#05344E] hover:bg-[#084160] text-white text-xs transition">🛕 ${sp.label} माहिती</a>
-            <a href="index.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs transition">▶️ लाईव्ह दर्शन पहा</a>
+            <a href="index.html?play=${encodeURIComponent(sp.id)}" class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white text-xs sm:text-sm font-bold shadow-md transition"><svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><span>आत्ताच लाईव्ह दर्शन घ्या</span></a>
           </div>
         </div>
       `;
@@ -427,14 +427,16 @@
         { card: 'border-indigo-300 bg-gradient-to-br from-indigo-50 to-white shadow-sm', pill: 'bg-indigo-700 text-white shadow-sm' },
         { card: 'border-purple-300 bg-gradient-to-br from-purple-50 to-white shadow-sm', pill: 'bg-purple-700 text-white shadow-sm' }
       ];
-      document.getElementById('upcomingFestivalsGrid').innerHTML = listToShow.map((f, idx) => {
+      const festGrid = document.getElementById('upcomingFestivalsGrid');
+      festGrid.innerHTML = listToShow.map((f, idx) => {
         const [yy, mm, dd] = f.date.split('-').map(Number);
         const isToday = f.date === todayISO;
         const isEka = !!f.isEkadashi;
         const isPandharpur = isEka || f.templeId === 'pandharpur';
         const pal = cardPalettes[idx % cardPalettes.length];
+        const tId = f.templeId || 'pandharpur';
         return `
-          <div class="rounded-xl border ${isPandharpur ? 'border-amber-400 border-l-4 border-l-[#EA580C] bg-gradient-to-br from-orange-50/90 via-amber-50/70 to-white ring-1 ring-amber-300/60 shadow-sm' : pal.card} p-3.5 space-y-1.5">
+          <div class="fest-card rounded-xl border ${isPandharpur ? 'border-amber-400 border-l-4 border-l-[#EA580C] bg-gradient-to-br from-orange-50/90 via-amber-50/70 to-white ring-1 ring-amber-300/60 shadow-sm' : pal.card} p-3.5 space-y-1.5 cursor-pointer transition hover:shadow-md" data-fest-idx="${idx}" role="button" tabindex="0" aria-expanded="false">
             <div class="flex items-center justify-between gap-2">
               <span class="px-2.5 py-0.5 rounded-lg text-xs ${isPandharpur ? 'bg-rose-600 text-white shadow-sm' : pal.pill}">${mrDigits(dd)} ${months[mm - 1]} ${mrDigits(yy)}</span>
               <div class="flex items-center gap-1">
@@ -442,10 +444,51 @@
                 ${isToday ? '<span class="px-2 py-0.5 rounded-full bg-[#05344E] text-white text-[10px]">आज</span>' : ''}
               </div>
             </div>
-            <div class="text-base text-[#05344E]">${f.name}</div>
+            <div class="flex items-center justify-between gap-2">
+              <div class="text-base text-[#05344E]">${f.name}</div>
+              <span class="fest-arrow inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] shrink-0 transition shadow-xs ${isPandharpur ? 'bg-orange-100 text-[#9A3412] border border-orange-300' : 'bg-[#05344E]/10 text-[#05344E] border border-[#05344E]/25'}">📖 सविस्तर वाचा ▾</span>
+            </div>
             <div class="text-xs text-slate-600">${f.note}</div>
+            <div class="fest-detail hidden mt-2 pt-2.5 border-t border-slate-200/90 space-y-2 text-xs text-slate-700 leading-relaxed">
+              <p>${f.details || f.note}</p>
+              <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+                <a href="index.html?play=${encodeURIComponent(tId)}" onclick="event.stopPropagation();" class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[11px] shadow-sm">▶ लाईव्ह दर्शन घ्या</a>
+                <button type="button" class="fest-min-btn inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#05344E]/10 hover:bg-[#05344E] text-[#05344E] hover:text-white border border-[#05344E]/20 text-[11px] transition cursor-pointer">✕ बंद करा</button>
+              </div>
+            </div>
           </div>`;
       }).join('');
+
+      festGrid.querySelectorAll('.fest-card').forEach(card => {
+        const toggleCard = (forceClose) => {
+          const det = card.querySelector('.fest-detail');
+          const arr = card.querySelector('.fest-arrow');
+          if (!det) return;
+          const willOpen = forceClose === true ? false : det.classList.contains('hidden');
+          det.classList.toggle('hidden', !willOpen);
+          card.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+          if (arr) {
+            arr.textContent = willOpen ? '✕ बंद करा' : '📖 सविस्तर वाचा ▾';
+            arr.classList.toggle('bg-[#05344E]', willOpen);
+            arr.classList.toggle('text-white', willOpen);
+          }
+        };
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('a')) return;
+          if (e.target.closest('.fest-min-btn')) {
+            e.stopPropagation();
+            toggleCard(true);
+            return;
+          }
+          toggleCard();
+        });
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggleCard();
+          }
+        });
+      });
     })();
   </script>
   <script>

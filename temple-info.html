@@ -241,6 +241,23 @@
             <h4 id="modalMessageTitle" class="text-base sm:text-lg font-extrabold text-amber-300">🙏 सध्या लाईव्ह दर्शन तात्पुरते बंद आहे</h4>
             <p id="modalMessageText" class="text-xs sm:text-sm text-neutral-300 max-w-md">मंदिराची दैनंदिन पूजा/नैवेद्य वेळ किंवा तांत्रिक कारणास्तव प्रक्षेपण थांबलेले असू शकते. कृपया थोड्या वेळाने पुन्हा प्रयत्न करा.</p>
           </div>
+                    <!-- Pre-Roll Ad Overlay -->
+          <div id="preRollOverlay" class="hidden absolute inset-0 z-40 bg-black flex flex-col items-center justify-center">
+            <a id="preRollLinkEl" href="#" target="_blank" rel="noopener noreferrer" class="relative w-full h-full flex items-center justify-center">
+              <img id="preRollImgEl" src="" alt="जाहिरात" class="w-full h-full object-contain bg-black" />
+              <video id="preRollVideoEl" src="" playsinline autoplay muted class="hidden w-full h-full object-contain bg-black"></video>
+              <div id="preRollTextWrap" class="hidden absolute bottom-12 left-3 right-3 bg-black/70 rounded-lg px-3 py-1.5 text-center">
+                <p id="preRollTextEl" class="text-xs sm:text-sm font-bold text-white"></p>
+              </div>
+            </a>
+            <div class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full bg-black/75 border border-white/25 text-white text-[11px] font-bold">
+              <span id="preRollCountdownLabel">जाहिरात • दर्शन 5 सेकंदात सुरू होईल...</span>
+            </div>
+            <button id="preRollSkipBtn" type="button" class="hidden absolute bottom-3 right-3 px-3 py-1.5 rounded-full bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold shadow cursor-pointer">⏭ स्किप करा</button>
+            <div class="absolute bottom-0 inset-x-0 h-1 bg-white/20">
+              <div id="preRollProgressFill" class="h-full w-0 bg-amber-400 transition-all duration-300"></div>
+            </div>
+          </div>
           <div id="playerTickerBar" class="absolute bottom-0 left-0 right-0 z-20 overflow-hidden py-1.5 pointer-events-none select-none border-t border-white/15" style="background-color: #05344E;">
             <div class="marquee-track text-xs sm:text-sm font-bold tracking-wide" style="color: #D6DBD2;">
               <span class="px-8">अस्वीकरण: या पोर्टलवरील सर्व लाईव्ह दर्शनाचे प्रक्षेपण संबंधित देवस्थान व अधिकृत तृतीय-पक्ष माध्यमांच्या माध्यमातून दाखवले जात आहे.</span>
@@ -552,6 +569,11 @@
     }
     function cleanupInfoPlayer() {
       if (infoStreamTimeout) { clearTimeout(infoStreamTimeout); infoStreamTimeout = null; }
+      if (window.__pvPreRollTimer) { clearInterval(window.__pvPreRollTimer); window.__pvPreRollTimer = null; }
+      const prOv = document.getElementById('preRollOverlay');
+      const prVid = document.getElementById('preRollVideoEl');
+      if (prOv) prOv.classList.add('hidden');
+      if (prVid) { prVid.pause(); prVid.removeAttribute('src'); prVid.load(); prVid.classList.add('hidden'); }
       if (infoHlsInstance) { try { infoHlsInstance.destroy(); } catch (_) {} infoHlsInstance = null; }
       const yt = document.getElementById('youtubePlayer');
       const vid = document.getElementById('nativePlayer');
@@ -648,6 +670,7 @@
       
       if (load) load.classList.remove('hidden');
 
+      const startActualStream = () => {
       if (type === 'youtube') {
         const vidId = extractYouTubeIdInfo(url);
         if (!vidId) { showOffline('अवैध YouTube लिंक.'); return; }
@@ -715,8 +738,62 @@
       }
       vid.src = url;
       vid.play().catch(() => {});
+      };
+      const prCfg = window.__preRollAdCfg;
+      const prOv = document.getElementById('preRollOverlay');
+      if (prCfg && prCfg.enabled && (prCfg.image || prCfg.videoUrl) && prOv) {
+        if (load) load.classList.add('hidden');
+        const prImg = document.getElementById('preRollImgEl');
+        const prVid = document.getElementById('preRollVideoEl');
+        const prLink = document.getElementById('preRollLinkEl');
+        const prTxtW = document.getElementById('preRollTextWrap');
+        const prTxt = document.getElementById('preRollTextEl');
+        const prLbl = document.getElementById('preRollCountdownLabel');
+        const prSkip = document.getElementById('preRollSkipBtn');
+        const prFill = document.getElementById('preRollProgressFill');
+        const dur = Math.max(2, Number(prCfg.duration) || 5);
+        const skipAfter = Number(prCfg.skipAfter || 0);
+        if (prLink) prLink.href = prCfg.link || '#';
+        if (prCfg.videoUrl) {
+          prImg.classList.add('hidden');
+          prVid.src = prCfg.videoUrl;
+          prVid.classList.remove('hidden');
+          prVid.play().catch(() => {});
+        } else {
+          prVid.classList.add('hidden');
+          prImg.src = prCfg.image;
+          prImg.classList.remove('hidden');
+        }
+        if (prCfg.text && prTxtW && prTxt) {
+          prTxt.textContent = prCfg.text;
+          if (prCfg.fontFamily) prTxt.style.fontFamily = prCfg.fontFamily;
+          prTxtW.classList.remove('hidden');
+        } else if (prTxtW) { prTxtW.classList.add('hidden'); }
+        prSkip.classList.add('hidden');
+        prOv.classList.remove('hidden');
+        let rem = dur;
+        const finishPr = () => {
+          if (window.__pvPreRollTimer) { clearInterval(window.__pvPreRollTimer); window.__pvPreRollTimer = null; }
+          prOv.classList.add('hidden');
+          if (prVid) { prVid.pause(); prVid.removeAttribute('src'); prVid.load(); }
+          if (load) load.classList.remove('hidden');
+          startActualStream();
+        };
+        prSkip.onclick = finishPr;
+        if (prLbl) prLbl.textContent = `जाहिरात • दर्शन ${rem} सेकंदात सुरू होईल...`;
+        if (prFill) prFill.style.width = '0%';
+        window.__pvPreRollTimer = setInterval(() => {
+          rem -= 1;
+          const elapsed = dur - rem;
+          if (prFill) prFill.style.width = Math.min(100, Math.round((elapsed / dur) * 100)) + '%';
+          if (skipAfter > 0 && elapsed >= skipAfter) prSkip.classList.remove('hidden');
+          if (rem <= 0) { finishPr(); return; }
+          if (prLbl) prLbl.textContent = `जाहिरात • दर्शन ${rem} सेकंदात सुरू होईल...`;
+        }, 1000);
+      } else {
+        startActualStream();
+      }
     }
-
     document.getElementById('closeModalBtn').addEventListener('click', closeInfoLiveModal);
     document.getElementById('videoModal').addEventListener('click', (e) => { if (e.target.id === 'videoModal') closeInfoLiveModal(); });
     document.getElementById('playerMuteBtn').addEventListener('click', () => {
@@ -865,6 +942,7 @@
     }
 
       db.ref('siteConfig/master').on('value', (s) => applyMasterConfigGlobal(s.val()));
+      db.ref('siteConfig/ads').on('value', (s) => { const a = s.val() || {}; window.__preRollAdCfg = a.preRoll || null; });
       db.ref('siteConfig/player').on('value', (snap) => {
         const p = snap.val();
         if (!p || typeof p !== 'object') return;
@@ -882,6 +960,21 @@
         const tBar = document.getElementById('playerTickerBar');
         const tTrack = document.querySelector('#playerTickerBar .marquee-track');
         const wmTrack = document.querySelector('.watermark-track');
+        const ensurePlFont = (fam) => {
+          if (!fam) return;
+          const m = String(fam).match(/'([^']+)'/);
+          const name = m ? m[1] : String(fam).split(',')[0].trim();
+          if (!name || name === 'sans-serif' || name === 'serif') return;
+          const id = 'gf-' + name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+          if (!document.getElementById(id)) {
+            const lk = document.createElement('link');
+            lk.id = id; lk.rel = 'stylesheet';
+            lk.href = 'https://fonts.googleapis.com/css2?family=' + encodeURIComponent(name).replace(/%20/g, '+') + ':wght@400;600;700;800&display=swap';
+            document.head.appendChild(lk);
+          }
+        };
+        if (p.fontFamily) ensurePlFont(p.fontFamily);
+        if (p.offlineFontFamily) ensurePlFont(p.offlineFontFamily);
         if (p.fontFamily && vm) vm.style.setProperty('font-family', p.fontFamily, 'important');
         if (hdr && p.headerBgColor) hdr.style.background = p.headerBgColor;
         if (hdr && p.headerBorderColor) hdr.style.borderBottomColor = p.headerBorderColor;
@@ -901,18 +994,29 @@
         if (ldEl && p.loadingText) ldEl.textContent = p.loadingText;
         if (tBar && p.tickerBgColor) tBar.style.backgroundColor = p.tickerBgColor;
         if (tTrack) {
+          if (p.fontFamily) tTrack.style.fontFamily = p.fontFamily;
           if (p.tickerTextColor) tTrack.style.color = p.tickerTextColor;
           if (p.tickerText) tTrack.querySelectorAll('span').forEach(sp => sp.textContent = p.tickerText);
         }
+        const mBox = document.getElementById('modalMessageBox');
         const offTtl = document.getElementById('modalMessageTitle');
         const offMsg = document.getElementById('modalMessageText');
+        if (mBox) {
+          if (p.offlineFontFamily) mBox.style.fontFamily = p.offlineFontFamily;
+          if (p.offlineBgColor) mBox.style.backgroundColor = p.offlineBgColor;
+        }
         if (offTtl) {
           if (p.offlineTitle) offTtl.textContent = p.offlineTitle;
           if (p.offlineTitleColor) offTtl.style.color = p.offlineTitleColor;
           if (p.offlineTitleSize) offTtl.style.fontSize = p.offlineTitleSize + 'px';
         }
-        if (offMsg && p.offlineMessage) offMsg.textContent = p.offlineMessage;
+        if (offMsg) {
+          if (p.offlineMessage) offMsg.textContent = p.offlineMessage;
+          if (p.offlineTextColor) offMsg.style.color = p.offlineTextColor;
+          if (p.offlineFontSize) offMsg.style.fontSize = p.offlineFontSize + 'px';
+        }
         if (wmTrack) {
+          if (p.fontFamily) wmTrack.style.fontFamily = p.fontFamily;
           if (p.watermarkColor) wmTrack.style.color = p.watermarkColor;
           if (p.watermarkOpacity !== undefined) wmTrack.style.opacity = String(p.watermarkOpacity);
           if (p.watermarkText) wmTrack.querySelectorAll('span').forEach(sp => sp.textContent = p.watermarkText);

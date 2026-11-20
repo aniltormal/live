@@ -201,6 +201,14 @@ def append_history(rtdb, entry: dict, max_items: int = 50):
 def run_scan():
     t0 = time.time()
     rtdb = init_firebase()
+    master_enabled = rtdb.reference("feedDiscovery/settings/masterEnabled").get()
+    if master_enabled is not True:
+        print("Master Feed Discovery is OFF (manual mode). Skipping automatic scan.")
+        rtdb.reference("feedDiscovery/meta").update({
+            "masterEnabled": False,
+            "lastSkippedAt": now_iso(),
+        })
+        return
     sources = rtdb.reference("feedDiscovery/sources").get() or {}
     if not isinstance(sources, dict) or not sources:
         print("No sources configured under feedDiscovery/sources.")

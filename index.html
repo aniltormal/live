@@ -1618,6 +1618,25 @@
       renderTempleButtons();
     }
 
+    let __autoPlayedFromQuery = false;
+    function maybeAutoPlayFromQuery() {
+      if (__autoPlayedFromQuery) return;
+      const params = new URLSearchParams(window.location.search);
+      const qPlay = (params.get('play') || params.get('temple') || '').trim();
+      if (!qPlay) return;
+      const target = TEMPLES_CONFIG.find(t => t.id === qPlay && !t.hidden);
+      if (target) {
+        __autoPlayedFromQuery = true;
+        try {
+          params.delete('play');
+          params.delete('temple');
+          const cleanQs = params.toString();
+          history.replaceState(null, '', window.location.pathname + (cleanQs ? '?' + cleanQs : '') + window.location.hash);
+        } catch (_) {}
+        openTemplePopup(target);
+      }
+    }
+    setTimeout(maybeAutoPlayFromQuery, 1200);
     function renderTempleButtons() {
       el.templeGrid.innerHTML = '';
       const featHMap = {
@@ -2750,6 +2769,7 @@
             TEMPLES_CONFIG.sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
             renderTempleButtons();
             checkAllStreamsStatus();
+            if (typeof maybeAutoPlayFromQuery === 'function') maybeAutoPlayFromQuery();
             if (!el.adminEditorForm.classList.contains('hidden')) {
               renderAdminEditorRows();
             }

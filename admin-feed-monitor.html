@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ऑटो फीड मॉनिटर — श्री. लाईव्ह दर्शन अ‍ॅडमिन</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Khand:wght@600;700&family=Noto+Sans+Devanagari:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+  <div id="adminTopHeader"></div>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-5 py-5 space-y-5">
+    <div id="adminAuthGate" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 text-center">
+      <div class="text-3xl mb-2">🔐</div>
+      <div id="authGateMsg" class="text-sm font-bold text-slate-600">अ‍ॅडमिन तपासणी सुरू आहे...</div>
+    </div>
+
+    <div id="pageContent" class="hidden space-y-5">
+      <!-- सारांश कार्ड्स (Monitoring Summary) -->
+      <section class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4">
+          <div class="text-xs font-bold text-slate-500">एकूण स्त्रोत (Websites)</div>
+          <div id="statTotal" class="text-2xl font-extrabold text-[#05344E] mt-1">0</div>
+        </div>
+        <div class="bg-emerald-50 rounded-2xl border border-emerald-200 shadow-sm p-4">
+          <div class="text-xs font-bold text-emerald-700">🟢 लाईव्ह फीड्स (Online)</div>
+          <div id="statOnline" class="text-2xl font-extrabold text-emerald-700 mt-1">0</div>
+        </div>
+        <div class="bg-rose-50 rounded-2xl border border-rose-200 shadow-sm p-4">
+          <div class="text-xs font-bold text-rose-700">🔴 बंद / त्रुटी (Offline)</div>
+          <div id="statOffline" class="text-2xl font-extrabold text-rose-700 mt-1">0</div>
+        </div>
+        <div class="bg-amber-50 rounded-2xl border border-amber-200 shadow-sm p-4">
+          <div class="text-xs font-bold text-amber-800">⏱️ शेवटची तपासणी</div>
+          <div id="statLastRun" class="text-xs sm:text-sm font-extrabold text-amber-900 mt-1.5 leading-snug">अजून स्कॅन नाही</div>
+        </div>
+      </section>
+
+      <!-- १. वेबसाईट स्त्रोत व्यवस्थापन (Website Source Management) -->
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-100">
+          <div>
+            <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">📡 १. मंदिरांच्या अधिकृत वेबसाईट्स जोडा (Feed Discovery Sources)</h2>
+            <p class="text-xs text-slate-500">येथे जोडलेल्या वेबसाईट्स GitHub Actions + Playwright द्वारे नियमित स्कॅन होऊन M3U8, DASH व YouTube Live लिंक्स आपोआप अपडेट होतात.</p>
+          </div>
+          <button id="toggleAddSourceBtn" type="button" class="px-3.5 py-2 rounded-xl bg-[#05344E] hover:opacity-95 text-white text-xs font-bold cursor-pointer shadow-sm">➕ नवीन वेबसाईट जोडा</button>
+        </div>
+
+        <!-- नवीन स्त्रोत फॉर्म -->
+        <div id="addSourceForm" class="hidden rounded-2xl bg-slate-50 border border-slate-200 p-4 space-y-3">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">संलग्न मंदिर निवडा</label>
+              <select id="srcTempleSelect" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white"></select>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-bold text-slate-700 mb-1">मंदिराची अधिकृत लाईव्ह दर्शन वेबसाईट (URL)</label>
+              <input id="srcWebsiteUrl" type="url" placeholder="https://www.templetrust.org/live-darshan" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm bg-white" />
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 items-center">
+            <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+              <span class="toggle-pill"><input id="srcEnabled" type="checkbox" /><span class="knob"></span></span>
+              <span>स्कॅनिंग चालू</span>
+            </label>
+            <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+              <span class="toggle-pill"><input id="srcAutoPublish" type="checkbox" /><span class="knob"></span></span>
+              <span>ऑटो-पब्लिश (थेट वेबसाईटवर)</span>
+            </label>
+            <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+              <span class="toggle-pill"><input id="srcUnpublishFail" type="checkbox" checked /><span class="knob"></span></span>
+              <span>बंद पडल्यास लपवा</span>
+            </label>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-0.5">सलग फेल मर्यादा (Threshold)</label>
+              <input id="srcFailThreshold" type="number" min="1" max="10" value="3" class="w-full px-3 py-1.5 rounded-xl border border-slate-300 text-xs bg-white" />
+            </div>
+          </div>
+          <div class="flex justify-end gap-2">
+            <button id="cancelAddSourceBtn" type="button" class="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold cursor-pointer">रद्द करा</button>
+            <button id="saveNewSourceBtn" type="button" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold cursor-pointer shadow-sm">✅ स्त्रोत सेव्ह करा</button>
+          </div>
+        </div>
+
+        <!-- स्त्रोत यादी -->
+        <div id="sourcesListBox" class="space-y-2.5"></div>
+      </section>
+
+      <!-- २. लाईव्ह फीड स्थिती व मॉनिटरिंग (Feed Status Table) -->
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-100">
+          <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🟢 २. शोधलेल्या फीड्सची सद्यस्थिती (Live Feed Status)</h2>
+          <span class="text-[11px] font-bold text-slate-500">GitHub Actions मधून रिअल-टाईम सिंक</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-100 text-slate-700">
+                <th class="p-2.5 rounded-tl-xl">मंदिर</th>
+                <th class="p-2.5">स्थिती</th>
+                <th class="p-2.5">प्रकार</th>
+                <th class="p-2.5">शोधलेली फीड लिंक</th>
+                <th class="p-2.5">फेल</th>
+                <th class="p-2.5 rounded-tr-xl">शेवटची तपासणी</th>
+              </tr>
+            </thead>
+            <tbody id="feedStatusTbody" class="divide-y divide-slate-100">
+              <tr><td colspan="6" class="p-4 text-center text-slate-400 font-semibold">अजून कोणताही फीड डेटा उपलब्ध नाही.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ३. इतिहास व नोंदी (History & Logs) -->
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-3">
+        <div class="flex items-center justify-between gap-2 pb-2 border-b border-slate-100">
+          <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">📜 ३. ऑटो-डिस्कव्हरी इतिहास (शेवटच्या ५० नोंदी)</h2>
+          <button id="clearHistoryBtn" type="button" class="px-3 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-[11px] font-bold cursor-pointer">🗑️ इतिहास रिकामा करा</button>
+        </div>
+        <div id="feedHistoryBox" class="space-y-1.5 max-h-80 overflow-y-auto text-xs">
+          <div class="p-3 text-center text-slate-400 font-semibold">अजून इतिहास नोंदलेला नाही.</div>
+        </div>
+      </section>
+
+      <!-- ४. ₹० Free Tier GitHub Actions सेटअप मार्गदर्शन -->
+      <section class="bg-gradient-to-br from-sky-50 via-white to-amber-50/50 rounded-2xl border border-sky-200 shadow-sm p-4 sm:p-6 space-y-2.5">
+        <h2 class="text-sm sm:text-base font-extrabold text-[#05344E]">⚙️ ₹० Free Tier सेटअप (फक्त १ वेळा करा)</h2>
+        <ol class="list-decimal list-inside text-xs text-slate-700 space-y-1.5 leading-relaxed">
+          <li><strong>Firebase Console</strong> मध्ये <em>Project Settings → Service Accounts → Generate New Private Key</em> वर क्लिक करून JSON फाईल डाउनलोड करा.</li>
+          <li>तुमच्या <strong>GitHub Repository</strong> मध्ये <em>Settings → Secrets and variables → Actions → New repository secret</em> मध्ये जा.</li>
+          <li>Secret चे नाव <code class="px-1.5 py-0.5 rounded bg-slate-200 font-mono text-[11px]">FIREBASE_SERVICE_ACCOUNT_JSON</code> ठेवा आणि डाउनलोड केलेल्या JSON मधील संपूर्ण मजकूर तिथे पेस्ट करून सेव्ह करा.</li>
+          <li>GitHub मधील <strong>Actions</strong> टॅबमध्ये जाऊन <em>Live Darshan Automatic Feed Discovery</em> चालू करा — आता दर तासाला सिस्टीम आपोआप फीड्स तपासून वेबसाईट अपडेट करेल!</li>
+        </ol>
+      </section>
+    </div>
+  </main>
+
+  <div id="toastBox" class="hidden"></div>
+
+  <script src="admin-common.js"></script>
+  <script>
+    renderAdminShell('feedmonitor', 'ऑटो फीड मॉनिटर');
+
+    const DEFAULT_TEMPLE_LIST = [
+      { id: 'pandharpur', shortTitle: 'श्री विठ्ठल रुक्मिणी, पंढरपूर' },
+      { id: 'kolhapur', shortTitle: 'श्री अंबाबाई महालक्ष्मी, कोल्हापूर' },
+      { id: 'tuljapur', shortTitle: 'श्री तुळजाभवानी, तुळजापूर' },
+      { id: 'shirdi', shortTitle: 'श्री साईबाबा, शिर्डी' },
+      { id: 'dagdusheth', shortTitle: 'दगडूशेठ गणपती, पुणे' },
+      { id: 'siddhivinayak', shortTitle: 'श्री सिद्धिविनायक, मुंबई' }
+    ];
+
+    let templesMap = {};
+    let sourcesMap = {};
+    let statusMap = {};
+
+    function esc(s) {
+      return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function fmtTime(iso) {
+      if (!iso) return '—';
+      try {
+        return new Date(iso).toLocaleString('mr-IN', { dateStyle: 'short', timeStyle: 'short' });
+      } catch (e) { return iso; }
+    }
+
+    function renderTempleSelect() {
+      const sel = document.getElementById('srcTempleSelect');
+      const seen = new Set();
+      const items = [];
+      DEFAULT_TEMPLE_LIST.forEach(def => {
+        const fb = templesMap[def.id] || {};
+        if (fb.deleted) return;
+        seen.add(def.id);
+        items.push({ id: def.id, title: fb.shortTitle || fb.name || def.shortTitle });
+      });
+      Object.entries(templesMap || {}).forEach(([id, v]) => {
+        if (!v || v.deleted || seen.has(id)) return;
+        seen.add(id);
+        items.push({ id, title: v.shortTitle || v.name || id });
+      });
+      sel.innerHTML = items.map(t => `<option value="${esc(t.id)}">${esc(t.title)} (${esc(t.id)})</option>`).join('');
+    }
+    renderTempleSelect();
+
+    document.getElementById('toggleAddSourceBtn').addEventListener('click', () => {
+      document.getElementById('addSourceForm').classList.toggle('hidden');
+    });
+    document.getElementById('cancelAddSourceBtn').addEventListener('click', () => {
+      document.getElementById('addSourceForm').classList.add('hidden');
+    });
+
+    document.getElementById('saveNewSourceBtn').addEventListener('click', async () => {
+      const templeId = document.getElementById('srcTempleSelect').value;
+      const websiteUrl = document.getElementById('srcWebsiteUrl').value.trim();
+      if (!websiteUrl || !/^https?:\/\//i.test(websiteUrl)) {
+        showToast('⚠️ कृपया वैध https:// वेबसाईट लिंक टाका!', true);
+        return;
+      }
+      const tObj = templesMap[templeId] || DEFAULT_TEMPLE_LIST.find(x => x.id === templeId) || {};
+      const templeName = tObj.shortTitle || tObj.name || templeId;
+      const payload = {
+        templeId,
+        templeName,
+        websiteUrl,
+        enabled: document.getElementById('srcEnabled').checked,
+        autoPublish: document.getElementById('srcAutoPublish').checked,
+        unpublishOnFail: document.getElementById('srcUnpublishFail').checked,
+        manualLock: false,
+        failThreshold: Math.max(1, Math.min(10, Number(document.getElementById('srcFailThreshold').value) || 3))
+      };
+      try {
+        await fbDb.ref('feedDiscovery/sources/' + templeId).set(payload);
+        document.getElementById('srcWebsiteUrl').value = '';
+        document.getElementById('addSourceForm').classList.add('hidden');
+        showToast('✅ नवीन वेबसाईट स्त्रोत सेव्ह झाला!');
+      } catch (err) {
+        showToast('❌ त्रुटी: ' + err.message, true);
+      }
+    });
+
+    function renderSourcesList() {
+      const box = document.getElementById('sourcesListBox');
+      const entries = Object.entries(sourcesMap || {});
+      document.getElementById('statTotal').textContent = entries.length;
+      if (!entries.length) {
+        box.innerHTML = '<div class="rounded-xl bg-slate-50 border border-dashed border-slate-300 p-4 text-center text-xs text-slate-500 font-semibold">अजून एकही अधिकृत वेबसाईट जोडलेली नाही. वरच्या "➕ नवीन वेबसाईट जोडा" बटणावर क्लिक करून मंदिराची लिंक जोडा.</div>';
+        return;
+      }
+      box.innerHTML = entries.map(([sid, s]) => `
+        <div class="rounded-2xl border border-slate-200 bg-slate-50/70 p-3.5 flex flex-col lg:flex-row lg:items-center justify-between gap-3" data-sid="${esc(sid)}">
+          <div class="min-w-0 space-y-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="font-extrabold text-sm text-[#05344E]">${esc(s.templeName || sid)}</span>
+              <span class="px-2 py-0.5 rounded-full bg-slate-200 text-slate-700 text-[10px] font-bold font-mono">${esc(s.templeId || sid)}</span>
+              ${s.manualLock ? '<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-bold">🔒 मॅन्युअल लॉक</span>' : ''}
+            </div>
+            <div class="text-xs text-sky-700 font-semibold truncate">${esc(s.websiteUrl)}</div>
+          </div>
+          <div class="flex flex-wrap items-center gap-3 shrink-0">
+            <label class="flex items-center gap-1.5 text-[11px] font-bold text-slate-700 cursor-pointer">
+              <span class="toggle-pill"><input type="checkbox" class="src-toggle-en" ${s.enabled !== false ? 'checked' : ''} /><span class="knob"></span></span>
+              <span>सक्रिय</span>
+            </label>
+            <label class="flex items-center gap-1.5 text-[11px] font-bold text-slate-700 cursor-pointer">
+              <span class="toggle-pill"><input type="checkbox" class="src-toggle-auto" ${s.autoPublish !== false ? 'checked' : ''} /><span class="knob"></span></span>
+              <span>ऑटो-पब्लिश</span>
+            </label>
+            <label class="flex items-center gap-1.5 text-[11px] font-bold text-slate-700 cursor-pointer">
+              <span class="toggle-pill"><input type="checkbox" class="src-toggle-lock" ${s.manualLock ? 'checked' : ''} /><span class="knob"></span></span>
+              <span>मॅन्युअल लॉक</span>
+            </label>
+            <button type="button" class="src-del px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-[11px] font-bold cursor-pointer">🗑️ काढा</button>
+          </div>
+        </div>
+      `).join('');
+
+      box.querySelectorAll('[data-sid]').forEach(row => {
+        const sid = row.dataset.sid;
+        row.querySelector('.src-toggle-en').addEventListener('change', (e) => fbDb.ref(`feedDiscovery/sources/${sid}/enabled`).set(e.target.checked));
+        row.querySelector('.src-toggle-auto').addEventListener('change', (e) => fbDb.ref(`feedDiscovery/sources/${sid}/autoPublish`).set(e.target.checked));
+        row.querySelector('.src-toggle-lock').addEventListener('change', (e) => fbDb.ref(`feedDiscovery/sources/${sid}/manualLock`).set(e.target.checked));
+        row.querySelector('.src-del').addEventListener('click', () => {
+          if (confirm('हा वेबसाईट स्त्रोत काढायचा का?')) fbDb.ref(`feedDiscovery/sources/${sid}`).remove();
+        });
+      });
+    }
+
+    function renderStatusTable() {
+      const tb = document.getElementById('feedStatusTbody');
+      const rows = Object.entries(statusMap || {});
+      if (!rows.length) {
+        tb.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-400 font-semibold">अजून कोणताही फीड डेटा उपलब्ध नाही.</td></tr>';
+        return;
+      }
+      tb.innerHTML = rows.map(([sid, st]) => {
+        const isOn = st.status === 'online';
+        return `
+          <tr class="hover:bg-slate-50">
+            <td class="p-2.5 font-bold text-[#05344E]">${esc(st.templeName || sid)}</td>
+            <td class="p-2.5"><span class="px-2 py-0.5 rounded-full text-[11px] font-extrabold ${isOn ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">${isOn ? '🟢 Online' : '🔴 Offline'}</span></td>
+            <td class="p-2.5 uppercase font-mono font-bold text-slate-700">${esc(st.feedType || '—')}</td>
+            <td class="p-2.5 max-w-[260px] truncate font-mono text-[11px] text-slate-600" title="${esc(st.feedUrl)}">${esc(st.feedUrl || st.message || '—')}</td>
+            <td class="p-2.5 font-bold ${Number(st.failCount) > 0 ? 'text-rose-600' : 'text-slate-600'}">${Number(st.failCount || 0)}</td>
+            <td class="p-2.5 text-slate-500 whitespace-nowrap">${esc(fmtTime(st.lastCheckedAt))}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    document.getElementById('clearHistoryBtn').addEventListener('click', async () => {
+      if (confirm('सर्व इतिहास नोंदी काढायच्या का?')) {
+        await fbDb.ref('feedDiscovery/history').remove();
+        showToast('🗑️ इतिहास रिकामा केला.');
+      }
+    });
+
+    initAdminGuard(() => {
+      fbDb.ref('temples').on('value', (snap) => {
+        templesMap = snap.val() || {};
+        renderTempleSelect();
+      });
+      fbDb.ref('feedDiscovery/sources').on('value', (snap) => {
+        sourcesMap = snap.val() || {};
+        renderSourcesList();
+      });
+      fbDb.ref('feedDiscovery/status').on('value', (snap) => {
+        statusMap = snap.val() || {};
+        renderStatusTable();
+      });
+      fbDb.ref('feedDiscovery/meta').on('value', (snap) => {
+        const m = snap.val() || {};
+        document.getElementById('statOnline').textContent = m.onlineCount || 0;
+        document.getElementById('statOffline').textContent = m.offlineCount || 0;
+        document.getElementById('statLastRun').textContent = m.lastRunAt ? fmtTime(m.lastRunAt) : 'अजून स्कॅन नाही';
+      });
+      fbDb.ref('feedDiscovery/history').limitToLast(50).on('value', (snap) => {
+        const box = document.getElementById('feedHistoryBox');
+        const val = snap.val();
+        if (!val) {
+          box.innerHTML = '<div class="p-3 text-center text-slate-400 font-semibold">अजून इतिहास नोंदलेला नाही.</div>';
+          return;
+        }
+        const list = Object.values(val).reverse();
+        box.innerHTML = list.map(item => {
+          const ev = item.event || '';
+          const badge = ev === 'published' ? 'bg-emerald-100 text-emerald-800' : (ev === 'unpublished' ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800');
+          return `
+            <div class="rounded-xl border border-slate-200 px-3 py-2 flex flex-wrap items-center justify-between gap-2 bg-slate-50/50">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${badge}">${esc(ev)}</span>
+                <span class="font-bold text-[#05344E]">${esc(item.templeName || item.templeId)}</span>
+                <span class="text-slate-600 truncate max-w-xs">${esc(item.message || item.feedUrl || '')}</span>
+              </div>
+              <span class="text-[11px] text-slate-400 shrink-0">${esc(fmtTime(item.ts))}</span>
+            </div>
+          `;
+        }).join('');
+      });
+    });
+  </script>
+</body>
+</html>

@@ -188,6 +188,20 @@
     .ld-bird-b { animation: ldBirdGlideB 17s linear infinite 3s; }
     .ld-bird-c { animation: ldBirdGlideA 19s linear infinite 7s; }
     .ld-wing { transform-box: fill-box; transform-origin: center bottom; animation: ldWingBeat 0.7s ease-in-out infinite; }
+    @keyframes panchangBtnShimmer {
+      0% { transform: translateX(-140%) skewX(-20deg); }
+      45%, 100% { transform: translateX(220%) skewX(-20deg); }
+    }
+    .panchang-cta-shimmer {
+      animation: panchangBtnShimmer 3.2s ease-in-out infinite;
+    }
+    @keyframes panchangArrowNudge {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(3px); }
+    }
+    .panchang-arrow-nudge {
+      animation: panchangArrowNudge 1.4s ease-in-out infinite;
+    }
   </style>
 </head>
 <body id="appBody" class="bg-white text-black min-h-screen flex flex-col transition-colors duration-300">
@@ -370,10 +384,19 @@
   </div>
 
   <!-- Automatic Daily Marathi Panchang Strip -->
-  <div id="panchangBar" class="w-full bg-gradient-to-r from-amber-50 via-orange-50/80 to-amber-50 border-b border-amber-200/80 text-[#05344E] px-2 sm:px-3 py-1.5 text-center transition-colors duration-300">
-    <div id="panchangInner" class="max-w-7xl xl:max-w-[1400px] mx-auto flex items-center justify-center gap-1.5 font-bold leading-snug" style="font-size: clamp(11px, 3.1vw, 15px);">
-      <span>🗓️</span>
-      <span id="panchangText">आजचे पंचांग: लोड होत आहे...</span>
+  <div id="panchangBar" class="w-full bg-gradient-to-r from-amber-50 via-orange-50/80 to-amber-50 border-b border-amber-200/80 text-[#05344E] transition-colors duration-300">
+    <div id="panchangInner" class="max-w-7xl xl:max-w-[1400px] mx-auto flex items-stretch justify-between gap-2 font-bold leading-snug" style="font-size: clamp(12.5px, 3.4vw, 17px);">
+      <div class="w-[72%] sm:w-4/5 min-w-0 flex items-center gap-1.5 text-left px-2 sm:px-3 py-1.5">
+        <span class="shrink-0">🗓️</span>
+        <span id="panchangText">आजचे पंचांग: लोड होत आहे...</span>
+      </div>
+      <a id="panchangBtn" href="panchang.html" class="group relative overflow-hidden w-[29%] sm:w-auto shrink-0 inline-flex items-center justify-center gap-1.5 px-2 sm:px-4 py-1.5 bg-gradient-to-r from-[#05344E] via-[#0c567d] to-[#05344E] text-white border-l-2 border-amber-400/90 text-[10px] sm:text-xs font-bold leading-tight text-center shadow-inner transition-all duration-200 hover:brightness-110">
+        <span aria-hidden="true" class="panchang-cta-shimmer pointer-events-none absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-transparent via-amber-200/35 to-transparent"></span>
+        <span class="relative z-10 flex items-center gap-1">
+          <span id="panchangBtnText">संपूर्ण पंचांग येथे पहा</span>
+          <span aria-hidden="true" class="panchang-arrow-nudge text-amber-300 font-extrabold">→</span>
+        </span>
+      </a>
     </div>
   </div>
 
@@ -1308,6 +1331,10 @@
       panchangFontSize: 'auto',
       panchangTextColor: '#05344E',
       panchangBgColor: '#FFFBEB',
+      showPanchangBtn: true,
+      panchangBtnLabel: 'संपूर्ण पंचांग येथे पहा',
+      panchangBtnBgColor: '#05344E',
+      panchangBtnTextColor: '#FFFFFF',
       showDevoteeTicker: false,
       devoteeTickerText: '',
       devoteeTickerFontFamily: "'Noto Sans Devanagari', sans-serif",
@@ -1599,8 +1626,24 @@
           if (siteLayoutConfig.panchangFontSize && siteLayoutConfig.panchangFontSize !== 'auto') {
             pInner.style.fontSize = siteLayoutConfig.panchangFontSize;
           } else {
-            pInner.style.fontSize = 'clamp(11px, 3.1vw, 15px)';
+            pInner.style.fontSize = 'clamp(12.5px, 3.4vw, 17px)';
           }
+        }
+      }
+      const pBtn = document.getElementById('panchangBtn');
+      const pBtnTxt = document.getElementById('panchangBtnText');
+      if (pBtn) {
+        pBtn.classList.toggle('hidden', siteLayoutConfig.showPanchangBtn === false);
+        if (siteLayoutConfig.panchangBtnBgColor && siteLayoutConfig.panchangBtnBgColor !== '#05344E') {
+          pBtn.style.background = siteLayoutConfig.panchangBtnBgColor;
+        } else {
+          pBtn.style.background = '';
+        }
+        if (siteLayoutConfig.panchangBtnTextColor) {
+          pBtn.style.color = siteLayoutConfig.panchangBtnTextColor;
+        }
+        if (pBtnTxt && siteLayoutConfig.panchangBtnLabel) {
+          pBtnTxt.textContent = siteLayoutConfig.panchangBtnLabel;
         }
       }
       if (el.devoteeTickerSection && el.devoteeTickerTrack) {
@@ -2899,6 +2942,10 @@
             if (l.panchangFontSize) siteLayoutConfig.panchangFontSize = l.panchangFontSize;
             if (typeof l.panchangTextColor === 'string') siteLayoutConfig.panchangTextColor = l.panchangTextColor;
             if (typeof l.panchangBgColor === 'string') siteLayoutConfig.panchangBgColor = l.panchangBgColor;
+            if (typeof l.showPanchangBtn === 'boolean') siteLayoutConfig.showPanchangBtn = l.showPanchangBtn;
+            if (typeof l.panchangBtnLabel === 'string' && l.panchangBtnLabel.trim()) siteLayoutConfig.panchangBtnLabel = l.panchangBtnLabel.trim();
+            if (typeof l.panchangBtnBgColor === 'string') siteLayoutConfig.panchangBtnBgColor = l.panchangBtnBgColor;
+            if (typeof l.panchangBtnTextColor === 'string') siteLayoutConfig.panchangBtnTextColor = l.panchangBtnTextColor;
             if (typeof l.showDevoteeTicker === 'boolean') siteLayoutConfig.showDevoteeTicker = l.showDevoteeTicker;
             if (typeof l.devoteeTickerText === 'string') siteLayoutConfig.devoteeTickerText = l.devoteeTickerText;
             if (l.devoteeTickerFontFamily) { ensureGoogleFontLoaded(l.devoteeTickerFontFamily); siteLayoutConfig.devoteeTickerFontFamily = l.devoteeTickerFontFamily; }
@@ -2935,7 +2982,7 @@
         if (hdr) { hdr.style.backgroundImage = ''; hdr.style.backgroundColor = ''; }
         if (ftr) ftr.style.backgroundColor = '';
         if (llb) llb.style.backgroundColor = '';
-        if (pBar) pBar.style.backgroundColor = '';
+        if (pBar) { pBar.style.background = (typeof siteLayoutConfig !== 'undefined' && siteLayoutConfig.panchangBgColor) ? siteLayoutConfig.panchangBgColor : '#FFFBEB'; pBar.style.color = (typeof siteLayoutConfig !== 'undefined' && siteLayoutConfig.panchangTextColor) ? siteLayoutConfig.panchangTextColor : '#05344E'; }
         return;
       }
       if (m.fontFamily) document.body.style.fontFamily = m.fontFamily;
@@ -2948,7 +2995,7 @@
         if (hdr) { hdr.style.backgroundImage = ''; hdr.style.backgroundColor = ''; }
         if (ftr) ftr.style.backgroundColor = '';
         if (llb) llb.style.backgroundColor = '';
-        if (pBar) pBar.style.backgroundColor = '';
+        if (pBar) { pBar.style.background = (typeof siteLayoutConfig !== 'undefined' && siteLayoutConfig.panchangBgColor) ? siteLayoutConfig.panchangBgColor : '#FFFBEB'; pBar.style.color = (typeof siteLayoutConfig !== 'undefined' && siteLayoutConfig.panchangTextColor) ? siteLayoutConfig.panchangTextColor : '#05344E'; }
         document.querySelectorAll('.temple-title-bar').forEach(el => { el.style.backgroundColor = ''; });
         return;
       }

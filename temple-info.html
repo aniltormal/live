@@ -230,7 +230,7 @@
           </div>
           <div class="absolute inset-0 z-10 bg-transparent" aria-hidden="true"></div>
           <iframe id="youtubePlayer" class="hidden w-full h-full border-0 pointer-events-none select-none" allow="accelerometer; autoplay; encrypted-media; gyroscope" referrerpolicy="strict-origin-when-cross-origin" title="लाईव्ह दर्शन पॉपअप"></iframe>
-          <video id="nativePlayer" class="hidden w-full h-full object-contain bg-black pointer-events-none select-none" autoplay playsinline webkit-playsinline disablePictureInPicture controlsList="nodownload noplaybackrate noremoteplayback"></video>
+          <video id="nativePlayer" class="hidden w-full h-full object-fill bg-black pointer-events-none select-none" autoplay playsinline webkit-playsinline disablePictureInPicture controlsList="nodownload noplaybackrate noremoteplayback"></video>
         <div id="playerHoverShield" class="absolute inset-0 z-10 pointer-events-auto"></div>
           <div id="playerLoadingBadge" class="hidden absolute inset-0 z-30 bg-neutral-950/90 overflow-hidden flex items-end justify-center pb-12 sm:pb-14 pointer-events-none select-none">
             <div class="ott-shimmer-beam absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-transparent via-amber-200/15 to-transparent"></div>
@@ -537,7 +537,7 @@
         const syncTi = () => {
           const st = vid.parentElement;
           if (st && vid.videoWidth > 0 && vid.videoHeight > 0) {
-            st.style.aspectRatio = vid.videoWidth + ' / ' + vid.videoHeight;
+            st.style.aspectRatio = '';
             st.style.maxHeight = '76vh';
           }
         };

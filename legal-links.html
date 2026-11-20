@@ -250,6 +250,31 @@
 
     
     
+    
+    function ensureAccentBar(root) {
+      if (!root) return;
+      const children = Array.from(root.children);
+      let group = [];
+      const flushGroup = () => {
+        if (!group.length) return;
+        const wrapper = document.createElement('div');
+        wrapper.className = 'lang-block';
+        group[0].parentNode.insertBefore(wrapper, group[0]);
+        group.forEach(el => wrapper.appendChild(el));
+        group = [];
+      };
+      children.forEach(el => {
+        const isHeader = el.classList.contains('page-title') || el.classList.contains('meta-date') || el.tagName === 'H1';
+        const isLang = el.classList.contains('lang-block') || !!el.querySelector('.lang-block');
+        if (isHeader || isLang) {
+          flushGroup();
+        } else {
+          group.push(el);
+        }
+      });
+      flushGroup();
+    }
+
     function ensureTermsPoint7(root, cleanUrl) {
       if (!root || cleanUrl !== 'terms.html') return;
       const fullText = root.textContent || '';
@@ -350,10 +375,12 @@
         bodyEl.innerHTML = cleanHtml;
         sanitizeEmailsToContact(bodyEl);
         ensureTermsPoint7(bodyEl, cleanUrl);
+        ensureAccentBar(bodyEl);
       } catch (err) {
         if (LEGAL_FALLBACK_HTML[cleanUrl]) {
           bodyEl.innerHTML = LEGAL_FALLBACK_HTML[cleanUrl];
           sanitizeEmailsToContact(bodyEl);
+          ensureAccentBar(bodyEl);
         } else {
           bodyEl.innerHTML = `<div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-sm text-amber-950 space-y-2"><p>ही माहिती येथे लोड करता आली नाही. खालील बटणावरून थेट उघडून पहा:</p><a href="${url}" class="inline-block px-4 py-2 rounded-xl bg-[#05344E] text-white text-xs font-bold">📄 ${label} पहा ↗</a></div>`;
         }

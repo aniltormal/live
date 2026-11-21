@@ -281,40 +281,50 @@
       const NEW_MR_HTML = '<strong>लागू कायदा व न्यायालयीन अधिकारक्षेत्र:</strong> या अटी व शर्ती भारतातील लागू असलेल्या कायद्यांनुसार नियंत्रित व त्यांचे अर्थनिर्णयन केले जातील. या पोर्टलच्या वापरासंदर्भात उद्भवणारे कोणतेही वाद, दावे किंवा कायदेशीर बाबी भारतीय कायद्यांच्या अधीन राहतील. अशा वादांच्या निवारणासाठी महाराष्ट्र राज्यातील संबंधित प्रादेशिक व विषयाधारित अधिकारक्षेत्र असलेल्या सक्षम न्यायालयांचे अधिकारक्षेत्र लागू राहील.';
       const NEW_EN_HTML = '<strong>Governing Law and Jurisdiction:</strong> These Terms and Conditions shall be governed by and interpreted in accordance with the applicable laws of India. Any disputes, claims, or legal matters arising out of or in connection with the use of this Portal shall be subject to the laws of India. The competent courts having relevant territorial and subject-matter jurisdiction within the State of Maharashtra shall have jurisdiction to resolve such disputes.';
 
-      const blocks = Array.from(root.querySelectorAll('.lang-block'));
-      const mrBlock = blocks.find(b => /मराठी/i.test(b.textContent || '')) || root;
-      const enBlock = blocks.find(b => /english/i.test(b.textContent || ''));
+      // Remove any standalone <p> with old placeholder/jurisdiction text
+      root.querySelectorAll('p').forEach(p => {
+        const t = (p.textContent || '').toLowerCase();
+        if (t.includes('complete any applicable') || t.includes('local jurisdiction')) {
+          p.remove();
+        }
+      });
 
-      // 1. Replace or remove old 7th+ items in Marathi <ol>
-      const mrOl = mrBlock ? mrBlock.querySelector('ol') : root.querySelector('ol');
-      if (mrOl) {
-        const items = Array.from(mrOl.querySelectorAll(':scope > li'));
+      const allOls = Array.from(root.querySelectorAll('ol'));
+      let mrOl = null;
+      let enOl = null;
+
+      allOls.forEach(ol => {
+        const items = Array.from(ol.querySelectorAll(':scope > li'));
         items.forEach((li, idx) => {
           const t = li.textContent || '';
-          if (idx >= 6 || li.getAttribute('value') === '7' || /अधिकारक्षेत्र|न्यायालय/.test(t)) {
+          const tl = t.toLowerCase();
+          if (
+            idx >= 6 ||
+            li.getAttribute('value') === '7' ||
+            /अधिकारक्षेत्र|न्यायालय/.test(t) ||
+            tl.includes('jurisdiction') ||
+            tl.includes('governing law') ||
+            tl.includes('complete any applicable')
+          ) {
             li.remove();
           }
         });
-        const li = document.createElement('li');
-        li.setAttribute('value', '7');
-        li.innerHTML = NEW_MR_HTML;
-        mrOl.appendChild(li);
+        const olText = ol.textContent || '';
+        if (/[ऀ-ॿ]/.test(olText)) {
+          if (!mrOl) mrOl = ol;
+        } else if (/[a-zA-Z]{4,}/.test(olText)) {
+          if (!enOl) enOl = ol;
+        }
+      });
+
+      if (mrOl) {
+        const liMr = document.createElement('li');
+        liMr.setAttribute('value', '7');
+        liMr.innerHTML = NEW_MR_HTML;
+        mrOl.appendChild(liMr);
       }
 
-      // 2. Replace or remove old 7th+ items in English <ol>
-      if (enBlock) {
-        let enOl = enBlock.querySelector('ol');
-        if (!enOl) {
-          enOl = document.createElement('ol');
-          enBlock.appendChild(enOl);
-        }
-        const itemsEn = Array.from(enOl.querySelectorAll(':scope > li'));
-        itemsEn.forEach((li, idx) => {
-          const t = (li.textContent || '').toLowerCase();
-          if (idx >= 6 || li.getAttribute('value') === '7' || t.includes('jurisdiction') || t.includes('governing law')) {
-            li.remove();
-          }
-        });
+      if (enOl) {
         const liEn = document.createElement('li');
         liEn.setAttribute('value', '7');
         liEn.innerHTML = NEW_EN_HTML;

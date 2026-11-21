@@ -89,18 +89,9 @@
             <label class="block text-xs font-bold text-slate-700 mb-1">क्लिक लिंक (URL)</label>
             <input id="preRollSponsor" type="text" placeholder="जाहिरातदाराचे नाव (Sponsor — रिपोर्टसाठी ऐच्छिक)" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-bold text-[#05344E]" />
           <input id="preRollLink" type="url" placeholder="https://..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
-          <div class="rounded-xl bg-amber-50/70 border border-amber-200/80 p-3 space-y-2">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <span class="text-xs font-extrabold text-[#05344E]">⏱️ Pre-Roll कालावधी व ऑटो-अनपब्लिश</span>
-              <select onchange="applySingleDaysPreset('preRoll', this.value)" class="px-2.5 py-1 rounded-lg border border-amber-300 bg-white text-xs font-bold text-[#05344E] cursor-pointer">
-                <option value="">दिवस निवडा (ऐच्छिक)</option>
-                <option value="1">१ दिवस</option><option value="3">३ दिवस</option><option value="7">७ दिवस</option><option value="15">१५ दिवस</option><option value="30">३० दिवस</option><option value="0">कायमस्वरूपी</option>
-              </select>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <div><label class="block text-[10px] font-bold text-slate-600 mb-0.5">पब्लिश दिनांक व वेळ:</label><input id="preRollPublishedAt" type="datetime-local" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-bold text-[#05344E]" /></div>
-              <div><label class="block text-[10px] font-bold text-rose-700 mb-0.5">आपोआप अनपब्लिश दिनांक व वेळ:</label><input id="preRollExpiresAt" type="datetime-local" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-bold text-rose-800" /></div>
-            </div>
+          <div class="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-slate-50 border border-slate-200 px-3 py-2">
+            <span id="preRollPubLabel" class="text-xs font-bold text-slate-600">🕒 पब्लिश: —</span>
+            <button id="preRollSchedBtn" type="button" onclick="openAdScheduleModal('preroll')" class="px-3 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-[#05344E] border border-amber-300 text-xs font-extrabold cursor-pointer transition">⏱️ कस्टम तारखेला अनपब्लिश करायचे असल्यास क्लिक करा</button>
           </div>
           </div>
           <div>
@@ -173,18 +164,9 @@
             <label class="block text-xs font-bold text-slate-700 mb-1">क्लिक लिंक (URL)</label>
             <input id="splashSponsor" type="text" placeholder="जाहिरातदाराचे नाव (Sponsor — रिपोर्टसाठी ऐच्छिक)" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-bold text-[#05344E]" />
           <input id="splashLink" type="url" placeholder="https://..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
-          <div class="rounded-xl bg-amber-50/70 border border-amber-200/80 p-3 space-y-2">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <span class="text-xs font-extrabold text-[#05344E]">⏱️ Splash कालावधी व ऑटो-अनपब्लिश</span>
-              <select onchange="applySingleDaysPreset('splash', this.value)" class="px-2.5 py-1 rounded-lg border border-amber-300 bg-white text-xs font-bold text-[#05344E] cursor-pointer">
-                <option value="">दिवस निवडा (ऐच्छिक)</option>
-                <option value="1">१ दिवस</option><option value="3">३ दिवस</option><option value="7">७ दिवस</option><option value="15">१५ दिवस</option><option value="30">३० दिवस</option><option value="0">कायमस्वरूपी</option>
-              </select>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <div><label class="block text-[10px] font-bold text-slate-600 mb-0.5">पब्लिश दिनांक व वेळ:</label><input id="splashPublishedAt" type="datetime-local" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-bold text-[#05344E]" /></div>
-              <div><label class="block text-[10px] font-bold text-rose-700 mb-0.5">आपोआप अनपब्लिश दिनांक व वेळ:</label><input id="splashExpiresAt" type="datetime-local" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-bold text-rose-800" /></div>
-            </div>
+          <div class="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-slate-50 border border-slate-200 px-3 py-2">
+            <span id="splashPubLabel" class="text-xs font-bold text-slate-600">🕒 पब्लिश: —</span>
+            <button id="splashSchedBtn" type="button" onclick="openAdScheduleModal('splash')" class="px-3 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-[#05344E] border border-amber-300 text-xs font-extrabold cursor-pointer transition">⏱️ कस्टम तारखेला अनपब्लिश करायचे असल्यास क्लिक करा</button>
           </div>
           </div>
           <div>
@@ -283,6 +265,41 @@
     </div>
   </main>
 
+    <!-- Auto-Unpublish Schedule Popup Modal -->
+  <div id="adScheduleModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4" onclick="closeAdScheduleModal()">
+    <div class="w-full max-w-md bg-white rounded-2xl border-2 border-amber-400 shadow-2xl overflow-hidden" onclick="event.stopPropagation()">
+      <div class="bg-[#05344E] text-white px-4 py-3 flex items-center justify-between border-b-2 border-amber-400">
+        <h3 id="schedModalTitle" class="text-sm sm:text-base font-extrabold text-amber-200">⏱️ जाहिरात अनपब्लिश वेळापत्रक</h3>
+        <button type="button" onclick="closeAdScheduleModal()" class="w-7 h-7 rounded-lg bg-white/15 hover:bg-rose-600 text-white font-bold flex items-center justify-center cursor-pointer">✕</button>
+      </div>
+      <div class="p-4 space-y-3">
+        <div class="rounded-xl bg-slate-50 border border-slate-200 px-3 py-2 text-xs font-bold text-slate-600">
+          🕒 पब्लिश दिनांक व वेळ: <span id="schedModalPubText" class="text-[#05344E] font-extrabold"></span>
+        </div>
+        <div>
+          <label class="block text-xs font-extrabold text-[#05344E] mb-1">किती दिवस चालवायची? (झटपट निवड):</label>
+          <select id="schedModalDaysSelect" onchange="applyModalDaysPreset(this.value)" class="w-full px-3 py-2 rounded-xl border border-amber-300 bg-amber-50/50 text-xs font-bold text-[#05344E] cursor-pointer">
+            <option value="">दिवस निवडा किंवा खाली कस्टम तारीख टाका</option>
+            <option value="1">१ दिवस</option>
+            <option value="3">३ दिवस</option>
+            <option value="7">७ दिवस</option>
+            <option value="15">१५ दिवस</option>
+            <option value="30">३० दिवस</option>
+            <option value="0">कायमस्वरूपी (अनपब्लिश बंद करा)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-extrabold text-rose-700 mb-1">आपोआप अनपब्लिश दिनांक व वेळ:</label>
+          <input id="schedModalExpiresInput" type="datetime-local" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-bold text-rose-800" />
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <button type="button" onclick="closeAdScheduleModal()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold cursor-pointer">रद्द करा</button>
+          <button type="button" onclick="saveAdScheduleModal()" class="px-5 py-2 rounded-xl bg-[#05344E] hover:bg-[#084160] text-white text-xs font-extrabold shadow cursor-pointer">✅ सेट करा</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="toastBox" class="hidden"></div>
 
   <script src="admin-common.js"></script>
@@ -350,6 +367,81 @@
       expEl.value = toLocalInputVal(baseMs + days * 86400000);
     };
 
+    let __schedTarget = null;
+    function syncSingleSchedLabels() {
+      const prPub = document.getElementById('preRollPubLabel');
+      const prBtn = document.getElementById('preRollSchedBtn');
+      if (prPub) prPub.textContent = '🕒 पब्लिश: ' + formatPubDateTime(currentAds.preRollPublishedAt || Date.now());
+      if (prBtn) {
+        const ex = Number(currentAds.preRollExpiresAt || 0);
+        prBtn.textContent = ex ? (Date.now() > ex ? '⏸️ मुदत संपली • बदला' : '🟢 अनपब्लिश: ' + formatPubDateTime(ex) + ' • बदला') : '⏱️ कस्टम तारखेला अनपब्लिश करायचे असल्यास क्लिक करा';
+      }
+      const spPub = document.getElementById('splashPubLabel');
+      const spBtn = document.getElementById('splashSchedBtn');
+      if (spPub) spPub.textContent = '🕒 पब्लिश: ' + formatPubDateTime(currentAds.splashPublishedAt || Date.now());
+      if (spBtn) {
+        const ex = Number(currentAds.splashExpiresAt || 0);
+        spBtn.textContent = ex ? (Date.now() > ex ? '⏸️ मुदत संपली • बदला' : '🟢 अनपब्लिश: ' + formatPubDateTime(ex) + ' • बदला') : '⏱️ कस्टम तारखेला अनपब्लिश करायचे असल्यास क्लिक करा';
+      }
+    }
+    window.openAdScheduleModal = function(kind, idx) {
+      __schedTarget = { kind, idx };
+      let pubMs = Date.now(), expMs = 0, ttl = '⏱️ जाहिरात अनपब्लिश वेळापत्रक';
+      if (kind === 'slide') {
+        const s = (currentAds.bannerSlides && currentAds.bannerSlides[idx]) || {};
+        pubMs = s.publishedAt || Date.now();
+        expMs = s.expiresAt || 0;
+        ttl = `⏱️ स्लाईड ${idx + 1} — अनपब्लिश वेळापत्रक`;
+      } else if (kind === 'preroll') {
+        pubMs = currentAds.preRollPublishedAt || Date.now();
+        expMs = currentAds.preRollExpiresAt || 0;
+        ttl = '⏱️ Pre-Roll — अनपब्लिश वेळापत्रक';
+      } else if (kind === 'splash') {
+        pubMs = currentAds.splashPublishedAt || Date.now();
+        expMs = currentAds.splashExpiresAt || 0;
+        ttl = '⏱️ Splash — अनपब्लिश वेळापत्रक';
+      }
+      __schedTarget.pubMs = pubMs;
+      document.getElementById('schedModalTitle').textContent = ttl;
+      document.getElementById('schedModalPubText').textContent = formatPubDateTime(pubMs);
+      document.getElementById('schedModalDaysSelect').value = '';
+      document.getElementById('schedModalExpiresInput').value = toLocalInputVal(expMs);
+      document.getElementById('adScheduleModal').classList.remove('hidden');
+    };
+    window.closeAdScheduleModal = function() {
+      document.getElementById('adScheduleModal').classList.add('hidden');
+      __schedTarget = null;
+    };
+    window.applyModalDaysPreset = function(daysStr) {
+      const expEl = document.getElementById('schedModalExpiresInput');
+      if (!expEl || !__schedTarget) return;
+      const d = Number(daysStr || 0);
+      if (!d) { expEl.value = ''; return; }
+      expEl.value = toLocalInputVal((__schedTarget.pubMs || Date.now()) + d * 86400000);
+    };
+    window.saveAdScheduleModal = function() {
+      if (!__schedTarget) return;
+      const expMs = parseLocalInputMs(document.getElementById('schedModalExpiresInput').value) || 0;
+      const { kind, idx, pubMs } = __schedTarget;
+      if (kind === 'slide') {
+        syncSlotsFromDOM();
+        if (!currentAds.bannerSlides[idx]) currentAds.bannerSlides[idx] = {};
+        if (!currentAds.bannerSlides[idx].publishedAt) currentAds.bannerSlides[idx].publishedAt = pubMs;
+        currentAds.bannerSlides[idx].expiresAt = expMs;
+        renderSlots(currentAds.bannerSlides);
+      } else if (kind === 'preroll') {
+        if (!currentAds.preRollPublishedAt) currentAds.preRollPublishedAt = pubMs;
+        currentAds.preRollExpiresAt = expMs;
+        syncSingleSchedLabels();
+      } else if (kind === 'splash') {
+        if (!currentAds.splashPublishedAt) currentAds.splashPublishedAt = pubMs;
+        currentAds.splashExpiresAt = expMs;
+        syncSingleSchedLabels();
+      }
+      closeAdScheduleModal();
+      showToast('वेळापत्रक सेट झाले! लागू करण्यासाठी खाली "सेव्ह करा" दाबा.');
+    };
+
     function esc(s) {
       return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
@@ -364,10 +456,7 @@
         if (stInp) currentAds.bannerSlides[idx].text = stInp.value.trim();
         const spInp = card.querySelector('.slot-sponsor');
         if (spInp) currentAds.bannerSlides[idx].sponsor = spInp.value.trim();
-        const pbInp = card.querySelector('.slot-published');
-        if (pbInp) currentAds.bannerSlides[idx].publishedAt = parseLocalInputMs(pbInp.value) || currentAds.bannerSlides[idx].publishedAt || 0;
-        const exInp = card.querySelector('.slot-expires');
-        if (exInp) currentAds.bannerSlides[idx].expiresAt = parseLocalInputMs(exInp.value) || 0;
+        
       });
     }
 
@@ -397,8 +486,12 @@
           </label>
 
           <input type="url" class="slot-link w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white focus:outline-none focus:border-[#05344E]" value="${esc(s.link)}" placeholder="लिंक (https://...)" />
-          <input type="text" value="${esc(s.sponsor || '')}" placeholder="जाहिरातदाराचे नाव (Sponsor — रिपोर्टसाठी ऐच्छिक)" class="slot-sponsor w-full px-3 py-1.5 rounded-xl border border-slate-300 bg-white text-xs font-bold text-[#05344E]" />
-          <input type="text" class="slot-text w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white focus:outline-none focus:border-[#05344E]" value="${esc(s.text)}" placeholder="बॅनरवरील मजकूर (पर्यायी)" />
+          <div class="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-slate-50 border border-slate-200 px-3 py-2">
+            <span class="text-[11px] font-bold text-slate-600">🕒 पब्लिश: <span class="text-[#05344E]">${formatPubDateTime(s.publishedAt || Date.now())}</span></span>
+            <button type="button" onclick="openAdScheduleModal('slide', ${i})" class="px-2.5 py-1 rounded-lg ${s.expiresAt ? (Date.now() > Number(s.expiresAt) ? 'bg-rose-50 text-rose-700 border-rose-300' : 'bg-emerald-50 text-emerald-800 border-emerald-300') : 'bg-amber-50 hover:bg-amber-100 text-[#05344E] border-amber-300'} border text-[11px] font-extrabold cursor-pointer transition">
+              ${s.expiresAt ? (Date.now() > Number(s.expiresAt) ? '⏸️ मुदत संपली • बदला' : '🟢 अनपब्लिश: ' + formatPubDateTime(s.expiresAt) + ' • बदला') : '⏱️ कस्टम तारखेला अनपब्लिश करायचे असल्यास क्लिक करा'}
+            </button>
+          </div>
         </div>
       `).join('');
 
@@ -966,8 +1059,7 @@
         document.getElementById('preRollSkipAfter').value = String(ads.preRollSkipAfter || 5);
         document.getElementById('preRollLink').value = ads.preRollLink || '';
         if (document.getElementById('preRollSponsor')) document.getElementById('preRollSponsor').value = ads.preRollSponsor || '';
-        if (document.getElementById('preRollPublishedAt')) document.getElementById('preRollPublishedAt').value = toLocalInputVal(ads.preRollPublishedAt);
-        if (document.getElementById('preRollExpiresAt')) document.getElementById('preRollExpiresAt').value = toLocalInputVal(ads.preRollExpiresAt);
+        syncSingleSchedLabels();
         document.getElementById('preRollText').value = ads.preRollText || '';
         if (ads.preRollFontFamily) document.getElementById('preRollFontSelect').value = ads.preRollFontFamily;
         document.getElementById('preRollVideoUrl').value = ads.preRollVideoUrl || '';
@@ -983,8 +1075,7 @@
         document.getElementById('splashFreq').value = ads.splashFrequency || 'always';
         document.getElementById('splashLink').value = ads.splashLink || '';
         if (document.getElementById('splashSponsor')) document.getElementById('splashSponsor').value = ads.splashSponsor || '';
-        if (document.getElementById('splashPublishedAt')) document.getElementById('splashPublishedAt').value = toLocalInputVal(ads.splashPublishedAt);
-        if (document.getElementById('splashExpiresAt')) document.getElementById('splashExpiresAt').value = toLocalInputVal(ads.splashExpiresAt);
+        syncSingleSchedLabels();
         document.getElementById('splashText').value = ads.splashText || '';
         if (ads.splashFontFamily) document.getElementById('splashFontSelect').value = ads.splashFontFamily;
         document.getElementById('splashVideoUrl').value = ads.splashVideoUrl || '';
@@ -1007,12 +1098,10 @@
           const img = file ? await compressImageFile(file, 900, 320, 0.82) : (prev.image || '');
           const stEl = cards[i].querySelector('.slot-text');
           const spEl = cards[i].querySelector('.slot-sponsor');
-          const pbEl = cards[i].querySelector('.slot-published');
-          const exEl = cards[i].querySelector('.slot-expires');
           const adId = prev.adId || ('ad_' + Date.now().toString(36) + '_' + i + '_' + Math.random().toString(36).slice(2, 6));
           const hasContent = Boolean(img || (stEl && stEl.value.trim()) || cards[i].querySelector('.slot-link').value.trim());
-          const pubMs = (pbEl && parseLocalInputMs(pbEl.value)) || prev.publishedAt || (hasContent ? Date.now() : 0);
-          const expMs = (exEl && parseLocalInputMs(exEl.value)) || 0;
+          const pubMs = prev.publishedAt || (hasContent ? Date.now() : 0);
+          const expMs = prev.expiresAt || 0;
           slides.push({
             adId,
             sponsor: spEl ? spEl.value.trim() : (prev.sponsor || ''),
@@ -1071,8 +1160,8 @@
           preRollDuration: Math.max(2, Math.min(60, Number(document.getElementById('preRollDuration').value) || 10)),
           preRollSkipAfter: Number(document.getElementById('preRollSkipAfter').value) || 5,
           preRollSponsor: (document.getElementById('preRollSponsor')?.value || '').trim(),
-          preRollPublishedAt: parseLocalInputMs(document.getElementById('preRollPublishedAt')?.value) || currentAds.preRollPublishedAt || (preRollEnabled ? Date.now() : 0),
-          preRollExpiresAt: parseLocalInputMs(document.getElementById('preRollExpiresAt')?.value) || 0,
+          preRollPublishedAt: currentAds.preRollPublishedAt || (preRollEnabled ? Date.now() : 0),
+          preRollExpiresAt: currentAds.preRollExpiresAt || 0,
           preRollLink: document.getElementById('preRollLink').value.trim(),
           preRollText: document.getElementById('preRollText').value.trim(),
           preRollFontFamily: document.getElementById('preRollFontSelect').value,
@@ -1085,8 +1174,8 @@
           splashSkipAfter: Number(document.getElementById('splashSkipAfter').value) || 5,
           splashFrequency: document.getElementById('splashFreq').value,
           splashSponsor: (document.getElementById('splashSponsor')?.value || '').trim(),
-          splashPublishedAt: parseLocalInputMs(document.getElementById('splashPublishedAt')?.value) || currentAds.splashPublishedAt || (splashEnabled ? Date.now() : 0),
-          splashExpiresAt: parseLocalInputMs(document.getElementById('splashExpiresAt')?.value) || 0,
+          splashPublishedAt: currentAds.splashPublishedAt || (splashEnabled ? Date.now() : 0),
+          splashExpiresAt: currentAds.splashExpiresAt || 0,
           splashLink: document.getElementById('splashLink').value.trim(),
           splashText: document.getElementById('splashText').value.trim(),
           splashFontFamily: document.getElementById('splashFontSelect').value,
@@ -1153,28 +1242,3 @@
   </script>
 </body>
 </html>
-          <div class="rounded-xl bg-amber-50/70 border border-amber-200/80 p-2.5 space-y-2">
-            <div class="flex flex-wrap items-center justify-between gap-1.5">
-              <span class="text-[11px] font-extrabold text-[#05344E]">⏱️ जाहिरात कालावधी व ऑटो-अनपब्लिश</span>
-              <select onchange="applySlotDaysPreset(${i}, this.value)" class="px-2 py-1 rounded-lg border border-amber-300 bg-white text-[11px] font-bold text-[#05344E] cursor-pointer">
-                <option value="">दिवस निवडा (ऐच्छिक)</option>
-                <option value="1">१ दिवस</option>
-                <option value="3">३ दिवस</option>
-                <option value="7">७ दिवस</option>
-                <option value="15">१५ दिवस</option>
-                <option value="30">३० दिवस</option>
-                <option value="0">कायमस्वरूपी (अमर्याद)</option>
-              </select>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <div>
-                <label class="block text-[10px] font-bold text-slate-600 mb-0.5">पब्लिश दिनांक व वेळ:</label>
-                <input type="datetime-local" value="${toLocalInputVal(s.publishedAt)}" class="slot-published w-full px-2.5 py-1 rounded-lg border border-slate-300 bg-white text-[11px] font-bold text-[#05344E]" />
-              </div>
-              <div>
-                <label class="block text-[10px] font-bold text-rose-700 mb-0.5">आपोआप अनपब्लिश दिनांक व वेळ:</label>
-                <input type="datetime-local" value="${toLocalInputVal(s.expiresAt)}" class="slot-expires w-full px-2.5 py-1 rounded-lg border border-slate-300 bg-white text-[11px] font-bold text-rose-800" />
-              </div>
-            </div>
-            ${s.expiresAt && Date.now() > Number(s.expiresAt) ? '<div class="text-[10px] font-extrabold text-rose-700">⏸️ मुदत संपली (सध्या अनपब्लिश आहे)</div>' : (s.expiresAt ? `<div class="text-[10px] font-bold text-emerald-700">🟢 पब्लिश कालावधी: ${formatDurationMarathi(s.publishedAt || Date.now(), s.expiresAt)}</div>` : '')}
-          </div>

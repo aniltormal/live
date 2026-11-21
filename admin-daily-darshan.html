@@ -530,6 +530,18 @@
       document.getElementById('sourceUrlInput').value = custom.sourceUrl || lat.sourceUrl || '';
     }
 
+    function formatDisplayDate(val) {
+      if (!val) return '';
+      const M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(val.trim())) {
+        const parts = val.trim().split('-').map(Number);
+        return `${String(parts[2]).padStart(2, '0')} ${M[parts[1] - 1] || ''} ${parts[0]}`;
+      }
+      const d = new Date(val);
+      if (isNaN(d.getTime())) return String(val);
+      return `${String(d.getDate()).padStart(2, '0')} ${M[d.getMonth()]} ${d.getFullYear()}`;
+    }
+
     function groupPhotosByBatch(photos, fallbackTitle, fallbackDate) {
       const groups = {};
       (photos || []).forEach((p, idx) => {
@@ -541,7 +553,7 @@
           if (obj.uploadedAt) {
             const d = new Date(obj.uploadedAt);
             if (!isNaN(d)) {
-              if (!dtStr) dtStr = d.toLocaleDateString('mr-IN');
+              if (!dtStr) dtStr = formatDisplayDate(d);
               if (!tmStr) tmStr = d.toLocaleTimeString('mr-IN', { hour: '2-digit', minute: '2-digit' });
             }
           }
@@ -573,7 +585,7 @@
                   <div class="w-12 h-12 rounded-xl bg-amber-100 border border-amber-300 flex items-center justify-center text-2xl shrink-0 shadow-xs">📂</div>
                   <div class="min-w-0 flex-1 space-y-0.5">
                     <div class="text-xs sm:text-sm font-extrabold text-[#05344E] truncate">बॅच ${bIdx + 1}: ${b.title}</div>
-                    <div class="text-[11px] font-bold text-slate-600">📅 ${b.date || '—'} • 🕒 ${b.time || '—'} • 🖼️ ${b.items.length} फोटो</div>
+                    <div class="text-[11px] font-bold text-slate-600">📅 ${formatDisplayDate(b.date) || '—'} • 🕒 ${b.time || '—'} • 🖼️ ${b.items.length} फोटो</div>
                     ${b.source ? `<div class="text-[10px] font-semibold text-slate-500 truncate">स्त्रोत: ${b.source}</div>` : ''}
                   </div>
                   <span class="shrink-0 px-2.5 py-1 rounded-lg bg-slate-100 text-[#05344E] text-[11px] font-extrabold border border-slate-200">उघडा ▾</span>

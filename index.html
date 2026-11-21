@@ -2122,7 +2122,8 @@
         const mrMonths = ['जानेवारी', 'फेब्रुवारी', 'मार्च', 'एप्रिल', 'मे', 'जून', 'जुलै', 'ऑगस्ट', 'सप्टेंबर', 'ऑक्टोबर', 'नोव्हेंबर', 'डिसेंबर'];
         const toMrDigits = (n) => String(n).replace(/\d/g, d => '०१२३४५६७८९'[d]);
 
-        const dateStr = `${vaarNames[now.getDay()]}, ${toMrDigits(now.getDate())} ${mrMonths[m]} ${toMrDigits(now.getFullYear())}`;
+        const enMonths = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const dateStr = `${vaarNames[now.getDay()]}, ${String(now.getDate()).padStart(2, '0')} ${enMonths[m]} ${now.getFullYear()}`;
         elText.textContent = (tithiName === 'एकादशी') ? `🚩 आज पावन एकादशी (पंढरपूर विशेष) • ${maas} ${paksha} • ${dateStr}` : `आजचे पंचांग: ${maas} ${paksha} ${tithiName} • ${dateStr}`;
         const pBarEl = document.getElementById('panchangBar');
         if (pBarEl && tithiName === 'एकादशी') { pBarEl.classList.add('border-l-4', 'border-l-[#EA580C]'); }

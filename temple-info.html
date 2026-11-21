@@ -447,7 +447,7 @@
         if (!ts) return '';
         const d = new Date(ts);
         if (isNaN(d.getTime())) return '';
-        return d.toLocaleDateString('mr-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+        const M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return `${String(d.getDate()).padStart(2, '0')} ${M[d.getMonth()]} ${d.getFullYear()}`;
       } catch (_) { return ''; }
     }
 
@@ -483,7 +483,7 @@
         if (!ts) return '';
         const d = new Date(ts);
         if (isNaN(d.getTime())) return '';
-        return d.toLocaleDateString('mr-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+        const M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return `${String(d.getDate()).padStart(2, '0')} ${M[d.getMonth()]} ${d.getFullYear()}`;
       } catch (_) { return ''; }
     }
 

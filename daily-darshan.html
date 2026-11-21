@@ -44,6 +44,20 @@
     .hdr-home-4d:hover { filter: brightness(0.97); }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    @keyframes pujaTabGlow {
+      0%, 100% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.45); transform: scale(1.02); }
+      50% { box-shadow: 0 0 18px rgba(251, 191, 36, 0.85); transform: scale(1.04); }
+    }
+    .puja-tab-active {
+      background: linear-gradient(135deg, #EA580C 0%, #F59E0B 55%, #D97706 100%);
+      animation: pujaTabGlow 2.4s ease-in-out infinite;
+    }
+    @keyframes hintFloat {
+      0%, 100% { opacity: 0.88; transform: translateY(0); }
+      50% { opacity: 1; transform: translateY(-1.5px); }
+    }
+    .hint-float { animation: hintFloat 2.2s ease-in-out infinite; }
   </style>
 
   <style id="siteSkelStyle">
@@ -152,8 +166,8 @@
   </main>
 
   <!-- Popup Auto-Scroll Darshan Modal (Fixed Standard Size, Natural Resolution, Hold-to-Zoom with Blurred Header/Tabs) -->
-  <div id="darshanSlideshowModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-2.5 sm:p-5">
-    <div id="darshanModalCard" class="w-[92vw] max-w-[460px] bg-gradient-to-b from-[#031926] to-[#05344E] rounded-3xl border-2 border-amber-400/75 shadow-2xl p-3 sm:p-4 flex flex-col gap-2.5" onclick="event.stopPropagation()">
+  <div id="darshanSlideshowModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6">
+    <div id="darshanModalCard" class="w-[94vw] sm:w-[86vw] max-w-[780px] max-h-[92vh] bg-gradient-to-b from-[#031926] to-[#05344E] rounded-3xl border-2 border-amber-400/75 shadow-2xl p-1.5 sm:p-2.5 flex flex-col gap-1.5" onclick="event.stopPropagation()">
       <!-- Top Title + Close (blurs when holding photo) -->
       <div id="modalTopHeader" class="flex items-center justify-between gap-2 px-1 text-white transition-all duration-200">
         <div class="min-w-0">
@@ -165,33 +179,37 @@
 
       <!-- Event / Pooja Filter Pill Buttons (blurs when holding photo) -->
       <div id="modalEventTabs" class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 px-1 border-y border-white/10 min-h-[38px] transition-all duration-200"></div>
+      <div id="modalTabsHint" class="hidden hint-float text-center text-[11px] sm:text-xs font-bold text-amber-200 bg-amber-500/15 border border-amber-400/35 rounded-full py-0.5 px-3 mx-auto tracking-wide transition-all duration-200">👆 येथे क्लिक करून वेगवेगळे फोटो बघा</div>
 
-      <!-- Fixed Portrait-Friendly Standard Size Photo Stage (3:4) + Ambient Photo Color Backdrop -->
-      <div id="modalPhotoStage" class="relative w-full aspect-[3/4] max-h-[66vh] bg-[#041824] rounded-2xl overflow-hidden border border-amber-400/40 shadow-inner flex items-center justify-center select-none touch-manipulation transition-all duration-200" style="-webkit-user-select:none; -webkit-touch-callout:none;">
+      <!-- Full-Width Photo Stage (Arrows Overlaid Inside, Meta Bar Below) -->
+      <div id="modalPhotoStage" class="relative w-full h-[64vh] sm:h-[70vh] bg-[#041824] rounded-xl overflow-hidden flex items-center justify-center select-none touch-manipulation transition-all duration-200" style="-webkit-user-select:none; -webkit-touch-callout:none;">
         <!-- Ambient Blurred Color Shade Layer from Current Photo -->
         <img id="modalPhotoBg" src="" alt="" aria-hidden="true" draggable="false"
           class="absolute inset-0 w-full h-full object-cover scale-125 blur-2xl opacity-85 brightness-75 pointer-events-none select-none" />
 
         <!-- Actual Photo at Natural Aspect Ratio -->
         <img id="modalPhotoImg" src="" alt="दैनिक दर्शन" draggable="false"
-          class="relative z-10 max-w-full max-h-full w-auto h-auto object-contain transition-transform duration-300 ease-out select-none drop-shadow-xl"
+          class="relative z-10 w-full h-full object-contain transition-transform duration-300 ease-out select-none drop-shadow-xl"
           style="-webkit-touch-callout:none; transform-origin:center center;" />
 
         <!-- Video Player (Shown at end of batch if video exists) -->
-        <video id="modalVideoEl" src="" autoplay muted playsinline class="hidden relative z-10 max-w-full max-h-full w-full h-full object-contain bg-black rounded-xl pointer-events-none select-none"></video>
+        <video id="modalVideoEl" src="" autoplay playsinline class="hidden relative z-10 max-w-full max-h-full w-full h-full object-contain bg-black rounded-xl pointer-events-none select-none"></video>
 
-        <!-- Counter -->
-        <span id="modalPhotoCounter" class="modal-stage-ctrl z-20 absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-full bg-black/75 text-white text-[11px] font-bold border border-white/20 transition-opacity duration-200">1 / 1</span>
+        <!-- Counter (Top Left) -->
+        <span id="modalPhotoCounter" class="modal-stage-ctrl z-20 absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-black/75 text-white text-[11px] font-bold border border-white/20 transition-opacity duration-200">1 / 1</span>
 
-        <!-- Left / Right Step Arrows -->
-        <button type="button" onclick="event.stopPropagation(); stepDarshanSlide(-1)" class="modal-stage-ctrl z-20 absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 hover:bg-black/85 text-white text-xl font-bold flex items-center justify-center cursor-pointer transition-opacity duration-200">‹</button>
-        <button type="button" onclick="event.stopPropagation(); stepDarshanSlide(1)" class="modal-stage-ctrl z-20 absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 hover:bg-black/85 text-white text-xl font-bold flex items-center justify-center cursor-pointer transition-opacity duration-200">›</button>
+        <!-- Video Mute/Unmute Button (Top Right, Video Only) -->
+        <button id="modalVideoMuteBtn" type="button" onpointerdown="event.stopPropagation()" onpointerup="event.stopPropagation()" onclick="event.stopPropagation(); window.toggleModalVideoMute && window.toggleModalVideoMute()" aria-label="आवाज बंद/सुरू करा" class="hidden modal-stage-ctrl z-30 absolute top-2.5 right-2.5 w-9 h-9 rounded-full bg-black/80 hover:bg-black text-amber-300 border border-amber-400/70 shadow-lg flex items-center justify-center text-base cursor-pointer transition">🔊</button>
 
-        <!-- Aligned Bottom Bar: Date/Time (Left) + Source (Right) -->
-        <div class="modal-stage-ctrl z-20 absolute bottom-2.5 inset-x-2.5 flex items-center justify-between gap-2 pointer-events-none transition-opacity duration-200">
-          <div id="modalPhotoDateTime" class="pointer-events-auto inline-flex items-center h-7 px-3 rounded-full bg-black/80 text-white text-[10px] sm:text-xs font-bold border border-white/25 shadow truncate max-w-[49%]"></div>
-          <div id="modalPhotoSourceWrap" class="pointer-events-auto flex items-center justify-end max-w-[49%]"></div>
-        </div>
+        <!-- Left / Right Step Arrows Inside Stage -->
+        <button type="button" onpointerdown="event.stopPropagation()" onpointerup="event.stopPropagation()" onclick="event.stopPropagation(); stepDarshanSlide(-1)" aria-label="मागील" class="modal-stage-ctrl z-20 absolute left-2 top-1/2 -translate-y-1/2 w-8 h-10 rounded-full bg-black/55 hover:bg-black/80 text-white text-xl font-bold flex items-center justify-center cursor-pointer transition">‹</button>
+        <button type="button" onpointerdown="event.stopPropagation()" onpointerup="event.stopPropagation()" onclick="event.stopPropagation(); stepDarshanSlide(1)" aria-label="पुढील" class="modal-stage-ctrl z-20 absolute right-2 top-1/2 -translate-y-1/2 w-8 h-10 rounded-full bg-black/55 hover:bg-black/80 text-white text-xl font-bold flex items-center justify-center cursor-pointer transition">›</button>
+      </div>
+
+      <!-- External Date/Time & Source Bar (Below Photo) -->
+      <div id="modalMetaBar" class="modal-stage-ctrl flex items-center justify-between gap-2 px-1 transition-opacity duration-200">
+        <div id="modalPhotoDateTime" class="inline-flex items-center h-7 px-3 rounded-full bg-white/10 text-amber-100 text-[11px] font-bold border border-white/15 whitespace-nowrap"></div>
+        <div id="modalPhotoSourceWrap" class="flex items-center justify-end max-w-[52%]"></div>
       </div>
 
       <p id="modalHintText" class="text-center text-[11px] text-amber-100/75 transition-all duration-200">💡 फोटोवर बोट धरून ठेवल्यास झूम होईल • बाहेर कुठेही टच केल्यास बंद होईल</p>
@@ -308,13 +326,30 @@
       }, 4000);
     }
 
+    function formatDisplayDate(val) {
+      if (!val) return '';
+      const M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(val.trim())) {
+        const parts = val.trim().split('-').map(Number);
+        return `${String(parts[2]).padStart(2, '0')} ${M[parts[1] - 1] || ''} ${parts[0]}`;
+      }
+      const d = new Date(val);
+      if (isNaN(d.getTime())) return String(val);
+      return `${String(d.getDate()).padStart(2, '0')} ${M[d.getMonth()]} ${d.getFullYear()}`;
+    }
+
     function renderModalEventTabs() {
       const box = document.getElementById('modalEventTabs');
+      const hint = document.getElementById('modalTabsHint');
       if (!box) return;
+      if (hint) hint.classList.toggle('hidden', allModalEvents.length <= 1);
       box.innerHTML = allModalEvents.map((ev, idx) => {
         const isAct = idx === activeEventIdx;
-        const label = ev.isLatest ? `✨ ${ev.title}` : `📅 ${ev.date} • ${ev.title}`;
-        return `<button type="button" onclick="selectModalEvent(${idx})" class="shrink-0 px-3.5 py-1.5 rounded-full text-xs font-bold border transition cursor-pointer ${isAct ? 'bg-amber-400 text-[#031926] border-amber-300 shadow' : 'bg-white/15 hover:bg-white/25 text-white border-white/25'}">${label}</button>`;
+        const label = ev.isLatest ? `✨ ${ev.title}` : `📅 ${formatDisplayDate(ev.date)} • ${ev.title}`;
+        const cls = isAct
+          ? 'puja-tab-active text-white border-amber-200 shadow-lg'
+          : 'bg-[#0a3f5c] hover:bg-[#0e5278] text-amber-100 border-amber-400/55 hover:border-amber-300 hover:scale-[1.02]';
+        return `<button type="button" onclick="selectModalEvent(${idx})" class="shrink-0 px-3.5 py-1.5 rounded-full text-xs font-bold border transition-all duration-300 cursor-pointer ${cls}">${label}</button>`;
       }).join('');
     }
 
@@ -325,6 +360,16 @@
       ev.photos = [...imgs, ...vids];
     }
 
+    window.toggleModalVideoMute = function() {
+      const vidEl = document.getElementById('modalVideoEl');
+      const muteBtn = document.getElementById('modalVideoMuteBtn');
+      if (!vidEl) return;
+      vidEl.muted = !vidEl.muted;
+      if (!vidEl.muted) vidEl.volume = 1.0;
+      vidEl.play().catch(() => {});
+      if (muteBtn) muteBtn.textContent = vidEl.muted ? '🔇' : '🔊';
+    };
+
     function renderCurrentSlide() {
       const ev = allModalEvents[activeEventIdx];
       if (!ev || !ev.photos || !ev.photos.length) return;
@@ -333,28 +378,38 @@
       const imgEl = document.getElementById('modalPhotoImg');
       const bgEl = document.getElementById('modalPhotoBg');
       const vidEl = document.getElementById('modalVideoEl');
+      const muteBtn = document.getElementById('modalVideoMuteBtn');
       const isVid = p.type === 'video';
       if (isVid && vidEl) {
         imgEl.classList.add('hidden');
         if (bgEl) bgEl.classList.add('hidden');
         vidEl.classList.remove('hidden');
+        if (muteBtn) muteBtn.classList.remove('hidden');
         vidEl.src = p.url;
-        vidEl.play().catch(() => {});
+        vidEl.muted = false;
+        vidEl.volume = 1.0;
+        if (muteBtn) muteBtn.textContent = '🔊';
+        vidEl.play().catch(() => {
+          vidEl.muted = true;
+          if (muteBtn) muteBtn.textContent = '🔇';
+          vidEl.play().catch(() => {});
+        });
         stopAutoScroll();
         vidEl.onended = () => {
           if (ev.photos.length > 1) stepDarshanSlide(1);
         };
       } else {
+        if (muteBtn) muteBtn.classList.add('hidden');
         if (vidEl) { vidEl.pause(); vidEl.src = ''; vidEl.classList.add('hidden'); }
         imgEl.classList.remove('hidden');
         if (bgEl) { bgEl.classList.remove('hidden'); bgEl.src = p.url; }
         imgEl.src = p.url;
       }
-      document.getElementById('modalActiveEventSub').textContent = `${ev.title}${ev.date ? ' • ' + ev.date : ''}`;
+      document.getElementById('modalActiveEventSub').textContent = `${ev.title}${ev.date ? ' • ' + formatDisplayDate(ev.date) : ''}`;
       document.getElementById('modalPhotoCounter').textContent = `${activeSlideIdx + 1} / ${ev.photos.length}`;
 
       const dtEl = document.getElementById('modalPhotoDateTime');
-      const dtTxt = [p.date ? `📅 ${p.date}` : '', p.time ? `🕒 ${p.time}` : ''].filter(Boolean).join(' • ');
+      const dtTxt = [p.date ? `📅 ${formatDisplayDate(p.date)}` : '', p.time ? `🕒 ${p.time}` : ''].filter(Boolean).join(' • ');
       dtEl.textContent = dtTxt || '📅 ताजे दर्शन';
 
       const srcWrap = document.getElementById('modalPhotoSourceWrap');
@@ -477,36 +532,35 @@
     const photoBg = document.getElementById('modalPhotoBg');
     const topHdr = document.getElementById('modalTopHeader');
     const evTabs = document.getElementById('modalEventTabs');
+    const tabsHint = document.getElementById('modalTabsHint');
     const hintTxt = document.getElementById('modalHintText');
     const setHoldVisuals = (holding) => {
+      const vidEl = document.getElementById('modalVideoEl');
+      const isVidActive = vidEl && !vidEl.classList.contains('hidden');
+      const metaBar = document.getElementById('modalMetaBar');
       if (holding) {
-        if (modalCard) {
-          modalCard.classList.remove('w-[92vw]', 'max-w-[460px]', 'p-3', 'sm:p-4', 'gap-2.5');
-          modalCard.classList.add('w-auto', 'max-w-[94vw]', 'p-1.5', 'gap-0');
+        if (isVidActive) {
+          vidEl.style.transform = 'scale(1.14)';
+        } else {
+          photoImg.style.transform = 'scale(1.16)';
         }
-        photoStage.classList.remove('w-full', 'aspect-[3/4]', 'max-h-[66vh]');
-        photoStage.classList.add('w-auto', 'max-w-[91vw]', 'max-h-[84vh]');
-        photoImg.classList.remove('max-w-full', 'max-h-full');
-        photoImg.classList.add('max-w-[90vw]', 'max-h-[82vh]', 'scale-[1.06]');
         if (photoBg) photoBg.classList.add('hidden');
         if (topHdr) topHdr.classList.add('hidden');
         if (evTabs) evTabs.classList.add('hidden');
+        if (tabsHint) tabsHint.classList.add('hidden');
+        if (metaBar) metaBar.classList.add('hidden');
         if (hintTxt) hintTxt.classList.add('hidden');
-        document.querySelectorAll('.modal-stage-ctrl').forEach(el => el.classList.add('opacity-0'));
+        document.querySelectorAll('.modal-stage-ctrl').forEach(el => el.classList.add('opacity-0', 'pointer-events-none'));
       } else {
-        if (modalCard) {
-          modalCard.classList.add('w-[92vw]', 'max-w-[460px]', 'p-3', 'sm:p-4', 'gap-2.5');
-          modalCard.classList.remove('w-auto', 'max-w-[94vw]', 'p-1.5', 'gap-0');
-        }
-        photoStage.classList.add('w-full', 'aspect-[3/4]', 'max-h-[66vh]');
-        photoStage.classList.remove('w-auto', 'max-w-[91vw]', 'max-h-[84vh]');
-        photoImg.classList.add('max-w-full', 'max-h-full');
-        photoImg.classList.remove('max-w-[90vw]', 'max-h-[82vh]', 'scale-[1.06]');
-        if (photoBg) photoBg.classList.remove('hidden');
+        photoImg.style.transform = '';
+        if (vidEl) vidEl.style.transform = '';
+        if (photoBg && !isVidActive) photoBg.classList.remove('hidden');
         if (topHdr) topHdr.classList.remove('hidden');
         if (evTabs) evTabs.classList.remove('hidden');
+        if (tabsHint) tabsHint.classList.toggle('hidden', allModalEvents.length <= 1);
+        if (metaBar) metaBar.classList.remove('hidden');
         if (hintTxt) hintTxt.classList.remove('hidden');
-        document.querySelectorAll('.modal-stage-ctrl').forEach(el => el.classList.remove('opacity-0'));
+        document.querySelectorAll('.modal-stage-ctrl').forEach(el => el.classList.remove('opacity-0', 'pointer-events-none'));
       }
     };
     const startHold = (e) => {
@@ -519,11 +573,11 @@
       isHoldingPhoto = false;
       setHoldVisuals(false);
     };
-    let swipeStartX = 0;
-    let swipeStartY = 0;
+    let swipeStartX = null;
+    let swipeStartY = null;
     let holdTimer = null;
     const onStagePointerDown = (e) => {
-      if (e.target.closest('button, a')) return;
+      if (e.target.closest('button, a')) { swipeStartX = null; return; }
       swipeStartX = e.clientX || 0;
       swipeStartY = e.clientY || 0;
       clearTimeout(holdTimer);
@@ -531,9 +585,14 @@
     };
     const onStagePointerUp = (e) => {
       clearTimeout(holdTimer);
+      endHold();
+      if (e.target.closest('button, a') || swipeStartX === null) {
+        swipeStartX = null;
+        return;
+      }
       const dx = (e.clientX || 0) - swipeStartX;
       const dy = (e.clientY || 0) - swipeStartY;
-      endHold();
+      swipeStartX = null;
       if (Math.abs(dx) >= 42 && Math.abs(dx) > Math.abs(dy)) {
         stepDarshanSlide(dx < 0 ? 1 : -1);
       }
@@ -660,7 +719,7 @@
               <div class="card-img-box ${isFeat ? 'h-48 sm:h-64' : 'h-28 sm:h-36'} bg-slate-100 relative overflow-hidden w-full">
                 <img src="${cover}" alt="${title}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
                 ${isFeat ? `<div class="pointer-events-none absolute inset-0 overflow-hidden"><div class="ott-shimmer-beam w-1/3 h-full bg-gradient-to-r from-transparent via-amber-200/35 to-transparent"></div></div><span class="absolute top-2 right-2 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-[#EA580C] to-amber-500 text-white text-[10px] sm:text-xs font-extrabold shadow">⭐ प्रमुख दर्शन</span>` : ''}
-                ${lat.date ? `<span class="absolute top-2 left-2 px-3 py-1 rounded-full bg-[#05344E]/95 text-amber-300 border-2 border-amber-400 text-xs sm:text-sm font-bold shadow-lg tracking-wide">📅 ${lat.date}</span>` : ''}
+                ${lat.date ? `<span class="absolute top-2 left-2 px-3 py-1 rounded-full bg-[#05344E]/95 text-amber-300 border-2 border-amber-400 text-xs sm:text-sm font-bold shadow-lg tracking-wide">📅 ${formatDisplayDate(lat.date)}</span>` : ''}
                 ${srcName ? `<span class="absolute bottom-1.5 right-1.5 px-2 py-0.5 rounded-full bg-black/65 text-amber-200 text-[9px] font-bold">📸 ${srcName}</span>` : ''}
               </div>
               <div class="p-2.5 sm:p-3 flex items-center justify-between gap-1.5 w-full">

@@ -318,7 +318,7 @@
         if (autoSel) autoSel.value = String(days > 0 ? days : 7);
         syncAutoRefreshUI();
         if (lastUpdLbl) {
-          lastUpdLbl.textContent = val.updatedAt ? ('शेवटचे अपडेट: ' + new Date(val.updatedAt).toLocaleDateString('mr-IN')) : '';
+          lastUpdLbl.textContent = val.updatedAt ? ('शेवटचे अपडेट: ' + (() => { const d = new Date(val.updatedAt); const M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return isNaN(d) ? '' : `${String(d.getDate()).padStart(2,'0')} ${M[d.getMonth()]} ${d.getFullYear()}`; })()) : '';
         }
       });
     }
@@ -475,7 +475,7 @@
           autoRefreshDays: (autoToggle && autoToggle.checked) ? Number((autoSel && autoSel.value) || 7) : 0,
           updatedAt: now
         });
-        if (lastUpdLbl) lastUpdLbl.textContent = 'शेवटचे अपडेट: ' + new Date(now).toLocaleDateString('mr-IN');
+        if (lastUpdLbl) lastUpdLbl.textContent = 'शेवटचे अपडेट: ' + (() => { const d = new Date(now); const M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return `${String(d.getDate()).padStart(2,'0')} ${M[d.getMonth()]} ${d.getFullYear()}`; })();
         showToast('✅ मंदिराची माहिती यशस्वीरित्या सेव्ह झाली!');
       } catch (err) {
         showToast('❌ त्रुटी: ' + err.message, true);

@@ -358,7 +358,8 @@
       const days = ['रविवार','सोमवार','मंगळवार','बुधवार','गुरुवार','शुक्रवार','शनिवार'];
       const months = ['जानेवारी','फेब्रुवारी','मार्च','एप्रिल','मे','जून','जुलै','ऑगस्ट','सप्टेंबर','ऑक्टोबर','नोव्हेंबर','डिसेंबर'];
       const dayIdx = now.getDay();
-      const dateLabel = `${mrDigits(now.getDate())} ${months[now.getMonth()]} ${mrDigits(now.getFullYear())}`;
+      const enMonths = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const dateLabel = `${String(now.getDate()).padStart(2, '0')} ${enMonths[now.getMonth()]} ${now.getFullYear()}`;
 
       // 1. Lunar calculations (Tithi, Nakshatra, Yoga, Karana, Rashi)
       const jd = now.getTime() / 86400000 + 2440587.5;

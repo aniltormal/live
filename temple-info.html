@@ -906,7 +906,7 @@
       currentTempleMetaForPlay = templeMeta || null;
       const title = (templeMeta && (templeMeta.shortTitle || templeMeta.name)) || (info && info.title) || 'मंदिर माहिती';
       document.title = title + ' — मंदिर माहिती';
-      document.getElementById('topTempleTitle').textContent = title;
+      const topTtl = document.getElementById('topTempleTitle'); if (topTtl) topTtl.textContent = title;
       document.getElementById('heroTempleName').textContent = title;
 
       const isHidden = Boolean(templeMeta && (templeMeta.hidden || templeMeta.deleted));

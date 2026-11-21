@@ -38,6 +38,11 @@
     #headerTitle { font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; font-weight: 700; font-size: clamp(26px, 6.8vw, 40px) !important; line-height: 1.25 !important; }
   </style>
   <link rel="manifest" href="manifest.json" />
+
+  <style id="siteSkelStyle">
+    @keyframes siteSkelShimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+    .site-skel { background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); background-size: 800px 100%; animation: siteSkelShimmer 1.25s infinite linear; }
+  </style>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
   <header id="appHeader" class="bg-gradient-to-r from-[#031926] via-[#05344E] to-[#084160] text-white border-b-2 border-amber-400/80 shadow-md sticky top-0 z-30">
@@ -299,5 +304,27 @@
       });
     }
   </script>
+  <!-- Brief Full-Page Skeleton Shimmer (~380ms) -->
+  <div id="siteSkeletonOverlay" class="fixed inset-x-0 top-[64px] bottom-0 z-25 bg-slate-50/95 p-4 sm:p-6 overflow-hidden transition-opacity duration-200">
+    <div class="max-w-6xl mx-auto space-y-4">
+      <div class="h-20 w-full rounded-2xl site-skel border border-slate-200/70"></div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="h-28 rounded-2xl site-skel border border-slate-200/70"></div>
+        <div class="h-28 rounded-2xl site-skel border border-slate-200/70"></div>
+      </div>
+      <div class="h-32 w-full rounded-2xl site-skel border border-slate-200/70"></div>
+    </div>
+  </div>
+  <script>
+    (function() {
+      const ov = document.getElementById('siteSkeletonOverlay');
+      if (!ov) return;
+      setTimeout(() => {
+        ov.classList.add('opacity-0');
+        setTimeout(() => ov.classList.add('hidden'), 200);
+      }, 380);
+    })();
+  </script>
+
 </body>
 </html>

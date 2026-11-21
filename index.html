@@ -205,6 +205,11 @@
     #headerEmblem { width: 46px !important; height: 46px !important; }
     #headerTitle { font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; font-weight: 700; font-size: clamp(26px, 6.8vw, 40px) !important; line-height: 1.25 !important; }
   </style>
+
+  <style id="siteSkelStyle">
+    @keyframes siteSkelShimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+    .site-skel { background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); background-size: 800px 100%; animation: siteSkelShimmer 1.25s infinite linear; }
+  </style>
 </head>
 <body id="appBody" class="bg-white text-black min-h-screen flex flex-col transition-colors duration-300">
   <!-- Devotional Splash Loading Screen (lightweight SVG temple aura + full-width photo) -->
@@ -4644,5 +4649,52 @@
       if (go) go.addEventListener('click', () => guideModal && guideModal.classList.add('hidden'));
     })();
   </script>
+  <!-- Full-Page Skeleton Loader (Shows after splash only if data is still loading) -->
+  <div id="siteSkeletonOverlay" class="hidden fixed inset-x-0 top-[64px] bottom-0 z-25 bg-slate-50/95 p-4 sm:p-6 overflow-hidden transition-opacity duration-200">
+    <div class="max-w-7xl mx-auto space-y-4">
+      <div class="h-16 w-full rounded-2xl site-skel border border-slate-200/70"></div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        <div class="h-36 rounded-2xl site-skel border border-slate-200/70"></div>
+        <div class="h-36 rounded-2xl site-skel border border-slate-200/70"></div>
+        <div class="h-36 rounded-2xl site-skel border border-slate-200/70"></div>
+        <div class="h-36 rounded-2xl site-skel border border-slate-200/70"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function initMainSiteSkeleton() {
+      const ov = document.getElementById('siteSkeletonOverlay');
+      const loader = document.getElementById('appLoaderOverlay');
+      if (!ov) return;
+      const hideSkel = () => {
+        ov.classList.add('opacity-0');
+        setTimeout(() => ov.classList.add('hidden'), 200);
+      };
+      const checkAfterSplash = () => {
+        if (window.__templesSyncedFromFb) return;
+        ov.classList.remove('hidden', 'opacity-0');
+        const poll = setInterval(() => {
+          if (window.__templesSyncedFromFb) {
+            clearInterval(poll);
+            hideSkel();
+          }
+        }, 80);
+        setTimeout(() => { clearInterval(poll); hideSkel(); }, 2500);
+      };
+      if (loader) {
+        const obs = new MutationObserver(() => {
+          const st = getComputedStyle(loader);
+          if (loader.classList.contains('hidden') || st.display === 'none' || st.opacity === '0') {
+            obs.disconnect();
+            checkAfterSplash();
+          }
+        });
+        obs.observe(loader, { attributes: true, attributeFilter: ['class', 'style'] });
+        setTimeout(() => { obs.disconnect(); }, 6000);
+      }
+    })();
+  </script>
+
 </body>
 </html>

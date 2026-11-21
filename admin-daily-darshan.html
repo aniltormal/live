@@ -114,10 +114,16 @@
           <input id="sourceUrlInput" type="url" placeholder="https://..." class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-[#05344E] outline-none" />
         </div>
 
-        <div class="p-3.5 rounded-2xl bg-slate-50 border border-dashed border-slate-300 space-y-2.5">
-          <label class="block text-xs font-bold text-slate-700">१. फाईल निवडा (एकाच वेळी अनेक फोटो निवडता येतील):</label>
-          <input id="photoFileInput" type="file" accept="image/*" multiple class="block w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#EA580C] file:text-white hover:file:bg-orange-700 cursor-pointer" />
-          <div class="text-[11px] text-slate-500">किंवा थेट इमेज URL पेस्ट करा (दर ओळीला एक URL):</div>
+        <div class="p-3.5 rounded-2xl bg-slate-50 border border-dashed border-slate-300 space-y-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">१. फोटो निवडा (एकाच वेळी अनेक फोटो निवडता येतील):</label>
+            <input id="photoFileInput" type="file" accept="image/*" multiple class="block w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#EA580C] file:text-white hover:file:bg-orange-700 cursor-pointer" />
+          </div>
+          <div class="pt-2 border-t border-slate-200/80">
+            <label class="block text-xs font-bold text-[#05344E] mb-1">२. व्हिडिओ निवडा (ऐच्छिक — एका बॅच/फोल्डरमध्ये फक्त १ व्हिडिओ, कमाल 100MB):</label>
+            <input id="videoFileInput" type="file" accept="video/*" class="block w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#05344E] file:text-white hover:bg-[#084160] cursor-pointer" />
+          </div>
+          <div class="text-[11px] text-slate-500">किंवा थेट इमेज/व्हिडिओ URL पेस्ट करा (दर ओळीला एक URL):</div>
           <textarea id="directUrlsInput" rows="2" placeholder="https://res.cloudinary.com/.../photo1.jpg" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:border-[#05344E] outline-none"></textarea>
         </div>
 
@@ -205,29 +211,54 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">मोबाईल कॉलम्स</label>
-          <select id="uiColsMobile" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm bg-white">
-            <option value="2">२ ब्लॉक्स (डिफॉल्ट)</option>
-            <option value="1">१ ब्लॉक</option>
+          <label class="block text-xs font-bold text-slate-700 mb-1">एका ओळीतील बटने (Columns)</label>
+          <select id="uiGridCols" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm bg-white">
+            <option value="1">१ बटण (एका खाली एक)</option>
+            <option value="2" selected>२ बटणे (डिफॉल्ट)</option>
+            <option value="3">३ बटणे</option>
+            <option value="4">४ बटणे</option>
+            <option value="5">५ बटणे</option>
+            <option value="6">६ बटणे</option>
           </select>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">डेस्कटॉप कॉलम्स</label>
-          <select id="uiColsDesktop" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm bg-white">
-            <option value="4">४ ब्लॉक्स (डिफॉल्ट)</option>
-            <option value="3">३ ब्लॉक्स</option>
-            <option value="2">२ ब्लॉक्स</option>
+          <label class="block text-xs font-bold text-slate-700 mb-1">हेडर उंची (Header Size)</label>
+          <select id="uiHeaderSize" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm bg-white">
+            <option value="xs">खूप लहान</option>
+            <option value="sm">लहान</option>
+            <option value="md" selected>मध्यम (डिफॉल्ट)</option>
+            <option value="lg">मोठा</option>
+            <option value="xl">खूप मोठा</option>
           </select>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">ब्लॉक फोटो उंची</label>
-          <select id="uiBlockHeight" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm bg-white">
-            <option value="md">मध्यम (डिफॉल्ट)</option>
-            <option value="sm">छोटी</option>
-            <option value="lg">मोठी</option>
+          <label class="block text-xs font-bold text-slate-700 mb-1">प्रमुख कार्ड उंची (Featured Height)</label>
+          <select id="uiFeaturedHeight" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm bg-white">
+            <option value="xs">खूप लहान</option>
+            <option value="sm">लहान</option>
+            <option value="md" selected>मध्यम (डिफॉल्ट)</option>
+            <option value="lg">मोठा</option>
+            <option value="xl">खूप मोठा</option>
           </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">इतर कार्ड उंची (Card Height)</label>
+          <select id="uiCardHeight" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm bg-white">
+            <option value="xs">खूप लहान</option>
+            <option value="sm" selected>लहान (डिफॉल्ट)</option>
+            <option value="md">मध्यम (चौकोनी)</option>
+            <option value="lg">मोठा</option>
+            <option value="xl">खूप मोठा</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+        <div>
+          <label class="block text-xs font-bold text-[#05344E] mb-1">⭐ मुख्य कार्ड (पंढरपूर इफेक्ट — सर्वात वर)</label>
+          <select id="uiFeaturedTemple" class="w-full px-3 py-2 rounded-xl border border-amber-300 text-sm font-bold bg-amber-50/40"></select>
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">बॉर्डर रंग</label>
@@ -419,10 +450,42 @@
       const sel = document.getElementById('templeSelect');
       const prev = sel.value;
       sel.innerHTML = mergedTemples.map(t => `<option value="${t.id}">${t.shortTitle || t.name || t.id} (${t.id})</option>`).join('');
+      const featSel = document.getElementById('uiFeaturedTemple');
+      if (featSel) {
+        const fPrev = featSel.value;
+        featSel.innerHTML = '<option value="">-- कोणतेही नाही --</option>' +
+          mergedTemples.map(t => `<option value="${t.id}">⭐ ${t.shortTitle || t.name || t.id}</option>`).join('');
+        if (fPrev) featSel.value = fPrev;
+        else if (window.__savedFeaturedTemple !== undefined) featSel.value = window.__savedFeaturedTemple;
+        else if (mergedTemples.some(t => t.id === 'pandharpur')) featSel.value = 'pandharpur';
+      }
       if (prev && mergedTemples.some(t => t.id === prev)) sel.value = prev;
       syncSelectedTempleDefaults();
       loadSelectedTempleArchive();
       renderTempleOrderList();
+    }
+
+
+    async function uploadVideoToCloudinary(file) {
+      if (!cloudCfg.cloudName || !cloudCfg.uploadPreset) {
+        throw new Error('कृपया आधी वर Cloudinary चे Cloud Name आणि Upload Preset सेव्ह करा.');
+      }
+      if (file.size > 100 * 1024 * 1024) {
+        throw new Error('व्हिडिओ फाईल 100 MB पेक्षा मोठी नसावी (Cloudinary Free प्लॅन मर्यादा).');
+      }
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('upload_preset', cloudCfg.uploadPreset);
+      fd.append('folder', 'darshansetu_daily_videos');
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${encodeURIComponent(cloudCfg.cloudName)}/video/upload`, {
+        method: 'POST',
+        body: fd
+      });
+      const data = await res.json();
+      if (!res.ok || !data.secure_url) {
+        throw new Error((data.error && data.error.message) || 'Cloudinary व्हिडिओ अपलोड अयशस्वी झाले.');
+      }
+      return data.secure_url.replace('/upload/', '/upload/f_auto,q_auto/');
     }
 
     function setSelectOrCustom(selId, customId, val) {
@@ -491,7 +554,7 @@
             items: []
           };
         }
-        groups[bid].items.push({ url: obj.url || p, idx });
+        groups[bid].items.push({ url: obj.url || p, type: obj.type || (/\.(mp4|webm|mov)(\?|$)/i.test(obj.url || p) || String(obj.url || p).includes('/video/upload/') ? 'video' : 'image'), idx });
       });
       return Object.values(groups);
     }
@@ -524,7 +587,7 @@
                   <div class="grid grid-cols-3 sm:grid-cols-4 gap-2">
                     ${b.items.map(it => `
                       <div class="relative group rounded-xl overflow-hidden border border-slate-300 bg-white aspect-square">
-                        <img src="${it.url}" class="w-full h-full object-cover" loading="lazy" />
+                        ${it.type === "video" ? `<video src="${it.url}" muted playsinline class="w-full h-full object-cover bg-black"></video><span class="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/80 text-amber-300 text-[9px] font-bold">🎬 व्हिडिओ</span>` : `<img src="${it.url}" class="w-full h-full object-cover" loading="lazy" />`}
                         <label class="absolute top-1.5 left-1.5 w-6 h-6 rounded-md bg-white/90 border border-slate-300 shadow flex items-center justify-center cursor-pointer" title="डिलीटसाठी निवडा">
                           <input type="checkbox" class="photo-del-chk w-4 h-4 accent-rose-600 cursor-pointer" data-scope="${scope}" data-batch="${safeBatchId}" data-idx="${it.idx}" />
                         </label>
@@ -739,19 +802,36 @@
         const sourcePlatform = getSelectOrCustom('sourcePlatformSelect', 'sourcePlatformCustom');
         const sourceUrl = document.getElementById('sourceUrlInput').value.trim();
         const files = Array.from(document.getElementById('photoFileInput').files || []);
+        const videoFiles = Array.from(document.getElementById('videoFileInput').files || []);
         const rawUrls = (document.getElementById('directUrlsInput').value || '').split(/\n+/).map(s => s.trim()).filter(Boolean);
 
         if (!templeId) return showToast('कृपया देवस्थान निवडा.', true);
-        if (!files.length && !rawUrls.length) return showToast('कृपया किमान एक फोटो किंवा इमेज URL द्या.', true);
+        if (videoFiles.length > 1) return showToast('एका फोल्डर/बॅचमध्ये फक्त १ व्हिडिओ अपलोड करता येईल.', true);
+        if (!files.length && !videoFiles.length && !rawUrls.length) return showToast('कृपया किमान एक फोटो, व्हिडिओ किंवा URL द्या.', true);
 
         btn.disabled = true;
         prog.classList.remove('hidden');
-        const uploadedUrls = [...rawUrls];
+        const photoUrls = [];
+        const videoUrls = [];
+
+        rawUrls.forEach(u => {
+          if (/\.(mp4|webm|mov)(\?|$)/i.test(u) || u.includes('/video/upload/')) {
+            if (!videoUrls.length) videoUrls.push(u);
+          } else {
+            photoUrls.push(u);
+          }
+        });
 
         for (let i = 0; i < files.length; i++) {
           prog.textContent = `⏳ फोटो ${i + 1}/${files.length} कॉम्प्रेस करून Cloudinary वर अपलोड होत आहे...`;
           const u = await uploadToCloudinary(files[i]);
-          uploadedUrls.push(u);
+          photoUrls.push(u);
+        }
+
+        if (videoFiles.length === 1) {
+          prog.textContent = '⏳ व्हिडिओ Cloudinary वर अपलोड होत आहे...';
+          const vu = await uploadVideoToCloudinary(videoFiles[0]);
+          videoUrls.push(vu);
         }
 
         prog.textContent = '⏳ Firebase मध्ये सेव्ह होत आहे...';
@@ -761,15 +841,10 @@
         const nowMs = Date.now();
         const batchId = 'b_' + nowMs;
         const batchTime = new Date(nowMs).toLocaleTimeString('mr-IN', { hour: '2-digit', minute: '2-digit' });
-        const newEntries = uploadedUrls.map(u => ({
-          url: u,
-          pujaTitle,
-          sourcePlatform,
-          sourceUrl,
-          batchId,
-          batchTime,
-          uploadedAt: nowMs
-        }));
+        const newEntries = [
+          ...photoUrls.map(u => ({ url: u, type: 'image', pujaTitle, sourcePlatform, sourceUrl, batchId, batchTime, uploadedAt: nowMs })),
+          ...videoUrls.map(u => ({ url: u, type: 'video', pujaTitle, sourcePlatform, sourceUrl, batchId, batchTime, uploadedAt: nowMs }))
+        ];
         const combinedPhotos = [...newEntries, ...prevPhotos];
 
         await db.ref(`dailyDarshan/archive/${templeId}/${date}`).set({
@@ -784,10 +859,11 @@
 
         await autoCleanupOlderThan7Days();
         document.getElementById('photoFileInput').value = '';
+        document.getElementById('videoFileInput').value = '';
         document.getElementById('directUrlsInput').value = '';
         prog.classList.add('hidden');
         btn.disabled = false;
-        showToast(`${uploadedUrls.length} फोटो यशस्वीरित्या प्रकाशित झाले!`);
+        showToast(`${photoUrls.length} फोटो${videoUrls.length ? ' व १ व्हिडिओ' : ''} यशस्वीरित्या प्रकाशित झाले!`);
         loadSelectedTempleArchive();
       } catch (err) {
         prog.classList.add('hidden');
@@ -831,9 +907,11 @@ document.getElementById('saveDailyUiBtn').addEventListener('click', async () => 
         const uiPayload = {
           heading: document.getElementById('uiHeadingInput').value.trim(),
           subtitle: document.getElementById('uiSubtitleInput').value.trim(),
-          colsMobile: document.getElementById('uiColsMobile').value,
-          colsDesktop: document.getElementById('uiColsDesktop').value,
-          blockHeight: document.getElementById('uiBlockHeight').value,
+          gridCols: document.getElementById('uiGridCols').value,
+          headerSize: document.getElementById('uiHeaderSize').value,
+          featuredHeight: document.getElementById('uiFeaturedHeight').value,
+          cardHeight: document.getElementById('uiCardHeight').value,
+          featuredTempleId: document.getElementById('uiFeaturedTemple').value,
           borderColor: document.getElementById('uiBorderColor').value,
           titleColor: document.getElementById('uiTitleColor').value,
           showSlider: document.getElementById('uiShowSliderChk').checked,
@@ -874,9 +952,15 @@ document.getElementById('saveDailyUiBtn').addEventListener('click', async () => 
           const u = s.val() || {};
           if (u.heading !== undefined) document.getElementById('uiHeadingInput').value = u.heading;
           if (u.subtitle !== undefined) document.getElementById('uiSubtitleInput').value = u.subtitle;
-          if (u.colsMobile) document.getElementById('uiColsMobile').value = String(u.colsMobile);
-          if (u.colsDesktop) document.getElementById('uiColsDesktop').value = String(u.colsDesktop);
-          if (u.blockHeight) document.getElementById('uiBlockHeight').value = String(u.blockHeight);
+          if (u.gridCols) document.getElementById('uiGridCols').value = String(u.gridCols);
+          if (u.headerSize) document.getElementById('uiHeaderSize').value = String(u.headerSize);
+          if (u.featuredHeight) document.getElementById('uiFeaturedHeight').value = String(u.featuredHeight);
+          if (u.cardHeight) document.getElementById('uiCardHeight').value = String(u.cardHeight);
+          if (u.featuredTempleId !== undefined) {
+            window.__savedFeaturedTemple = u.featuredTempleId;
+            const fs = document.getElementById('uiFeaturedTemple');
+            if (fs) fs.value = u.featuredTempleId;
+          }
           if (u.borderColor) document.getElementById('uiBorderColor').value = u.borderColor;
           if (u.titleColor) document.getElementById('uiTitleColor').value = u.titleColor;
           if (typeof u.showSlider === 'boolean') document.getElementById('uiShowSliderChk').checked = u.showSlider;

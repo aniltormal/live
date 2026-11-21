@@ -23,7 +23,7 @@
 
     <div id="pageContent" class="hidden space-y-5 fade-in-up">
       <!-- नवीन मंदिर जोडा -->
-      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
+      <section data-no-accordion="1" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
         <div class="flex items-center justify-between gap-2">
           <div>
             <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">➕ नवीन मंदिर जोडा</h2>
@@ -189,34 +189,40 @@
       container.innerHTML = localTemples.map((t, idx) => {
         const pos = idx + 1;
         const stType = t.streamType || 'hls';
+        const isOpen = window.__openTempleIds && window.__openTempleIds.has(t.id);
         return `
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 space-y-3" data-temple-id="${esc(t.id)}">
-          <div class="flex items-start gap-3">
-            ${t.image
-              ? `<img src="${esc(t.image)}" alt="" class="w-16 h-16 rounded-xl object-cover bg-slate-100 border border-slate-200 shrink-0" />`
-              : `<div class="w-16 h-16 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-2xl shrink-0">🛕</div>`
-            }
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center justify-between gap-2 flex-wrap">
-                <div class="flex items-center gap-1.5 flex-wrap">
-                  <span class="px-2.5 py-0.5 rounded-full bg-[#05344E] text-white text-[11px] font-extrabold">#${pos}</span>
-                  ${t.featured ? '<span class="px-2 py-0.5 rounded-full bg-amber-100 text-[10px] font-bold text-amber-800">⭐ प्रमुख</span>' : ''}
-                  ${t.hidden ? '<span class="px-2 py-0.5 rounded-full bg-rose-100 text-[10px] font-bold text-rose-700">लपवलेले</span>' : ''}
-                </div>
-                <div class="flex items-center gap-1">
-                  <button type="button" class="t-move-up px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-[11px] font-extrabold text-[#05344E] cursor-pointer disabled:opacity-35" ${idx === 0 ? 'disabled' : ''}>⬆️ वर</button>
-                  <button type="button" class="t-move-down px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-[11px] font-extrabold text-[#05344E] cursor-pointer disabled:opacity-35" ${idx === total - 1 ? 'disabled' : ''}>⬇️ खाली</button>
-                </div>
-              </div>
-              <div class="flex items-center justify-between gap-2 mt-1.5">
-                <h3 class="t-name-heading font-extrabold text-sm sm:text-base text-[#05344E] leading-snug">${esc(t.shortTitle)}</h3>
-                <button type="button" class="t-edit-name-btn shrink-0 px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-[11px] font-bold text-[#05344E] cursor-pointer">✏️ नाव बदला</button>
-              </div>
-              <input type="text" class="t-name hidden w-full mt-1.5 px-3 py-1.5 rounded-xl border border-slate-300 text-sm font-bold text-[#05344E]" value="${esc(t.shortTitle)}" placeholder="मंदिराचे नाव" />
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-3.5 sm:p-4" data-temple-id="${esc(t.id)}">
+          <div class="t-card-hdr flex items-center justify-between gap-2 cursor-pointer select-none">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="shrink-0 px-2 py-0.5 rounded-full bg-[#05344E] text-white text-[11px] font-extrabold">#${pos}</span>
+              <h3 class="t-name-heading font-extrabold text-sm sm:text-base text-[#05344E] truncate">${esc(t.shortTitle)}</h3>
+              ${t.hidden ? '<span class="shrink-0 px-2 py-0.5 rounded-full bg-rose-100 text-[10px] font-bold text-rose-700">लपवलेले</span>' : ''}
             </div>
+            <button type="button" class="t-card-toggle shrink-0 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-amber-100 text-[#05344E] text-[11px] font-extrabold border border-slate-200 cursor-pointer transition">${isOpen ? '▲ बंद करा' : '▼ उघडा'}</button>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <div class="t-card-body ${isOpen ? '' : 'hidden'} space-y-3 pt-3 mt-3 border-t border-slate-100">
+            <div class="flex items-start gap-3">
+              ${t.image
+                ? `<img src="${esc(t.image)}" alt="" class="w-16 h-16 rounded-xl object-cover bg-slate-100 border border-slate-200 shrink-0" />`
+                : `<div class="w-16 h-16 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-2xl shrink-0">🛕</div>`
+              }
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between gap-2 flex-wrap">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    ${t.featured ? '<span class="px-2 py-0.5 rounded-full bg-amber-100 text-[10px] font-bold text-amber-800">⭐ प्रमुख</span>' : ''}
+                    <button type="button" class="t-edit-name-btn px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-[11px] font-bold text-[#05344E] cursor-pointer">✏️ नाव बदला</button>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <button type="button" class="t-move-up px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-[11px] font-extrabold text-[#05344E] cursor-pointer disabled:opacity-35" ${idx === 0 ? 'disabled' : ''}>⬆️ वर</button>
+                    <button type="button" class="t-move-down px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-[11px] font-extrabold text-[#05344E] cursor-pointer disabled:opacity-35" ${idx === total - 1 ? 'disabled' : ''}>⬇️ खाली</button>
+                  </div>
+                </div>
+                <input type="text" class="t-name hidden w-full mt-2 px-3 py-1.5 rounded-xl border border-slate-300 text-sm font-bold text-[#05344E]" value="${esc(t.shortTitle)}" placeholder="मंदिराचे नाव" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
             <div>
               <label class="block text-[11px] font-bold text-slate-500 mb-1">प्रकार</label>
               <select class="t-type w-full px-2.5 py-2 rounded-xl border border-slate-300 text-xs bg-white font-bold">
@@ -251,12 +257,29 @@
             </label>
             <button type="button" class="t-del px-3.5 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold cursor-pointer transition shrink-0">🗑️ काढा</button>
           </div>
+          </div>
         </div>
       `;
       }).join('');
 
       container.querySelectorAll('[data-temple-id]').forEach((card, idx) => {
         const id = card.dataset.templeId;
+        const hdr = card.querySelector('.t-card-hdr');
+        const body = card.querySelector('.t-card-body');
+        const togBtn = card.querySelector('.t-card-toggle');
+        if (hdr && body && togBtn) {
+          hdr.addEventListener('click', () => {
+            window.__openTempleIds = window.__openTempleIds || new Set();
+            const isHidden = body.classList.toggle('hidden');
+            if (isHidden) {
+              window.__openTempleIds.delete(id);
+              togBtn.textContent = '▼ उघडा';
+            } else {
+              window.__openTempleIds.add(id);
+              togBtn.textContent = '▲ बंद करा';
+            }
+          });
+        }
         const editBtn = card.querySelector('.t-edit-name-btn');
         const heading = card.querySelector('.t-name-heading');
         const nameInp = card.querySelector('.t-name');

@@ -280,13 +280,7 @@
     let photoOnlyTemples = {};
     let latestMap = {};
 
-    function showToast(msg, isErr) {
-      const t = document.getElementById('statusToast');
-      t.textContent = msg;
-      t.className = 'rounded-xl px-4 py-3 text-sm font-bold border shadow-sm ' + (isErr ? 'bg-red-50 border-red-200 text-red-700' : 'bg-emerald-50 border-emerald-200 text-emerald-800');
-      t.classList.remove('hidden');
-      setTimeout(() => t.classList.add('hidden'), 5000);
-    }
+// Uses global 3s centered showToast from admin-common.js
 
     function getTodayISO() {
       const d = new Date();

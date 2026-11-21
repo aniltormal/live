@@ -143,7 +143,7 @@ function renderAdminShell(activeKey, pageTitle) {
   if (!header) return;
 
   const pillsHtml = activeKey === 'dashboard' ? '' : `
-    <nav class="w-full bg-gradient-to-r from-[#031926] via-[#04283d] to-[#031926] border-b-2 border-amber-400/80 shadow-md sticky top-[60px] z-30">
+    <nav class="w-full bg-gradient-to-r from-[#031926] via-[#04283d] to-[#031926] border-t-2 border-[#EA580C] border-b-2 border-b-amber-400/80 shadow-md">
       <div class="w-full max-w-7xl mx-auto px-2.5 sm:px-4 py-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar lg:grid lg:grid-cols-10">
         ${navItems.map(item => {
           const isAct = item.key === activeKey;
@@ -158,8 +158,9 @@ function renderAdminShell(activeKey, pageTitle) {
   const dashIconSvg = `<svg class="w-5 h-5 text-amber-300 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>`;
 
   header.outerHTML = `
-    <header class="bg-gradient-to-r from-[#04283d] via-[#05344E] to-[#0a4d70] text-white shadow-md sticky top-0 z-50">
-      <div class="max-w-7xl mx-auto px-3 sm:px-5 h-15 py-2.5 flex items-center justify-between gap-2">
+    <div class="sticky top-0 z-50 w-full bg-[#EA580C] shadow-md">
+    <header class="bg-gradient-to-r from-[#04283d] via-[#05344E] to-[#0a4d70] text-white">
+      <div class="max-w-7xl mx-auto px-3 sm:px-5 py-2.5 flex items-center justify-between gap-2">
         <div class="flex items-center gap-2.5 min-w-0">
           ${activeKey !== 'dashboard'
             ? `<a href="admin.html" class="px-2.5 sm:px-3 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs sm:text-sm font-extrabold transition flex items-center gap-1 shrink-0 shadow-sm" title="डॅशबोर्डवर जा"><span>←</span><span>डॅशबोर्ड</span></a>`
@@ -180,6 +181,7 @@ function renderAdminShell(activeKey, pageTitle) {
       </div>
     </header>
     ${pillsHtml}
+    </div>
   `;
 
 
@@ -200,12 +202,52 @@ function populateFontSelect(id, previewId = null) {
 }
 
 function showToast(msg, isError = false) {
-  const t = document.getElementById('toastBox');
-  if (!t) return;
-  t.textContent = msg;
-  t.className = `fixed bottom-5 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-full text-white text-xs font-bold shadow-xl transition-all ${isError ? 'bg-rose-600' : 'bg-slate-900'}`;
+  let pop = document.getElementById('adminCenterToastPopup');
+  if (!pop) {
+    pop = document.createElement('div');
+    pop.id = 'adminCenterToastPopup';
+    pop.className = 'hidden fixed inset-0 z-[10000] bg-black/35 backdrop-blur-[1px] flex items-center justify-center p-4';
+    pop.innerHTML = `
+      <div class="admin-toast-card w-full max-w-sm rounded-3xl bg-white border-2 shadow-2xl p-6 text-center space-y-3 fade-in-up">
+        <div class="admin-toast-icon w-14 h-14 mx-auto rounded-full flex items-center justify-center text-3xl shadow-inner"></div>
+        <div class="admin-toast-msg text-base sm:text-lg font-extrabold leading-snug"></div>
+        <div class="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
+          <div class="admin-toast-bar h-full rounded-full transition-all duration-[3000ms] ease-linear" style="width:100%"></div>
+        </div>
+      </div>
+    `;
+    pop.addEventListener('click', () => pop.classList.add('hidden'));
+    document.body.appendChild(pop);
+  }
+  const card = pop.querySelector('.admin-toast-card');
+  const icon = pop.querySelector('.admin-toast-icon');
+  const msgEl = pop.querySelector('.admin-toast-msg');
+  const bar = pop.querySelector('.admin-toast-bar');
+
+  card.className = 'admin-toast-card w-full max-w-sm rounded-3xl bg-white border-2 shadow-2xl p-6 text-center space-y-3 fade-in-up ' +
+    (isError ? 'border-rose-300' : 'border-emerald-300');
+  icon.className = 'admin-toast-icon w-14 h-14 mx-auto rounded-full flex items-center justify-center text-3xl shadow-inner animate-bounce ' +
+    (isError ? 'bg-rose-100 text-rose-600' : 'bg-emerald-100 text-emerald-600');
+  icon.textContent = isError ? '⚠️' : '✅';
+  msgEl.className = 'admin-toast-msg text-base sm:text-lg font-extrabold leading-snug ' +
+    (isError ? 'text-rose-700' : 'text-[#05344E]');
+  msgEl.textContent = msg;
+
+  bar.className = 'admin-toast-bar h-full rounded-full ' + (isError ? 'bg-rose-500' : 'bg-emerald-500');
+  bar.style.transition = 'none';
+  bar.style.width = '100%';
+  pop.classList.remove('hidden');
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      bar.style.transition = 'width 3s linear';
+      bar.style.width = '0%';
+    });
+  });
+
   clearTimeout(window.__toastTimer);
-  window.__toastTimer = setTimeout(() => t.classList.add('hidden'), 2600);
+  window.__toastTimer = setTimeout(() => {
+    pop.classList.add('hidden');
+  }, 3000);
 }
 
 function compressImageFile(file, maxW = 900, maxH = 900, quality = 0.8) {
@@ -614,8 +656,12 @@ function initAdminGuard(onAuthed, isLoginPage = false) {
     const main = document.getElementById('pageContent');
     if (!main) return;
     const sections = Array.from(main.querySelectorAll('section')).filter(sec => {
-      if (sec.closest('#liveSitePreview') || sec.closest('[id$="Preview"]')) return false;
-      return !!sec.querySelector('h2, h3');
+      if (sec.dataset.noAccordion === '1') return false;
+      if (sec.closest('#liveSitePreview') || sec.closest('[id$="Preview"]') || (sec.id && /preview/i.test(sec.id))) return false;
+      const h = sec.querySelector('h2, h3');
+      if (!h) return false;
+      if (/प्रिव्ह्यू|preview/i.test(h.textContent || '')) return false;
+      return true;
     });
     if (sections.length < 2) return;
 

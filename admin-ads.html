@@ -29,13 +29,14 @@
             <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🖼️ १. मुख्य स्लायडिंग बॅनर (<span id="slotCountBadge">3</span> स्लॉट्स)</h2>
             <p class="text-xs text-slate-500">मुख्य पेजवरील आपोआप व हाताने सरकणारी जाहिरात कार्ड्स</p>
           </div>
-          <div class="flex items-center gap-3">
-            <button id="addBannerSlotBtn" type="button" class="px-3 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 border border-sky-200 text-[#05344E] text-xs font-extrabold cursor-pointer transition">➕ नवीन स्लॉट जोडा</button>
-            <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
-              <span>चालू ठेवा</span>
-              <span class="toggle-pill"><input id="bannerEnabled" type="checkbox" /><span class="knob"></span></span>
-            </label>
-          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
+          <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+            <span>चालू ठेवा</span>
+            <span class="toggle-pill"><input id="bannerEnabled" type="checkbox" /><span class="knob"></span></span>
+          </label>
+          <button id="addBannerSlotBtn" type="button" class="px-3 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 border border-sky-200 text-[#05344E] text-xs font-extrabold cursor-pointer transition">➕ नवीन स्लॉट जोडा</button>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -55,6 +56,10 @@
             <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🎬 २. प्री-रोल जाहिरात (Pre-Roll Ad)</h2>
             <p class="text-xs text-slate-500">मंदिर लाईव्ह प्लेयर सुरू होण्यापूर्वी दिसणारी जाहिरात</p>
           </div>
+        </div>
+
+        <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200">
+          <span class="text-xs font-bold text-slate-700">प्री-रोल जाहिरात स्थिती</span>
           <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
             <span>चालू ठेवा</span>
             <span class="toggle-pill"><input id="preRollEnabled" type="checkbox" /><span class="knob"></span></span>
@@ -113,6 +118,10 @@
             <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">✨ ३. स्प्लॅश पॉपअप जाहिरात (Splash Popup)</h2>
             <p class="text-xs text-slate-500">वेबसाईट उघडल्यावर स्क्रीनवर येणारी पॉपअप जाहिरात</p>
           </div>
+        </div>
+
+        <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200">
+          <span class="text-xs font-bold text-slate-700">स्प्लॅश पॉपअप जाहिरात स्थिती</span>
           <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
             <span>चालू ठेवा</span>
             <span class="toggle-pill"><input id="splashEnabled" type="checkbox" /><span class="knob"></span></span>

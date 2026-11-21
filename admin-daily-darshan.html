@@ -78,26 +78,29 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">पूजेचा प्रकार / शीर्षक *</label>
-            <input id="pujaTitleInput" type="text" list="pujaPresets" placeholder="उदा. सकाळची महापूजा व अलंकार" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-[#05344E] outline-none" />
-            <datalist id="pujaPresets">
-              <option value="काकड आरती दर्शन"></option>
-              <option value="सकाळची महापूजा व अलंकार"></option>
-              <option value="मध्यान्ह आरती दर्शन"></option>
-              <option value="संध्याकाळची धूप आरती"></option>
-              <option value="विशेष अलंकार पूजा"></option>
-              <option value="शेजारती दर्शन"></option>
-            </datalist>
+            <select id="pujaTitleSelect" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm font-semibold bg-white focus:border-[#05344E] outline-none">
+              <option value="सकाळची महापूजा व अलंकार">सकाळची महापूजा व अलंकार</option>
+              <option value="काकड आरती दर्शन">काकड आरती दर्शन</option>
+              <option value="मध्यान्ह आरती दर्शन">मध्यान्ह आरती दर्शन</option>
+              <option value="संध्याकाळची धूप आरती">संध्याकाळची धूप आरती</option>
+              <option value="विशेष अलंकार पूजा">विशेष अलंकार पूजा</option>
+              <option value="शेजारती दर्शन">शेजारती दर्शन</option>
+              <option value="__custom__">✍️ इतर (स्वतः लिहा)</option>
+            </select>
+            <input id="pujaTitleCustom" type="text" placeholder="पूजेचे नाव लिहा..." class="hidden mt-2 w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-[#05344E] outline-none" />
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">फोटो स्त्रोत प्लॅटफॉर्म (Source)</label>
-            <input id="sourcePlatformInput" type="text" list="platformPresets" placeholder="उदा. Official Website / Facebook" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-[#05344E] outline-none" />
-            <datalist id="platformPresets">
-              <option value="Official Website"></option>
-              <option value="Facebook Page"></option>
-              <option value="Instagram"></option>
-              <option value="YouTube Community"></option>
-              <option value="Devsthan Trust"></option>
-            </datalist>
+            <select id="sourcePlatformSelect" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm font-semibold bg-white focus:border-[#05344E] outline-none">
+              <option value="">-- निवडा --</option>
+              <option value="Official Website">Official Website</option>
+              <option value="Facebook Page">Facebook Page</option>
+              <option value="Instagram">Instagram</option>
+              <option value="YouTube Community">YouTube Community</option>
+              <option value="Devsthan Trust">Devsthan Trust</option>
+              <option value="__custom__">✍️ इतर (स्वतः लिहा)</option>
+            </select>
+            <input id="sourcePlatformCustom" type="text" placeholder="स्त्रोत प्लॅटफॉर्मचे नाव लिहा..." class="hidden mt-2 w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-[#05344E] outline-none" />
           </div>
         </div>
 
@@ -134,15 +137,9 @@
         </div>
 
         <div class="space-y-3">
-          <div class="grid grid-cols-2 gap-2.5">
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">मंदिर ID (इंग्रजी) *</label>
-              <input id="newTempleId" type="text" placeholder="उदा. jejuri" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-[#05344E] outline-none" />
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">क्रम (Order)</label>
-              <input id="newTempleOrder" type="number" value="10" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-[#05344E] outline-none" />
-            </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">मंदिर ID (इंग्रजी) *</label>
+            <input id="newTempleId" type="text" placeholder="उदा. jejuri" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-[#05344E] outline-none" />
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">देवस्थानाचे पूर्ण नाव *</label>
@@ -185,7 +182,7 @@
     </section>
 
 
-    <!-- 5. Daily Darshan Page Blocks & Elements Settings -->
+<!-- 5. Daily Darshan Page Blocks & Elements Settings -->
     <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
       <div class="border-b border-slate-100 pb-3">
         <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🎨 दैनिक फोटो पेज व ब्लॉक्स सेटिंग्ज</h2>
@@ -419,74 +416,186 @@
       renderTempleOrderList();
     }
 
+    function setSelectOrCustom(selId, customId, val) {
+      const sel = document.getElementById(selId);
+      const inp = document.getElementById(customId);
+      if (!sel || !inp) return;
+      const v = String(val || '').trim();
+      const hasOpt = Array.from(sel.options).some(o => o.value === v);
+      if (!v || hasOpt) {
+        sel.value = v;
+        inp.classList.add('hidden');
+        inp.value = '';
+      } else {
+        sel.value = '__custom__';
+        inp.classList.remove('hidden');
+        inp.value = v;
+      }
+    }
+    function getSelectOrCustom(selId, customId) {
+      const sel = document.getElementById(selId);
+      const inp = document.getElementById(customId);
+      if (!sel) return '';
+      return sel.value === '__custom__' ? (inp ? inp.value.trim() : '') : sel.value.trim();
+    }
+    ['pujaTitleSelect', 'sourcePlatformSelect'].forEach((sid) => {
+      const cid = sid === 'pujaTitleSelect' ? 'pujaTitleCustom' : 'sourcePlatformCustom';
+      const sEl = document.getElementById(sid);
+      const cEl = document.getElementById(cid);
+      if (sEl && cEl) {
+        sEl.addEventListener('change', () => {
+          if (sEl.value === '__custom__') cEl.classList.remove('hidden');
+          else cEl.classList.add('hidden');
+        });
+      }
+    });
+
     function syncSelectedTempleDefaults() {
       const id = document.getElementById('templeSelect').value;
       const custom = photoOnlyTemples[id] || {};
       const lat = latestMap[id] || {};
-      document.getElementById('sourcePlatformInput').value = custom.sourcePlatform || lat.sourcePlatform || '';
+      setSelectOrCustom('sourcePlatformSelect', 'sourcePlatformCustom', custom.sourcePlatform || lat.sourcePlatform || '');
       document.getElementById('sourceUrlInput').value = custom.sourceUrl || lat.sourceUrl || '';
     }
 
+    function groupPhotosByBatch(photos, fallbackTitle, fallbackDate) {
+      const groups = {};
+      (photos || []).forEach((p, idx) => {
+        const obj = typeof p === 'string' ? { url: p } : (p || {});
+        const bid = obj.batchId || ('legacy_' + (obj.pujaTitle || fallbackTitle || 'batch'));
+        if (!groups[bid]) {
+          let dtStr = fallbackDate || '';
+          let tmStr = obj.batchTime || '';
+          if (obj.uploadedAt) {
+            const d = new Date(obj.uploadedAt);
+            if (!isNaN(d)) {
+              if (!dtStr) dtStr = d.toLocaleDateString('mr-IN');
+              if (!tmStr) tmStr = d.toLocaleTimeString('mr-IN', { hour: '2-digit', minute: '2-digit' });
+            }
+          }
+          groups[bid] = {
+            batchId: bid,
+            title: obj.pujaTitle || fallbackTitle || 'दैनिक दर्शन',
+            date: dtStr,
+            time: tmStr,
+            source: obj.sourcePlatform || '',
+            items: []
+          };
+        }
+        groups[bid].items.push({ url: obj.url || p, idx });
+      });
+      return Object.values(groups);
+    }
+
+    function renderBatchFoldersHtml(templeId, scope, photos, fallbackTitle, accentCls, fallbackDate) {
+      const batches = groupPhotosByBatch(photos, fallbackTitle, fallbackDate);
+      if (!batches.length) return '<p class="text-xs text-slate-500">फोटो उपलब्ध नाहीत.</p>';
+      return batches.map((b, bIdx) => {
+        const safeBatchId = String(b.batchId).replace(/'/g, '');
+        return `
+          <div class="rounded-xl border ${accentCls} bg-white p-3 space-y-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="text-base">📂</span>
+                <div class="min-w-0">
+                  <div class="text-xs font-extrabold text-[#05344E] truncate">बॅच ${bIdx + 1}: ${b.title} ${b.time ? `(${b.time})` : ''}</div>
+                  <div class="text-[11px] font-semibold text-slate-600 mt-0.5">📅 दिनांक: ${b.date || "—"} • 🕒 वेळ: ${b.time || "—"} • 🖼️ ${b.items.length} फोटो ${b.source ? `• स्त्रोत: ${b.source}` : ""}</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button type="button" onclick="deleteSelectedPhotos('${templeId}', '${scope}', '${safeBatchId}')" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-rose-100 text-rose-700 text-[11px] font-bold cursor-pointer">🗑️ निवडलेले</button>
+                <button type="button" onclick="deleteBatchFolder('${templeId}', '${scope}', '${safeBatchId}')" class="px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold shadow-xs cursor-pointer">🗑️ पूर्ण बॅच डिलीट</button>
+              </div>
+            </div>
+            <div class="grid grid-cols-3 sm:grid-cols-6 gap-2">
+              ${b.items.map(it => `
+                <div class="relative group rounded-xl overflow-hidden border border-slate-300 bg-slate-50 aspect-square">
+                  <img src="${it.url}" class="w-full h-full object-cover" loading="lazy" />
+                  <label class="absolute top-1.5 left-1.5 w-6 h-6 rounded-md bg-white/90 border border-slate-300 shadow flex items-center justify-center cursor-pointer" title="डिलीटसाठी निवडा">
+                    <input type="checkbox" class="photo-del-chk w-4 h-4 accent-rose-600 cursor-pointer" data-scope="${scope}" data-batch="${safeBatchId}" data-idx="${it.idx}" />
+                  </label>
+                  <button type="button" onclick="deleteSinglePhoto('${templeId}', '${scope}', ${it.idx})" title="हा फोटो डिलीट करा"
+                    class="absolute top-1.5 right-1.5 w-6 h-6 rounded-md bg-rose-600/95 hover:bg-rose-700 text-white text-xs font-bold shadow flex items-center justify-center cursor-pointer">🗑️</button>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
     async function loadSelectedTempleArchive() {
-      const id = document.getElementById('templeSelect').value;
       const box = document.getElementById('existingPhotosBox');
-      if (!id || !db) return;
-      box.innerHTML = '<p class="text-xs text-slate-500">लोड होत आहे...</p>';
-      const snap = await db.ref(`dailyDarshan/archive/${id}`).once('value');
-      const arch = snap.val() || {};
-      const dates = Object.keys(arch).sort((a, b) => b.localeCompare(a));
-      if (!dates.length && !latestMap[id]) {
-        box.innerHTML = '<p class="text-xs text-slate-500">या देवस्थानासाठी अद्याप कोणतेही दैनिक फोटो अपलोड केलेले नाहीत.</p>';
+      if (!box || !db) return;
+      const selectedTid = document.getElementById('templeSelect').value;
+      box.innerHTML = '<p class="text-xs text-slate-500">सर्व देवस्थानांचे फोल्डर लोड होत आहेत...</p>';
+
+      const archSnap = await db.ref('dailyDarshan/archive').once('value');
+      const allArchive = archSnap.val() || {};
+
+      // Collect all temples that have photos OR is currently selected
+      const templeIdsWithData = mergedTemples
+        .map(t => t.id)
+        .filter(tid => tid === selectedTid || latestMap[tid] || (allArchive[tid] && Object.keys(allArchive[tid]).length));
+
+      if (!templeIdsWithData.length) {
+        box.innerHTML = '<p class="text-xs text-slate-500">अद्याप कोणत्याही देवस्थानाचे फोटो अपलोड केलेले नाहीत.</p>';
         return;
       }
 
-      const renderThumb = (p, idx, scope) => {
-        const u = p.url || p;
+      box.innerHTML = templeIdsWithData.map(tid => {
+        const tObj = mergedTemples.find(x => x.id === tid) || { id: tid, name: tid };
+        const tName = tObj.shortTitle || tObj.name || tid;
+        const lat = latestMap[tid] || null;
+        const arch = allArchive[tid] || {};
+        const dates = Object.keys(arch).filter(dt => arch[dt] && Array.isArray(arch[dt].photos) && arch[dt].photos.length).sort((a, b) => b.localeCompare(a));
+        const latCount = (lat && Array.isArray(lat.photos)) ? lat.photos.length : 0;
+        const archCount = dates.reduce((s, dt) => s + arch[dt].photos.length, 0);
+        const isOpen = tid === selectedTid;
+
         return `
-          <div class="relative group rounded-xl overflow-hidden border border-slate-300 bg-white aspect-square">
-            <img src="${u}" class="w-full h-full object-cover" loading="lazy" />
-            <label class="absolute top-1.5 left-1.5 w-6 h-6 rounded-md bg-white/90 border border-slate-300 shadow flex items-center justify-center cursor-pointer" title="डिलीटसाठी निवडा">
-              <input type="checkbox" class="photo-del-chk w-4 h-4 accent-rose-600 cursor-pointer" data-scope="${scope}" data-idx="${idx}" />
-            </label>
-            <button type="button" onclick="deleteSinglePhoto('${id}', '${scope}', ${idx})" title="हा फोटो डिलीट करा"
-              class="absolute top-1.5 right-1.5 w-6 h-6 rounded-md bg-rose-600/95 hover:bg-rose-700 text-white text-xs font-bold shadow flex items-center justify-center cursor-pointer">🗑️</button>
-          </div>
-        `;
-      };
+          <div class="rounded-2xl border-2 ${isOpen ? 'border-[#05344E]/40 bg-slate-50/70' : 'border-slate-200 bg-white'} overflow-hidden">
+            <button type="button" onclick="this.nextElementSibling.classList.toggle('hidden')"
+              class="w-full px-4 py-3 flex items-center justify-between gap-2 bg-white hover:bg-amber-50/60 text-left cursor-pointer transition">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <span class="text-xl">📁</span>
+                <div class="min-w-0">
+                  <div class="text-sm font-extrabold text-[#05344E] truncate">${tName}</div>
+                  <div class="text-[11px] text-slate-500">ताजे: ${latCount} फोटो • मागील ७ दिवस: ${archCount} फोटो</div>
+                </div>
+              </div>
+              <span class="shrink-0 px-2.5 py-1 rounded-lg bg-slate-100 text-[#05344E] text-[11px] font-extrabold border border-slate-200">📂 फोल्डर उघडा/बंद</span>
+            </button>
 
-      let html = '';
-      if (latestMap[id] && Array.isArray(latestMap[id].photos) && latestMap[id].photos.length) {
-        const lat = latestMap[id];
-        html += `
-          <div class="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200 space-y-2.5">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div class="text-xs font-extrabold text-[#05344E]">✨ ताजे (Latest) — ${lat.date || ''} • ${lat.pujaTitle || ''} ${lat.sourcePlatform ? `(${lat.sourcePlatform})` : ''}</div>
-              <button type="button" onclick="deleteSelectedPhotos('${id}', 'latest')" class="px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold shadow-xs cursor-pointer">🗑️ निवडलेले डिलीट करा</button>
-            </div>
-            <div class="grid grid-cols-3 sm:grid-cols-6 gap-2">
-              ${lat.photos.map((p, i) => renderThumb(p, i, 'latest')).join('')}
-            </div>
-          </div>
-        `;
-      }
+            <div class="${isOpen ? '' : 'hidden'} p-3.5 sm:p-4 space-y-4 border-t border-slate-200">
+              <!-- Section A: ताजे फोटो (Latest) -->
+              <div class="p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200 space-y-3">
+                <div class="flex items-center justify-between">
+                  <h4 class="text-xs sm:text-sm font-extrabold text-[#05344E]">✨ ताजे फोटो विभाग (Latest — ${lat && lat.date ? lat.date : 'रिकामे'})</h4>
+                </div>
+                ${lat && Array.isArray(lat.photos) && lat.photos.length
+                  ? renderBatchFoldersHtml(tid, 'latest', lat.photos, lat.pujaTitle, 'border-amber-200', lat.date || '')
+                  : '<p class="text-xs text-slate-500">या देवस्थानाचे ताजे फोटो सध्या उपलब्ध नाहीत.</p>'
+                }
+              </div>
 
-      dates.forEach(dt => {
-        const dayObj = arch[dt] || {};
-        const photos = Array.isArray(dayObj.photos) ? dayObj.photos : [];
-        if (!photos.length) return;
-        html += `
-          <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div class="text-xs font-bold text-slate-800">📅 ${dt} — ${dayObj.pujaTitle || 'दैनिक दर्शन'} ${dayObj.sourcePlatform ? `• स्त्रोत: ${dayObj.sourcePlatform}` : ''}</div>
-              <button type="button" onclick="deleteSelectedPhotos('${id}', '${dt}')" class="px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold shadow-xs cursor-pointer">🗑️ निवडलेले डिलीट करा</button>
-            </div>
-            <div class="grid grid-cols-3 sm:grid-cols-6 gap-2">
-              ${photos.map((p, i) => renderThumb(p, i, dt)).join('')}
+              <!-- Section B: मागील ७ दिवसांचे फोटो (Archive) -->
+              <div class="p-3.5 rounded-2xl bg-white border border-slate-200 space-y-3">
+                <h4 class="text-xs sm:text-sm font-extrabold text-[#05344E]">📅 मागील ७ दिवसांचे फोटो विभाग</h4>
+                ${dates.length
+                  ? dates.map(dt => `
+                      <div class="space-y-2 pt-2 border-t border-slate-100 first:border-t-0 first:pt-0">
+                        <div class="text-xs font-extrabold text-slate-700">🗓️ दिनांक: ${dt}</div>
+                        ${renderBatchFoldersHtml(tid, dt, arch[dt].photos, arch[dt].pujaTitle, 'border-slate-200', dt)}
+                      </div>
+                    `).join('')
+                  : '<p class="text-xs text-slate-500">मागील ७ दिवसांचे कोणतेही फोटो नाहीत.</p>'
+                }
+              </div>
             </div>
           </div>
         `;
-      });
-      box.innerHTML = html || '<p class="text-xs text-slate-500">या देवस्थानासाठी अद्याप कोणतेही दैनिक फोटो अपलोड केलेले नाहीत.</p>';
+      }).join('');
     }
 
     async function removePhotosByIndices(templeId, scope, indicesToRemove) {
@@ -515,15 +624,27 @@
       }
     };
 
-    window.deleteSelectedPhotos = async function(templeId, scope) {
-      const chks = Array.from(document.querySelectorAll(`.photo-del-chk[data-scope="${scope}"]:checked`));
+    window.deleteSelectedPhotos = async function(templeId, scope, batchId) {
+      const chks = Array.from(document.querySelectorAll(`.photo-del-chk[data-scope="${scope}"][data-batch="${batchId}"]:checked`));
       if (!chks.length) return showToast('कृपया आधी किमान एक फोटो सिलेक्ट करा.', true);
-      if (!confirm(`निवडलेले ${chks.length} फोटो कायमचे डिलीट करायचे का?`)) return;
+      if (!confirm(`या बॅचमधील निवडलेले ${chks.length} फोटो कायमचे डिलीट करायचे का?`)) return;
       try {
         const indices = chks.map(c => Number(c.getAttribute('data-idx')));
         await removePhotosByIndices(templeId, scope, indices);
       } catch (err) {
         showToast(err.message || 'फोटो डिलीट करताना त्रुटी आली.', true);
+      }
+    };
+
+    window.deleteBatchFolder = async function(templeId, scope, batchId) {
+      const chks = Array.from(document.querySelectorAll(`.photo-del-chk[data-scope="${scope}"][data-batch="${batchId}"]`));
+      if (!chks.length) return;
+      if (!confirm(`या संपूर्ण बॅच फोल्डरमधील सर्व ${chks.length} फोटो कायमचे डिलीट करायचे का?`)) return;
+      try {
+        const indices = chks.map(c => Number(c.getAttribute('data-idx')));
+        await removePhotosByIndices(templeId, scope, indices);
+      } catch (err) {
+        showToast(err.message || 'बॅच फोल्डर डिलीट करताना त्रुटी आली.', true);
       }
     };
 
@@ -589,8 +710,8 @@
       try {
         const templeId = document.getElementById('templeSelect').value;
         const date = getTodayISO();
-        const pujaTitle = document.getElementById('pujaTitleInput').value.trim() || 'दैनिक पूजा व अलंकार दर्शन';
-        const sourcePlatform = document.getElementById('sourcePlatformInput').value.trim();
+        const pujaTitle = getSelectOrCustom('pujaTitleSelect', 'pujaTitleCustom') || 'दैनिक पूजा व अलंकार दर्शन';
+        const sourcePlatform = getSelectOrCustom('sourcePlatformSelect', 'sourcePlatformCustom');
         const sourceUrl = document.getElementById('sourceUrlInput').value.trim();
         const files = Array.from(document.getElementById('photoFileInput').files || []);
         const rawUrls = (document.getElementById('directUrlsInput').value || '').split(/\n+/).map(s => s.trim()).filter(Boolean);
@@ -612,7 +733,18 @@
         const archSnap = await db.ref(`dailyDarshan/archive/${templeId}/${date}`).once('value');
         const prevArch = archSnap.val() || {};
         const prevPhotos = Array.isArray(prevArch.photos) ? prevArch.photos : [];
-        const newEntries = uploadedUrls.map(u => ({ url: u, pujaTitle, uploadedAt: Date.now() }));
+        const nowMs = Date.now();
+        const batchId = 'b_' + nowMs;
+        const batchTime = new Date(nowMs).toLocaleTimeString('mr-IN', { hour: '2-digit', minute: '2-digit' });
+        const newEntries = uploadedUrls.map(u => ({
+          url: u,
+          pujaTitle,
+          sourcePlatform,
+          sourceUrl,
+          batchId,
+          batchTime,
+          uploadedAt: nowMs
+        }));
         const combinedPhotos = [...newEntries, ...prevPhotos];
 
         await db.ref(`dailyDarshan/archive/${templeId}/${date}`).set({
@@ -643,7 +775,7 @@
       try {
         const id = document.getElementById('newTempleId').value.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '');
         const name = document.getElementById('newTempleName').value.trim();
-        const order = Number(document.getElementById('newTempleOrder').value) || 20;
+        const order = mergedTemples.reduce((mx, t) => Math.max(mx, Number(t.order) || 0), 0) + 1;
         const sourcePlatform = document.getElementById('newTemplePlatform').value.trim();
         const sourceUrl = document.getElementById('newTempleSourceUrl').value.trim();
         let image = document.getElementById('newTempleCoverUrl').value.trim();
@@ -668,7 +800,7 @@
 
     
 
-    document.getElementById('saveDailyUiBtn').addEventListener('click', async () => {
+document.getElementById('saveDailyUiBtn').addEventListener('click', async () => {
       if (!db) return;
       try {
         const uiPayload = {

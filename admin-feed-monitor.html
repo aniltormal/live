@@ -22,7 +22,7 @@
 
     <div id="pageContent" class="hidden space-y-5">
       <!-- मास्टर टॉगल (संपूर्ण ऑटो फीड मॉनिटर चालू/बंद) -->
-      <section class="bg-white rounded-2xl border-2 border-[#05344E]/20 shadow-sm p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
+      <section data-no-accordion="1" class="bg-white rounded-2xl border-2 border-[#05344E]/20 shadow-sm p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
         <div class="space-y-0.5">
           <div class="flex items-center gap-2">
             <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">⚡ ऑटो फीड मॉनिटर प्रणाली (Master Control)</h2>
@@ -63,10 +63,11 @@
             <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">📡 १. मंदिरांच्या अधिकृत वेबसाईट्स जोडा (Feed Discovery Sources)</h2>
             <p class="text-xs text-slate-500">येथे जोडलेल्या वेबसाईट्स GitHub Actions + Playwright द्वारे नियमित स्कॅन होऊन M3U8, DASH व YouTube Live लिंक्स आपोआप अपडेट होतात.</p>
           </div>
-          <div class="flex flex-wrap items-center gap-2">
-            <button id="fixTempleIdsBtn" type="button" class="px-3.5 py-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 text-xs font-extrabold cursor-pointer shadow-sm">🔧 मंदिर ID व नावे जुळवा</button>
-            <button id="toggleAddSourceBtn" type="button" class="px-3.5 py-2 rounded-xl bg-[#05344E] hover:opacity-95 text-white text-xs font-bold cursor-pointer shadow-sm">➕ नवीन वेबसाईट जोडा</button>
-          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-end gap-2">
+          <button id="fixTempleIdsBtn" type="button" class="px-3.5 py-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 text-xs font-extrabold cursor-pointer shadow-sm">🔧 मंदिर ID व नावे जुळवा</button>
+          <button id="toggleAddSourceBtn" type="button" class="px-3.5 py-2 rounded-xl bg-[#05344E] hover:opacity-95 text-white text-xs font-bold cursor-pointer shadow-sm">➕ नवीन वेबसाईट जोडा</button>
         </div>
 
         <!-- नवीन स्त्रोत फॉर्म -->
@@ -138,6 +139,8 @@
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-3">
         <div class="flex items-center justify-between gap-2 pb-2 border-b border-slate-100">
           <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">📜 ३. ऑटो-डिस्कव्हरी इतिहास (शेवटच्या ५० नोंदी)</h2>
+        </div>
+        <div class="flex justify-end">
           <button id="clearHistoryBtn" type="button" class="px-3 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-[11px] font-bold cursor-pointer">🗑️ इतिहास रिकामा करा</button>
         </div>
         <div id="feedHistoryBox" class="space-y-1.5 max-h-80 overflow-y-auto text-xs">

@@ -65,4 +65,5 @@
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
+  <url><loc>https://darshansetu.live/daily-darshan.html</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
 </urlset>

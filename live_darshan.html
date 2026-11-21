@@ -367,7 +367,8 @@
           <div id="menuTempleInfoList" class="hidden bg-white px-2 py-1.5 space-y-1 border-t border-slate-100"></div>
         </div>
         <div id="mobileMenuDynamicLinks" class="space-y-1.5">
-          <a href="panchang.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>🗓️</span><span>आजचे पंचांग व सणवार</span></a>
+          <a href="daily-darshan.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📸</span><span>दैनिक फोटो दर्शन व सणवार</span></a>
+            <a href="panchang.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>🗓️</span><span>आजचे पंचांग व सणवार</span></a>
           <a href="advertising.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📢</span><span>जाहिरात द्या</span></a>
           <a href="contact.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📞</span><span>संपर्क करा</span></a>
           <a href="about.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>ℹ️</span><span>आमच्याबद्दल</span></a>
@@ -385,24 +386,39 @@
     </div>
   </div>
 
-  <!-- Automatic Daily Marathi Panchang Strip -->
-  <div id="panchangBar" class="w-full bg-gradient-to-r from-amber-50 via-orange-50/80 to-amber-50 border-b border-amber-200/80 text-[#05344E] transition-colors duration-300">
-    <div id="panchangInner" class="max-w-7xl xl:max-w-[1400px] mx-auto flex items-stretch justify-between gap-2 font-bold leading-snug" style="font-size: clamp(12.5px, 3.4vw, 17px);">
-      <div class="w-[72%] sm:w-4/5 min-w-0 flex items-center gap-1.5 text-left px-2 sm:px-3 py-1.5">
-        <span class="shrink-0">🗓️</span>
-        <span id="panchangText">आजचे पंचांग: लोड होत आहे...</span>
-      </div>
-      <a id="panchangBtn" href="panchang.html" class="group relative overflow-hidden w-[29%] sm:w-auto shrink-0 inline-flex items-center justify-center gap-1.5 px-2 sm:px-4 py-1.5 bg-gradient-to-r from-[#05344E] via-[#0c567d] to-[#05344E] text-white border-l-2 border-amber-400/90 text-[10px] sm:text-xs font-bold leading-tight text-center shadow-inner transition-all duration-200 hover:brightness-110">
-        <span aria-hidden="true" class="panchang-cta-shimmer pointer-events-none absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-transparent via-amber-200/35 to-transparent"></span>
-        <span class="relative z-10 flex items-center gap-1">
-          <span id="panchangBtnText">संपूर्ण पंचांग येथे पहा</span>
-          <span aria-hidden="true" class="panchang-arrow-nudge text-amber-300 font-extrabold">→</span>
-        </span>
+    <!-- Top 2-Button Quick Action Bar (Ivory-Gold Photo Darshan 70% + Royal Navy Panchang 30%, Animated, Khand Bold) -->
+  <style>
+    @keyframes topBtnShimmer {
+      0% { transform: translateX(-140%) skewX(-18deg); }
+      45%, 100% { transform: translateX(260%) skewX(-18deg); }
+    }
+    .top-btn-shimmer {
+      position: relative;
+      overflow: hidden;
+    }
+    .top-btn-shimmer::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      width: 45%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.42), transparent);
+      animation: topBtnShimmer 3.2s ease-in-out infinite;
+      pointer-events: none;
+    }
+  </style>
+  <div id="topQuickActionBar" class="w-full bg-amber-50/95 border-b border-amber-200/80 py-2 px-2.5 sm:px-3" style="font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; font-weight: 700;">
+    <div class="max-w-7xl xl:max-w-[1400px] mx-auto grid grid-cols-[7fr_3fr] sm:grid-cols-[3fr_1fr] items-stretch gap-2 sm:gap-3">
+      <a href="daily-darshan.html" style="font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; font-weight: 700;" class="top-btn-shimmer flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-3 sm:py-3.5 min-h-[54px] sm:min-h-[60px] rounded-xl bg-gradient-to-r from-[#FFFBEB] via-[#FEF3C7] to-[#FDE68A] hover:brightness-98 text-[#05344E] border-2 border-[#EA580C] font-bold text-[15.5px] sm:text-lg md:text-xl tracking-wide shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 text-center leading-tight">
+        <span class="shrink-0">📸</span>
+        <span>आजचे व मागील ७ दिवसांचे फोटो दर्शन</span>
+      </a>
+      <a href="panchang.html" style="font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; font-weight: 700;" class="top-btn-shimmer flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-3 sm:py-3.5 min-h-[54px] sm:min-h-[60px] rounded-xl bg-gradient-to-r from-[#05344E] via-[#084160] to-[#05344E] hover:brightness-110 text-amber-200 border-2 border-amber-400/75 font-bold text-[15.5px] sm:text-lg md:text-xl tracking-wide shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 text-center leading-tight">
+        <span class="shrink-0">📅</span>
+        <span>आजचे पंचांग</span>
       </a>
     </div>
   </div>
 
-  <!-- Main Content: 2-Column Square Temple Photo Cards -->
   <main class="flex-1 w-full max-w-7xl xl:max-w-[1400px] mx-auto px-3 sm:px-5 py-6 sm:py-8">
     <!-- Option 1: True Smooth Horizontal Auto-Sliding Ad Banner -->
     <section id="mainAdSliderSection" class="hidden mb-5 sm:mb-7">
@@ -434,7 +450,31 @@
     <div id="templeGrid" class="grid grid-cols-3 gap-2.5 sm:gap-4">
       <!-- Square 2-per-row temple photo buttons rendered from TEMPLES_CONFIG -->
     </div>
-  </main>
+</main>
+
+  
+  <!-- Daily Photo Slideshow Popup (For Offline Temples with Daily Photos) -->
+  <div id="photoSlideshowModal" class="hidden fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5">
+    <div class="w-full max-w-2xl bg-white rounded-3xl border-2 border-amber-400 overflow-hidden shadow-2xl flex flex-col max-h-[92vh]">
+      <div class="bg-[#05344E] text-white px-4 py-3 flex items-center justify-between gap-2">
+        <div class="min-w-0">
+          <div id="psTempleTitle" class="text-base sm:text-lg font-extrabold truncate"></div>
+          <div id="psMetaText" class="text-xs text-amber-300 truncate"></div>
+        </div>
+        <button type="button" onclick="closePhotoSlideshow()" class="shrink-0 px-3 py-1.5 rounded-full bg-red-600 hover:bg-red-700 text-white text-xs font-bold cursor-pointer">✕ बंद करा</button>
+      </div>
+      <div class="relative bg-slate-900 flex-1 min-h-[260px] sm:min-h-[360px] flex items-center justify-center overflow-hidden">
+        <button type="button" onclick="stepPhotoSlideshow(-1)" aria-label="मागील फोटो" class="absolute left-2.5 z-10 w-10 h-10 rounded-full bg-black/60 hover:bg-black/80 text-white text-xl font-bold flex items-center justify-center cursor-pointer">‹</button>
+        <img id="psMainImg" src="" alt="आजचे फोटो दर्शन" class="max-w-full max-h-[58vh] object-contain" />
+        <button type="button" onclick="stepPhotoSlideshow(1)" aria-label="पुढील फोटो" class="absolute right-2.5 z-10 w-10 h-10 rounded-full bg-black/60 hover:bg-black/80 text-white text-xl font-bold flex items-center justify-center cursor-pointer">›</button>
+        <span id="psCounterBadge" class="absolute bottom-2.5 right-3 px-2.5 py-0.5 rounded-full bg-black/70 text-white text-xs font-bold"></span>
+      </div>
+      <div class="p-3.5 sm:p-4 bg-amber-50/70 border-t border-amber-200 flex flex-wrap items-center justify-between gap-2">
+        <div id="psSourceInfo" class="text-xs font-bold text-[#05344E]"></div>
+        <a id="psMoreLink" href="daily-darshan.html" class="px-3.5 py-1.5 rounded-xl bg-[#EA580C] hover:bg-orange-700 text-white text-xs font-bold shadow transition">मागील ७ दिवसांचे फोटो पहा →</a>
+      </div>
+    </div>
+  </div>
 
   <!-- Visitor Counter & WhatsApp Bar -->
   <nav id="legalLinksBar" aria-label="भाविक काऊंटर व संपर्क" class="mt-auto bg-[#05344E] text-white border-t border-white/15 py-2.5 px-3 transition-colors duration-300">
@@ -1315,6 +1355,44 @@
     let streamTimeoutTimer = null;
     let currentOpenTempleId = null;
     const streamStatusMap = {};
+
+    let dailyLatestMap = {};
+    let psList = [];
+    let psIdx = 0;
+
+    window.openPhotoSlideshow = function(temple, latestObj) {
+      psList = Array.isArray(latestObj && latestObj.photos) ? latestObj.photos : [];
+      if (!psList.length) {
+        openTemplePopup(temple);
+        return;
+      }
+      psIdx = 0;
+      document.getElementById('psTempleTitle').textContent = (temple.shortTitle || temple.name || '') + ' • 📸 आजचे फोटो दर्शन';
+      document.getElementById('psMetaText').textContent = (latestObj.date || '') + (latestObj.pujaTitle ? ' • ' + latestObj.pujaTitle : '');
+      const srcEl = document.getElementById('psSourceInfo');
+      if (latestObj.sourcePlatform) {
+        srcEl.innerHTML = '📸 स्त्रोत: <span class="text-[#EA580C]">' + latestObj.sourcePlatform + '</span>' + (latestObj.sourceUrl ? ' <a href="' + latestObj.sourceUrl + '" target="_blank" rel="noopener noreferrer" class="underline ml-1 text-blue-700">पाहा ↗</a>' : '');
+      } else {
+        srcEl.textContent = '📸 दैनिक अलंकार व आरती फोटो दर्शन';
+      }
+      document.getElementById('psMoreLink').href = 'daily-darshan.html?id=' + encodeURIComponent(temple.id);
+      updatePhotoSlideshow();
+      document.getElementById('photoSlideshowModal').classList.remove('hidden');
+    };
+    window.closePhotoSlideshow = function() {
+      document.getElementById('photoSlideshowModal').classList.add('hidden');
+    };
+    window.stepPhotoSlideshow = function(dir) {
+      if (!psList.length) return;
+      psIdx = (psIdx + dir + psList.length) % psList.length;
+      updatePhotoSlideshow();
+    };
+    function updatePhotoSlideshow() {
+      const item = psList[psIdx] || {};
+      document.getElementById('psMainImg').src = item.url || item;
+      document.getElementById('psCounterBadge').textContent = (psIdx + 1) + ' / ' + psList.length;
+    }
+
     let customOfflineTitle = '🙏 सध्या लाईव्ह दर्शन तात्पुरते बंद आहे';
     let customHeaderTextColor = '';
     function applyHeaderTextColorForTheme() {
@@ -1730,9 +1808,13 @@
         const hasUrl = Boolean((temple.streamUrl || '').trim());
         const detected = streamStatusMap[temple.id];
         const hasFeed = hasUrl && detected !== false;
+        const dailyObj = dailyLatestMap[temple.id];
+        const hasDailyPhotos = !hasFeed && dailyObj && Array.isArray(dailyObj.photos) && dailyObj.photos.length > 0;
         const badgeHtml = hasFeed
           ? `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-red-600 text-white border border-red-400 text-[10px] sm:text-xs font-bold shadow">LIVE ●</span>`
-          : `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md bg-slate-600 text-white border border-slate-400 text-[10px] sm:text-xs font-semibold shadow">प्रतीक्षेत</span>`;
+          : (hasDailyPhotos
+              ? `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-[#EA580C] text-white border border-orange-300 text-[10px] sm:text-xs font-bold shadow">📸 आजचे फोटो दर्शन</span>`
+              : `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md bg-slate-600 text-white border border-slate-400 text-[10px] sm:text-xs font-semibold shadow">प्रतीक्षेत</span>`);
 
         const titleColor = isDark ? 'text-white group-hover:text-neutral-200' : 'text-black group-hover:text-neutral-700';
         const imgBoxClass = isFeaturedTop
@@ -1769,7 +1851,7 @@
           </div>
         `;
 
-        btn.addEventListener('click', () => openTemplePopup(temple));
+        btn.addEventListener('click', () => hasDailyPhotos ? openPhotoSlideshow(temple, dailyObj) : openTemplePopup(temple));
         el.templeGrid.appendChild(btn);
       });
     }
@@ -2751,7 +2833,8 @@
         });
 
         // Listen for live link updates and newly added temples for all visitors
-        fbDb.ref('temples').on('value', (snapshot) => {
+        fbDb.ref('dailyDarshan/latest').on('value', (s) => { dailyLatestMap = s.val() || {}; if (typeof renderTemples === 'function') renderTemples(); });
+      fbDb.ref('temples').on('value', (snapshot) => {
           window.__templesSyncedFromFb = true;
           const data = snapshot.val();
           if (data && typeof data === 'object') {
@@ -2835,6 +2918,9 @@
         function renderDynamicMenuLinks(items) {
           const box = document.getElementById('mobileMenuDynamicLinks');
           if (!box || !Array.isArray(items) || !items.length) return;
+          if (!items.some(x => x && String(x.url || '').includes('daily-darshan.html'))) {
+            items = [{ icon: '📸', label: 'दैनिक फोटो दर्शन', url: 'daily-darshan.html', enabled: true }, ...items];
+          }
           if (!items.some(x => x && String(x.url || '').includes('advertising.html'))) {
             const expanded = [];
             items.forEach(x => {

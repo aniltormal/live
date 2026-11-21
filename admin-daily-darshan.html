@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>दैनिक अलंकार व पूजा फोटो — दर्शन सेतू लाईव्ह अ‍ॅडमिन</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="admin-common.js"></script>
+  <style>
+    body { font-family: 'Noto Sans Devanagari', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+
+  <div id="adminTopHeader"></div>
+
+  <div id="authGateMsg" class="max-w-xl mx-auto my-12 p-6 bg-white rounded-2xl border border-slate-200 shadow-sm text-center space-y-3">
+    <p class="text-sm font-bold text-slate-700">अ‍ॅडमिन लॉगिन तपासत आहे...</p>
+    <a href="admin.html" class="inline-block px-4 py-2 rounded-xl bg-[#05344E] text-white text-xs font-bold">लॉगिन पेजवर जा</a>
+  </div>
+
+  <main id="pageContent" class="hidden max-w-6xl w-full mx-auto p-4 sm:p-6 space-y-6">
+
+    <!-- Status Toast -->
+    <div id="statusToast" class="hidden rounded-xl px-4 py-3 text-sm font-bold border shadow-sm"></div>
+
+    <!-- 1. Cloudinary Settings -->
+    <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 space-y-3">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h2 class="text-base sm:text-lg font-extrabold text-[#05344E] flex items-center gap-2"><span>☁️</span><span>Cloudinary सेटिंग (मोफत फोटो अपलोड)</span></h2>
+          <p class="text-xs text-slate-500 mt-0.5">फोटो थेट Cloudinary वर अपलोड होऊन हलकी CDN लिंक Firebase मध्ये सेव्ह होईल (कार्डची गरज नाही).</p>
+        </div>
+        <button type="button" id="toggleCloudBtn" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 cursor-pointer">सेटिंग बदला ▾</button>
+      </div>
+      <div id="cloudFormWrap" class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-slate-100">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Cloud Name</label>
+          <input id="cloudNameInput" type="text" placeholder="उदा. dxyz123abc" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-[#05344E] outline-none" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Unsigned Upload Preset</label>
+          <input id="uploadPresetInput" type="text" placeholder="उदा. darshan_unsigned" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-[#05344E] outline-none" />
+        </div>
+        <div class="flex items-end">
+          <button type="button" id="saveCloudBtn" class="w-full px-4 py-2 rounded-xl bg-[#05344E] hover:bg-[#084160] text-white text-sm font-bold cursor-pointer transition">☁️ Cloudinary सेव्ह करा</button>
+        </div>
+        <p class="sm:col-span-3 text-[11px] text-slate-500">टीप: Cloudinary Dashboard → Settings → Upload → Upload Presets मध्ये जाऊन Signing Mode: <strong>Unsigned</strong> असा Preset तयार करा.</p>
+      </div>
+    </section>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- 2. Upload Daily Photos -->
+      <section class="lg:col-span-7 bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+          <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">📸 आजचे / दैनिक पूजा फोटो अपलोड करा</h2>
+          <span class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-amber-100 text-amber-800">Auto WebP कॉम्प्रेशन</span>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="block text-xs font-bold text-slate-700">देवस्थान निवडा *</label>
+            <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">📅 आजची तारीख आपोआप घेतली जाईल</span>
+          </div>
+          <select id="templeSelect" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm font-semibold bg-white focus:border-[#05344E] outline-none"></select>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">पूजेचा प्रकार / शीर्षक *</label>
+            <input id="pujaTitleInput" type="text" list="pujaPresets" placeholder="उदा. सकाळची महापूजा व अलंकार" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-[#05344E] outline-none" />
+            <datalist id="pujaPresets">
+              <option value="काकड आरती दर्शन"></option>
+              <option value="सकाळची महापूजा व अलंकार"></option>
+              <option value="मध्यान्ह आरती दर्शन"></option>
+              <option value="संध्याकाळची धूप आरती"></option>
+              <option value="विशेष अलंकार पूजा"></option>
+              <option value="शेजारती दर्शन"></option>
+            </datalist>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">फोटो स्त्रोत प्लॅटफॉर्म (Source)</label>
+            <input id="sourcePlatformInput" type="text" list="platformPresets" placeholder="उदा. Official Website / Facebook" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-[#05344E] outline-none" />
+            <datalist id="platformPresets">
+              <option value="Official Website"></option>
+              <option value="Facebook Page"></option>
+              <option value="Instagram"></option>
+              <option value="YouTube Community"></option>
+              <option value="Devsthan Trust"></option>
+            </datalist>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">मूळ स्त्रोत लिंक (Source URL - ऐच्छिक)</label>
+          <input id="sourceUrlInput" type="url" placeholder="https://..." class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-[#05344E] outline-none" />
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-slate-50 border border-dashed border-slate-300 space-y-2.5">
+          <label class="block text-xs font-bold text-slate-700">१. फाईल निवडा (एकाच वेळी अनेक फोटो निवडता येतील):</label>
+          <input id="photoFileInput" type="file" accept="image/*" multiple class="block w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#EA580C] file:text-white hover:file:bg-orange-700 cursor-pointer" />
+          <div class="text-[11px] text-slate-500">किंवा थेट इमेज URL पेस्ट करा (दर ओळीला एक URL):</div>
+          <textarea id="directUrlsInput" rows="2" placeholder="https://res.cloudinary.com/.../photo1.jpg" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:border-[#05344E] outline-none"></textarea>
+        </div>
+
+  
+      <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+          <label class="inline-flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+            <input id="markAsLatestChk" type="checkbox" checked class="w-4 h-4 accent-[#EA580C]" />
+            <span>हे फोटो "ताजे / आजचे दर्शन" म्हणून मुख्य व पहिल्या भागात दाखवा</span>
+          </label>
+          <button type="button" id="uploadPublishBtn" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#EA580C] to-amber-500 hover:brightness-105 text-white text-sm font-extrabold shadow cursor-pointer transition">
+            🚀 फोटो अपलोड व प्रकाशित करा
+          </button>
+        </div>
+        <div id="uploadProgress" class="hidden text-xs font-bold text-[#05344E] bg-amber-50 border border-amber-200 rounded-xl px-3 py-2"></div>
+      </section>
+
+      <!-- 3. Add/Edit Photo-Only Temple Block -->
+      <section class="lg:col-span-5 bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
+        <div class="border-b border-slate-100 pb-3">
+          <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🛕 नवीन देवस्थान ब्लॉक जोडा</h2>
+          <p class="text-xs text-slate-500 mt-0.5">ज्या मंदिरांचा लाईव्ह व्हिडिओ नाही, त्यांचे स्वतंत्र ब्लॉक `daily-darshan.html` वर दाखवण्यासाठी येथे जोडा.</p>
+        </div>
+
+        <div class="space-y-3">
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">मंदिर ID (इंग्रजी) *</label>
+              <input id="newTempleId" type="text" placeholder="उदा. jejuri" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-[#05344E] outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">क्रम (Order)</label>
+              <input id="newTempleOrder" type="number" value="10" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-[#05344E] outline-none" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">देवस्थानाचे पूर्ण नाव *</label>
+            <input id="newTempleName" type="text" placeholder="उदा. श्री खंडोबा देवस्थान, जेजुरी" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-[#05344E] outline-none" />
+          </div>
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">डिफॉल्ट सोर्स प्लॅटफॉर्म</label>
+              <input id="newTemplePlatform" type="text" placeholder="उदा. Facebook Page" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-[#05344E] outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">डिफॉल्ट सोर्स लिंक</label>
+              <input id="newTempleSourceUrl" type="url" placeholder="https://..." class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-[#05344E] outline-none" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">कव्हर फोटो (फाईल निवडा किंवा URL टाका)</label>
+            <input id="newTempleCoverFile" type="file" accept="image/*" class="block w-full text-xs text-slate-600 mb-1.5 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-200 file:text-slate-800 cursor-pointer" />
+            <input id="newTempleCoverUrl" type="url" placeholder="https://..." class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:border-[#05344E] outline-none" />
+          </div>
+          <button type="button" id="saveNewTempleBtn" class="w-full px-4 py-2.5 rounded-xl bg-[#05344E] hover:bg-[#084160] text-white text-sm font-bold cursor-pointer transition">➕ देवस्थान ब्लॉक सेव्ह करा</button>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- 4. Manage Existing Photos & 7-Day Cleanup -->
+    <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+        <div>
+          <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🗂️ अपलोड केलेले फोटो व्यवस्थापन व ७ दिवसांची स्वच्छता</h2>
+          <p class="text-xs text-slate-500">निवडलेल्या देवस्थानाचे ताजे आणि मागील ७ दिवसांचे फोटो येथे पहा.</p>
+        </div>
+        <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl">✨ ७ दिवसांपेक्षा जुने फोटो आपोआप डिलीट होतात</span>
+      </div>
+
+      <div id="existingPhotosBox" class="space-y-4">
+        <p class="text-xs text-slate-500">वरील यादीतून देवस्थान निवडल्यावर येथील फोटो दिसतील...</p>
+      </div>
+    </section>
+
+
+    <!-- 5. Daily Darshan Page Blocks & Elements Settings -->
+    <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
+      <div class="border-b border-slate-100 pb-3">
+        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🎨 दैनिक फोटो पेज व ब्लॉक्स सेटिंग्ज</h2>
+        <p class="text-xs text-slate-500 mt-0.5">पब्लिक `daily-darshan.html` पेजवरील ब्लॉक्सचा आकार, कॉलम्स, रंग व इतर घटक येथून नियंत्रित करा (फॉन्ट व टेक्स्ट साईझ बाय-डिफॉल्ट Khand Bold राहील).</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">पेज शीर्षक (Heading)</label>
+          <input id="uiHeadingInput" type="text" placeholder="📸 आजचे व मागील ७ दिवसांचे फोटो दर्शन" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-[#05344E] outline-none" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">उपशीर्षक (Subtitle)</label>
+          <input id="uiSubtitleInput" type="text" placeholder="ज्या देवस्थानांचे थेट लाईव्ह प्रक्षेपण उपलब्ध नाही..." class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-[#05344E] outline-none" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">मोबाईल कॉलम्स</label>
+          <select id="uiColsMobile" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm bg-white">
+            <option value="2">२ ब्लॉक्स (डिफॉल्ट)</option>
+            <option value="1">१ ब्लॉक</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">डेस्कटॉप कॉलम्स</label>
+          <select id="uiColsDesktop" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm bg-white">
+            <option value="4">४ ब्लॉक्स (डिफॉल्ट)</option>
+            <option value="3">३ ब्लॉक्स</option>
+            <option value="2">२ ब्लॉक्स</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">ब्लॉक फोटो उंची</label>
+          <select id="uiBlockHeight" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm bg-white">
+            <option value="md">मध्यम (डिफॉल्ट)</option>
+            <option value="sm">छोटी</option>
+            <option value="lg">मोठी</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">बॉर्डर रंग</label>
+          <input id="uiBorderColor" type="color" value="#FDE68A" class="w-full h-10 rounded-xl border border-slate-300 cursor-pointer bg-white p-1" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">शीर्षक रंग</label>
+          <input id="uiTitleColor" type="color" value="#05344E" class="w-full h-10 rounded-xl border border-slate-300 cursor-pointer bg-white p-1" />
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 space-y-2.5">
+        <div>
+          <h3 class="text-sm font-extrabold text-[#05344E]">🔢 देवस्थानांचा क्रम ठरवा व कार्ड दाखवा/लपवा</h3>
+          <p class="text-[11px] text-slate-500">मुख्य व नवीन देवस्थानांचा `daily-darshan.html` वरील क्रम आणि दृश्यमानता (टॉगल बटन) येथून ठरवा.</p>
+        </div>
+        <div id="templeOrderList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-80 overflow-y-auto pr-1"></div>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+        <div class="flex flex-wrap items-center gap-4">
+          <label class="inline-flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+            <input id="uiShowSliderChk" type="checkbox" checked class="w-4 h-4 accent-[#05344E]" />
+            <span>स्लायडर जाहिरात दाखवा</span>
+          </label>
+          <label class="inline-flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+            <input id="uiShowSourceChk" type="checkbox" checked class="w-4 h-4 accent-[#EA580C]" />
+            <span>सोर्स प्लॅटफॉर्म बॅज दाखवा</span>
+          </label>
+        </div>
+        <button type="button" id="saveDailyUiBtn" class="px-5 py-2.5 rounded-xl bg-[#05344E] hover:bg-[#084160] text-white text-sm font-bold shadow cursor-pointer transition">💾 सर्व सेटिंग्ज व क्रम सेव्ह करा</button>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    renderAdminHeader('daily', 'दैनिक अलंकार व पूजा फोटो', 'Cloudinary अपलोड, सोर्स प्लॅटफॉर्म व ७ दिवसांचे ऑटो-व्यवस्थापन');
+
+    const DEFAULT_PHOTO_TEMPLES = [
+      { id: 'pandharpur', name: 'श्री विठ्ठल रुक्मिणी, पंढरपूर', shortTitle: 'श्री विठ्ठल रुक्मिणी, पंढरपूर', order: 1, isDefault: true },
+      { id: 'kolhapur', name: 'श्री अंबाबाई महालक्ष्मी, कोल्हापूर', shortTitle: 'श्री अंबाबाई महालक्ष्मी, कोल्हापूर', order: 2, isDefault: true },
+      { id: 'tuljapur', name: 'श्री तुळजाभवानी, तुळजापूर', shortTitle: 'श्री तुळजाभवानी, तुळजापूर', order: 3, isDefault: true },
+      { id: 'shirdi', name: 'श्री साईबाबा, शिर्डी', shortTitle: 'श्री साईबाबा, शिर्डी', order: 4, isDefault: true },
+      { id: 'dagdusheth', name: 'दगडूशेठ गणपती, पुणे', shortTitle: 'दगडूशेठ गणपती, पुणे', order: 5, isDefault: true },
+      { id: 'siddhivinayak', name: 'श्री सिद्धिविनायक, मुंबई', shortTitle: 'श्री सिद्धिविनायक, मुंबई', order: 6, isDefault: true }
+    ];
+
+    let db = null;
+    let cloudCfg = { cloudName: '', uploadPreset: '' };
+    let mergedTemples = [];
+    let photoOnlyTemples = {};
+    let latestMap = {};
+
+    function showToast(msg, isErr) {
+      const t = document.getElementById('statusToast');
+      t.textContent = msg;
+      t.className = 'rounded-xl px-4 py-3 text-sm font-bold border shadow-sm ' + (isErr ? 'bg-red-50 border-red-200 text-red-700' : 'bg-emerald-50 border-emerald-200 text-emerald-800');
+      t.classList.remove('hidden');
+      setTimeout(() => t.classList.add('hidden'), 5000);
+    }
+
+    function getTodayISO() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    async function autoCleanupOlderThan7Days() {
+      if (!db) return 0;
+      const cutoffDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      const cutoffISO = `${cutoffDate.getFullYear()}-${String(cutoffDate.getMonth() + 1).padStart(2, '0')}-${String(cutoffDate.getDate()).padStart(2, '0')}`;
+      const snap = await db.ref('dailyDarshan/archive').once('value');
+      const all = snap.val() || {};
+      let removed = 0;
+      for (const tid of Object.keys(all)) {
+        const dates = Object.keys(all[tid] || {});
+        for (const dt of dates) {
+          if (dt < cutoffISO) {
+            await db.ref(`dailyDarshan/archive/${tid}/${dt}`).remove();
+            removed++;
+          }
+        }
+      }
+      return removed;
+    }
+
+    async function compressImageBlob(file, maxWidth = 1200, quality = 0.82) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        const url = URL.createObjectURL(file);
+        img.onload = () => {
+          URL.revokeObjectURL(url);
+          let w = img.width;
+          let h = img.height;
+          if (w > maxWidth) {
+            h = Math.round((h * maxWidth) / w);
+            w = maxWidth;
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          canvas.toBlob((blob) => {
+            if (blob) resolve(blob);
+            else reject(new Error('Image compression failed'));
+          }, 'image/webp', quality);
+        };
+        img.onerror = () => reject(new Error('Invalid image file'));
+        img.src = url;
+      });
+    }
+
+    async function uploadToCloudinary(file) {
+      if (!cloudCfg.cloudName || !cloudCfg.uploadPreset) {
+        throw new Error('कृपया आधी वर Cloudinary चे Cloud Name आणि Upload Preset सेव्ह करा.');
+      }
+      const compressed = await compressImageBlob(file);
+      const fd = new FormData();
+      fd.append('file', compressed, (file.name || 'darshan').replace(/\.[^.]+$/, '') + '.webp');
+      fd.append('upload_preset', cloudCfg.uploadPreset);
+      fd.append('folder', 'darshansetu_daily');
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${encodeURIComponent(cloudCfg.cloudName)}/image/upload`, {
+        method: 'POST',
+        body: fd
+      });
+      const data = await res.json();
+      if (!res.ok || !data.secure_url) {
+        throw new Error((data.error && data.error.message) || 'Cloudinary अपलोड अयशस्वी झाले.');
+      }
+      return data.secure_url.replace('/upload/', '/upload/f_auto,q_auto/');
+    }
+
+
+    function renderTempleOrderList() {
+      const box = document.getElementById('templeOrderList');
+      if (!box) return;
+      box.innerHTML = mergedTemples.map((t, idx) => `
+        <div class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200" data-temple-id="${t.id}">
+          <div class="min-w-0 flex items-center gap-2">
+            <span class="shrink-0 w-6 h-6 rounded-lg bg-[#05344E] text-white text-[11px] font-extrabold flex items-center justify-center">${idx + 1}</span>
+            <div class="min-w-0">
+              <div class="text-xs font-bold text-slate-800 truncate">${t.shortTitle || t.name || t.id}</div>
+              <div class="text-[10px] text-slate-500">${t.id} ${t.isDefault ? '• डिफॉल्ट' : '• कस्टम'}</div>
+            </div>
+          </div>
+          <div class="shrink-0 flex items-center gap-1">
+            <button type="button" onclick="moveTempleOrder(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} class="w-7 h-7 rounded-lg bg-white border border-slate-300 text-xs font-bold text-slate-700 hover:bg-amber-50 disabled:opacity-35 cursor-pointer">▲</button>
+            <button type="button" onclick="moveTempleOrder(${idx}, 1)" ${idx === mergedTemples.length - 1 ? 'disabled' : ''} class="w-7 h-7 rounded-lg bg-white border border-slate-300 text-xs font-bold text-slate-700 hover:bg-amber-50 disabled:opacity-35 cursor-pointer">▼</button>
+            <input type="number" min="1" value="${Number(t.order) || (idx + 1)}" data-order-id="${t.id}" class="temple-order-input w-14 px-2 py-1 rounded-lg border border-slate-300 text-xs font-bold text-center bg-white" />
+            <button type="button" role="switch" aria-checked="${!t.hiddenInDaily}" data-hidden-id="${t.id}" data-hidden="${t.hiddenInDaily ? '1' : '0'}" onclick="toggleTempleVisibility(this)"
+              class="temple-vis-toggle inline-flex items-center gap-1.5 px-2 py-1 rounded-full border text-[11px] font-bold cursor-pointer transition select-none ${t.hiddenInDaily ? 'bg-red-50 border-red-300 text-red-700' : 'bg-emerald-50 border-emerald-300 text-emerald-800'}">
+              <span class="relative inline-flex h-4 w-7 shrink-0 items-center rounded-full transition-colors ${t.hiddenInDaily ? 'bg-red-500' : 'bg-emerald-500'}">
+                <span class="inline-block h-3 w-3 transform rounded-full bg-white shadow transition-transform ${t.hiddenInDaily ? 'translate-x-0.5' : 'translate-x-3.5'}"></span>
+              </span>
+              <span class="toggle-txt">${t.hiddenInDaily ? 'लपवले' : 'दाखवा'}</span>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.toggleTempleVisibility = function(btn) {
+      const currentlyHidden = btn.getAttribute('data-hidden') === '1';
+      const nextHidden = !currentlyHidden;
+      const tid = btn.getAttribute('data-hidden-id');
+      const tObj = mergedTemples.find(x => x.id === tid);
+      if (tObj) tObj.hiddenInDaily = nextHidden;
+      btn.setAttribute('data-hidden', nextHidden ? '1' : '0');
+      btn.setAttribute('aria-checked', String(!nextHidden));
+      btn.className = 'temple-vis-toggle inline-flex items-center gap-1.5 px-2 py-1 rounded-full border text-[11px] font-bold cursor-pointer transition select-none ' +
+        (nextHidden ? 'bg-red-50 border-red-300 text-red-700' : 'bg-emerald-50 border-emerald-300 text-emerald-800');
+      const track = btn.children[0];
+      const knob = track.children[0];
+      const txt = btn.querySelector('.toggle-txt');
+      track.className = 'relative inline-flex h-4 w-7 shrink-0 items-center rounded-full transition-colors ' + (nextHidden ? 'bg-red-500' : 'bg-emerald-500');
+      knob.className = 'inline-block h-3 w-3 transform rounded-full bg-white shadow transition-transform ' + (nextHidden ? 'translate-x-0.5' : 'translate-x-3.5');
+      txt.textContent = nextHidden ? 'लपवले' : 'दाखवा';
+    };
+
+    window.moveTempleOrder = function(idx, delta) {
+      const target = idx + delta;
+      if (target < 0 || target >= mergedTemples.length) return;
+      const item = mergedTemples.splice(idx, 1)[0];
+      mergedTemples.splice(target, 0, item);
+      mergedTemples.forEach((t, i) => { t.order = i + 1; });
+      renderTempleOrderList();
+    };
+
+    function renderTempleDropdown() {
+      const sel = document.getElementById('templeSelect');
+      const prev = sel.value;
+      sel.innerHTML = mergedTemples.map(t => `<option value="${t.id}">${t.shortTitle || t.name || t.id} (${t.id})</option>`).join('');
+      if (prev && mergedTemples.some(t => t.id === prev)) sel.value = prev;
+      syncSelectedTempleDefaults();
+      loadSelectedTempleArchive();
+      renderTempleOrderList();
+    }
+
+    function syncSelectedTempleDefaults() {
+      const id = document.getElementById('templeSelect').value;
+      const custom = photoOnlyTemples[id] || {};
+      const lat = latestMap[id] || {};
+      document.getElementById('sourcePlatformInput').value = custom.sourcePlatform || lat.sourcePlatform || '';
+      document.getElementById('sourceUrlInput').value = custom.sourceUrl || lat.sourceUrl || '';
+    }
+
+    async function loadSelectedTempleArchive() {
+      const id = document.getElementById('templeSelect').value;
+      const box = document.getElementById('existingPhotosBox');
+      if (!id || !db) return;
+      box.innerHTML = '<p class="text-xs text-slate-500">लोड होत आहे...</p>';
+      const snap = await db.ref(`dailyDarshan/archive/${id}`).once('value');
+      const arch = snap.val() || {};
+      const dates = Object.keys(arch).sort((a, b) => b.localeCompare(a));
+      if (!dates.length && !latestMap[id]) {
+        box.innerHTML = '<p class="text-xs text-slate-500">या देवस्थानासाठी अद्याप कोणतेही दैनिक फोटो अपलोड केलेले नाहीत.</p>';
+        return;
+      }
+
+      let html = '';
+      if (latestMap[id] && Array.isArray(latestMap[id].photos)) {
+        const lat = latestMap[id];
+        html += `
+          <div class="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200 space-y-2">
+            <div class="text-xs font-extrabold text-[#05344E]">✨ ताजे (Latest) — ${lat.date || ''} • ${lat.pujaTitle || ''} ${lat.sourcePlatform ? `(${lat.sourcePlatform})` : ''}</div>
+            <div class="grid grid-cols-3 sm:grid-cols-6 gap-2">
+              ${lat.photos.map(p => `<div class="rounded-xl overflow-hidden border border-amber-300 bg-white aspect-square"><img src="${p.url || p}" class="w-full h-full object-cover" /></div>`).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      dates.forEach(dt => {
+        const dayObj = arch[dt] || {};
+        const photos = Array.isArray(dayObj.photos) ? dayObj.photos : [];
+        html += `
+          <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+            <div class="text-xs font-bold text-slate-800">📅 ${dt} — ${dayObj.pujaTitle || 'दैनिक दर्शन'} ${dayObj.sourcePlatform ? `• स्त्रोत: ${dayObj.sourcePlatform}` : ''}</div>
+            <div class="grid grid-cols-3 sm:grid-cols-6 gap-2">
+              ${photos.map(p => `
+                <div class="rounded-xl overflow-hidden border border-slate-300 bg-white aspect-square">
+                  <img src="${p.url || p}" class="w-full h-full object-cover" loading="lazy" />
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      });
+      box.innerHTML = html;
+    }
+
+    document.getElementById('toggleCloudBtn').addEventListener('click', () => {
+      document.getElementById('cloudFormWrap').classList.toggle('hidden');
+    });
+
+    document.getElementById('saveCloudBtn').addEventListener('click', async () => {
+      const cloudName = document.getElementById('cloudNameInput').value.trim();
+      const uploadPreset = document.getElementById('uploadPresetInput').value.trim();
+      if (!cloudName || !uploadPreset) return showToast('Cloud Name आणि Upload Preset दोन्ही भरा.', true);
+      await db.ref('siteConfig/cloudinary').set({ cloudName, uploadPreset });
+      cloudCfg = { cloudName, uploadPreset };
+      showToast('Cloudinary सेटिंग सेव्ह झाली!');
+    });
+
+    document.getElementById('templeSelect').addEventListener('change', () => {
+      syncSelectedTempleDefaults();
+      loadSelectedTempleArchive();
+    });
+
+    document.getElementById('uploadPublishBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('uploadPublishBtn');
+      const prog = document.getElementById('uploadProgress');
+      try {
+        const templeId = document.getElementById('templeSelect').value;
+        const date = getTodayISO();
+        const pujaTitle = document.getElementById('pujaTitleInput').value.trim() || 'दैनिक पूजा व अलंकार दर्शन';
+        const sourcePlatform = document.getElementById('sourcePlatformInput').value.trim();
+        const sourceUrl = document.getElementById('sourceUrlInput').value.trim();
+        const files = Array.from(document.getElementById('photoFileInput').files || []);
+        const rawUrls = (document.getElementById('directUrlsInput').value || '').split(/\n+/).map(s => s.trim()).filter(Boolean);
+
+        if (!templeId) return showToast('कृपया देवस्थान निवडा.', true);
+        if (!files.length && !rawUrls.length) return showToast('कृपया किमान एक फोटो किंवा इमेज URL द्या.', true);
+
+        btn.disabled = true;
+        prog.classList.remove('hidden');
+        const uploadedUrls = [...rawUrls];
+
+        for (let i = 0; i < files.length; i++) {
+          prog.textContent = `⏳ फोटो ${i + 1}/${files.length} कॉम्प्रेस करून Cloudinary वर अपलोड होत आहे...`;
+          const u = await uploadToCloudinary(files[i]);
+          uploadedUrls.push(u);
+        }
+
+        prog.textContent = '⏳ Firebase मध्ये सेव्ह होत आहे...';
+        const archSnap = await db.ref(`dailyDarshan/archive/${templeId}/${date}`).once('value');
+        const prevArch = archSnap.val() || {};
+        const prevPhotos = Array.isArray(prevArch.photos) ? prevArch.photos : [];
+        const newEntries = uploadedUrls.map(u => ({ url: u, pujaTitle, uploadedAt: Date.now() }));
+        const combinedPhotos = [...newEntries, ...prevPhotos];
+
+        await db.ref(`dailyDarshan/archive/${templeId}/${date}`).set({
+          date, pujaTitle, sourcePlatform, sourceUrl, updatedAt: Date.now(), photos: combinedPhotos
+        });
+
+        if (document.getElementById('markAsLatestChk').checked) {
+          await db.ref(`dailyDarshan/latest/${templeId}`).set({
+            templeId, date, pujaTitle, sourcePlatform, sourceUrl, updatedAt: Date.now(), photos: combinedPhotos.slice(0, 8)
+          });
+        }
+
+        await autoCleanupOlderThan7Days();
+        document.getElementById('photoFileInput').value = '';
+        document.getElementById('directUrlsInput').value = '';
+        prog.classList.add('hidden');
+        btn.disabled = false;
+        showToast(`${uploadedUrls.length} फोटो यशस्वीरित्या प्रकाशित झाले!`);
+        loadSelectedTempleArchive();
+      } catch (err) {
+        prog.classList.add('hidden');
+        btn.disabled = false;
+        showToast(err.message || 'अपलोड करताना त्रुटी आली.', true);
+      }
+    });
+
+    document.getElementById('saveNewTempleBtn').addEventListener('click', async () => {
+      try {
+        const id = document.getElementById('newTempleId').value.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '');
+        const name = document.getElementById('newTempleName').value.trim();
+        const order = Number(document.getElementById('newTempleOrder').value) || 20;
+        const sourcePlatform = document.getElementById('newTemplePlatform').value.trim();
+        const sourceUrl = document.getElementById('newTempleSourceUrl').value.trim();
+        let image = document.getElementById('newTempleCoverUrl').value.trim();
+        const coverFile = document.getElementById('newTempleCoverFile').files[0];
+
+        if (!id || !name) return showToast('मंदिर ID आणि नाव दोन्ही आवश्यक आहेत.', true);
+        if (coverFile) image = await uploadToCloudinary(coverFile);
+
+        await db.ref(`dailyDarshan/temples/${id}`).set({
+          id, name, shortTitle: name, order, image: image || 'icon-512.png', sourcePlatform, sourceUrl, updatedAt: Date.now()
+        });
+
+        document.getElementById('newTempleId').value = '';
+        document.getElementById('newTempleName').value = '';
+        document.getElementById('newTempleCoverFile').value = '';
+        document.getElementById('newTempleCoverUrl').value = '';
+        showToast(`नवीन देवस्थान "${name}" जोडले गेले!`);
+      } catch (err) {
+        showToast(err.message || 'सेव्ह करताना त्रुटी आली.', true);
+      }
+    });
+
+    
+
+    document.getElementById('saveDailyUiBtn').addEventListener('click', async () => {
+      if (!db) return;
+      try {
+        const uiPayload = {
+          heading: document.getElementById('uiHeadingInput').value.trim(),
+          subtitle: document.getElementById('uiSubtitleInput').value.trim(),
+          colsMobile: document.getElementById('uiColsMobile').value,
+          colsDesktop: document.getElementById('uiColsDesktop').value,
+          blockHeight: document.getElementById('uiBlockHeight').value,
+          borderColor: document.getElementById('uiBorderColor').value,
+          titleColor: document.getElementById('uiTitleColor').value,
+          showSlider: document.getElementById('uiShowSliderChk').checked,
+          showSource: document.getElementById('uiShowSourceChk').checked
+        };
+        const updates = { 'siteConfig/dailyDarshanUI': uiPayload };
+        const inputs = Array.from(document.querySelectorAll('.temple-order-input'));
+        inputs.forEach((inp, idx) => {
+          const tid = inp.getAttribute('data-order-id');
+          const ord = Number(inp.value) || (idx + 1);
+          const togBtn = document.querySelector(`.temple-vis-toggle[data-hidden-id="${tid}"]`);
+          const isHidden = togBtn ? (togBtn.getAttribute('data-hidden') === '1') : false;
+          const tObj = mergedTemples.find(x => x.id === tid) || {};
+          updates[`dailyDarshan/temples/${tid}/id`] = tid;
+          updates[`dailyDarshan/temples/${tid}/name`] = tObj.name || tObj.shortTitle || tid;
+          updates[`dailyDarshan/temples/${tid}/shortTitle`] = tObj.shortTitle || tObj.name || tid;
+          updates[`dailyDarshan/temples/${tid}/order`] = ord;
+          updates[`dailyDarshan/temples/${tid}/hiddenInDaily`] = isHidden;
+          if (tObj.image) updates[`dailyDarshan/temples/${tid}/image`] = tObj.image;
+        });
+        await db.ref().update(updates);
+        showToast('सर्व पेज सेटिंग्ज, मंदिरांचा क्रम व टॉगल स्थिती सेव्ह झाली!');
+      } catch (err) {
+        showToast(err.message || 'सेव्ह करताना त्रुटी आली.', true);
+      }
+    });
+
+    initAdminAuth({
+      onAuthed: (firebaseDb) => {
+        db = firebaseDb;
+
+        db.ref('siteConfig/dailyDarshanUI').on('value', (s) => {
+          const u = s.val() || {};
+          if (u.heading !== undefined) document.getElementById('uiHeadingInput').value = u.heading;
+          if (u.subtitle !== undefined) document.getElementById('uiSubtitleInput').value = u.subtitle;
+          if (u.colsMobile) document.getElementById('uiColsMobile').value = String(u.colsMobile);
+          if (u.colsDesktop) document.getElementById('uiColsDesktop').value = String(u.colsDesktop);
+          if (u.blockHeight) document.getElementById('uiBlockHeight').value = String(u.blockHeight);
+          if (u.borderColor) document.getElementById('uiBorderColor').value = u.borderColor;
+          if (u.titleColor) document.getElementById('uiTitleColor').value = u.titleColor;
+          if (typeof u.showSlider === 'boolean') document.getElementById('uiShowSliderChk').checked = u.showSlider;
+          if (typeof u.showSource === 'boolean') document.getElementById('uiShowSourceChk').checked = u.showSource;
+        });
+
+        setTimeout(() => { autoCleanupOlderThan7Days().catch(() => {}); }, 1500);
+        db.ref('siteConfig/cloudinary').on('value', (s) => {
+          const val = s.val() || {};
+          cloudCfg = { cloudName: val.cloudName || '', uploadPreset: val.uploadPreset || '' };
+          document.getElementById('cloudNameInput').value = cloudCfg.cloudName;
+          document.getElementById('uploadPresetInput').value = cloudCfg.uploadPreset;
+          if (cloudCfg.cloudName && cloudCfg.uploadPreset) {
+            document.getElementById('cloudFormWrap').classList.add('hidden');
+          }
+        });
+
+        let baseTemples = [];
+        const rebuildList = () => {
+          const map = {};
+          DEFAULT_PHOTO_TEMPLES.forEach(t => { map[t.id] = { ...t }; });
+          baseTemples.forEach(t => { if (t && t.id && !t.deleted) map[t.id] = { ...(map[t.id] || {}), ...t }; });
+          Object.values(photoOnlyTemples).forEach(t => {
+            if (t && t.id) map[t.id] = { ...(map[t.id] || {}), ...t };
+          });
+          mergedTemples = Object.values(map).sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
+          renderTempleDropdown();
+        };
+
+        db.ref('temples').on('value', (s) => {
+          const val = s.val();
+          baseTemples = Array.isArray(val) ? val : (val ? Object.values(val) : []);
+          rebuildList();
+        });
+        db.ref('dailyDarshan/temples').on('value', (s) => {
+          photoOnlyTemples = s.val() || {};
+          rebuildList();
+        });
+        db.ref('dailyDarshan/latest').on('value', (s) => {
+          latestMap = s.val() || {};
+          syncSelectedTempleDefaults();
+          loadSelectedTempleArchive();
+        });
+      }
+    });
+  </script>
+</body>
+</html>

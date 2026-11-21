@@ -135,7 +135,8 @@ function renderAdminShell(activeKey, pageTitle) {
     { key: 'header', href: 'admin-header.html', icon: '🎨', label: 'हेडर व फुटर' },
     { key: 'player', href: 'admin-player.html', icon: '📺', label: 'व्हिडिओ प्लेयर' },
     { key: 'layout', href: 'admin-layout.html', icon: '🧩', label: 'लेआउट व बटणे' },
-    { key: 'master', href: 'admin-master.html', icon: '🎛️', label: 'मास्टर सेटिंग' }
+    { key: 'master', href: 'admin-master.html', icon: '🎛️', label: 'मास्टर सेटिंग' },
+    { key: 'daily', href: 'admin-daily-darshan.html', icon: '📸', label: 'दैनिक फोटो' }
   ];
 
   const header = document.getElementById('adminTopHeader');

@@ -4534,6 +4534,8 @@
       panel.classList.add('translate-x-full');
       setTimeout(() => drawer.classList.add('hidden'), 280);
     };
+      const opBtn = document.getElementById('menuOpenBtn');
+      if (opBtn) opBtn.onclick = () => window.openPortalMenu();
       const clsBtn = document.getElementById('menuCloseBtn');
       if (clsBtn) clsBtn.onclick = () => window.closePortalMenu();
       const tglBtn = document.getElementById('menuTempleInfoToggle');

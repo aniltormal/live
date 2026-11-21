@@ -111,6 +111,8 @@ const fbDb = firebase.database();
   st.id = 'modernAdminCss';
   st.textContent = `
     html, body { font-family: 'Noto Sans Devanagari', 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; overflow-x: clip; max-width: 100%; }
+    @keyframes adminSkelShimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+    .admin-skel { background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); background-size: 800px 100%; animation: adminSkelShimmer 1.3s infinite linear; }
     @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     .fade-in-up { animation: fadeSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) both; }
     .no-scrollbar::-webkit-scrollbar { display: none; }

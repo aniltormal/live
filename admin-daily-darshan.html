@@ -8,9 +8,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
   <script src="admin-common.js"></script>
   <style>
     body { font-family: 'Noto Sans Devanagari', sans-serif; }
@@ -262,7 +262,7 @@
   </main>
 
   <script>
-    renderAdminHeader('daily', 'दैनिक अलंकार व पूजा फोटो', 'Cloudinary अपलोड, सोर्स प्लॅटफॉर्म व ७ दिवसांचे ऑटो-व्यवस्थापन');
+    renderAdminShell('daily', 'दैनिक अलंकार व पूजा फोटो');
 
     const DEFAULT_PHOTO_TEMPLES = [
       { id: 'pandharpur', name: 'श्री विठ्ठल रुक्मिणी, पंढरपूर', shortTitle: 'श्री विठ्ठल रुक्मिणी, पंढरपूर', order: 1, isDefault: true },
@@ -616,9 +616,8 @@
       }
     });
 
-    initAdminAuth({
-      onAuthed: (firebaseDb) => {
-        db = firebaseDb;
+    initAdminGuard(() => {
+        db = fbDb;
 
         db.ref('siteConfig/dailyDarshanUI').on('value', (s) => {
           const u = s.val() || {};
@@ -670,7 +669,6 @@
           syncSelectedTempleDefaults();
           loadSelectedTempleArchive();
         });
-      }
     });
   </script>
 </body>

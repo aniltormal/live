@@ -128,26 +128,26 @@ const fbDb = firebase.database();
 function renderAdminShell(activeKey, pageTitle) {
   const navItems = [
     { key: 'temples', href: 'admin-temples.html', icon: '🛕', label: 'मंदिरे' },
-    { key: 'feedmonitor', href: 'admin-feed-monitor.html', icon: '📡', label: 'ऑटो फीड मॉनिटर' },
+    { key: 'daily', href: 'admin-daily-darshan.html', icon: '📸', label: 'दैनिक फोटो' },
+    { key: 'feedmonitor', href: 'admin-feed-monitor.html', icon: '📡', label: 'ऑटो फीड' },
     { key: 'templeinfo', href: 'admin-temple-info.html', icon: '📝', label: 'मंदिर माहिती' },
     { key: 'ads', href: 'admin-ads.html', icon: '📢', label: 'जाहिराती' },
     { key: 'visitors', href: 'admin-visitors-links.html', icon: '🔗', label: 'भाविक व लिंक्स' },
     { key: 'header', href: 'admin-header.html', icon: '🎨', label: 'हेडर व फुटर' },
-    { key: 'player', href: 'admin-player.html', icon: '📺', label: 'व्हिडिओ प्लेयर' },
-    { key: 'layout', href: 'admin-layout.html', icon: '🧩', label: 'लेआउट व बटणे' },
-    { key: 'master', href: 'admin-master.html', icon: '🎛️', label: 'मास्टर सेटिंग' },
-    { key: 'daily', href: 'admin-daily-darshan.html', icon: '📸', label: 'दैनिक फोटो' }
+    { key: 'player', href: 'admin-player.html', icon: '📺', label: 'प्लेयर' },
+    { key: 'layout', href: 'admin-layout.html', icon: '🧩', label: 'लेआउट' },
+    { key: 'master', href: 'admin-master.html', icon: '🎛️', label: 'मास्टर' }
   ];
 
   const header = document.getElementById('adminTopHeader');
   if (!header) return;
 
   const pillsHtml = activeKey === 'dashboard' ? '' : `
-    <nav class="bg-white/95 backdrop-blur border-b border-slate-200 sticky top-[60px] z-30">
-      <div class="max-w-7xl mx-auto px-3 py-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+    <nav class="w-full bg-gradient-to-r from-[#031926] via-[#04283d] to-[#031926] border-b-2 border-amber-400/80 shadow-md sticky top-[60px] z-30">
+      <div class="w-full max-w-7xl mx-auto px-2.5 sm:px-4 py-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar lg:grid lg:grid-cols-10">
         ${navItems.map(item => {
           const isAct = item.key === activeKey;
-          return `<a href="${item.href}" class="shrink-0 px-3 py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 ${isAct ? 'bg-[#05344E] text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}"><span>${item.icon}</span><span>${item.label}</span></a>`;
+          return `<a href="${item.href}" class="shrink-0 lg:shrink px-3 lg:px-2 py-1.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 whitespace-nowrap ${isAct ? 'bg-amber-400 text-[#031926] font-extrabold shadow-sm' : 'bg-white/10 hover:bg-white/20 text-white border border-white/15'}"><span>${item.icon}</span><span class="truncate">${item.label}</span></a>`;
         }).join('')}
       </div>
     </nav>
@@ -594,4 +594,102 @@ function initAdminGuard(onAuthed, isLoginPage = false) {
     pendingBtn = btn;
     ensureModal().classList.remove('hidden');
   }, true);
+})();
+
+
+// Universal Expand / Collapse Accordion for all Admin Subpage <section> Blocks
+(function initAdminAccordionSections() {
+  window.__adminActiveKey = window.__adminActiveKey || '';
+  const origRender = window.renderAdminShell;
+  if (typeof origRender === 'function' && !origRender.__wrapped) {
+    window.renderAdminShell = function(activeKey, pageTitle) {
+      window.__adminActiveKey = activeKey;
+      return origRender.apply(this, arguments);
+    };
+    window.renderAdminShell.__wrapped = true;
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if (window.__adminActiveKey === 'dashboard') return;
+    const main = document.getElementById('pageContent');
+    if (!main) return;
+    const sections = Array.from(main.querySelectorAll('section')).filter(sec => {
+      if (sec.closest('#liveSitePreview') || sec.closest('[id$="Preview"]')) return false;
+      return !!sec.querySelector('h2, h3');
+    });
+    if (sections.length < 2) return;
+
+    const setSectionState = (sec, open) => {
+      const body = sec.querySelector(':scope > .admin-acc-body');
+      const arrow = sec.querySelector(':scope > .admin-acc-hdr .admin-acc-arrow');
+      if (!body) return;
+      sec.dataset.accOpen = open ? '1' : '0';
+      if (open) {
+        body.classList.remove('hidden');
+        if (arrow) arrow.textContent = '▲ बंद करा';
+      } else {
+        body.classList.add('hidden');
+        if (arrow) arrow.textContent = '▼ उघडा';
+      }
+    };
+
+    sections.forEach((sec) => {
+      const children = Array.from(sec.children);
+      if (children.length < 2) return;
+      const firstEl = children[0];
+      firstEl.classList.add('admin-acc-hdr', 'cursor-pointer', 'select-none');
+
+      // Ensure header has a clean expand/collapse pill on the right
+      const oldToggle = firstEl.querySelector('#toggleCloudBtn');
+      if (oldToggle) oldToggle.classList.add('hidden');
+
+      const pill = document.createElement('span');
+      pill.className = 'admin-acc-arrow shrink-0 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-amber-100 text-[#05344E] text-[11px] font-extrabold border border-slate-200 transition';
+      pill.textContent = '▼ उघडा';
+
+      if (getComputedStyle(firstEl).display === 'flex') {
+        firstEl.appendChild(pill);
+      } else {
+        const wrap = document.createElement('div');
+        wrap.className = 'admin-acc-hdr flex items-center justify-between gap-2 cursor-pointer select-none';
+        firstEl.classList.remove('admin-acc-hdr', 'cursor-pointer', 'select-none');
+        sec.insertBefore(wrap, firstEl);
+        wrap.appendChild(firstEl);
+        wrap.appendChild(pill);
+      }
+
+      const bodyWrap = document.createElement('div');
+      bodyWrap.className = 'admin-acc-body hidden space-y-4';
+      children.slice(1).forEach(ch => bodyWrap.appendChild(ch));
+      sec.appendChild(bodyWrap);
+      sec.dataset.accOpen = '0';
+
+      const hdr = sec.querySelector(':scope > .admin-acc-hdr');
+      hdr.addEventListener('click', (e) => {
+        if (e.target.closest('a, input, select, textarea') || (e.target.closest('button') && !e.target.closest('.admin-acc-hdr'))) return;
+        const isOpen = sec.dataset.accOpen === '1';
+        setSectionState(sec, !isOpen);
+      });
+    });
+
+  });
+})();
+
+
+// Universal Admin Footer (Dashboard & Subpages)
+(function injectAdminFooter() {
+  document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('adminGlobalFooter')) return;
+    document.body.classList.add('min-h-screen', 'flex', 'flex-col');
+    const footer = document.createElement('footer');
+    footer.id = 'adminGlobalFooter';
+    footer.className = 'mt-auto w-full bg-gradient-to-r from-[#031926] via-[#05344E] to-[#031926] text-amber-100/90 text-center py-3 px-4 text-xs sm:text-sm border-t-2 border-amber-400/80';
+    footer.innerHTML = `
+      <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-1">
+        <span class="font-extrabold text-amber-300 tracking-wide">🛕 दर्शन सेतू . लाईव्ह™ — अ‍ॅडमिन पॅनल</span>
+        <span class="text-[11px] sm:text-xs text-slate-300">© २०२६ DARSHAN SETU® • सर्व हक्क राखीव</span>
+      </div>
+    `;
+    document.body.appendChild(footer);
+  });
 })();

@@ -90,6 +90,7 @@
           <div id="menuTempleInfoList" class="hidden bg-white px-2 py-1.5 space-y-1 border-t border-slate-100"></div>
         </div>
         <div id="mobileMenuDynamicLinks" class="space-y-1.5">
+          <a href="index.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>🏠</span><span>मुख्य पान</span></a>
           <a href="daily-darshan.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📸</span><span>दैनिक फोटो दर्शन व सणवार</span></a>
             <a href="panchang.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>🗓️</span><span>आजचे पंचांग व सणवार</span></a>
           <a href="advertising.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📢</span><span>जाहिरात द्या</span></a>
@@ -98,6 +99,9 @@
           <a href="legal-links.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>🔗</span><span>कायदेशीर समस्या व पोर्टल दुवे</span></a>
           <a href="disclaimer.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📄</span><span>नियम व अस्वीकरण</span></a>
         </div>
+        <button id="menuInstallAppBtn" type="button" onclick="window.triggerPortalInstall && window.triggerPortalInstall()" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-[#05344E] to-[#084160] text-amber-300 border border-amber-400/50 shadow-sm cursor-pointer transition hover:opacity-95">
+          <span>📲</span><span>होम स्क्रीनवर शॉर्टकट जोडा</span>
+        </button>
       </nav>
       <div id="mobileMenuFooter" class="px-4 py-3 bg-gradient-to-r from-[#031926] via-[#05344E] to-[#031926] border-t-2 border-amber-400/80 text-center space-y-0.5">
         <div class="text-xs font-extrabold tracking-wide text-amber-300">दर्शन सेतू . लाईव्ह<sup class="text-[9px] text-amber-200 ml-0.5">™</sup></div>
@@ -566,7 +570,16 @@
           const m = snap.val();
           const box = document.getElementById('mobileMenuDynamicLinks');
           if (box && m && Array.isArray(m.items) && m.items.length) {
-            let listItems = m.items;
+            let listItems = [...m.items];
+            if (!listItems.some(x => x && String(x.url || '').includes('daily-darshan.html'))) {
+              listItems.unshift({ icon: '📸', label: 'दैनिक फोटो दर्शन', url: 'daily-darshan.html', enabled: true });
+            }
+            if (!listItems.some(x => x && String(x.url || '').includes('index.html'))) {
+              listItems.unshift({ icon: '🏠', label: 'मुख्य पान', url: 'index.html', enabled: true });
+            }
+            if (!listItems.some(x => x && String(x.url || '').includes('disclaimer.html'))) {
+              listItems.push({ icon: '📄', label: 'नियम व अस्वीकरण', url: 'disclaimer.html', enabled: true });
+            }
             if (!listItems.some(x => x && String(x.url || '').includes('advertising.html'))) {
               const exp = [];
               listItems.forEach(x => {

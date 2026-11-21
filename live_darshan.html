@@ -2921,6 +2921,9 @@
           if (!items.some(x => x && String(x.url || '').includes('daily-darshan.html'))) {
             items = [{ icon: '📸', label: 'दैनिक फोटो दर्शन', url: 'daily-darshan.html', enabled: true }, ...items];
           }
+          if (!items.some(x => x && String(x.url || '').includes('disclaimer.html'))) {
+            items = [...items, { icon: '📄', label: 'नियम व अस्वीकरण', url: 'disclaimer.html', enabled: true }];
+          }
           if (!items.some(x => x && String(x.url || '').includes('advertising.html'))) {
             const expanded = [];
             items.forEach(x => {

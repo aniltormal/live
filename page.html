@@ -83,8 +83,7 @@
           <div id="menuTempleInfoList" class="hidden bg-white px-2 py-1.5 space-y-1 border-t border-slate-100"></div>
         </div>
         <div id="mobileMenuDynamicLinks" class="space-y-1.5">
-          <a href="index.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>🏠</span><span>मुख्य पान</span></a>
-          <a href="daily-darshan.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📸</span><span>दैनिक फोटो दर्शन व सणवार</span></a>
+          <a href="daily-darshan.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📸</span><span>दैनिक फोटो दर्शन</span></a>
             <a href="panchang.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>🗓️</span><span>आजचे पंचांग व सणवार</span></a>
           <a href="advertising.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📢</span><span>जाहिरात द्या</span></a>
           <a href="contact.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📞</span><span>संपर्क करा</span></a>
@@ -102,8 +101,6 @@
       </div>
     </div>
   </div>
-
-
   <main class="flex-1 max-w-7xl xl:max-w-[1400px] w-full mx-auto p-4 sm:p-6 space-y-5">
     <section id="customPageCard" class="bg-white rounded-3xl border border-slate-200 shadow-md p-5 sm:p-7 space-y-4">
       <div class="flex items-center gap-2.5 border-b border-slate-100 pb-3">
@@ -345,9 +342,6 @@
             let listItems = [...m.items];
             if (!listItems.some(x => x && String(x.url || '').includes('daily-darshan.html'))) {
               listItems.unshift({ icon: '📸', label: 'दैनिक फोटो दर्शन', url: 'daily-darshan.html', enabled: true });
-            }
-            if (!listItems.some(x => x && String(x.url || '').includes('index.html'))) {
-              listItems.unshift({ icon: '🏠', label: 'मुख्य पान', url: 'index.html', enabled: true });
             }
             if (!listItems.some(x => x && String(x.url || '').includes('disclaimer.html'))) {
               listItems.push({ icon: '📄', label: 'नियम व अस्वीकरण', url: 'disclaimer.html', enabled: true });

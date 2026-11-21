@@ -92,9 +92,8 @@
           <div id="menuTempleInfoList" class="hidden bg-white px-2 py-1.5 space-y-1 border-t border-slate-100"></div>
         </div>
         <div id="mobileMenuDynamicLinks" class="space-y-1.5">
-          <a href="index.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>🏠</span><span>मुख्य पान</span></a>
-          <a href="daily-darshan.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-amber-50 text-[#EA580C] border border-amber-200 transition"><span>📸</span><span>दैनिक फोटो दर्शन</span></a>
-          <a href="panchang.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>🗓️</span><span>आजचे पंचांग व सणवार</span></a>
+          <a href="daily-darshan.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📸</span><span>दैनिक फोटो दर्शन</span></a>
+            <a href="panchang.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>🗓️</span><span>आजचे पंचांग व सणवार</span></a>
           <a href="advertising.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📢</span><span>जाहिरात द्या</span></a>
           <a href="contact.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📞</span><span>संपर्क करा</span></a>
           <a href="about.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>ℹ️</span><span>आमच्याबद्दल</span></a>
@@ -111,7 +110,6 @@
       </div>
     </div>
   </div>
-
   <main class="flex-1 max-w-7xl xl:max-w-[1400px] w-full mx-auto p-4 sm:p-6 space-y-6">
 
     
@@ -133,7 +131,7 @@
       <div class="bg-white rounded-2xl border border-amber-200 shadow-sm p-3.5 sm:p-5 flex flex-wrap items-center justify-between gap-2">
         <div>
           <span class="inline-block px-3 py-0.5 rounded-full bg-orange-100 text-[#EA580C] text-xs font-bold mb-1">दैनिक अलंकार व आरती</span>
-          <h2 class="text-xl sm:text-2xl font-bold text-[#05344E]">📸 आजचे व मागील ७ दिवसांचे फोटो दर्शन</h2>
+          <h2 class="text-xl sm:text-2xl font-bold text-[#05344E]">📸 दैनिक फोटो दर्शन</h2>
           <p class="text-sm text-slate-600 mt-0.5">ज्या देवस्थानांचे थेट लाईव्ह प्रक्षेपण उपलब्ध नाही, त्यांचे रोजचे आरती व अलंकार फोटो येथे पहा.</p>
         </div>
       </div>
@@ -172,7 +170,7 @@
           style="-webkit-touch-callout:none; transform-origin:center center;" />
 
         <!-- Video Player (Shown at end of batch if video exists) -->
-        <video id="modalVideoEl" src="" controls playsinline class="hidden relative z-10 max-w-full max-h-full w-full h-full object-contain bg-black rounded-xl"></video>
+        <video id="modalVideoEl" src="" autoplay muted playsinline class="hidden relative z-10 max-w-full max-h-full w-full h-full object-contain bg-black rounded-xl pointer-events-none select-none"></video>
 
         <!-- Counter -->
         <span id="modalPhotoCounter" class="modal-stage-ctrl z-20 absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-full bg-black/75 text-white text-[11px] font-bold border border-white/20 transition-opacity duration-200">1 / 1</span>
@@ -307,16 +305,9 @@
         if (!listItems.some(x => x && String(x.url || '').includes('daily-darshan.html'))) {
           listItems.unshift({ icon: '📸', label: 'दैनिक फोटो दर्शन', url: 'daily-darshan.html', enabled: true });
         }
-        if (!listItems.some(x => x && String(x.url || '').includes('index.html'))) {
-          listItems.unshift({ icon: '🏠', label: 'मुख्य पान', url: 'index.html', enabled: true });
-        }
-        box.innerHTML = listItems.filter(it => it && it.enabled !== false && it.label && it.url).map(it => {
-          const isCur = String(it.url || '').includes('daily-darshan.html');
-          const cls = isCur
-            ? 'flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-amber-50 text-[#EA580C] border border-amber-200 transition'
-            : 'flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition';
-          return `<a href="${escMenu(it.url)}" class="${cls}"><span>${escMenu(it.icon || '🔗')}</span><span>${escMenu(it.label)}</span></a>`;
-        }).join('');
+        box.innerHTML = listItems.filter(it => it && it.enabled !== false && it.label && it.url).map(it =>
+          `<a href="${escMenu(it.url)}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>${escMenu(it.icon || '🔗')}</span><span>${escMenu(it.label)}</span></a>`
+        ).join('');
       }
     });
 
@@ -609,10 +600,33 @@
       isHoldingPhoto = false;
       setHoldVisuals(false);
     };
-    photoStage.addEventListener('pointerdown', startHold);
-    photoStage.addEventListener('pointerup', endHold);
-    photoStage.addEventListener('pointercancel', endHold);
-    photoStage.addEventListener('pointerleave', endHold);
+    let swipeStartX = 0;
+    let swipeStartY = 0;
+    let holdTimer = null;
+    const onStagePointerDown = (e) => {
+      if (e.target.closest('button, a')) return;
+      swipeStartX = e.clientX || 0;
+      swipeStartY = e.clientY || 0;
+      clearTimeout(holdTimer);
+      holdTimer = setTimeout(() => startHold(e), 180);
+    };
+    const onStagePointerUp = (e) => {
+      clearTimeout(holdTimer);
+      const dx = (e.clientX || 0) - swipeStartX;
+      const dy = (e.clientY || 0) - swipeStartY;
+      endHold();
+      if (Math.abs(dx) >= 42 && Math.abs(dx) > Math.abs(dy)) {
+        stepDarshanSlide(dx < 0 ? 1 : -1);
+      }
+    };
+    const onStagePointerCancel = () => {
+      clearTimeout(holdTimer);
+      endHold();
+    };
+    photoStage.addEventListener('pointerdown', onStagePointerDown);
+    photoStage.addEventListener('pointerup', onStagePointerUp);
+    photoStage.addEventListener('pointercancel', onStagePointerCancel);
+    photoStage.addEventListener('pointerleave', onStagePointerCancel);
     photoStage.addEventListener('contextmenu', (e) => e.preventDefault());
 
     

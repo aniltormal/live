@@ -87,7 +87,8 @@
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">क्लिक लिंक (URL)</label>
-            <input id="preRollLink" type="url" placeholder="https://..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
+            <input id="preRollSponsor" type="text" placeholder="जाहिरातदाराचे नाव (Sponsor — रिपोर्टसाठी ऐच्छिक)" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-bold text-[#05344E]" />
+          <input id="preRollLink" type="url" placeholder="https://..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">जाहिरात मजकूर (पर्यायी)</label>
@@ -157,7 +158,8 @@
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">क्लिक लिंक (URL)</label>
-            <input id="splashLink" type="url" placeholder="https://..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
+            <input id="splashSponsor" type="text" placeholder="जाहिरातदाराचे नाव (Sponsor — रिपोर्टसाठी ऐच्छिक)" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-bold text-[#05344E]" />
+          <input id="splashLink" type="url" placeholder="https://..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">पॉपअप मजकूर (पर्यायी)</label>
@@ -185,18 +187,6 @@
           <button id="splashClearBtn" type="button" class="px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold cursor-pointer">🗑️ मीडिया काढा</button>
         </div>
       </section>
-
-      <section id="adminTabLivePreview" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-3">
-        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">👁️ जाहिरात स्थिती लाईव्ह प्रिव्ह्यू</h2>
-        <div id="pvAdsStatus" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs font-bold"></div>
-        <div id="pvBannerVisual" class="hidden rounded-xl border border-amber-300 bg-amber-50/40 p-2.5 space-y-1.5">
-          <div class="text-[11px] font-extrabold text-amber-900">🖼️ सक्रिय स्लायडिंग बॅनर स्लॉट्स प्रिव्ह्यू:</div>
-          <div id="pvBannerThumbs" class="flex gap-2 overflow-x-auto pb-1"></div>
-        </div>
-      </section>
-      <div class="sticky bottom-3 z-20 flex justify-end">
-        <button id="saveAdsBtn" type="button" class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-sm font-bold cursor-pointer shadow-lg transition">💾 सर्व जाहिरात सेटिंग्ज सेव्ह करा</button>
-      </div>
 
       <!-- Standalone Ad Clicks & Views Report Block -->
       <section id="adReportsSection" class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
@@ -235,6 +225,12 @@
           <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
             <h3 class="text-xs sm:text-sm font-extrabold text-[#05344E]">🖼️ प्रत्येक स्लाईडचा स्वतंत्र रिपोर्ट</h3>
             <div class="flex flex-wrap items-center gap-2">
+              <select id="exportReportFilter" aria-label="Export डेटा निवडा" class="px-2.5 py-1 rounded-lg border border-slate-300 bg-white text-xs font-bold text-[#05344E] cursor-pointer">
+                <option value="all">सर्व जाहिराती (All)</option>
+                <option value="banners">फक्त सर्व स्लाईडर्स</option>
+                <option value="preroll">फक्त Pre-Roll जाहिरात</option>
+                <option value="splash">फक्त Splash जाहिरात</option>
+              </select>
               <button type="button" onclick="exportAdReportCsv()" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs cursor-pointer">📥 CSV</button>
               <button type="button" onclick="exportAdReportJpg()" class="px-2.5 py-1 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold shadow-xs cursor-pointer">🖼️ JPG</button>
               <button type="button" onclick="exportAdReportPdf()" class="px-2.5 py-1 rounded-lg bg-[#EA580C] hover:bg-orange-700 text-white text-xs font-bold shadow-xs cursor-pointer">📄 PDF</button>
@@ -246,6 +242,17 @@
           </div>
         </div>
       </section>
+      <section id="adminTabLivePreview" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-3">
+        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">👁️ जाहिरात स्थिती लाईव्ह प्रिव्ह्यू</h2>
+        <div id="pvAdsStatus" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs font-bold"></div>
+        <div id="pvBannerVisual" class="hidden rounded-xl border border-amber-300 bg-amber-50/40 p-2.5 space-y-1.5">
+          <div class="text-[11px] font-extrabold text-amber-900">🖼️ सक्रिय स्लायडिंग बॅनर स्लॉट्स प्रिव्ह्यू:</div>
+          <div id="pvBannerThumbs" class="flex gap-2 overflow-x-auto pb-1"></div>
+        </div>
+      </section>
+      <div class="sticky bottom-3 z-20 flex justify-end">
+        <button id="saveAdsBtn" type="button" class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-sm font-bold cursor-pointer shadow-lg transition">💾 सर्व जाहिरात सेटिंग्ज सेव्ह करा</button>
+      </div>
 
     </div>
   </main>
@@ -275,6 +282,8 @@
         currentAds.bannerSlides[idx].link = card.querySelector('.slot-link').value.trim();
         const stInp = card.querySelector('.slot-text');
         if (stInp) currentAds.bannerSlides[idx].text = stInp.value.trim();
+        const spInp = card.querySelector('.slot-sponsor');
+        if (spInp) currentAds.bannerSlides[idx].sponsor = spInp.value.trim();
       });
     }
 
@@ -304,6 +313,7 @@
           </label>
 
           <input type="url" class="slot-link w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white focus:outline-none focus:border-[#05344E]" value="${esc(s.link)}" placeholder="लिंक (https://...)" />
+          <input type="text" value="${esc(s.sponsor || '')}" placeholder="जाहिरातदाराचे नाव (Sponsor — रिपोर्टसाठी ऐच्छिक)" class="slot-sponsor w-full px-3 py-1.5 rounded-xl border border-slate-300 bg-white text-xs font-bold text-[#05344E]" />
           <input type="text" class="slot-text w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white focus:outline-none focus:border-[#05344E]" value="${esc(s.text)}" placeholder="बॅनरवरील मजकूर (पर्यायी)" />
         </div>
       `).join('');
@@ -320,6 +330,7 @@
             currentAds.bannerSlides[idx].image = ev.target.result;
             syncSlotsFromDOM();
             renderSlots(currentAds.bannerSlides);
+        if (typeof renderAdReports === "function") renderAdReports();
           };
           reader.readAsDataURL(file);
         });
@@ -440,6 +451,32 @@
     initAdminGuard(() => {
       
     let cachedAdStats = {};
+    function getLast7DaysKeys() {
+      const M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const out = [];
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(Date.now() - i * 86400000);
+        const iso = d.toISOString().slice(0, 10);
+        const lbl = `${String(d.getDate()).padStart(2,'0')} ${M[d.getMonth()]}`;
+        out.push({ iso, lbl });
+      }
+      return out;
+    }
+
+    function formatPageStats(bp) {
+      const p = bp || {};
+      const h = Number(p.home || 0), d = Number(p.daily || 0), pn = Number(p.panchang || 0), t = Number(p.temple || 0);
+      return `🏠 मुख्य: ${h} • 📸 दैनिक: ${d} • 📅 पंचांग: ${pn} • 🛕 माहिती: ${t}`;
+    }
+
+    function format7DaysHtml(daily) {
+      const dl = daily || {};
+      return getLast7DaysKeys().map(k => {
+        const c = Number((dl[k.iso] && dl[k.iso].clicks) || 0);
+        return `<span class="px-2 py-0.5 rounded bg-white border ${c > 0 ? 'border-emerald-300 text-emerald-800' : 'border-slate-200 text-slate-500'} text-[10px] font-bold">${k.lbl}: ${c}</span>`;
+      }).join('');
+    }
+
     function renderAdReports() {
       const stats = cachedAdStats || {};
       const banners = stats.banners || {};
@@ -465,20 +502,29 @@
             totalC += clicks;
             const ctr = views > 0 ? ((clicks / views) * 100).toFixed(1) : '0.0';
             return `
-              <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-3 flex flex-wrap items-center justify-between gap-3">
-                <div class="flex items-center gap-3 min-w-0 flex-1">
-                  ${s.image ? `<img src="${esc(s.image)}" alt="" class="w-16 h-11 rounded-lg object-cover border border-slate-200 shrink-0 bg-white" />` : `<div class="w-16 h-11 rounded-lg bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-500 shrink-0">स्लाईड ${idx + 1}</div>`}
-                  <div class="min-w-0">
-                    <div class="text-xs sm:text-sm font-extrabold text-[#05344E] truncate">स्लाईड ${idx + 1}${s.text ? ': ' + esc(s.text) : ''}</div>
-                    <div class="text-[11px] text-slate-500 truncate">${s.link ? esc(s.link) : 'लिंक नाही'}</div>
+              <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-3 space-y-2">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                  <div class="flex items-center gap-3 min-w-0 flex-1">
+                    ${s.image ? `<img src="${esc(s.image)}" alt="" class="w-16 h-11 rounded-lg object-cover border border-slate-200 shrink-0 bg-white" />` : `<div class="w-16 h-11 rounded-lg bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-500 shrink-0">स्लाईड ${idx + 1}</div>`}
+                    <div class="min-w-0">
+                      <div class="text-xs sm:text-sm font-extrabold text-[#05344E] truncate">स्लाईड ${idx + 1}${s.sponsor ? ' • 🏢 ' + esc(s.sponsor) : ''}${s.text ? ' — ' + esc(s.text) : ''}</div>
+                      <div class="text-[11px] text-slate-500 truncate">${s.link ? esc(s.link) : 'लिंक नाही'}</div>
+                    </div>
+                  </div>
+                  <div class="flex flex-wrap items-center gap-2 text-xs font-bold">
+                    <span class="px-2.5 py-1 rounded-lg bg-white border border-sky-200 text-sky-900">👁️ ${views.toLocaleString('en-IN')}</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-white border border-emerald-200 text-emerald-800">👆 ${clicks.toLocaleString('en-IN')}</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-white border border-amber-200 text-amber-900">📅 आज: ${todayClicks}</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-[#05344E]">CTR: ${ctr}%</span>
+                    <button type="button" onclick="resetSingleAdStat('banners/${adId}')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 cursor-pointer">🔄 Reset</button>
                   </div>
                 </div>
-                <div class="flex flex-wrap items-center gap-2 text-xs font-bold">
-                  <span class="px-2.5 py-1 rounded-lg bg-white border border-sky-200 text-sky-900">👁️ ${views.toLocaleString('en-IN')}</span>
-                  <span class="px-2.5 py-1 rounded-lg bg-white border border-emerald-200 text-emerald-800">👆 ${clicks.toLocaleString('en-IN')}</span>
-                  <span class="px-2.5 py-1 rounded-lg bg-white border border-amber-200 text-amber-900">📅 आज: ${todayClicks}</span>
-                  <span class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-[#05344E]">CTR: ${ctr}%</span>
-                  <button type="button" onclick="resetSingleAdStat('banners/${adId}')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 cursor-pointer">🔄 Reset</button>
+                <div class="text-[11px] font-bold text-slate-600 bg-white/80 rounded-lg px-2.5 py-1 border border-slate-200/80">
+                  📍 पेजनिहाय क्लिक्स: ${formatPageStats(st.byPage)}
+                </div>
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="text-[10px] font-extrabold text-slate-500">📆 मागील ७ दिवस:</span>
+                  ${format7DaysHtml(st.daily)}
                 </div>
               </div>
             `;
@@ -498,6 +544,17 @@
       if (prEl) prEl.textContent = `${Number(pr.views || 0)} / ${Number(pr.clicks || 0)}`;
       if (spEl) spEl.textContent = `${Number(sp.views || 0)} / ${Number(sp.clicks || 0)}`;
 
+      const selEl = document.getElementById('exportReportFilter');
+      if (selEl) {
+        const prevVal = selEl.value || 'all';
+        const slideOpts = slides.map((s, idx) => ({ s, idx }))
+          .filter(x => x.s && (x.s.image || x.s.text || x.s.link))
+          .map(({ s, idx }) => `<option value="slide:${idx}">फक्त स्लाईड ${idx + 1}${s.sponsor ? ' — ' + esc(s.sponsor).slice(0, 18) : (s.text ? ' (' + esc(s.text).slice(0, 18) + ')' : '')}</option>`)
+          .join('');
+        selEl.innerHTML = `<option value="all">सर्व जाहिराती (All)</option><option value="banners">फक्त सर्व स्लाईडर्स</option>${slideOpts}<option value="preroll">फक्त Pre-Roll जाहिरात</option><option value="splash">फक्त Splash जाहिरात</option>`;
+        if ([...selEl.options].some(o => o.value === prevVal)) selEl.value = prevVal;
+      }
+
       const orphanKeys = Object.keys(banners).filter(k => !activeIds.has(k));
       const cleanBtn = document.getElementById('cleanOrphanStatsBtn');
       if (cleanBtn) cleanBtn.classList.toggle('hidden', orphanKeys.length === 0);
@@ -514,9 +571,14 @@
       const now = new Date();
       const dtDisplay = `${String(now.getDate()).padStart(2,'0')} ${M[now.getMonth()]} ${now.getFullYear()}`;
       const dtFile = dtDisplay.replace(/ /g, '_');
+      const filterEl = document.getElementById('exportReportFilter');
+      const filterVal = filterEl ? filterEl.value : 'all';
       const items = [];
       let totalV = 0, totalC = 0;
-      slides.forEach((s, idx) => {
+
+      const build7d = (dl) => getLast7DaysKeys().map(k => `${k.lbl}: ${Number((dl && dl[k.iso] && dl[k.iso].clicks) || 0)}`).join(' | ');
+
+      const pushSlide = (s, idx) => {
         if (!s || (!s.image && !s.text && !s.link)) return;
         const adId = s.adId || ('slot_' + idx);
         const st = banners[adId] || {};
@@ -524,21 +586,46 @@
         const c = Number(st.clicks || 0);
         const tc = Number((st.daily && st.daily[todayKey] && st.daily[todayKey].clicks) || 0);
         totalV += v; totalC += c;
-        items.push({ name: `बॅनर स्लाईड ${idx + 1}`, title: s.text || '-', link: s.link || '-', views: v, clicks: c, today: tc, ctr: v > 0 ? ((c / v) * 100).toFixed(1) + '%' : '0.0%' });
-      });
-      const pr = stats.preroll || {};
-      const pv = Number(pr.views || 0), pc = Number(pr.clicks || 0);
-      items.push({ name: 'Pre-Roll जाहिरात', title: 'व्हिडिओ पूर्व जाहिरात', link: currentAds.preRollLink || '-', views: pv, clicks: pc, today: '-', ctr: pv > 0 ? ((pc / pv) * 100).toFixed(1) + '%' : '0.0%' });
-      const sp = stats.splash || {};
-      const sv = Number(sp.views || 0), sc = Number(sp.clicks || 0);
-      items.push({ name: 'Splash पॉपअप जाहिरात', title: 'मुख्य स्क्रीन पॉपअप', link: currentAds.splashLink || '-', views: sv, clicks: sc, today: '-', ctr: sv > 0 ? ((sc / sv) * 100).toFixed(1) + '%' : '0.0%' });
-      return { dtDisplay, dtFile, totalV, totalC, items };
+        items.push({
+          name: `बॅनर स्लाईड ${idx + 1}`,
+          sponsor: s.sponsor || '-',
+          title: s.text || '-',
+          link: s.link || '-',
+          views: v, clicks: c, today: tc,
+          ctr: v > 0 ? ((c / v) * 100).toFixed(1) + '%' : '0.0%',
+          pages: formatPageStats(st.byPage),
+          days7: build7d(st.daily)
+        });
+      };
+
+      if (filterVal === 'all' || filterVal === 'banners') {
+        slides.forEach((s, idx) => pushSlide(s, idx));
+      } else if (filterVal.startsWith('slide:')) {
+        const sIdx = Number(filterVal.split(':')[1]);
+        if (slides[sIdx]) pushSlide(slides[sIdx], sIdx);
+      }
+
+      if (filterVal === 'all' || filterVal === 'preroll') {
+        const pr = stats.preroll || {};
+        const pv = Number(pr.views || 0), pc = Number(pr.clicks || 0);
+        const ptc = Number((pr.daily && pr.daily[todayKey] && pr.daily[todayKey].clicks) || 0);
+        if (filterVal === 'preroll') { totalV = pv; totalC = pc; }
+        items.push({ name: 'Pre-Roll जाहिरात', sponsor: currentAds.preRollSponsor || '-', title: 'व्हिडिओ पूर्व जाहिरात', link: currentAds.preRollLink || '-', views: pv, clicks: pc, today: ptc, ctr: pv > 0 ? ((pc / pv) * 100).toFixed(1) + '%' : '0.0%', pages: formatPageStats(pr.byPage), days7: build7d(pr.daily) });
+      }
+      if (filterVal === 'all' || filterVal === 'splash') {
+        const sp = stats.splash || {};
+        const sv = Number(sp.views || 0), sc = Number(sp.clicks || 0);
+        const stc = Number((sp.daily && sp.daily[todayKey] && sp.daily[todayKey].clicks) || 0);
+        if (filterVal === 'splash') { totalV = sv; totalC = sc; }
+        items.push({ name: 'Splash पॉपअप जाहिरात', sponsor: currentAds.splashSponsor || '-', title: 'मुख्य स्क्रीन पॉपअप', link: currentAds.splashLink || '-', views: sv, clicks: sc, today: stc, ctr: sv > 0 ? ((sc / sv) * 100).toFixed(1) + '%' : '0.0%', pages: formatPageStats(sp.byPage), days7: build7d(sp.daily) });
+      }
+      return { dtDisplay, dtFile, totalV, totalC, items, filterVal };
     }
 
     window.exportAdReportJpg = function() {
       const { dtDisplay, dtFile, totalV, totalC, items } = buildAdReportRows();
       const W = 1080;
-      const rowH = 66;
+      const rowH = 92;
       const H = Math.max(520, 260 + items.length * rowH + 70);
       const canvas = document.createElement('canvas');
       canvas.width = W; canvas.height = H;
@@ -580,10 +667,12 @@
         ctx.strokeRect(40, y, W - 80, rowH);
         ctx.fillStyle = '#05344E';
         ctx.font = 'bold 20px sans-serif';
-        ctx.fillText(String(it.name + (it.title && it.title !== '-' ? ' — ' + it.title : '')).slice(0, 38), 56, y + 30);
+        ctx.fillText(String(it.name + (it.sponsor && it.sponsor !== '-' ? ' • ' + it.sponsor : (it.title && it.title !== '-' ? ' — ' + it.title : ''))).slice(0, 40), 56, y + 28);
+        ctx.fillStyle = '#475569';
+        ctx.font = '13px sans-serif';
+        ctx.fillText(String(it.pages || '').slice(0, 62), 56, y + 50);
         ctx.fillStyle = '#64748B';
-        ctx.font = '14px sans-serif';
-        ctx.fillText(String(it.link || '-').slice(0, 55), 56, y + 52);
+        ctx.fillText(String('७ दिवस: ' + (it.days7 || '')).slice(0, 65), 56, y + 72);
         ctx.fillStyle = '#0369A1';
         ctx.font = 'bold 20px sans-serif';
         ctx.fillText(String(it.views), 520, y + 40);
@@ -614,7 +703,7 @@
       const { dtDisplay, totalV, totalC, items } = buildAdReportRows();
       const rowsHtml = items.map(it => `
         <tr>
-          <td><strong>${esc(it.name)}</strong>${it.title && it.title !== '-' ? '<br><small>' + esc(it.title) + '</small>' : ''}</td>
+          <td><strong>${esc(it.name)}</strong>${it.sponsor && it.sponsor !== '-' ? '<br><span style="color:#EA580C;font-weight:700;">🏢 ' + esc(it.sponsor) + '</span>' : ''}${it.title && it.title !== '-' ? '<br><small>' + esc(it.title) + '</small>' : ''}<div style="font-size:10px;color:#475569;margin-top:3px;">${esc(it.pages)}</div><div style="font-size:10px;color:#05344E;margin-top:2px;">📆 ${esc(it.days7)}</div></td>
           <td style="word-break:break-all;font-size:11px;color:#475569;">${esc(it.link)}</td>
           <td style="text-align:center;font-weight:700;color:#0369A1;">${it.views}</td>
           <td style="text-align:center;font-weight:700;color:#047857;">${it.clicks}</td>
@@ -645,46 +734,21 @@
     };
 
     window.exportAdReportCsv = function() {
-      const stats = cachedAdStats || {};
-      const banners = stats.banners || {};
-      const slides = (currentAds && Array.isArray(currentAds.bannerSlides)) ? currentAds.bannerSlides : [];
-      const todayKey = new Date().toISOString().slice(0, 10);
-      const M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      const now = new Date();
-      const dtLabel = `${String(now.getDate()).padStart(2,'0')}_${M[now.getMonth()]}_${now.getFullYear()}`;
+      const { dtFile, items } = buildAdReportRows();
       const csvEsc = (v) => '"' + String(v ?? '').replace(/"/g, '""') + '"';
-
-      const rows = [['प्रकार / स्लाईड', 'शीर्षक / मजकूर', 'लिंक (URL)', 'एकूण Views', 'एकूण Clicks', 'आजचे Clicks', 'CTR (%)']];
-      slides.forEach((s, idx) => {
-        if (!s || (!s.image && !s.text && !s.link)) return;
-        const adId = s.adId || ('slot_' + idx);
-        const st = banners[adId] || {};
-        const v = Number(st.views || 0);
-        const c = Number(st.clicks || 0);
-        const tc = Number((st.daily && st.daily[todayKey] && st.daily[todayKey].clicks) || 0);
-        const ctr = v > 0 ? ((c / v) * 100).toFixed(1) + '%' : '0.0%';
-        rows.push([`बॅनर स्लाईड ${idx + 1}`, s.text || '-', s.link || '-', v, c, tc, ctr]);
-      });
-
-      const pr = stats.preroll || {};
-      const pv = Number(pr.views || 0), pc = Number(pr.clicks || 0);
-      rows.push(['Pre-Roll जाहिरात', 'व्हिडिओ पूर्व जाहिरात', currentAds.preRollLink || '-', pv, pc, '-', pv > 0 ? ((pc / pv) * 100).toFixed(1) + '%' : '0.0%']);
-
-      const sp = stats.splash || {};
-      const sv = Number(sp.views || 0), sc = Number(sp.clicks || 0);
-      rows.push(['Splash पॉपअप जाहिरात', 'मुख्य स्क्रीन पॉपअप', currentAds.splashLink || '-', sv, sc, '-', sv > 0 ? ((sc / sv) * 100).toFixed(1) + '%' : '0.0%']);
-
+      const rows = [['प्रकार / स्लाईड', 'जाहिरातदार (Sponsor)', 'शीर्षक / मजकूर', 'लिंक (URL)', 'एकूण Views', 'एकूण Clicks', 'आजचे Clicks', 'CTR (%)', 'पेजनिहाय क्लिक्स', 'मागील ७ दिवस']];
+      items.forEach(it => rows.push([it.name, it.sponsor, it.title, it.link, it.views, it.clicks, it.today, it.ctr, it.pages, it.days7]));
       const csvContent = '\uFEFF' + rows.map(r => r.map(csvEsc).join(',')).join('\n');
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `darshan_setu_ad_report_${dtLabel}.csv`;
+      a.download = `darshan_setu_ad_report_${dtFile}.csv`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      showToast('जाहिरात रिपोर्ट CSV फाईल डाउनलोड झाली!');
+      showToast('निवडलेला जाहिरात रिपोर्ट CSV डाउनलोड झाला!');
     };
 
     window.resetSingleAdStat = async function(subPath) {
@@ -730,6 +794,7 @@
         document.getElementById('preRollDuration').value = ads.preRollDuration || 10;
         document.getElementById('preRollSkipAfter').value = String(ads.preRollSkipAfter || 5);
         document.getElementById('preRollLink').value = ads.preRollLink || '';
+        if (document.getElementById('preRollSponsor')) document.getElementById('preRollSponsor').value = ads.preRollSponsor || '';
         document.getElementById('preRollText').value = ads.preRollText || '';
         if (ads.preRollFontFamily) document.getElementById('preRollFontSelect').value = ads.preRollFontFamily;
         document.getElementById('preRollVideoUrl').value = ads.preRollVideoUrl || '';
@@ -744,6 +809,7 @@
         document.getElementById('splashSkipAfter').value = String(ads.splashSkipAfter || 5);
         document.getElementById('splashFreq').value = ads.splashFrequency || 'always';
         document.getElementById('splashLink').value = ads.splashLink || '';
+        if (document.getElementById('splashSponsor')) document.getElementById('splashSponsor').value = ads.splashSponsor || '';
         document.getElementById('splashText').value = ads.splashText || '';
         if (ads.splashFontFamily) document.getElementById('splashFontSelect').value = ads.splashFontFamily;
         document.getElementById('splashVideoUrl').value = ads.splashVideoUrl || '';
@@ -765,9 +831,11 @@
           const file = slotPendingFiles[i];
           const img = file ? await compressImageFile(file, 900, 320, 0.82) : (prev.image || '');
           const stEl = cards[i].querySelector('.slot-text');
+          const spEl = cards[i].querySelector('.slot-sponsor');
           const adId = prev.adId || ('ad_' + Date.now().toString(36) + '_' + i + '_' + Math.random().toString(36).slice(2, 6));
           slides.push({
             adId,
+            sponsor: spEl ? spEl.value.trim() : (prev.sponsor || ''),
             image: img,
             link: cards[i].querySelector('.slot-link').value.trim(),
             text: stEl ? stEl.value.trim() : ''
@@ -820,6 +888,7 @@
           preRollEnabled: document.getElementById('preRollEnabled').checked,
           preRollDuration: Math.max(2, Math.min(60, Number(document.getElementById('preRollDuration').value) || 10)),
           preRollSkipAfter: Number(document.getElementById('preRollSkipAfter').value) || 5,
+          preRollSponsor: (document.getElementById('preRollSponsor')?.value || '').trim(),
           preRollLink: document.getElementById('preRollLink').value.trim(),
           preRollText: document.getElementById('preRollText').value.trim(),
           preRollFontFamily: document.getElementById('preRollFontSelect').value,
@@ -831,6 +900,7 @@
           splashDuration: Math.max(2, Math.min(60, Number(document.getElementById('splashDuration').value) || 10)),
           splashSkipAfter: Number(document.getElementById('splashSkipAfter').value) || 5,
           splashFrequency: document.getElementById('splashFreq').value,
+          splashSponsor: (document.getElementById('splashSponsor')?.value || '').trim(),
           splashLink: document.getElementById('splashLink').value.trim(),
           splashText: document.getElementById('splashText').value.trim(),
           splashFontFamily: document.getElementById('splashFontSelect').value,

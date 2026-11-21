@@ -1134,6 +1134,20 @@
         } else if (prTxtW) { prTxtW.classList.add('hidden'); }
         prSkip.classList.add('hidden');
         prOv.classList.remove('hidden');
+        try {
+          const _tdb = firebase.database();
+          _tdb.ref('adStats/preroll/views').transaction(v => (v || 0) + 1).catch(() => {});
+          const _prL = document.getElementById('preRollLinkEl');
+          if (_prL && !_prL.__trackedPrClick) {
+            _prL.__trackedPrClick = true;
+            _prL.addEventListener('click', () => {
+              _tdb.ref('adStats/preroll/clicks').transaction(v => (v || 0) + 1).catch(() => {});
+              const _tk = new Date().toISOString().slice(0, 10);
+              _tdb.ref('adStats/preroll/daily/' + _tk + '/clicks').transaction(v => (v || 0) + 1).catch(() => {});
+              _tdb.ref('adStats/preroll/byPage/panchang').transaction(v => (v || 0) + 1).catch(() => {});
+            });
+          }
+        } catch (_) {}
         let rem = dur;
         const finishPr = () => {
           if (window.__pvPreRollTimer) { clearInterval(window.__pvPreRollTimer); window.__pvPreRollTimer = null; }
@@ -1392,6 +1406,7 @@
             if (kind === 'clicks') {
               const tk = new Date().toISOString().slice(0, 10);
               dbRef.ref('adStats/banners/' + adId + '/daily/' + tk + '/clicks').transaction(v => (v || 0) + 1).catch(() => {});
+              dbRef.ref('adStats/banners/' + adId + '/byPage/panchang').transaction(v => (v || 0) + 1).catch(() => {});
             }
           } catch (_) {}
         };

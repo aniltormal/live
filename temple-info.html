@@ -405,15 +405,33 @@
         return;
       }
       sec.classList.remove('hidden');
-      track.innerHTML = slides.map((s, i) => `
-        <a href="${s.link || '#'}" target="_blank" rel="noopener noreferrer" class="relative w-full h-full shrink-0 block ${s.link ? '' : 'pointer-events-none'}">
+      const seenTiAd = {};
+      const trackTiAd = (adId, kind) => {
+        try {
+          const _tdb = firebase.database();
+          if (kind === 'views') { if (seenTiAd[adId]) return; seenTiAd[adId] = true; }
+          _tdb.ref('adStats/banners/' + adId + '/' + kind).transaction(v => (v || 0) + 1).catch(() => {});
+          if (kind === 'clicks') {
+            const _tk = new Date().toISOString().slice(0, 10);
+            _tdb.ref('adStats/banners/' + adId + '/daily/' + _tk + '/clicks').transaction(v => (v || 0) + 1).catch(() => {});
+            _tdb.ref('adStats/banners/' + adId + '/byPage/temple').transaction(v => (v || 0) + 1).catch(() => {});
+          }
+        } catch (_) {}
+      };
+      track.innerHTML = slides.map((s, i) => {
+        const adId = String(s.adId || ('slot_' + i)).replace(/"/g, '');
+        return `
+        <a href="${s.link || '#'}" data-ad-id="${adId}" target="_blank" rel="noopener noreferrer" class="ti-ad-link relative w-full h-full shrink-0 block ${s.link ? '' : 'pointer-events-none'}">
           <img src="${s.image}" alt="जाहिरात ${i + 1}" class="w-full h-full object-cover" />
-        </a>
-      `).join('');
+        </a>`;
+      }).join('');
+      track.querySelectorAll('.ti-ad-link').forEach(a => a.addEventListener('click', () => trackTiAd(a.dataset.adId, 'clicks')));
 
       const showSlide = (i) => {
         tiSlideIdx = ((i % slides.length) + slides.length) % slides.length;
         track.style.transform = `translateX(-${tiSlideIdx * 100}%)`;
+        const _cur = slides[tiSlideIdx];
+        if (_cur) trackTiAd(_cur.adId || ('slot_' + tiSlideIdx), 'views');
         dots.innerHTML = slides.length > 1 ? slides.map((_, d) => `<button type="button" onclick="window.__tiGoSlide(${d})" class="h-2 rounded-full transition-all cursor-pointer ${d === tiSlideIdx ? 'w-5 bg-black' : 'w-2 bg-neutral-400'}"></button>`).join('') : '';
       };
       const restart = () => {
@@ -862,6 +880,20 @@
         } else if (prTxtW) { prTxtW.classList.add('hidden'); }
         prSkip.classList.add('hidden');
         prOv.classList.remove('hidden');
+        try {
+          const _tdb = firebase.database();
+          _tdb.ref('adStats/preroll/views').transaction(v => (v || 0) + 1).catch(() => {});
+          const _prL = document.getElementById('preRollLinkEl');
+          if (_prL && !_prL.__trackedPrClick) {
+            _prL.__trackedPrClick = true;
+            _prL.addEventListener('click', () => {
+              _tdb.ref('adStats/preroll/clicks').transaction(v => (v || 0) + 1).catch(() => {});
+              const _tk = new Date().toISOString().slice(0, 10);
+              _tdb.ref('adStats/preroll/daily/' + _tk + '/clicks').transaction(v => (v || 0) + 1).catch(() => {});
+              _tdb.ref('adStats/preroll/byPage/temple').transaction(v => (v || 0) + 1).catch(() => {});
+            });
+          }
+        } catch (_) {}
         let rem = dur;
         const finishPr = () => {
           if (window.__pvPreRollTimer) { clearInterval(window.__pvPreRollTimer); window.__pvPreRollTimer = null; }

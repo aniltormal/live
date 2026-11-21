@@ -4106,6 +4106,7 @@
         if (kind === 'clicks') {
           const todayKey = new Date().toISOString().slice(0, 10);
           fbDb.ref('adStats/' + path + '/daily/' + todayKey + '/clicks').transaction(v => (v || 0) + 1).catch(() => {});
+          fbDb.ref('adStats/' + path + '/byPage/home').transaction(v => (v || 0) + 1).catch(() => {});
         }
       } catch (_) {}
     }

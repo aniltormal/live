@@ -958,6 +958,7 @@
             if (kind === 'clicks') {
               const tk = new Date().toISOString().slice(0, 10);
               dbRef.ref('adStats/banners/' + adId + '/daily/' + tk + '/clicks').transaction(v => (v || 0) + 1).catch(() => {});
+              dbRef.ref('adStats/banners/' + adId + '/byPage/daily').transaction(v => (v || 0) + 1).catch(() => {});
             }
           } catch (_) {}
         };

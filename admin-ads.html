@@ -89,6 +89,19 @@
             <label class="block text-xs font-bold text-slate-700 mb-1">क्लिक लिंक (URL)</label>
             <input id="preRollSponsor" type="text" placeholder="जाहिरातदाराचे नाव (Sponsor — रिपोर्टसाठी ऐच्छिक)" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-bold text-[#05344E]" />
           <input id="preRollLink" type="url" placeholder="https://..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
+          <div class="rounded-xl bg-amber-50/70 border border-amber-200/80 p-3 space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="text-xs font-extrabold text-[#05344E]">⏱️ Pre-Roll कालावधी व ऑटो-अनपब्लिश</span>
+              <select onchange="applySingleDaysPreset('preRoll', this.value)" class="px-2.5 py-1 rounded-lg border border-amber-300 bg-white text-xs font-bold text-[#05344E] cursor-pointer">
+                <option value="">दिवस निवडा (ऐच्छिक)</option>
+                <option value="1">१ दिवस</option><option value="3">३ दिवस</option><option value="7">७ दिवस</option><option value="15">१५ दिवस</option><option value="30">३० दिवस</option><option value="0">कायमस्वरूपी</option>
+              </select>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div><label class="block text-[10px] font-bold text-slate-600 mb-0.5">पब्लिश दिनांक व वेळ:</label><input id="preRollPublishedAt" type="datetime-local" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-bold text-[#05344E]" /></div>
+              <div><label class="block text-[10px] font-bold text-rose-700 mb-0.5">आपोआप अनपब्लिश दिनांक व वेळ:</label><input id="preRollExpiresAt" type="datetime-local" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-bold text-rose-800" /></div>
+            </div>
+          </div>
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">जाहिरात मजकूर (पर्यायी)</label>
@@ -160,6 +173,19 @@
             <label class="block text-xs font-bold text-slate-700 mb-1">क्लिक लिंक (URL)</label>
             <input id="splashSponsor" type="text" placeholder="जाहिरातदाराचे नाव (Sponsor — रिपोर्टसाठी ऐच्छिक)" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-bold text-[#05344E]" />
           <input id="splashLink" type="url" placeholder="https://..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
+          <div class="rounded-xl bg-amber-50/70 border border-amber-200/80 p-3 space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="text-xs font-extrabold text-[#05344E]">⏱️ Splash कालावधी व ऑटो-अनपब्लिश</span>
+              <select onchange="applySingleDaysPreset('splash', this.value)" class="px-2.5 py-1 rounded-lg border border-amber-300 bg-white text-xs font-bold text-[#05344E] cursor-pointer">
+                <option value="">दिवस निवडा (ऐच्छिक)</option>
+                <option value="1">१ दिवस</option><option value="3">३ दिवस</option><option value="7">७ दिवस</option><option value="15">१५ दिवस</option><option value="30">३० दिवस</option><option value="0">कायमस्वरूपी</option>
+              </select>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div><label class="block text-[10px] font-bold text-slate-600 mb-0.5">पब्लिश दिनांक व वेळ:</label><input id="splashPublishedAt" type="datetime-local" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-bold text-[#05344E]" /></div>
+              <div><label class="block text-[10px] font-bold text-rose-700 mb-0.5">आपोआप अनपब्लिश दिनांक व वेळ:</label><input id="splashExpiresAt" type="datetime-local" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-bold text-rose-800" /></div>
+            </div>
+          </div>
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">पॉपअप मजकूर (पर्यायी)</label>
@@ -225,7 +251,7 @@
           <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
             <h3 class="text-xs sm:text-sm font-extrabold text-[#05344E]">🖼️ प्रत्येक स्लाईडचा स्वतंत्र रिपोर्ट</h3>
             <div class="flex flex-wrap items-center gap-2">
-              <select id="exportReportFilter" aria-label="Export डेटा निवडा" class="px-2.5 py-1 rounded-lg border border-slate-300 bg-white text-xs font-bold text-[#05344E] cursor-pointer">
+              <select id="exportReportFilter" onchange="window.__selectedExportFilter = this.value" aria-label="Export डेटा निवडा" class="px-2.5 py-1 rounded-lg border border-slate-300 bg-white text-xs font-bold text-[#05344E] cursor-pointer">
                 <option value="all">सर्व जाहिराती (All)</option>
                 <option value="banners">फक्त सर्व स्लाईडर्स</option>
                 <option value="preroll">फक्त Pre-Roll जाहिरात</option>
@@ -270,6 +296,60 @@
     let currentAds = { bannerSlides: [{}, {}, {}] };
     const slotPendingFiles = {};
 
+    function toLocalInputVal(ms) {
+      if (!ms) return '';
+      const d = new Date(Number(ms));
+      if (isNaN(d.getTime())) return '';
+      const pad = (n) => String(n).padStart(2, '0');
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+    function parseLocalInputMs(val) {
+      if (!val) return 0;
+      const ms = new Date(val).getTime();
+      return isNaN(ms) ? 0 : ms;
+    }
+    function formatPubDateTime(ms) {
+      if (!ms) return '—';
+      const d = new Date(Number(ms));
+      if (isNaN(d.getTime())) return '—';
+      const M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const dt = `${String(d.getDate()).padStart(2,'0')} ${M[d.getMonth()]} ${d.getFullYear()}`;
+      const tm = d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }).toUpperCase();
+      return `${dt}, ${tm}`;
+    }
+    function formatDurationMarathi(startMs, endMs) {
+      if (!startMs) return '—';
+      const end = endMs ? Number(endMs) : Date.now();
+      const diff = Math.max(0, end - Number(startMs));
+      const totalMins = Math.floor(diff / 60000);
+      const days = Math.floor(totalMins / 1440);
+      const hours = Math.floor((totalMins % 1440) / 60);
+      const mins = totalMins % 60;
+      return `${days} दिवस ${hours} तास ${mins} मिनिटे`;
+    }
+    window.applySlotDaysPreset = function(idx, daysStr) {
+      const card = document.querySelector(`#bannerSlotsContainer [data-slot="${idx}"]`);
+      if (!card) return;
+      const expEl = card.querySelector('.slot-expires');
+      const pubEl = card.querySelector('.slot-published');
+      if (!expEl) return;
+      const days = Number(daysStr || 0);
+      if (!days) { expEl.value = ''; return; }
+      const baseMs = (pubEl && pubEl.value) ? parseLocalInputMs(pubEl.value) : Date.now();
+      if (pubEl && !pubEl.value) pubEl.value = toLocalInputVal(baseMs);
+      expEl.value = toLocalInputVal(baseMs + days * 86400000);
+    };
+    window.applySingleDaysPreset = function(prefix, daysStr) {
+      const pubEl = document.getElementById(prefix + 'PublishedAt');
+      const expEl = document.getElementById(prefix + 'ExpiresAt');
+      if (!expEl) return;
+      const days = Number(daysStr || 0);
+      if (!days) { expEl.value = ''; return; }
+      const baseMs = (pubEl && pubEl.value) ? parseLocalInputMs(pubEl.value) : Date.now();
+      if (pubEl && !pubEl.value) pubEl.value = toLocalInputVal(baseMs);
+      expEl.value = toLocalInputVal(baseMs + days * 86400000);
+    };
+
     function esc(s) {
       return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
@@ -284,6 +364,10 @@
         if (stInp) currentAds.bannerSlides[idx].text = stInp.value.trim();
         const spInp = card.querySelector('.slot-sponsor');
         if (spInp) currentAds.bannerSlides[idx].sponsor = spInp.value.trim();
+        const pbInp = card.querySelector('.slot-published');
+        if (pbInp) currentAds.bannerSlides[idx].publishedAt = parseLocalInputMs(pbInp.value) || currentAds.bannerSlides[idx].publishedAt || 0;
+        const exInp = card.querySelector('.slot-expires');
+        if (exInp) currentAds.bannerSlides[idx].expiresAt = parseLocalInputMs(exInp.value) || 0;
       });
     }
 
@@ -466,7 +550,7 @@
     function formatPageStats(bp) {
       const p = bp || {};
       const h = Number(p.home || 0), d = Number(p.daily || 0), pn = Number(p.panchang || 0), t = Number(p.temple || 0);
-      return `🏠 मुख्य: ${h} • 📸 दैनिक: ${d} • 📅 पंचांग: ${pn} • 🛕 माहिती: ${t}`;
+      return `मुख्य पेज: ${h} • दैनिक फोटो दर्शन: ${d} • आजचे पंचांग: ${pn} • मंदिर माहिती: ${t}`;
     }
 
     function format7DaysHtml(daily) {
@@ -520,7 +604,7 @@
                   </div>
                 </div>
                 <div class="text-[11px] font-bold text-slate-600 bg-white/80 rounded-lg px-2.5 py-1 border border-slate-200/80">
-                  📍 पेजनिहाय क्लिक्स: ${formatPageStats(st.byPage)}
+                  🕒 पब्लिश: ${formatPubDateTime(s.publishedAt)} • ⏳ कालावधी: ${formatDurationMarathi(s.publishedAt, s.expiresAt)}${s.expiresAt ? ' (अनपब्लिश: ' + formatPubDateTime(s.expiresAt) + ')' : ''}<br>📍 पेजनिहाय क्लिक्स: ${formatPageStats(st.byPage)}
                 </div>
                 <div class="flex flex-wrap items-center gap-1.5">
                   <span class="text-[10px] font-extrabold text-slate-500">📆 मागील ७ दिवस:</span>
@@ -546,13 +630,13 @@
 
       const selEl = document.getElementById('exportReportFilter');
       if (selEl) {
-        const prevVal = selEl.value || 'all';
+        const prevVal = window.__selectedExportFilter || selEl.value || 'all';
         const slideOpts = slides.map((s, idx) => ({ s, idx }))
           .filter(x => x.s && (x.s.image || x.s.text || x.s.link))
           .map(({ s, idx }) => `<option value="slide:${idx}">फक्त स्लाईड ${idx + 1}${s.sponsor ? ' — ' + esc(s.sponsor).slice(0, 18) : (s.text ? ' (' + esc(s.text).slice(0, 18) + ')' : '')}</option>`)
           .join('');
         selEl.innerHTML = `<option value="all">सर्व जाहिराती (All)</option><option value="banners">फक्त सर्व स्लाईडर्स</option>${slideOpts}<option value="preroll">फक्त Pre-Roll जाहिरात</option><option value="splash">फक्त Splash जाहिरात</option>`;
-        if ([...selEl.options].some(o => o.value === prevVal)) selEl.value = prevVal;
+        if ([...selEl.options].some(o => o.value === prevVal)) { selEl.value = prevVal; window.__selectedExportFilter = prevVal; } else { window.__selectedExportFilter = selEl.value || 'all'; }
       }
 
       const orphanKeys = Object.keys(banners).filter(k => !activeIds.has(k));
@@ -570,31 +654,51 @@
       const M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
       const now = new Date();
       const dtDisplay = `${String(now.getDate()).padStart(2,'0')} ${M[now.getMonth()]} ${now.getFullYear()}`;
+      const tmDisplay = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }).toUpperCase();
+      const dtTimeDisplay = `${dtDisplay}, ${tmDisplay}`;
       const dtFile = dtDisplay.replace(/ /g, '_');
+
       const filterEl = document.getElementById('exportReportFilter');
-      const filterVal = filterEl ? filterEl.value : 'all';
+      const filterVal = (filterEl && filterEl.value) || window.__selectedExportFilter || 'all';
       const items = [];
       let totalV = 0, totalC = 0;
 
-      const build7d = (dl) => getLast7DaysKeys().map(k => `${k.lbl}: ${Number((dl && dl[k.iso] && dl[k.iso].clicks) || 0)}`).join(' | ');
+      // Read live sponsor inputs from DOM as fallback if user typed without saving yet
+      const domCards = document.querySelectorAll('#bannerSlotsContainer [data-slot]');
+
+      const get7DayRows = (dl) => {
+        const out = [];
+        for (let i = 0; i < 7; i++) {
+          const d = new Date(Date.now() - i * 86400000);
+          const iso = d.toISOString().slice(0, 10);
+          const lbl = `${String(d.getDate()).padStart(2,'0')} ${M[d.getMonth()]} ${d.getFullYear()}`;
+          out.push({ date: lbl, clicks: Number((dl && dl[iso] && dl[iso].clicks) || 0) });
+        }
+        return out;
+      };
 
       const pushSlide = (s, idx) => {
-        if (!s || (!s.image && !s.text && !s.link)) return;
+        if (!s || (!s.image && !s.text && !s.link && !s.sponsor)) return;
         const adId = s.adId || ('slot_' + idx);
         const st = banners[adId] || {};
         const v = Number(st.views || 0);
         const c = Number(st.clicks || 0);
         const tc = Number((st.daily && st.daily[todayKey] && st.daily[todayKey].clicks) || 0);
+        const domSp = domCards[idx] ? (domCards[idx].querySelector('.slot-sponsor')?.value || '').trim() : '';
+        const spName = (s.sponsor || domSp || '').trim() || '—';
         totalV += v; totalC += c;
         items.push({
           name: `बॅनर स्लाईड ${idx + 1}`,
-          sponsor: s.sponsor || '-',
-          title: s.text || '-',
-          link: s.link || '-',
+          sponsor: spName,
+          title: s.text || '—',
+          link: s.link || '—',
           views: v, clicks: c, today: tc,
           ctr: v > 0 ? ((c / v) * 100).toFixed(1) + '%' : '0.0%',
+          publishedStr: formatPubDateTime(s.publishedAt),
+          durationStr: formatDurationMarathi(s.publishedAt, s.expiresAt),
+          expiresStr: s.expiresAt ? formatPubDateTime(s.expiresAt) : 'अमर्याद',
           pages: formatPageStats(st.byPage),
-          days7: build7d(st.daily)
+          days7Arr: get7DayRows(st.daily)
         });
       };
 
@@ -609,24 +713,29 @@
         const pr = stats.preroll || {};
         const pv = Number(pr.views || 0), pc = Number(pr.clicks || 0);
         const ptc = Number((pr.daily && pr.daily[todayKey] && pr.daily[todayKey].clicks) || 0);
+        const prSp = (currentAds.preRollSponsor || document.getElementById('preRollSponsor')?.value || '').trim() || '—';
         if (filterVal === 'preroll') { totalV = pv; totalC = pc; }
-        items.push({ name: 'Pre-Roll जाहिरात', sponsor: currentAds.preRollSponsor || '-', title: 'व्हिडिओ पूर्व जाहिरात', link: currentAds.preRollLink || '-', views: pv, clicks: pc, today: ptc, ctr: pv > 0 ? ((pc / pv) * 100).toFixed(1) + '%' : '0.0%', pages: formatPageStats(pr.byPage), days7: build7d(pr.daily) });
+        items.push({ name: 'Pre-Roll जाहिरात', sponsor: prSp, title: 'व्हिडिओ पूर्व जाहिरात', link: currentAds.preRollLink || '—', views: pv, clicks: pc, today: ptc, ctr: pv > 0 ? ((pc / pv) * 100).toFixed(1) + '%' : '0.0%', publishedStr: formatPubDateTime(currentAds.preRollPublishedAt), durationStr: formatDurationMarathi(currentAds.preRollPublishedAt, currentAds.preRollExpiresAt), expiresStr: currentAds.preRollExpiresAt ? formatPubDateTime(currentAds.preRollExpiresAt) : 'अमर्याद', pages: formatPageStats(pr.byPage), days7Arr: get7DayRows(pr.daily) });
       }
       if (filterVal === 'all' || filterVal === 'splash') {
         const sp = stats.splash || {};
         const sv = Number(sp.views || 0), sc = Number(sp.clicks || 0);
         const stc = Number((sp.daily && sp.daily[todayKey] && sp.daily[todayKey].clicks) || 0);
+        const spSp = (currentAds.splashSponsor || document.getElementById('splashSponsor')?.value || '').trim() || '—';
         if (filterVal === 'splash') { totalV = sv; totalC = sc; }
-        items.push({ name: 'Splash पॉपअप जाहिरात', sponsor: currentAds.splashSponsor || '-', title: 'मुख्य स्क्रीन पॉपअप', link: currentAds.splashLink || '-', views: sv, clicks: sc, today: stc, ctr: sv > 0 ? ((sc / sv) * 100).toFixed(1) + '%' : '0.0%', pages: formatPageStats(sp.byPage), days7: build7d(sp.daily) });
+        items.push({ name: 'Splash पॉपअप जाहिरात', sponsor: spSp, title: 'मुख्य स्क्रीन पॉपअप', link: currentAds.splashLink || '—', views: sv, clicks: sc, today: stc, ctr: sv > 0 ? ((sc / sv) * 100).toFixed(1) + '%' : '0.0%', publishedStr: formatPubDateTime(currentAds.splashPublishedAt), durationStr: formatDurationMarathi(currentAds.splashPublishedAt, currentAds.splashExpiresAt), expiresStr: currentAds.splashExpiresAt ? formatPubDateTime(currentAds.splashExpiresAt) : 'अमर्याद', pages: formatPageStats(sp.byPage), days7Arr: get7DayRows(sp.daily) });
       }
-      return { dtDisplay, dtFile, totalV, totalC, items, filterVal };
+      return { dtDisplay, dtTimeDisplay, dtFile, totalV, totalC, items, filterVal };
     }
 
     window.exportAdReportJpg = function() {
-      const { dtDisplay, dtFile, totalV, totalC, items } = buildAdReportRows();
-      const W = 1080;
-      const rowH = 92;
-      const H = Math.max(520, 260 + items.length * rowH + 70);
+      const { dtTimeDisplay, dtFile, totalV, totalC, items } = buildAdReportRows();
+      const W = 1160;
+      const sumRowH = 104;
+      const dateRowH = 40;
+      const show7DayTable = items.length > 0;
+      const totalDateRows = show7DayTable ? (items.length * 7) : 0;
+      const H = Math.max(580, 230 + items.length * sumRowH + (show7DayTable ? (110 + totalDateRows * dateRowH) : 40) + 60);
       const canvas = document.createElement('canvas');
       canvas.width = W; canvas.height = H;
       const ctx = canvas.getContext('2d');
@@ -637,57 +746,99 @@
       const grad = ctx.createLinearGradient(0, 0, W, 0);
       grad.addColorStop(0, '#031926'); grad.addColorStop(0.5, '#05344E'); grad.addColorStop(1, '#0a4d70');
       ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, W, 125);
+      ctx.fillRect(0, 0, W, 132);
       ctx.fillStyle = '#F59E0B';
-      ctx.fillRect(0, 121, W, 4);
+      ctx.fillRect(0, 128, W, 4);
 
       ctx.fillStyle = '#FDE68A';
       ctx.font = 'bold 34px sans-serif';
-      ctx.fillText('DARSHAN SETU® — जाहिरात क्लिक व व्ह्यूज रिपोर्ट', 40, 56);
+      ctx.fillText('DARSHAN SETU® — जाहिरात क्लिक व व्ह्यूज रिपोर्ट', 40, 52);
       ctx.fillStyle = '#E2E8F0';
-      ctx.font = 'bold 20px sans-serif';
-      ctx.fillText(`दिनांक: ${dtDisplay}   •   एकूण बॅनर Views: ${totalV}   •   एकूण बॅनर Clicks: ${totalC}`, 40, 96);
+      ctx.font = 'bold 19px sans-serif';
+      ctx.fillText(`Export दिनांक व वेळ: ${dtTimeDisplay}   •   एकूण Views: ${totalV}   •   एकूण Clicks: ${totalC}`, 40, 95);
 
-      let y = 165;
+      let y = 160;
       ctx.fillStyle = '#05344E';
       ctx.fillRect(40, y, W - 80, 44);
       ctx.fillStyle = '#FFFFFF';
-      ctx.font = 'bold 19px sans-serif';
+      ctx.font = 'bold 18px sans-serif';
       ctx.fillText('जाहिरात / स्लाईड', 56, y + 29);
-      ctx.fillText('Views', 520, y + 29);
-      ctx.fillText('Clicks', 660, y + 29);
-      ctx.fillText('आज', 795, y + 29);
-      ctx.fillText('CTR', 915, y + 29);
+      ctx.fillText('जाहिरातदार (Sponsor)', 330, y + 29);
+      ctx.fillText('Views', 620, y + 29);
+      ctx.fillText('Clicks', 740, y + 29);
+      ctx.fillText('आज', 860, y + 29);
+      ctx.fillText('CTR', 970, y + 29);
       y += 44;
 
       items.forEach((it, idx) => {
         ctx.fillStyle = idx % 2 === 0 ? '#FFFFFF' : '#F8FAFC';
-        ctx.fillRect(40, y, W - 80, rowH);
-        ctx.strokeStyle = '#E2E8F0';
-        ctx.strokeRect(40, y, W - 80, rowH);
+        ctx.fillRect(40, y, W - 80, sumRowH);
+        ctx.strokeStyle = '#CBD5E1';
+        ctx.strokeRect(40, y, W - 80, sumRowH);
         ctx.fillStyle = '#05344E';
-        ctx.font = 'bold 20px sans-serif';
-        ctx.fillText(String(it.name + (it.sponsor && it.sponsor !== '-' ? ' • ' + it.sponsor : (it.title && it.title !== '-' ? ' — ' + it.title : ''))).slice(0, 40), 56, y + 28);
-        ctx.fillStyle = '#475569';
-        ctx.font = '13px sans-serif';
-        ctx.fillText(String(it.pages || '').slice(0, 62), 56, y + 50);
-        ctx.fillStyle = '#64748B';
-        ctx.fillText(String('७ दिवस: ' + (it.days7 || '')).slice(0, 65), 56, y + 72);
+        ctx.font = 'bold 19px sans-serif';
+        ctx.fillText(String(it.name).slice(0, 24), 56, y + 32);
+        ctx.fillStyle = '#EA580C';
+        ctx.font = 'bold 18px sans-serif';
+        ctx.fillText(String(it.sponsor || '—').slice(0, 24), 330, y + 32);
         ctx.fillStyle = '#0369A1';
         ctx.font = 'bold 20px sans-serif';
-        ctx.fillText(String(it.views), 520, y + 40);
+        ctx.fillText(String(it.views), 620, y + 32);
         ctx.fillStyle = '#047857';
-        ctx.fillText(String(it.clicks), 660, y + 40);
+        ctx.fillText(String(it.clicks), 740, y + 32);
         ctx.fillStyle = '#B45309';
-        ctx.fillText(String(it.today), 795, y + 40);
+        ctx.fillText(String(it.today), 860, y + 32);
         ctx.fillStyle = '#05344E';
-        ctx.fillText(String(it.ctr), 915, y + 40);
-        y += rowH;
+        ctx.fillText(String(it.ctr), 970, y + 32);
+        ctx.fillStyle = '#475569';
+        ctx.font = '14px sans-serif';
+        ctx.fillText(String(it.pages || ''), 56, y + 62);
+        ctx.fillStyle = '#05344E';
+        ctx.font = 'bold 13px sans-serif';
+        ctx.fillText(`पब्लिश: ${it.publishedStr || '—'}  •  चाललेला कालावधी: ${it.durationStr || '—'}`, 56, y + 86);
+        y += sumRowH;
       });
 
+      if (show7DayTable) {
+        y += 34;
+        ctx.fillStyle = '#05344E';
+        ctx.font = 'bold 22px sans-serif';
+        ctx.fillText('📆 दिनांकनिहाय मागील ७ दिवसांचे क्लिक्स (Table Format)', 40, y);
+        y += 18;
+        ctx.fillStyle = '#05344E';
+        ctx.fillRect(40, y, W - 80, 40);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 17px sans-serif';
+        ctx.fillText('जाहिरात / स्लाईड', 56, y + 26);
+        ctx.fillText('जाहिरातदार', 340, y + 26);
+        ctx.fillText('दिनांक', 660, y + 26);
+        ctx.fillText('क्लिक्स (Clicks)', 900, y + 26);
+        y += 40;
+        let rIdx = 0;
+        items.forEach(it => {
+          (it.days7Arr || []).forEach(d => {
+            ctx.fillStyle = rIdx % 2 === 0 ? '#FFFFFF' : '#F8FAFC';
+            ctx.fillRect(40, y, W - 80, dateRowH);
+            ctx.strokeStyle = '#E2E8F0';
+            ctx.strokeRect(40, y, W - 80, dateRowH);
+            ctx.fillStyle = '#05344E';
+            ctx.font = 'bold 16px sans-serif';
+            ctx.fillText(String(it.name).slice(0, 24), 56, y + 26);
+            ctx.fillStyle = '#475569';
+            ctx.fillText(String(it.sponsor || '—').slice(0, 24), 340, y + 26);
+            ctx.fillStyle = '#0F172A';
+            ctx.fillText(d.date, 660, y + 26);
+            ctx.fillStyle = d.clicks > 0 ? '#047857' : '#64748B';
+            ctx.fillText(String(d.clicks), 900, y + 26);
+            y += dateRowH;
+            rIdx++;
+          });
+        });
+      }
+
       ctx.fillStyle = '#64748B';
-      ctx.font = 'bold 16px sans-serif';
-      ctx.fillText('© २०२६ DARSHAN SETU® • darshansetu.live', 40, H - 24);
+      ctx.font = 'bold 15px sans-serif';
+      ctx.fillText(`© २०२६ DARSHAN SETU® • darshansetu.live • Generated: ${dtTimeDisplay}`, 40, H - 20);
 
       const url = canvas.toDataURL('image/jpeg', 0.94);
       const a = document.createElement('a');
@@ -696,48 +847,68 @@
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      showToast('जाहिरात रिपोर्ट JPG इमेज डाउनलोड झाली!');
+      showToast('निवडलेला जाहिरात रिपोर्ट JPG डाउनलोड झाला!');
     };
 
     window.exportAdReportPdf = function() {
-      const { dtDisplay, totalV, totalC, items } = buildAdReportRows();
+      const { dtTimeDisplay, totalV, totalC, items } = buildAdReportRows();
       const rowsHtml = items.map(it => `
         <tr>
-          <td><strong>${esc(it.name)}</strong>${it.sponsor && it.sponsor !== '-' ? '<br><span style="color:#EA580C;font-weight:700;">🏢 ' + esc(it.sponsor) + '</span>' : ''}${it.title && it.title !== '-' ? '<br><small>' + esc(it.title) + '</small>' : ''}<div style="font-size:10px;color:#475569;margin-top:3px;">${esc(it.pages)}</div><div style="font-size:10px;color:#05344E;margin-top:2px;">📆 ${esc(it.days7)}</div></td>
-          <td style="word-break:break-all;font-size:11px;color:#475569;">${esc(it.link)}</td>
+          <td><strong>${esc(it.name)}</strong>${it.title && it.title !== '—' ? '<br><small>' + esc(it.title) + '</small>' : ''}</td>
+          <td style="font-weight:700;color:#EA580C;">${esc(it.sponsor)}</td>
           <td style="text-align:center;font-weight:700;color:#0369A1;">${it.views}</td>
           <td style="text-align:center;font-weight:700;color:#047857;">${it.clicks}</td>
           <td style="text-align:center;font-weight:700;color:#B45309;">${it.today}</td>
           <td style="text-align:center;font-weight:700;">${it.ctr}</td>
-        </tr>`).join('');
-      const w = window.open('', '_blank', 'width=900,height=700');
+        </tr>
+        <tr><td colspan="6" style="background:#FFFBEB;font-size:11px;color:#05344E;padding:6px 10px;"><strong>पेजनिहाय क्लिक्स:</strong> ${esc(it.pages)}</td></tr>`).join('');
+
+      const dateRowsHtml = items.flatMap(it => (it.days7Arr || []).map(d => `
+        <tr>
+          <td><strong>${esc(it.name)}</strong></td>
+          <td style="color:#EA580C;font-weight:700;">${esc(it.sponsor)}</td>
+          <td>${esc(d.date)}</td>
+          <td style="text-align:center;font-weight:700;color:${d.clicks > 0 ? '#047857' : '#64748B'};">${d.clicks}</td>
+        </tr>`)).join('');
+
+      const w = window.open('', '_blank', 'width=960,height=720');
       if (!w) { showToast('कृपया ब्राउझर पॉपअप अनुमती द्या.', true); return; }
-      w.document.write(`<!DOCTYPE html><html lang="mr"><head><meta charset="UTF-8"><title>DARSHAN SETU — जाहिरात रिपोर्ट (${dtDisplay})</title>
+      w.document.write(`<!DOCTYPE html><html lang="mr"><head><meta charset="UTF-8"><title>DARSHAN SETU — जाहिरात रिपोर्ट</title>
         <style>
           body{font-family:'Noto Sans Devanagari',sans-serif;margin:24px;color:#0F172A;}
           .hdr{background:#05344E;color:#fff;padding:16px 20px;border-radius:12px;border-bottom:4px solid #F59E0B;margin-bottom:16px;}
           .hdr h1{margin:0;font-size:20px;color:#FDE68A;}
-          .hdr p{margin:6px 0 0;font-size:13px;color:#E2E8F0;}
-          table{width:100%;border-collapse:collapse;font-size:13px;}
-          th{background:#05344E;color:#fff;padding:10px 8px;text-align:left;}
-          td{padding:9px 8px;border-bottom:1px solid #CBD5E1;vertical-align:top;}
-          tr:nth-child(even){background:#F8FAFC;}
+          .hdr p{margin:6px 0 0;font-size:12.5px;color:#E2E8F0;}
+          h2{font-size:15px;color:#05344E;margin:20px 0 8px;}
+          table{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:14px;}
+          th{background:#05344E;color:#fff;padding:9px 8px;text-align:left;}
+          td{padding:8px;border:1px solid #CBD5E1;vertical-align:top;}
           .ftr{margin-top:18px;font-size:11px;color:#64748B;text-align:center;}
           @media print{body{margin:10px;}}
         </style></head><body>
-        <div class="hdr"><h1>DARSHAN SETU® — जाहिरात क्लिक व व्ह्यूज रिपोर्ट</h1><p>दिनांक: ${dtDisplay} • एकूण बॅनर Views: ${totalV} • एकूण बॅनर Clicks: ${totalC}</p></div>
-        <table><thead><tr><th>जाहिरात / स्लाईड</th><th>लिंक (URL)</th><th style="text-align:center;">Views</th><th style="text-align:center;">Clicks</th><th style="text-align:center;">आज</th><th style="text-align:center;">CTR</th></tr></thead><tbody>${rowsHtml}</tbody></table>
-        <div class="ftr">© २०२६ DARSHAN SETU® • darshansetu.live</div>
+        <div class="hdr"><h1>DARSHAN SETU® — जाहिरात क्लिक व व्ह्यूज रिपोर्ट</h1><p>Export दिनांक व वेळ: ${dtTimeDisplay} • एकूण Views: ${totalV} • एकूण Clicks: ${totalC}</p></div>
+        <h2>१. मुख्य जाहिरात सारांश</h2>
+        <table><thead><tr><th>जाहिरात / स्लाईड</th><th>जाहिरातदार (Sponsor)</th><th style="text-align:center;">Views</th><th style="text-align:center;">Clicks</th><th style="text-align:center;">आज</th><th style="text-align:center;">CTR</th></tr></thead><tbody>${rowsHtml}</tbody></table>
+        <h2>२. दिनांकनिहाय मागील ७ दिवसांचे क्लिक्स</h2>
+        <table><thead><tr><th>जाहिरात / स्लाईड</th><th>जाहिरातदार (Sponsor)</th><th>दिनांक</th><th style="text-align:center;">क्लिक्स (Clicks)</th></tr></thead><tbody>${dateRowsHtml}</tbody></table>
+        <div class="ftr">© २०२६ DARSHAN SETU® • darshansetu.live • Export: ${dtTimeDisplay}</div>
         </body></html>`);
       w.document.close();
       setTimeout(() => { try { w.focus(); w.print(); } catch (_) {} }, 400);
     };
 
     window.exportAdReportCsv = function() {
-      const { dtFile, items } = buildAdReportRows();
+      const { dtTimeDisplay, dtFile, items } = buildAdReportRows();
       const csvEsc = (v) => '"' + String(v ?? '').replace(/"/g, '""') + '"';
-      const rows = [['प्रकार / स्लाईड', 'जाहिरातदार (Sponsor)', 'शीर्षक / मजकूर', 'लिंक (URL)', 'एकूण Views', 'एकूण Clicks', 'आजचे Clicks', 'CTR (%)', 'पेजनिहाय क्लिक्स', 'मागील ७ दिवस']];
-      items.forEach(it => rows.push([it.name, it.sponsor, it.title, it.link, it.views, it.clicks, it.today, it.ctr, it.pages, it.days7]));
+      const rows = [
+        ['DARSHAN SETU जाहिरात रिपोर्ट', 'Export दिनांक व वेळ: ' + dtTimeDisplay],
+        [],
+        ['प्रकार / स्लाईड', 'जाहिरातदार (Sponsor)', 'पब्लिश दिनांक व वेळ', 'चाललेला कालावधी', 'अनपब्लिश दिनांक व वेळ', 'शीर्षक / मजकूर', 'लिंक (URL)', 'एकूण Views', 'एकूण Clicks', 'आजचे Clicks', 'CTR (%)', 'पेजनिहाय क्लिक्स']
+      ];
+      items.forEach(it => rows.push([it.name, it.sponsor, it.publishedStr || '—', it.durationStr || '—', it.expiresStr || '—', it.title, it.link, it.views, it.clicks, it.today, it.ctr, it.pages]));
+      rows.push([], ['दिनांकनिहाय मागील ७ दिवसांचे क्लिक्स'], ['जाहिरात / स्लाईड', 'जाहिरातदार (Sponsor)', 'दिनांक', 'क्लिक्स (Clicks)']);
+      items.forEach(it => (it.days7Arr || []).forEach(d => rows.push([it.name, it.sponsor, d.date, d.clicks])));
+
       const csvContent = '\uFEFF' + rows.map(r => r.map(csvEsc).join(',')).join('\n');
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
@@ -795,6 +966,8 @@
         document.getElementById('preRollSkipAfter').value = String(ads.preRollSkipAfter || 5);
         document.getElementById('preRollLink').value = ads.preRollLink || '';
         if (document.getElementById('preRollSponsor')) document.getElementById('preRollSponsor').value = ads.preRollSponsor || '';
+        if (document.getElementById('preRollPublishedAt')) document.getElementById('preRollPublishedAt').value = toLocalInputVal(ads.preRollPublishedAt);
+        if (document.getElementById('preRollExpiresAt')) document.getElementById('preRollExpiresAt').value = toLocalInputVal(ads.preRollExpiresAt);
         document.getElementById('preRollText').value = ads.preRollText || '';
         if (ads.preRollFontFamily) document.getElementById('preRollFontSelect').value = ads.preRollFontFamily;
         document.getElementById('preRollVideoUrl').value = ads.preRollVideoUrl || '';
@@ -810,6 +983,8 @@
         document.getElementById('splashFreq').value = ads.splashFrequency || 'always';
         document.getElementById('splashLink').value = ads.splashLink || '';
         if (document.getElementById('splashSponsor')) document.getElementById('splashSponsor').value = ads.splashSponsor || '';
+        if (document.getElementById('splashPublishedAt')) document.getElementById('splashPublishedAt').value = toLocalInputVal(ads.splashPublishedAt);
+        if (document.getElementById('splashExpiresAt')) document.getElementById('splashExpiresAt').value = toLocalInputVal(ads.splashExpiresAt);
         document.getElementById('splashText').value = ads.splashText || '';
         if (ads.splashFontFamily) document.getElementById('splashFontSelect').value = ads.splashFontFamily;
         document.getElementById('splashVideoUrl').value = ads.splashVideoUrl || '';
@@ -832,10 +1007,17 @@
           const img = file ? await compressImageFile(file, 900, 320, 0.82) : (prev.image || '');
           const stEl = cards[i].querySelector('.slot-text');
           const spEl = cards[i].querySelector('.slot-sponsor');
+          const pbEl = cards[i].querySelector('.slot-published');
+          const exEl = cards[i].querySelector('.slot-expires');
           const adId = prev.adId || ('ad_' + Date.now().toString(36) + '_' + i + '_' + Math.random().toString(36).slice(2, 6));
+          const hasContent = Boolean(img || (stEl && stEl.value.trim()) || cards[i].querySelector('.slot-link').value.trim());
+          const pubMs = (pbEl && parseLocalInputMs(pbEl.value)) || prev.publishedAt || (hasContent ? Date.now() : 0);
+          const expMs = (exEl && parseLocalInputMs(exEl.value)) || 0;
           slides.push({
             adId,
             sponsor: spEl ? spEl.value.trim() : (prev.sponsor || ''),
+            publishedAt: pubMs,
+            expiresAt: expMs,
             image: img,
             link: cards[i].querySelector('.slot-link').value.trim(),
             text: stEl ? stEl.value.trim() : ''
@@ -889,6 +1071,8 @@
           preRollDuration: Math.max(2, Math.min(60, Number(document.getElementById('preRollDuration').value) || 10)),
           preRollSkipAfter: Number(document.getElementById('preRollSkipAfter').value) || 5,
           preRollSponsor: (document.getElementById('preRollSponsor')?.value || '').trim(),
+          preRollPublishedAt: parseLocalInputMs(document.getElementById('preRollPublishedAt')?.value) || currentAds.preRollPublishedAt || (preRollEnabled ? Date.now() : 0),
+          preRollExpiresAt: parseLocalInputMs(document.getElementById('preRollExpiresAt')?.value) || 0,
           preRollLink: document.getElementById('preRollLink').value.trim(),
           preRollText: document.getElementById('preRollText').value.trim(),
           preRollFontFamily: document.getElementById('preRollFontSelect').value,
@@ -901,6 +1085,8 @@
           splashSkipAfter: Number(document.getElementById('splashSkipAfter').value) || 5,
           splashFrequency: document.getElementById('splashFreq').value,
           splashSponsor: (document.getElementById('splashSponsor')?.value || '').trim(),
+          splashPublishedAt: parseLocalInputMs(document.getElementById('splashPublishedAt')?.value) || currentAds.splashPublishedAt || (splashEnabled ? Date.now() : 0),
+          splashExpiresAt: parseLocalInputMs(document.getElementById('splashExpiresAt')?.value) || 0,
           splashLink: document.getElementById('splashLink').value.trim(),
           splashText: document.getElementById('splashText').value.trim(),
           splashFontFamily: document.getElementById('splashFontSelect').value,
@@ -967,3 +1153,28 @@
   </script>
 </body>
 </html>
+          <div class="rounded-xl bg-amber-50/70 border border-amber-200/80 p-2.5 space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-1.5">
+              <span class="text-[11px] font-extrabold text-[#05344E]">⏱️ जाहिरात कालावधी व ऑटो-अनपब्लिश</span>
+              <select onchange="applySlotDaysPreset(${i}, this.value)" class="px-2 py-1 rounded-lg border border-amber-300 bg-white text-[11px] font-bold text-[#05344E] cursor-pointer">
+                <option value="">दिवस निवडा (ऐच्छिक)</option>
+                <option value="1">१ दिवस</option>
+                <option value="3">३ दिवस</option>
+                <option value="7">७ दिवस</option>
+                <option value="15">१५ दिवस</option>
+                <option value="30">३० दिवस</option>
+                <option value="0">कायमस्वरूपी (अमर्याद)</option>
+              </select>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[10px] font-bold text-slate-600 mb-0.5">पब्लिश दिनांक व वेळ:</label>
+                <input type="datetime-local" value="${toLocalInputVal(s.publishedAt)}" class="slot-published w-full px-2.5 py-1 rounded-lg border border-slate-300 bg-white text-[11px] font-bold text-[#05344E]" />
+              </div>
+              <div>
+                <label class="block text-[10px] font-bold text-rose-700 mb-0.5">आपोआप अनपब्लिश दिनांक व वेळ:</label>
+                <input type="datetime-local" value="${toLocalInputVal(s.expiresAt)}" class="slot-expires w-full px-2.5 py-1 rounded-lg border border-slate-300 bg-white text-[11px] font-bold text-rose-800" />
+              </div>
+            </div>
+            ${s.expiresAt && Date.now() > Number(s.expiresAt) ? '<div class="text-[10px] font-extrabold text-rose-700">⏸️ मुदत संपली (सध्या अनपब्लिश आहे)</div>' : (s.expiresAt ? `<div class="text-[10px] font-bold text-emerald-700">🟢 पब्लिश कालावधी: ${formatDurationMarathi(s.publishedAt || Date.now(), s.expiresAt)}</div>` : '')}
+          </div>

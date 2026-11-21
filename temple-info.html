@@ -399,7 +399,8 @@
       const nextBtn = document.getElementById('mainAdNextBtn');
       const viewport = document.getElementById('mainAdViewport');
       if (tiSlideTimer) { clearInterval(tiSlideTimer); tiSlideTimer = null; }
-      const slides = (ads && Array.isArray(ads.bannerSlides)) ? ads.bannerSlides.filter(s => s && s.image) : [];
+      const _nowAd = Date.now();
+      const slides = (ads && Array.isArray(ads.bannerSlides)) ? ads.bannerSlides.filter(s => s && s.image && (!s.publishedAt || Number(s.publishedAt) <= _nowAd) && (!s.expiresAt || Number(s.expiresAt) <= 0 || _nowAd <= Number(s.expiresAt))) : [];
       if (!ads || !ads.bannerEnabled || !slides.length) {
         sec.classList.add('hidden');
         return;

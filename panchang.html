@@ -1390,7 +1390,8 @@
         const prev = document.getElementById('mainAdPrevBtn');
         const next = document.getElementById('mainAdNextBtn');
         if (!sec || !track) return;
-        const slides = (cfg && Array.isArray(cfg.bannerSlides)) ? cfg.bannerSlides.filter(x => x && x.image) : [];
+        const _nowAd = Date.now();
+        const slides = (cfg && Array.isArray(cfg.bannerSlides)) ? cfg.bannerSlides.filter(x => x && x.image && (!x.publishedAt || Number(x.publishedAt) <= _nowAd) && (!x.expiresAt || Number(x.expiresAt) <= 0 || _nowAd <= Number(x.expiresAt))) : [];
         if (!cfg || cfg.bannerEnabled === false || !slides.length) {
           sec.classList.add('hidden');
           return;

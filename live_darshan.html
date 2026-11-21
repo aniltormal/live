@@ -4111,12 +4111,20 @@
       } catch (_) {}
     }
 
+    function isAdActiveNow(adObj) {
+      if (!adObj) return false;
+      const now = Date.now();
+      if (adObj.publishedAt && Number(adObj.publishedAt) > now) return false;
+      if (adObj.expiresAt && Number(adObj.expiresAt) > 0 && now > Number(adObj.expiresAt)) return false;
+      return true;
+    }
+
     function renderMainAdBanner() {
       if (bannerSlideTimer) {
         clearInterval(bannerSlideTimer);
         bannerSlideTimer = null;
       }
-      const slides = siteAdsConfig.bannerSlides || [];
+      const slides = (siteAdsConfig.bannerSlides || []).filter(sl => sl && sl.image && isAdActiveNow(sl));
       if (!siteAdsConfig.bannerEnabled || slides.length === 0) {
         el.mainAdSliderSection.classList.add('hidden');
         return;

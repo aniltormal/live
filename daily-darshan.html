@@ -949,9 +949,22 @@
         }
         sec.classList.remove('hidden');
         idx = 0;
+        const seenSub = {};
+        const trackSubAd = (adId, kind) => {
+          try {
+            const dbRef = firebase.database();
+            if (kind === 'views') { if (seenSub[adId]) return; seenSub[adId] = true; }
+            dbRef.ref('adStats/banners/' + adId + '/' + kind).transaction(v => (v || 0) + 1).catch(() => {});
+            if (kind === 'clicks') {
+              const tk = new Date().toISOString().slice(0, 10);
+              dbRef.ref('adStats/banners/' + adId + '/daily/' + tk + '/clicks').transaction(v => (v || 0) + 1).catch(() => {});
+            }
+          } catch (_) {}
+        };
         track.innerHTML = slides.map((s, i) => {
+          const adId = escAd(s.adId || ('slot_' + i));
           const href = (s.link && String(s.link).trim()) ? escAd(s.link.trim()) : '';
-          const tagOpen = href ? `<a href="${href}" target="_blank" rel="noopener noreferrer" class="relative w-full h-full shrink-0 block">` : `<div class="relative w-full h-full shrink-0 block">`;
+          const tagOpen = href ? `<a href="${href}" data-ad-id="${adId}" target="_blank" rel="noopener noreferrer" class="ad-slide-link relative w-full h-full shrink-0 block">` : `<div class="relative w-full h-full shrink-0 block">`;
           const tagClose = href ? `</a>` : `</div>`;
           const cap = (s.text && String(s.text).trim()) ? `<div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 via-black/45 to-transparent px-3 py-2 text-white text-xs sm:text-sm font-bold truncate text-center">${escAd(s.text)}</div>` : '';
           return `${tagOpen}<img src="${escAd(s.image)}" alt="Sponsored ${i + 1}" class="w-full h-full object-cover" />${cap}${tagClose}`;
@@ -960,6 +973,8 @@
         const show = (n) => {
           idx = ((n % slides.length) + slides.length) % slides.length;
           track.style.transform = `translateX(-${idx * 100}%)`;
+          const cs = slides[idx];
+          if (cs) trackSubAd(cs.adId || ('slot_' + idx), 'views');
           if (dots) {
             dots.innerHTML = slides.length > 1 ? slides.map((_, d) =>
               `<button type="button" data-idx="${d}" class="h-2 rounded-full transition-all duration-300 cursor-pointer ${d === idx ? 'w-5 bg-[#05344E]' : 'w-2 bg-neutral-400'}"></button>`
@@ -973,6 +988,7 @@
         };
         if (prev) { prev.classList.toggle('hidden', slides.length <= 1); prev.onclick = () => { show(idx - 1); restart(); }; }
         if (next) { next.classList.toggle('hidden', slides.length <= 1); next.onclick = () => { show(idx + 1); restart(); }; }
+        track.querySelectorAll('.ad-slide-link').forEach(a => a.addEventListener('click', () => trackSubAd(a.dataset.adId, 'clicks')));
         show(0);
         restart();
       }

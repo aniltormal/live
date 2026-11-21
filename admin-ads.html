@@ -197,6 +197,56 @@
       <div class="sticky bottom-3 z-20 flex justify-end">
         <button id="saveAdsBtn" type="button" class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-sm font-bold cursor-pointer shadow-lg transition">💾 सर्व जाहिरात सेटिंग्ज सेव्ह करा</button>
       </div>
+
+      <!-- Standalone Ad Clicks & Views Report Block -->
+      <section id="adReportsSection" class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-5 py-3.5 bg-gradient-to-r from-slate-50 to-amber-50/40 border-b border-slate-200 flex items-center justify-between gap-2">
+          <div>
+            <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">📊 जाहिरात क्लिक व व्ह्यूज रिपोर्ट</h2>
+            <p class="text-xs text-slate-600 mt-0.5">प्रत्येक स्लाईड, Pre-Roll आणि Splash जाहिरातीची स्वतंत्र कामगिरी (मुख्य पेज, दैनिक दर्शन व पंचांगवरून)</p>
+          </div>
+        </div>
+        <div id="adReportsBody" class="p-4 sm:p-5 space-y-4">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <div class="rounded-xl bg-sky-50 border border-sky-200 p-3">
+              <div class="text-[11px] font-bold text-sky-800">👁️ एकूण बॅनर Views</div>
+              <div id="repTotalBannerViews" class="text-xl font-extrabold text-[#05344E] mt-0.5">0</div>
+            </div>
+            <div class="rounded-xl bg-emerald-50 border border-emerald-200 p-3">
+              <div class="text-[11px] font-bold text-emerald-800">👆 एकूण बॅनर Clicks</div>
+              <div id="repTotalBannerClicks" class="text-xl font-extrabold text-emerald-700 mt-0.5">0</div>
+            </div>
+            <div class="rounded-xl bg-amber-50 border border-amber-200 p-3 flex items-center justify-between gap-2">
+              <div>
+                <div class="text-[11px] font-bold text-amber-900">🎬 Pre-Roll (V / C)</div>
+                <div id="repPreRollStats" class="text-base font-extrabold text-[#05344E] mt-0.5">0 / 0</div>
+              </div>
+              <button type="button" onclick="resetSingleAdStat('preroll')" class="px-2 py-1 rounded-lg bg-white border border-amber-300 text-[10px] font-bold text-rose-700 hover:bg-rose-50 cursor-pointer">🔄</button>
+            </div>
+            <div class="rounded-xl bg-purple-50 border border-purple-200 p-3 flex items-center justify-between gap-2">
+              <div>
+                <div class="text-[11px] font-bold text-purple-900">💥 Splash (V / C)</div>
+                <div id="repSplashStats" class="text-base font-extrabold text-[#05344E] mt-0.5">0 / 0</div>
+              </div>
+              <button type="button" onclick="resetSingleAdStat('splash')" class="px-2 py-1 rounded-lg bg-white border border-purple-300 text-[10px] font-bold text-rose-700 hover:bg-rose-50 cursor-pointer">🔄</button>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+            <h3 class="text-xs sm:text-sm font-extrabold text-[#05344E]">🖼️ प्रत्येक स्लाईडचा स्वतंत्र रिपोर्ट</h3>
+            <div class="flex flex-wrap items-center gap-2">
+              <button type="button" onclick="exportAdReportCsv()" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs cursor-pointer">📥 CSV</button>
+              <button type="button" onclick="exportAdReportJpg()" class="px-2.5 py-1 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold shadow-xs cursor-pointer">🖼️ JPG</button>
+              <button type="button" onclick="exportAdReportPdf()" class="px-2.5 py-1 rounded-lg bg-[#EA580C] hover:bg-orange-700 text-white text-xs font-bold shadow-xs cursor-pointer">📄 PDF</button>
+            <button id="cleanOrphanStatsBtn" type="button" onclick="cleanOrphanAdStats()" class="hidden px-3 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold cursor-pointer">🧹 काढलेल्या स्लाईड्सचा जुना डेटा साफ करा</button>
+            </div>
+          </div>
+          <div id="slideReportsList" class="space-y-2.5">
+            <div class="text-xs text-slate-500 p-4 rounded-xl bg-slate-50 border border-slate-200 text-center">⏳ आकडेवारी लोड होत आहे...</div>
+          </div>
+        </div>
+      </section>
+
     </div>
   </main>
 
@@ -388,7 +438,281 @@
 
     renderSlots(currentAds.bannerSlides);
     initAdminGuard(() => {
-      fbDb.ref('siteConfig/ads').on('value', (snap) => {
+      
+    let cachedAdStats = {};
+    function renderAdReports() {
+      const stats = cachedAdStats || {};
+      const banners = stats.banners || {};
+      const slides = (currentAds && Array.isArray(currentAds.bannerSlides)) ? currentAds.bannerSlides : [];
+      const todayKey = new Date().toISOString().slice(0, 10);
+
+      let totalV = 0, totalC = 0;
+      const activeIds = new Set();
+      const listEl = document.getElementById('slideReportsList');
+      if (listEl) {
+        const activeSlides = slides.map((s, idx) => ({ s, idx })).filter(x => x.s && (x.s.image || x.s.text || x.s.link));
+        if (!activeSlides.length) {
+          listEl.innerHTML = '<div class="text-xs text-slate-500 p-4 rounded-xl bg-slate-50 border border-slate-200 text-center">अद्याप कोणतीही स्लाईड जोडलेली नाही.</div>';
+        } else {
+          listEl.innerHTML = activeSlides.map(({ s, idx }) => {
+            const adId = s.adId || ('slot_' + idx);
+            activeIds.add(adId);
+            const st = banners[adId] || {};
+            const views = Number(st.views || 0);
+            const clicks = Number(st.clicks || 0);
+            const todayClicks = Number((st.daily && st.daily[todayKey] && st.daily[todayKey].clicks) || 0);
+            totalV += views;
+            totalC += clicks;
+            const ctr = views > 0 ? ((clicks / views) * 100).toFixed(1) : '0.0';
+            return `
+              <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-3 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3 min-w-0 flex-1">
+                  ${s.image ? `<img src="${esc(s.image)}" alt="" class="w-16 h-11 rounded-lg object-cover border border-slate-200 shrink-0 bg-white" />` : `<div class="w-16 h-11 rounded-lg bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-500 shrink-0">स्लाईड ${idx + 1}</div>`}
+                  <div class="min-w-0">
+                    <div class="text-xs sm:text-sm font-extrabold text-[#05344E] truncate">स्लाईड ${idx + 1}${s.text ? ': ' + esc(s.text) : ''}</div>
+                    <div class="text-[11px] text-slate-500 truncate">${s.link ? esc(s.link) : 'लिंक नाही'}</div>
+                  </div>
+                </div>
+                <div class="flex flex-wrap items-center gap-2 text-xs font-bold">
+                  <span class="px-2.5 py-1 rounded-lg bg-white border border-sky-200 text-sky-900">👁️ ${views.toLocaleString('en-IN')}</span>
+                  <span class="px-2.5 py-1 rounded-lg bg-white border border-emerald-200 text-emerald-800">👆 ${clicks.toLocaleString('en-IN')}</span>
+                  <span class="px-2.5 py-1 rounded-lg bg-white border border-amber-200 text-amber-900">📅 आज: ${todayClicks}</span>
+                  <span class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-[#05344E]">CTR: ${ctr}%</span>
+                  <button type="button" onclick="resetSingleAdStat('banners/${adId}')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 cursor-pointer">🔄 Reset</button>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+
+      const tv = document.getElementById('repTotalBannerViews');
+      const tc = document.getElementById('repTotalBannerClicks');
+      if (tv) tv.textContent = totalV.toLocaleString('en-IN');
+      if (tc) tc.textContent = totalC.toLocaleString('en-IN');
+
+      const pr = stats.preroll || {};
+      const sp = stats.splash || {};
+      const prEl = document.getElementById('repPreRollStats');
+      const spEl = document.getElementById('repSplashStats');
+      if (prEl) prEl.textContent = `${Number(pr.views || 0)} / ${Number(pr.clicks || 0)}`;
+      if (spEl) spEl.textContent = `${Number(sp.views || 0)} / ${Number(sp.clicks || 0)}`;
+
+      const orphanKeys = Object.keys(banners).filter(k => !activeIds.has(k));
+      const cleanBtn = document.getElementById('cleanOrphanStatsBtn');
+      if (cleanBtn) cleanBtn.classList.toggle('hidden', orphanKeys.length === 0);
+    }
+
+
+
+    function buildAdReportRows() {
+      const stats = cachedAdStats || {};
+      const banners = stats.banners || {};
+      const slides = (currentAds && Array.isArray(currentAds.bannerSlides)) ? currentAds.bannerSlides : [];
+      const todayKey = new Date().toISOString().slice(0, 10);
+      const M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const now = new Date();
+      const dtDisplay = `${String(now.getDate()).padStart(2,'0')} ${M[now.getMonth()]} ${now.getFullYear()}`;
+      const dtFile = dtDisplay.replace(/ /g, '_');
+      const items = [];
+      let totalV = 0, totalC = 0;
+      slides.forEach((s, idx) => {
+        if (!s || (!s.image && !s.text && !s.link)) return;
+        const adId = s.adId || ('slot_' + idx);
+        const st = banners[adId] || {};
+        const v = Number(st.views || 0);
+        const c = Number(st.clicks || 0);
+        const tc = Number((st.daily && st.daily[todayKey] && st.daily[todayKey].clicks) || 0);
+        totalV += v; totalC += c;
+        items.push({ name: `बॅनर स्लाईड ${idx + 1}`, title: s.text || '-', link: s.link || '-', views: v, clicks: c, today: tc, ctr: v > 0 ? ((c / v) * 100).toFixed(1) + '%' : '0.0%' });
+      });
+      const pr = stats.preroll || {};
+      const pv = Number(pr.views || 0), pc = Number(pr.clicks || 0);
+      items.push({ name: 'Pre-Roll जाहिरात', title: 'व्हिडिओ पूर्व जाहिरात', link: currentAds.preRollLink || '-', views: pv, clicks: pc, today: '-', ctr: pv > 0 ? ((pc / pv) * 100).toFixed(1) + '%' : '0.0%' });
+      const sp = stats.splash || {};
+      const sv = Number(sp.views || 0), sc = Number(sp.clicks || 0);
+      items.push({ name: 'Splash पॉपअप जाहिरात', title: 'मुख्य स्क्रीन पॉपअप', link: currentAds.splashLink || '-', views: sv, clicks: sc, today: '-', ctr: sv > 0 ? ((sc / sv) * 100).toFixed(1) + '%' : '0.0%' });
+      return { dtDisplay, dtFile, totalV, totalC, items };
+    }
+
+    window.exportAdReportJpg = function() {
+      const { dtDisplay, dtFile, totalV, totalC, items } = buildAdReportRows();
+      const W = 1080;
+      const rowH = 66;
+      const H = Math.max(520, 260 + items.length * rowH + 70);
+      const canvas = document.createElement('canvas');
+      canvas.width = W; canvas.height = H;
+      const ctx = canvas.getContext('2d');
+
+      ctx.fillStyle = '#FFFBEB';
+      ctx.fillRect(0, 0, W, H);
+
+      const grad = ctx.createLinearGradient(0, 0, W, 0);
+      grad.addColorStop(0, '#031926'); grad.addColorStop(0.5, '#05344E'); grad.addColorStop(1, '#0a4d70');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, 125);
+      ctx.fillStyle = '#F59E0B';
+      ctx.fillRect(0, 121, W, 4);
+
+      ctx.fillStyle = '#FDE68A';
+      ctx.font = 'bold 34px sans-serif';
+      ctx.fillText('DARSHAN SETU® — जाहिरात क्लिक व व्ह्यूज रिपोर्ट', 40, 56);
+      ctx.fillStyle = '#E2E8F0';
+      ctx.font = 'bold 20px sans-serif';
+      ctx.fillText(`दिनांक: ${dtDisplay}   •   एकूण बॅनर Views: ${totalV}   •   एकूण बॅनर Clicks: ${totalC}`, 40, 96);
+
+      let y = 165;
+      ctx.fillStyle = '#05344E';
+      ctx.fillRect(40, y, W - 80, 44);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 19px sans-serif';
+      ctx.fillText('जाहिरात / स्लाईड', 56, y + 29);
+      ctx.fillText('Views', 520, y + 29);
+      ctx.fillText('Clicks', 660, y + 29);
+      ctx.fillText('आज', 795, y + 29);
+      ctx.fillText('CTR', 915, y + 29);
+      y += 44;
+
+      items.forEach((it, idx) => {
+        ctx.fillStyle = idx % 2 === 0 ? '#FFFFFF' : '#F8FAFC';
+        ctx.fillRect(40, y, W - 80, rowH);
+        ctx.strokeStyle = '#E2E8F0';
+        ctx.strokeRect(40, y, W - 80, rowH);
+        ctx.fillStyle = '#05344E';
+        ctx.font = 'bold 20px sans-serif';
+        ctx.fillText(String(it.name + (it.title && it.title !== '-' ? ' — ' + it.title : '')).slice(0, 38), 56, y + 30);
+        ctx.fillStyle = '#64748B';
+        ctx.font = '14px sans-serif';
+        ctx.fillText(String(it.link || '-').slice(0, 55), 56, y + 52);
+        ctx.fillStyle = '#0369A1';
+        ctx.font = 'bold 20px sans-serif';
+        ctx.fillText(String(it.views), 520, y + 40);
+        ctx.fillStyle = '#047857';
+        ctx.fillText(String(it.clicks), 660, y + 40);
+        ctx.fillStyle = '#B45309';
+        ctx.fillText(String(it.today), 795, y + 40);
+        ctx.fillStyle = '#05344E';
+        ctx.fillText(String(it.ctr), 915, y + 40);
+        y += rowH;
+      });
+
+      ctx.fillStyle = '#64748B';
+      ctx.font = 'bold 16px sans-serif';
+      ctx.fillText('© २०२६ DARSHAN SETU® • darshansetu.live', 40, H - 24);
+
+      const url = canvas.toDataURL('image/jpeg', 0.94);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `darshan_setu_ad_report_${dtFile}.jpg`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast('जाहिरात रिपोर्ट JPG इमेज डाउनलोड झाली!');
+    };
+
+    window.exportAdReportPdf = function() {
+      const { dtDisplay, totalV, totalC, items } = buildAdReportRows();
+      const rowsHtml = items.map(it => `
+        <tr>
+          <td><strong>${esc(it.name)}</strong>${it.title && it.title !== '-' ? '<br><small>' + esc(it.title) + '</small>' : ''}</td>
+          <td style="word-break:break-all;font-size:11px;color:#475569;">${esc(it.link)}</td>
+          <td style="text-align:center;font-weight:700;color:#0369A1;">${it.views}</td>
+          <td style="text-align:center;font-weight:700;color:#047857;">${it.clicks}</td>
+          <td style="text-align:center;font-weight:700;color:#B45309;">${it.today}</td>
+          <td style="text-align:center;font-weight:700;">${it.ctr}</td>
+        </tr>`).join('');
+      const w = window.open('', '_blank', 'width=900,height=700');
+      if (!w) { showToast('कृपया ब्राउझर पॉपअप अनुमती द्या.', true); return; }
+      w.document.write(`<!DOCTYPE html><html lang="mr"><head><meta charset="UTF-8"><title>DARSHAN SETU — जाहिरात रिपोर्ट (${dtDisplay})</title>
+        <style>
+          body{font-family:'Noto Sans Devanagari',sans-serif;margin:24px;color:#0F172A;}
+          .hdr{background:#05344E;color:#fff;padding:16px 20px;border-radius:12px;border-bottom:4px solid #F59E0B;margin-bottom:16px;}
+          .hdr h1{margin:0;font-size:20px;color:#FDE68A;}
+          .hdr p{margin:6px 0 0;font-size:13px;color:#E2E8F0;}
+          table{width:100%;border-collapse:collapse;font-size:13px;}
+          th{background:#05344E;color:#fff;padding:10px 8px;text-align:left;}
+          td{padding:9px 8px;border-bottom:1px solid #CBD5E1;vertical-align:top;}
+          tr:nth-child(even){background:#F8FAFC;}
+          .ftr{margin-top:18px;font-size:11px;color:#64748B;text-align:center;}
+          @media print{body{margin:10px;}}
+        </style></head><body>
+        <div class="hdr"><h1>DARSHAN SETU® — जाहिरात क्लिक व व्ह्यूज रिपोर्ट</h1><p>दिनांक: ${dtDisplay} • एकूण बॅनर Views: ${totalV} • एकूण बॅनर Clicks: ${totalC}</p></div>
+        <table><thead><tr><th>जाहिरात / स्लाईड</th><th>लिंक (URL)</th><th style="text-align:center;">Views</th><th style="text-align:center;">Clicks</th><th style="text-align:center;">आज</th><th style="text-align:center;">CTR</th></tr></thead><tbody>${rowsHtml}</tbody></table>
+        <div class="ftr">© २०२६ DARSHAN SETU® • darshansetu.live</div>
+        </body></html>`);
+      w.document.close();
+      setTimeout(() => { try { w.focus(); w.print(); } catch (_) {} }, 400);
+    };
+
+    window.exportAdReportCsv = function() {
+      const stats = cachedAdStats || {};
+      const banners = stats.banners || {};
+      const slides = (currentAds && Array.isArray(currentAds.bannerSlides)) ? currentAds.bannerSlides : [];
+      const todayKey = new Date().toISOString().slice(0, 10);
+      const M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const now = new Date();
+      const dtLabel = `${String(now.getDate()).padStart(2,'0')}_${M[now.getMonth()]}_${now.getFullYear()}`;
+      const csvEsc = (v) => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+
+      const rows = [['प्रकार / स्लाईड', 'शीर्षक / मजकूर', 'लिंक (URL)', 'एकूण Views', 'एकूण Clicks', 'आजचे Clicks', 'CTR (%)']];
+      slides.forEach((s, idx) => {
+        if (!s || (!s.image && !s.text && !s.link)) return;
+        const adId = s.adId || ('slot_' + idx);
+        const st = banners[adId] || {};
+        const v = Number(st.views || 0);
+        const c = Number(st.clicks || 0);
+        const tc = Number((st.daily && st.daily[todayKey] && st.daily[todayKey].clicks) || 0);
+        const ctr = v > 0 ? ((c / v) * 100).toFixed(1) + '%' : '0.0%';
+        rows.push([`बॅनर स्लाईड ${idx + 1}`, s.text || '-', s.link || '-', v, c, tc, ctr]);
+      });
+
+      const pr = stats.preroll || {};
+      const pv = Number(pr.views || 0), pc = Number(pr.clicks || 0);
+      rows.push(['Pre-Roll जाहिरात', 'व्हिडिओ पूर्व जाहिरात', currentAds.preRollLink || '-', pv, pc, '-', pv > 0 ? ((pc / pv) * 100).toFixed(1) + '%' : '0.0%']);
+
+      const sp = stats.splash || {};
+      const sv = Number(sp.views || 0), sc = Number(sp.clicks || 0);
+      rows.push(['Splash पॉपअप जाहिरात', 'मुख्य स्क्रीन पॉपअप', currentAds.splashLink || '-', sv, sc, '-', sv > 0 ? ((sc / sv) * 100).toFixed(1) + '%' : '0.0%']);
+
+      const csvContent = '\uFEFF' + rows.map(r => r.map(csvEsc).join(',')).join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `darshan_setu_ad_report_${dtLabel}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('जाहिरात रिपोर्ट CSV फाईल डाउनलोड झाली!');
+    };
+
+    window.resetSingleAdStat = async function(subPath) {
+      if (!confirm('या जाहिरातीची आकडेवारी शून्य (Reset) करायची का?')) return;
+      try {
+        await fbDb.ref('adStats/' + subPath).remove();
+        showToast('जाहिरात आकडेवारी रिसेट केली.');
+      } catch (e) { showToast('रिसेट अयशस्वी: ' + e.message, true); }
+    };
+
+    window.cleanOrphanAdStats = async function() {
+      const banners = (cachedAdStats && cachedAdStats.banners) || {};
+      const slides = (currentAds && Array.isArray(currentAds.bannerSlides)) ? currentAds.bannerSlides : [];
+      const activeIds = new Set(slides.map((s, idx) => (s && s.adId) || ('slot_' + idx)));
+      const orphans = Object.keys(banners).filter(k => !activeIds.has(k));
+      if (!orphans.length) return;
+      try {
+        await Promise.all(orphans.map(k => fbDb.ref('adStats/banners/' + k).remove()));
+        showToast('काढलेल्या स्लाईड्सचा जुना डेटा साफ केला.');
+      } catch (e) { showToast('साफसफाई अयशस्वी: ' + e.message, true); }
+    };
+
+    fbDb.ref('adStats').on('value', (snap) => {
+      cachedAdStats = snap.val() || {};
+      renderAdReports();
+    });
+
+    fbDb.ref('siteConfig/ads').on('value', (snap) => {
         const ads = snap.val() || {};
         currentAds = Object.assign({ bannerSlides: [{}, {}, {}] }, ads);
         if (!Array.isArray(currentAds.bannerSlides) || currentAds.bannerSlides.length < 3) {
@@ -441,7 +765,9 @@
           const file = slotPendingFiles[i];
           const img = file ? await compressImageFile(file, 900, 320, 0.82) : (prev.image || '');
           const stEl = cards[i].querySelector('.slot-text');
+          const adId = prev.adId || ('ad_' + Date.now().toString(36) + '_' + i + '_' + Math.random().toString(36).slice(2, 6));
           slides.push({
+            adId,
             image: img,
             link: cards[i].querySelector('.slot-link').value.trim(),
             text: stEl ? stEl.value.trim() : ''

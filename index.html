@@ -4094,6 +4094,22 @@
     }
 
     // Option 1: True Smooth Horizontal Auto-Sliding Banner
+    const __seenAdViews = {};
+    function trackAdStat(path, kind) {
+      try {
+        if (typeof fbDb === 'undefined' || !fbDb) return;
+        if (kind === 'views') {
+          if (__seenAdViews[path]) return;
+          __seenAdViews[path] = true;
+        }
+        fbDb.ref('adStats/' + path + '/' + kind).transaction(v => (v || 0) + 1).catch(() => {});
+        if (kind === 'clicks') {
+          const todayKey = new Date().toISOString().slice(0, 10);
+          fbDb.ref('adStats/' + path + '/daily/' + todayKey + '/clicks').transaction(v => (v || 0) + 1).catch(() => {});
+        }
+      } catch (_) {}
+    }
+
     function renderMainAdBanner() {
       if (bannerSlideTimer) {
         clearInterval(bannerSlideTimer);
@@ -4114,6 +4130,8 @@
         a.rel = 'noopener noreferrer';
         a.className = 'relative w-full h-full shrink-0 block';
         configureAdLink(a, slide.link);
+        const slideStatId = slide.adId || ('slot_' + idx);
+        a.addEventListener('click', () => trackAdStat('banners/' + slideStatId, 'clicks'));
 
         const img = document.createElement('img');
         img.src = slide.image;
@@ -4138,6 +4156,8 @@
         const activeIdx = ((i % slides.length) + slides.length) % slides.length;
         bannerSlideIdx = activeIdx;
         el.mainAdTrack.style.transform = `translateX(-${activeIdx * 100}%)`;
+        const curSlide = slides[activeIdx];
+        if (curSlide) trackAdStat('banners/' + (curSlide.adId || ('slot_' + activeIdx)), 'views');
         el.mainAdDots.innerHTML = '';
         if (slides.length > 1) {
           slides.forEach((_, dIdx) => {
@@ -4288,6 +4308,8 @@
 
       updateLabels();
       el.preRollOverlay.classList.remove('hidden');
+      if (el.preRollLinkEl && !el.preRollLinkEl.__trackedClick) { el.preRollLinkEl.__trackedClick = true; el.preRollLinkEl.addEventListener('click', () => trackAdStat('preroll', 'clicks')); }
+      trackAdStat('preroll', 'views');
 
       if (isVideo && pv) {
         pv.onended = finish;
@@ -4405,6 +4427,8 @@
 
       updateSplashLabels();
       el.splashAdModal.classList.remove('hidden');
+      trackAdStat('splash', 'views');
+      if (el.splashAdLinkEl && !el.splashAdLinkEl.__trackedClick) { el.splashAdLinkEl.__trackedClick = true; el.splashAdLinkEl.addEventListener('click', () => trackAdStat('splash', 'clicks')); }
 
       if (isVideo && sv) {
         sv.onended = closeSplashAd;

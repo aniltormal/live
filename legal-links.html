@@ -72,7 +72,7 @@
           <path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/>
         </svg>
       </a>
-        <button id="menuOpenBtn" type="button" onclick="window.openPortalMenu && window.openPortalMenu()" aria-label="मेनू उघडा" class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white/10 hover:bg-white/20 border border-amber-300/40 text-amber-200 flex items-center justify-center shadow-sm transition cursor-pointer shrink-0">
+        <button id="menuOpenBtn" type="button" aria-label="मेनू उघडा" class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white/10 hover:bg-white/20 border border-amber-300/40 text-amber-200 flex items-center justify-center shadow-sm transition cursor-pointer shrink-0">
           <svg class="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
       </div>
@@ -84,15 +84,22 @@
     <div id="mobileMenuPanel" class="w-60 sm:w-64 max-w-[70vw] h-full bg-white text-slate-900 shadow-2xl flex flex-col overflow-hidden transition-all duration-300 ease-out translate-x-full">
       <div class="bg-gradient-to-r from-[#031926] via-[#05344E] to-[#084160] text-white px-4 py-3.5 border-b-2 border-amber-400 flex items-center justify-between">
         <div class="font-khand text-lg font-bold tracking-wide">🛕 पोर्टल मेनू</div>
-        <button id="menuCloseBtn" type="button" onclick="window.closePortalMenu && window.closePortalMenu()" aria-label="मेनू बंद करा" class="w-8 h-8 rounded-lg bg-white/15 hover:bg-white/25 text-white flex items-center justify-center font-bold cursor-pointer">✕</button>
+        <button id="menuCloseBtn" type="button" aria-label="मेनू बंद करा" class="w-8 h-8 rounded-lg bg-white/15 hover:bg-white/25 text-white flex items-center justify-center font-bold cursor-pointer">✕</button>
       </div>
       <nav id="mobileMenuNav" class="flex-1 overflow-y-auto p-3 space-y-1.5 text-sm font-bold">
-        <div class="rounded-xl border border-slate-200 overflow-hidden">
-          <button id="menuTempleInfoToggle" type="button" onclick="window.togglePortalMenuInfo && window.togglePortalMenuInfo()" class="w-full flex items-center justify-between px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100 text-[#05344E] cursor-pointer">
+                        <div class="rounded-xl border border-slate-200">
+          <button id="menuTempleInfoToggle" type="button" class="w-full flex items-center justify-between px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100 text-[#05344E] cursor-pointer rounded-xl">
             <span class="flex items-center gap-3"><span>🕰️</span><span>आरती वेळापत्रक व माहिती</span></span>
             <span id="menuTempleInfoArrow" class="text-xs">▼</span>
           </button>
-          <div id="menuTempleInfoList" class="hidden bg-white px-2 py-1.5 space-y-1 border-t border-slate-100"></div>
+          <div id="menuTempleInfoList" style="display:none;" class="bg-white px-2 py-1.5 space-y-1 border-t border-slate-100">
+            <a href="temple-info.html?id=pandharpur" class="block px-3 py-1.5 rounded-lg text-xs font-bold truncate border border-amber-300 bg-amber-50 text-[#05344E] hover:bg-amber-100 transition">⭐ श्री विठ्ठल रुक्मिणी, पंढरपूर</a>
+            <a href="temple-info.html?id=kolhapur" class="block px-3 py-1.5 rounded-lg text-xs font-bold truncate text-slate-700 hover:bg-slate-100 hover:text-[#EA580C] transition">🛕 श्री अंबाबाई महालक्ष्मी, कोल्हापूर</a>
+            <a href="temple-info.html?id=tuljapur" class="block px-3 py-1.5 rounded-lg text-xs font-bold truncate text-slate-700 hover:bg-slate-100 hover:text-[#EA580C] transition">🛕 श्री तुळजाभवानी, तुळजापूर</a>
+            <a href="temple-info.html?id=shirdi" class="block px-3 py-1.5 rounded-lg text-xs font-bold truncate text-slate-700 hover:bg-slate-100 hover:text-[#EA580C] transition">🛕 श्री साईबाबा, शिर्डी</a>
+            <a href="temple-info.html?id=dagdusheth" class="block px-3 py-1.5 rounded-lg text-xs font-bold truncate text-slate-700 hover:bg-slate-100 hover:text-[#EA580C] transition">🛕 दगडूशेठ गणपती, पुणे</a>
+            <a href="temple-info.html?id=siddhivinayak" class="block px-3 py-1.5 rounded-lg text-xs font-bold truncate text-slate-700 hover:bg-slate-100 hover:text-[#EA580C] transition">🛕 श्री सिद्धिविनायक, मुंबई</a>
+          </div>
         </div>
         <div id="mobileMenuDynamicLinks" class="space-y-1.5">
           <a href="daily-darshan.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📸</span><span>दैनिक फोटो दर्शन</span></a>
@@ -103,7 +110,7 @@
           <a href="legal-links.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>🔗</span><span>कायदेशीर समस्या व पोर्टल दुवे</span></a>
           <a href="disclaimer.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📄</span><span>नियम व अस्वीकरण</span></a>
         </div>
-        <button id="menuInstallAppBtn" type="button" onclick="window.triggerPortalInstall && window.triggerPortalInstall()" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-[#05344E] to-[#084160] text-amber-300 border border-amber-400/50 shadow-sm cursor-pointer transition hover:opacity-95">
+        <button id="menuInstallAppBtn" type="button" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-[#05344E] to-[#084160] text-amber-300 border border-amber-400/50 shadow-sm cursor-pointer transition hover:opacity-95">
           <span>📲</span><span>होम स्क्रीनवर शॉर्टकट जोडा</span>
         </button>
       </nav>
@@ -113,7 +120,8 @@
       </div>
     </div>
   </div>
-  <main class="flex-1 max-w-7xl xl:max-w-[1400px] w-full mx-auto p-4 sm:p-6 space-y-5">
+
+    <main class="flex-1 max-w-7xl xl:max-w-[1400px] w-full mx-auto p-4 sm:p-6 space-y-5">
     <section id="legalIntroCard" class="bg-gradient-to-r from-[#05344E] to-[#0a4d70] text-white rounded-3xl p-5 sm:p-6 shadow-md space-y-1.5">
       <h2 class="font-khand text-2xl sm:text-3xl font-bold">🔗 पोर्टल माहिती व कायदेशीर दुवे</h2>
       <p class="text-xs sm:text-sm text-amber-100/90">वेबसाईटच्या सर्व महत्त्वाच्या माहिती, नियम व धोरणांचे दुवे खालीलप्रमाणे आहेत.</p>
@@ -510,106 +518,6 @@
       });
     } catch (_) {}
   </script>
-
-  <script>
-    (function initSubpagePortalMenu() {
-      const DEFAULT_TEMPLES_MENU = [
-        { id: 'pandharpur', shortTitle: 'श्री विठ्ठल-रुक्मिणी, पंढरपूर' },
-        { id: 'kolhapur', shortTitle: 'महालक्ष्मी मंदिर, कोल्हापूर' },
-        { id: 'tuljapur', shortTitle: 'तुळजाभवानी मंदिर, तुळजापूर' },
-        { id: 'shirdi', shortTitle: 'साईबाबा मंदिर, शिर्डी' },
-        { id: 'dagdusheth', shortTitle: 'दगडूशेठ गणपती, पुणे' },
-        { id: 'siddhivinayak', shortTitle: 'सिद्धिविनायक, मुंबई' }
-      ];
-      function esc(s) {
-        return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-      }
-      function renderTempleMenu(list) {
-        const box = document.getElementById('menuTempleInfoList');
-        if (!box) return;
-        box.innerHTML = (list || []).filter(t => t && !t.deleted && !t.hidden).map(t =>
-          `<a href="temple-info.html?id=${encodeURIComponent(t.id)}" class="block px-3 py-1.5 rounded-lg text-xs font-bold truncate ${t.id === 'pandharpur' ? 'border-l-4 border-[#EA580C] bg-orange-50/90 text-[#9A3412] hover:bg-orange-100' : 'text-slate-700 hover:bg-amber-50 hover:text-[#05344E]'}">${t.id === 'pandharpur' ? '🚩' : '🛕'} ${esc(t.shortTitle || t.name || t.id)}</a>`
-        ).join('');
-      }
-      renderTempleMenu(DEFAULT_TEMPLES_MENU);
-
-      window.openPortalMenu = function() {
-        const d = document.getElementById('mobileMenuDrawer');
-        const p = document.getElementById('mobileMenuPanel');
-        if (!d) return;
-        d.classList.remove('hidden');
-        requestAnimationFrame(() => {
-          d.classList.remove('opacity-0');
-          if (p) p.classList.remove('translate-x-full');
-        });
-      };
-      window.closePortalMenu = function() {
-        const d = document.getElementById('mobileMenuDrawer');
-        const p = document.getElementById('mobileMenuPanel');
-        if (!d) return;
-        d.classList.add('opacity-0');
-        if (p) p.classList.add('translate-x-full');
-        setTimeout(() => d.classList.add('hidden'), 280);
-      };
-      window.togglePortalMenuInfo = function() {
-        const box = document.getElementById('menuTempleInfoList');
-        const arr = document.getElementById('menuTempleInfoArrow');
-        if (!box) return;
-        const hidden = box.classList.toggle('hidden');
-        if (arr) arr.textContent = hidden ? '▼' : '▲';
-      };
-
-      const drawer = document.getElementById('mobileMenuDrawer');
-      if (drawer) {
-        drawer.addEventListener('click', (e) => {
-          if (e.target === drawer) window.closePortalMenu();
-        });
-      }
-
-      if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
-        const db = firebase.database();
-        db.ref('siteConfig/menuLinks').on('value', (snap) => {
-          const m = snap.val();
-          const box = document.getElementById('mobileMenuDynamicLinks');
-          if (box && m && Array.isArray(m.items) && m.items.length) {
-            let listItems = [...m.items];
-            if (!listItems.some(x => x && String(x.url || '').includes('daily-darshan.html'))) {
-              listItems.unshift({ icon: '📸', label: 'दैनिक फोटो दर्शन', url: 'daily-darshan.html', enabled: true });
-            }
-            if (!listItems.some(x => x && String(x.url || '').includes('disclaimer.html'))) {
-              listItems.push({ icon: '📄', label: 'नियम व अस्वीकरण', url: 'disclaimer.html', enabled: true });
-            }
-            if (!listItems.some(x => x && String(x.url || '').includes('advertising.html'))) {
-              const exp = [];
-              listItems.forEach(x => {
-                if (x && String(x.url || '').includes('contact.html') && String(x.label || '').includes('जाहिरात')) {
-                  exp.push({ icon: '📢', label: 'जाहिरात द्या', url: 'advertising.html', enabled: x.enabled !== false });
-                  exp.push({ icon: '📞', label: 'संपर्क करा', url: 'contact.html', enabled: x.enabled !== false });
-                } else { exp.push(x); }
-              });
-              listItems = exp;
-            }
-            box.innerHTML = listItems.filter(it => it && it.enabled !== false && it.label && it.url).map(it =>
-              `<a href="${esc(it.url)}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>${esc(it.icon || '📄')}</span><span>${esc(it.label)}</span></a>`
-            ).join('');
-          }
-        });
-        db.ref('temples').on('value', (snap) => {
-          const data = snap.val();
-          if (!data || typeof data !== 'object') return;
-          const map = {};
-          DEFAULT_TEMPLES_MENU.forEach(t => { map[t.id] = { ...t }; });
-          Object.keys(data).forEach(k => {
-            if (data[k] && typeof data[k] === 'object') {
-              map[k] = Object.assign(map[k] || { id: k }, data[k], { id: k });
-            }
-          });
-          const arr = Object.values(map).sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
-          renderTempleMenu(arr);
-        });
-      }
-    })();
-  </script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -638,6 +546,144 @@
       }, 380);
     })();
   </script>
+  <script>
+    (function initUnifiedPortalMenu() {
+      window.openPortalMenu = function() {
+        const d = document.getElementById('mobileMenuDrawer');
+        const p = document.getElementById('mobileMenuPanel');
+        if (!d) return;
+        d.classList.remove('hidden');
+        requestAnimationFrame(() => {
+          d.classList.remove('opacity-0');
+          if (p) p.classList.remove('translate-x-full');
+        });
+      };
+      window.closePortalMenu = function() {
+        const d = document.getElementById('mobileMenuDrawer');
+        const p = document.getElementById('mobileMenuPanel');
+        if (!d) return;
+        d.classList.add('opacity-0');
+        if (p) p.classList.add('translate-x-full');
+        setTimeout(() => d.classList.add('hidden'), 280);
+      };
+      window.togglePortalMenuInfo = function(e) {
+        if (e && e.stopPropagation) e.stopPropagation();
+        const box = document.getElementById('menuTempleInfoList');
+        const arr = document.getElementById('menuTempleInfoArrow');
+        if (!box) return;
+        const isCurrentlyHidden = box.classList.contains('hidden') || box.style.display === 'none' || getComputedStyle(box).display === 'none';
+        if (isCurrentlyHidden) {
+          box.classList.remove('hidden');
+          box.style.display = 'block';
+          if (arr) arr.textContent = '▲';
+        } else {
+          box.classList.add('hidden');
+          box.style.display = 'none';
+          if (arr) arr.textContent = '▼';
+        }
+      };
 
+      let __deferredInstallPrompt = null;
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        __deferredInstallPrompt = e;
+      });
+      window.triggerPortalInstall = async function() {
+        if (__deferredInstallPrompt) {
+          __deferredInstallPrompt.prompt();
+          await __deferredInstallPrompt.userChoice;
+          __deferredInstallPrompt = null;
+        } else {
+          alert('ब्राउझर मेनूमधून (⋮) "Add to Home screen" किंवा "Install app" निवडा.');
+        }
+      };
+
+      const dEl = document.getElementById('mobileMenuDrawer');
+      if (dEl) {
+        dEl.addEventListener('click', (e) => {
+          if (e.target === dEl) window.closePortalMenu();
+        });
+      }
+      const openBtn = document.getElementById('menuOpenBtn');
+      if (openBtn) openBtn.onclick = () => window.openPortalMenu();
+      const closeBtn = document.getElementById('menuCloseBtn');
+      if (closeBtn) closeBtn.onclick = () => window.closePortalMenu();
+      const toggleInfoBtn = document.getElementById('menuTempleInfoToggle');
+      if (toggleInfoBtn) {
+        toggleInfoBtn.onclick = function(e) {
+          if (e && e.stopPropagation) e.stopPropagation();
+          const box = document.getElementById('menuTempleInfoList');
+          const arr = document.getElementById('menuTempleInfoArrow');
+          if (!box) return;
+          const isHidden = (box.style.display === 'none' || getComputedStyle(box).display === 'none');
+          box.style.display = isHidden ? 'block' : 'none';
+          if (arr) arr.textContent = isHidden ? '▲' : '▼';
+        };
+      }
+      const installBtn = document.getElementById('menuInstallAppBtn');
+      if (installBtn) installBtn.onclick = () => window.triggerPortalInstall();
+
+      const escM = (s) => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      const DEF_TEMPLES = [
+        { id: 'pandharpur', shortTitle: 'श्री विठ्ठल रुक्मिणी, पंढरपूर' },
+        { id: 'kolhapur', shortTitle: 'श्री अंबाबाई महालक्ष्मी, कोल्हापूर' },
+        { id: 'tuljapur', shortTitle: 'श्री तुळजाभवानी, तुळजापूर' },
+        { id: 'shirdi', shortTitle: 'श्री साईबाबा, शिर्डी' },
+        { id: 'dagdusheth', shortTitle: 'दगडूशेठ गणपती, पुणे' },
+        { id: 'siddhivinayak', shortTitle: 'श्री सिद्धिविनायक, मुंबई' }
+      ];
+      function renderMenuTemples(list) {
+        const box = document.getElementById('menuTempleInfoList');
+        if (!box) return;
+        const items = (list || []).filter(t => t && t.id && !t.deleted && !t.hidden);
+        if (!items.length) return;
+        box.innerHTML = items.map(t => {
+          const isP = t.id === 'pandharpur';
+          const cls = isP
+            ? 'block px-3 py-1.5 rounded-lg text-xs font-bold truncate border border-amber-300 bg-amber-50 text-[#05344E] hover:bg-amber-100 transition'
+            : 'block px-3 py-1.5 rounded-lg text-xs font-bold truncate text-slate-700 hover:bg-slate-100 hover:text-[#EA580C] transition';
+          return `<a href="temple-info.html?id=${encodeURIComponent(t.id)}" class="${cls}">${isP ? '⭐ ' : '🛕 '}${escM(t.shortTitle || t.title || t.name || t.id)}</a>`;
+        }).join('');
+      }
+      renderMenuTemples(DEF_TEMPLES);
+
+      try {
+        if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
+          const mdb = firebase.database();
+          mdb.ref('temples').on('value', (snap) => {
+            const val = snap.val();
+            const arr = Array.isArray(val) ? val : (val && typeof val === 'object' ? Object.entries(val).map(([k, v]) => (v && typeof v === 'object' ? { id: v.id || k, ...v } : null)).filter(Boolean) : []);
+            if (arr.length) renderMenuTemples(arr.sort((a,b) => (Number(a.order)||999)-(Number(b.order)||999)));
+          });
+          mdb.ref('siteConfig/menuLinks').on('value', (snap) => {
+            const m = snap.val();
+            const box = document.getElementById('mobileMenuDynamicLinks');
+            if (box && m && Array.isArray(m.items) && m.items.length) {
+              let listItems = [...m.items];
+              if (!listItems.some(x => x && String(x.url || '').includes('daily-darshan.html'))) {
+                listItems.unshift({ icon: '📸', label: 'दैनिक फोटो दर्शन', url: 'daily-darshan.html', enabled: true });
+              }
+              if (!listItems.some(x => x && String(x.url || '').includes('advertising.html'))) {
+                const exp = [];
+                listItems.forEach(x => {
+                  if (x && String(x.url || '').includes('contact.html') && String(x.label || '').includes('जाहिरात')) {
+                    exp.push({ icon: '📢', label: 'जाहिरात द्या', url: 'advertising.html', enabled: true });
+                    exp.push({ icon: '📞', label: 'संपर्क करा', url: 'contact.html', enabled: true });
+                  } else exp.push(x);
+                });
+                listItems = exp;
+              }
+              if (!listItems.some(x => x && String(x.url || '').includes('disclaimer.html'))) {
+                listItems.push({ icon: '📄', label: 'नियम व अस्वीकरण', url: 'disclaimer.html', enabled: true });
+              }
+              box.innerHTML = listItems.filter(it => it && it.enabled !== false && it.label && it.url && !String(it.url).includes('index.html')).map(it =>
+                `<a href="${escM(it.url)}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>${escM(it.icon || '🔗')}</span><span>${escM(it.label)}</span></a>`
+              ).join('');
+            }
+          });
+        }
+      } catch (e) {}
+    })();
+  </script>
 </body>
 </html>

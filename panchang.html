@@ -130,7 +130,22 @@
     </div>
   </div>
 
-    <main class="flex-1 max-w-7xl xl:max-w-[1400px] w-full mx-auto p-4 sm:p-6 space-y-5">
+      <!-- Sponsored Ad Slider (Directly Below Header) -->
+  <div class="w-full max-w-7xl xl:max-w-[1400px] mx-auto px-3 sm:px-6 pt-3 sm:pt-4">
+    <section id="mainAdSliderSection" class="hidden rounded-2xl overflow-hidden border border-amber-300/80 shadow-sm bg-white">
+      <div class="relative">
+        <span class="absolute top-2 left-2 z-20 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-slate-900/80 backdrop-blur-sm text-amber-200 text-[10px] font-bold tracking-wide border border-amber-400/40 shadow pointer-events-none"><span class="px-1 rounded bg-amber-400 text-[#031926] text-[9px] font-extrabold">AD</span><span>Sponsored</span></span>
+        <div id="mainAdViewport" class="relative w-full h-36 sm:h-48 lg:h-64 bg-neutral-100 overflow-hidden select-none touch-pan-y">
+          <div id="mainAdTrack" class="flex w-full h-full transition-transform duration-500 ease-out will-change-transform"></div>
+          <button id="mainAdPrevBtn" type="button" aria-label="मागील जाहिरात" class="hidden absolute left-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/55 hover:bg-black/80 text-white font-bold flex items-center justify-center cursor-pointer">‹</button>
+          <button id="mainAdNextBtn" type="button" aria-label="पुढील जाहिरात" class="hidden absolute right-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/55 hover:bg-black/80 text-white font-bold flex items-center justify-center cursor-pointer">›</button>
+        </div>
+        <div id="mainAdDots" class="flex items-center justify-center gap-1.5 py-1.5 bg-neutral-100"></div>
+      </div>
+    </section>
+  </div>
+
+  <main class="flex-1 max-w-7xl xl:max-w-[1400px] w-full mx-auto p-4 sm:p-6 space-y-5">
     <!-- Hero Panchang Header -->
     <section class="bg-gradient-to-r from-[#031926] via-[#05344E] to-[#0a4d70] text-white rounded-3xl p-5 sm:p-6 shadow-md border border-amber-400/30 space-y-2.5">
       <div class="flex flex-wrap items-center justify-between gap-2">
@@ -1347,5 +1362,61 @@
       } catch (e) {}
     })();
   </script>
+
+  <script>
+    (function initTopAdSlider() {
+      let timer = null;
+      let idx = 0;
+      const escAd = (s) => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      function renderSlider(cfg) {
+        if (timer) { clearInterval(timer); timer = null; }
+        const sec = document.getElementById('mainAdSliderSection');
+        const track = document.getElementById('mainAdTrack');
+        const dots = document.getElementById('mainAdDots');
+        const prev = document.getElementById('mainAdPrevBtn');
+        const next = document.getElementById('mainAdNextBtn');
+        if (!sec || !track) return;
+        const slides = (cfg && Array.isArray(cfg.bannerSlides)) ? cfg.bannerSlides.filter(x => x && x.image) : [];
+        if (!cfg || cfg.bannerEnabled === false || !slides.length) {
+          sec.classList.add('hidden');
+          return;
+        }
+        sec.classList.remove('hidden');
+        idx = 0;
+        track.innerHTML = slides.map((s, i) => {
+          const href = (s.link && String(s.link).trim()) ? escAd(s.link.trim()) : '';
+          const tagOpen = href ? `<a href="${href}" target="_blank" rel="noopener noreferrer" class="relative w-full h-full shrink-0 block">` : `<div class="relative w-full h-full shrink-0 block">`;
+          const tagClose = href ? `</a>` : `</div>`;
+          const cap = (s.text && String(s.text).trim()) ? `<div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 via-black/45 to-transparent px-3 py-2 text-white text-xs sm:text-sm font-bold truncate text-center">${escAd(s.text)}</div>` : '';
+          return `${tagOpen}<img src="${escAd(s.image)}" alt="Sponsored ${i + 1}" class="w-full h-full object-cover" />${cap}${tagClose}`;
+        }).join('');
+
+        const show = (n) => {
+          idx = ((n % slides.length) + slides.length) % slides.length;
+          track.style.transform = `translateX(-${idx * 100}%)`;
+          if (dots) {
+            dots.innerHTML = slides.length > 1 ? slides.map((_, d) =>
+              `<button type="button" data-idx="${d}" class="h-2 rounded-full transition-all duration-300 cursor-pointer ${d === idx ? 'w-5 bg-[#05344E]' : 'w-2 bg-neutral-400'}"></button>`
+            ).join('') : '';
+            dots.querySelectorAll('button').forEach(b => b.onclick = () => { show(Number(b.dataset.idx)); restart(); });
+          }
+        };
+        const restart = () => {
+          if (timer) clearInterval(timer);
+          if (slides.length > 1) timer = setInterval(() => show(idx + 1), 4000);
+        };
+        if (prev) { prev.classList.toggle('hidden', slides.length <= 1); prev.onclick = () => { show(idx - 1); restart(); }; }
+        if (next) { next.classList.toggle('hidden', slides.length <= 1); next.onclick = () => { show(idx + 1); restart(); }; }
+        show(0);
+        restart();
+      }
+      try {
+        if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
+          firebase.database().ref('siteConfig/ads').on('value', (snap) => renderSlider(snap.val() || {}));
+        }
+      } catch (_) {}
+    })();
+  </script>
+
 </body>
 </html>

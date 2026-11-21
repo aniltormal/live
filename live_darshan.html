@@ -204,6 +204,21 @@
     #appHeader .hdr-inner { min-height: 68px; padding: 10px 14px; }
     #headerEmblem { width: 46px !important; height: 46px !important; }
     #headerTitle { font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; font-weight: 700; font-size: clamp(26px, 6.8vw, 40px) !important; line-height: 1.25 !important; }
+
+    .cq-card { container-type: inline-size; }
+    .cq-msg-lg { font-size: clamp(11px, 6.2cqw, 16px); line-height: 1.25; }
+    @keyframes popSoft { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+    .pop-soft { animation: popSoft 2.4s ease-in-out infinite; }
+    @keyframes pujaTabGlow {
+      0%, 100% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.45); transform: scale(1.02); }
+      50% { box-shadow: 0 0 18px rgba(251, 191, 36, 0.85); transform: scale(1.04); }
+    }
+    .puja-tab-active {
+      background: linear-gradient(135deg, #EA580C 0%, #F59E0B 55%, #D97706 100%);
+      animation: pujaTabGlow 2.4s ease-in-out infinite;
+    }
+    @keyframes hintFloat { 0%, 100% { opacity: 0.88; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-1.5px); } }
+    .hint-float { animation: hintFloat 2.2s ease-in-out infinite; }
   </style>
 
   <style id="siteSkelStyle">
@@ -419,7 +434,7 @@
     }
   </style>
   <div id="topQuickActionBar" class="w-full bg-amber-50/95 border-b border-amber-200/80 py-2 px-2.5 sm:px-3" style="font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; font-weight: 700;">
-    <div class="max-w-7xl xl:max-w-[1400px] mx-auto grid grid-cols-[7fr_3fr] sm:grid-cols-[3fr_1fr] items-stretch gap-2 sm:gap-3">
+    <div class="max-w-7xl xl:max-w-[1400px] mx-auto grid grid-cols-2 items-stretch gap-2 sm:gap-3">
       <a href="daily-darshan.html" style="font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; font-weight: 700;" class="top-btn-shimmer flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-3 sm:py-3.5 min-h-[54px] sm:min-h-[60px] rounded-xl bg-gradient-to-r from-[#FFFBEB] via-[#FEF3C7] to-[#FDE68A] hover:brightness-98 text-[#05344E] border-2 border-[#EA580C] font-bold text-[15.5px] sm:text-lg md:text-xl tracking-wide shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 text-center leading-tight">
         <span class="shrink-0">📸</span>
         <span>दैनिक फोटो दर्शन</span>
@@ -435,7 +450,7 @@
     <!-- Option 1: True Smooth Horizontal Auto-Sliding Ad Banner -->
     <section id="mainAdSliderSection" class="hidden mb-5 sm:mb-7">
       <div class="relative rounded-2xl overflow-hidden border-2 border-amber-400/70 bg-white shadow-md">
-        <span class="absolute top-2 left-2 z-10 px-2 py-0.5 rounded-md bg-black/70 text-white text-[10px] font-bold tracking-wide pointer-events-none">प्रायोजक जाहिरात</span>
+        <span class="absolute top-2 left-2 z-20 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-slate-900/80 backdrop-blur-sm text-amber-200 text-[10px] font-bold tracking-wide border border-amber-400/40 shadow pointer-events-none"><span class="px-1 rounded bg-amber-400 text-[#031926] text-[9px] font-extrabold">AD</span><span>Sponsored</span></span>
         <div id="mainAdViewport" class="relative w-full h-36 sm:h-48 lg:h-64 bg-neutral-100 overflow-hidden select-none touch-pan-y">
           <div id="mainAdTrack" class="flex w-full h-full transition-transform duration-500 ease-out will-change-transform"></div>
           <button id="mainAdPrevBtn" type="button" aria-label="मागील जाहिरात" class="hidden absolute left-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/55 hover:bg-black/80 text-white flex items-center justify-center shadow-md backdrop-blur-sm transition cursor-pointer">
@@ -465,26 +480,39 @@
 </main>
 
   
-  <!-- Daily Photo Slideshow Popup (For Offline Temples with Daily Photos) -->
-  <div id="photoSlideshowModal" class="hidden fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5">
-    <div class="w-full max-w-2xl bg-white rounded-3xl border-2 border-amber-400 overflow-hidden shadow-2xl flex flex-col max-h-[92vh]">
-      <div class="bg-[#05344E] text-white px-4 py-3 flex items-center justify-between gap-2">
+  <!-- Daily Photo Slideshow Popup (Exact Match to daily-darshan.html) -->
+  <div id="photoSlideshowModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6">
+    <div id="psModalCard" class="w-[94vw] sm:w-[86vw] max-w-[780px] max-h-[92vh] bg-gradient-to-b from-[#031926] to-[#05344E] rounded-3xl border-2 border-amber-400/75 shadow-2xl p-1.5 sm:p-2.5 flex flex-col gap-1.5" onclick="event.stopPropagation()">
+      <div id="psTopHeader" class="flex items-center justify-between gap-2 px-1 text-white transition-all duration-200">
         <div class="min-w-0">
-          <div id="psTempleTitle" class="text-base sm:text-lg font-extrabold truncate"></div>
-          <div id="psMetaText" class="text-xs text-amber-300 truncate"></div>
+          <h3 id="psTempleTitle" class="text-lg sm:text-xl font-bold text-amber-300 truncate leading-tight"></h3>
+          <p id="psMetaText" class="text-[11px] sm:text-xs text-amber-100/80 truncate"></p>
         </div>
-        <button type="button" onclick="closePhotoSlideshow()" class="shrink-0 px-3 py-1.5 rounded-full bg-red-600 hover:bg-red-700 text-white text-xs font-bold cursor-pointer">✕ बंद करा</button>
+        <button type="button" onclick="closePhotoSlideshow()" aria-label="बंद करा" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/15 hover:bg-rose-600 text-white font-bold flex items-center justify-center cursor-pointer shrink-0 transition">✕</button>
       </div>
-      <div class="relative bg-slate-900 flex-1 min-h-[260px] sm:min-h-[360px] flex items-center justify-center overflow-hidden">
-        <button type="button" onclick="stepPhotoSlideshow(-1)" aria-label="मागील फोटो" class="absolute left-2.5 z-10 w-10 h-10 rounded-full bg-black/60 hover:bg-black/80 text-white text-xl font-bold flex items-center justify-center cursor-pointer">‹</button>
-        <img id="psMainImg" src="" alt="आजचे फोटो दर्शन" class="max-w-full max-h-[58vh] object-contain" />
-        <button type="button" onclick="stepPhotoSlideshow(1)" aria-label="पुढील फोटो" class="absolute right-2.5 z-10 w-10 h-10 rounded-full bg-black/60 hover:bg-black/80 text-white text-xl font-bold flex items-center justify-center cursor-pointer">›</button>
-        <span id="psCounterBadge" class="absolute bottom-2.5 right-3 px-2.5 py-0.5 rounded-full bg-black/70 text-white text-xs font-bold"></span>
+
+      <div id="psEventTabs" class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 px-1 border-y border-white/10 min-h-[38px] transition-all duration-200"></div>
+      <div id="psTabsHint" class="hidden hint-float text-center text-[11px] sm:text-xs font-bold text-amber-200 bg-amber-500/15 border border-amber-400/35 rounded-full py-0.5 px-3 mx-auto tracking-wide transition-all duration-200">👆 येथे क्लिक करून वेगवेगळे फोटो बघा</div>
+
+      <div id="psPhotoStage" class="relative w-full h-[64vh] sm:h-[70vh] bg-[#041824] rounded-xl overflow-hidden flex items-center justify-center select-none touch-manipulation transition-all duration-200" style="-webkit-user-select:none; -webkit-touch-callout:none;">
+        <img id="psPhotoBg" src="" alt="" aria-hidden="true" draggable="false"
+          class="absolute inset-0 w-full h-full object-cover scale-125 blur-2xl opacity-85 brightness-75 pointer-events-none select-none" />
+        <img id="psMainImg" src="" alt="दैनिक दर्शन" draggable="false"
+          class="relative z-10 w-full h-full object-contain transition-transform duration-300 ease-out select-none drop-shadow-xl"
+          style="-webkit-touch-callout:none; transform-origin:center center;" />
+        <video id="psVideoEl" src="" autoplay playsinline class="hidden relative z-10 max-w-full max-h-full w-full h-full object-contain bg-black rounded-xl pointer-events-none select-none"></video>
+        <span id="psCounterBadge" class="ps-stage-ctrl z-20 absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-black/75 text-white text-[11px] font-bold border border-white/20 transition-opacity duration-200">1 / 1</span>
+        <button id="psVideoMuteBtn" type="button" onpointerdown="event.stopPropagation()" onpointerup="event.stopPropagation()" onclick="event.stopPropagation(); window.togglePsVideoMute && window.togglePsVideoMute()" aria-label="आवाज बंद/सुरू करा" class="hidden ps-stage-ctrl z-30 absolute top-2.5 right-2.5 w-9 h-9 rounded-full bg-black/80 hover:bg-black text-amber-300 border border-amber-400/70 shadow-lg flex items-center justify-center text-base cursor-pointer transition">🔊</button>
+        <button type="button" onpointerdown="event.stopPropagation()" onpointerup="event.stopPropagation()" onclick="event.stopPropagation(); stepPhotoSlideshow(-1)" aria-label="मागील" class="ps-stage-ctrl z-20 absolute left-2 top-1/2 -translate-y-1/2 w-8 h-10 rounded-full bg-black/55 hover:bg-black/80 text-white text-xl font-bold flex items-center justify-center cursor-pointer transition">‹</button>
+        <button type="button" onpointerdown="event.stopPropagation()" onpointerup="event.stopPropagation()" onclick="event.stopPropagation(); stepPhotoSlideshow(1)" aria-label="पुढील" class="ps-stage-ctrl z-20 absolute right-2 top-1/2 -translate-y-1/2 w-8 h-10 rounded-full bg-black/55 hover:bg-black/80 text-white text-xl font-bold flex items-center justify-center cursor-pointer transition">›</button>
       </div>
-      <div class="p-3.5 sm:p-4 bg-amber-50/70 border-t border-amber-200 flex flex-wrap items-center justify-between gap-2">
-        <div id="psSourceInfo" class="text-xs font-bold text-[#05344E]"></div>
-        <a id="psMoreLink" href="daily-darshan.html" class="px-3.5 py-1.5 rounded-xl bg-[#EA580C] hover:bg-orange-700 text-white text-xs font-bold shadow transition">मागील ७ दिवसांचे फोटो पहा →</a>
+
+      <div id="psMetaBar" class="ps-stage-ctrl flex items-center justify-between gap-2 px-1 transition-opacity duration-200">
+        <div id="psDateTime" class="inline-flex items-center h-7 px-3 rounded-full bg-white/10 text-amber-100 text-[11px] font-bold border border-white/15 whitespace-nowrap"></div>
+        <div id="psSourceInfo" class="flex items-center justify-end max-w-[52%]"></div>
       </div>
+
+      <p id="psHintText" class="text-center text-[11px] text-amber-100/75 transition-all duration-200">💡 फोटोवर बोट धरून ठेवल्यास झूम होईल • बाहेर कुठेही टच केल्यास बंद होईल</p>
     </div>
   </div>
 
@@ -1369,41 +1397,283 @@
     const streamStatusMap = {};
 
     let dailyLatestMap = {};
-    let psList = [];
+    let psEvents = [];
+    let psEventIdx = 0;
     let psIdx = 0;
+    let psAutoTimer = null;
+    let psHolding = false;
 
-    window.openPhotoSlideshow = function(temple, latestObj) {
-      psList = Array.isArray(latestObj && latestObj.photos) ? latestObj.photos : [];
-      if (!psList.length) {
+    function formatPsDate(val) {
+      if (!val) return '';
+      const M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(val.trim())) {
+        const p = val.trim().split('-').map(Number);
+        return `${String(p[2]).padStart(2, '0')} ${M[p[1] - 1] || ''} ${p[0]}`;
+      }
+      const d = new Date(val);
+      if (isNaN(d.getTime())) return String(val);
+      return `${String(d.getDate()).padStart(2, '0')} ${M[d.getMonth()]} ${d.getFullYear()}`;
+    }
+
+    function stopPsAuto() {
+      if (psAutoTimer) { clearInterval(psAutoTimer); psAutoTimer = null; }
+    }
+    function startPsAuto() {
+      stopPsAuto();
+      const ev = psEvents[psEventIdx];
+      if (!ev || !ev.photos || ev.photos.length <= 1) return;
+      const cur = ev.photos[psIdx] || {};
+      if (cur.type === 'video') return;
+      psAutoTimer = setInterval(() => {
+        if (!psHolding) stepPhotoSlideshow(1, true);
+      }, 4000);
+    }
+
+    function buildPsBatches(latestObj, archObj) {
+      const events = [];
+      const pushDay = (dayObj, dateStr, isLatest) => {
+        if (!dayObj || !Array.isArray(dayObj.photos) || !dayObj.photos.length) return;
+        const map = {};
+        dayObj.photos.forEach(raw => {
+          const obj = typeof raw === 'string' ? { url: raw } : (raw || {});
+          const url = obj.url || '';
+          if (!url) return;
+          const pTitle = obj.pujaTitle || dayObj.pujaTitle || 'दैनिक दर्शन';
+          const bid = obj.batchId || `${isLatest ? 'lat' : 'arch'}_${dateStr}_${pTitle}`;
+          if (!map[bid]) {
+            let tm = obj.batchTime || '';
+            if (!tm && obj.uploadedAt) {
+              const d = new Date(obj.uploadedAt);
+              if (!isNaN(d)) tm = d.toLocaleTimeString('mr-IN', { hour: '2-digit', minute: '2-digit' });
+            }
+            map[bid] = { title: pTitle, date: dateStr || obj.date || '', time: tm, isLatest, photos: [] };
+          }
+          const isVid = obj.type === 'video' || /\.(mp4|webm|mov)(\?|$)/i.test(url) || String(url).includes('/video/upload/');
+          map[bid].photos.push({
+            url,
+            type: isVid ? 'video' : 'image',
+            date: obj.date || dateStr || '',
+            time: obj.batchTime || map[bid].time || '',
+            source: obj.sourcePlatform || dayObj.sourcePlatform || '',
+            sourceUrl: obj.sourceUrl || dayObj.sourceUrl || ''
+          });
+        });
+        Object.values(map).forEach(ev => {
+          const imgs = ev.photos.filter(x => x.type !== 'video');
+          const vids = ev.photos.filter(x => x.type === 'video').slice(0, 1);
+          ev.photos = [...imgs, ...vids];
+          if (ev.photos.length) events.push(ev);
+        });
+      };
+
+      const latDate = (latestObj && latestObj.date) || '';
+      pushDay(latestObj, latDate, true);
+      if (archObj && typeof archObj === 'object') {
+        const todayIso = new Date().toISOString().slice(0, 10);
+        Object.keys(archObj).filter(dt => dt <= todayIso && dt !== latDate).sort((a, b) => b.localeCompare(a)).slice(0, 7)
+          .forEach(dt => pushDay(archObj[dt], dt, false));
+      }
+      return events;
+    }
+
+    function renderPsTabs() {
+      const box = document.getElementById('psEventTabs');
+      const hint = document.getElementById('psTabsHint');
+      if (!box) return;
+      if (hint) hint.classList.toggle('hidden', psEvents.length <= 1);
+      box.innerHTML = psEvents.map((ev, idx) => {
+        const isAct = idx === psEventIdx;
+        const label = ev.isLatest ? `✨ ${ev.title}` : `📅 ${formatPsDate(ev.date)} • ${ev.title}`;
+        const cls = isAct
+          ? 'puja-tab-active text-white border-amber-200 shadow-lg'
+          : 'bg-[#0a3f5c] hover:bg-[#0e5278] text-amber-100 border-amber-400/55 hover:border-amber-300 hover:scale-[1.02]';
+        return `<button type="button" onclick="selectPsEvent(${idx})" class="shrink-0 px-3.5 py-1.5 rounded-full text-xs font-bold border transition-all duration-300 cursor-pointer ${cls}">${label}</button>`;
+      }).join('');
+    }
+
+    window.selectPsEvent = function(idx) {
+      psEventIdx = idx;
+      psIdx = 0;
+      renderPsTabs();
+      updatePhotoSlideshow();
+      startPsAuto();
+    };
+
+    window.togglePsVideoMute = function() {
+      const vid = document.getElementById('psVideoEl');
+      const btn = document.getElementById('psVideoMuteBtn');
+      if (!vid) return;
+      vid.muted = !vid.muted;
+      if (!vid.muted) vid.volume = 1.0;
+      vid.play().catch(() => {});
+      if (btn) btn.textContent = vid.muted ? '🔇' : '🔊';
+    };
+
+    window.openPhotoSlideshow = function(temple, passedLatest) {
+      const latestObj = passedLatest || dailyLatestMap[temple.id];
+      psEvents = buildPsBatches(latestObj, null);
+      if (!psEvents.length) {
         openTemplePopup(temple);
         return;
       }
+      psEventIdx = 0;
       psIdx = 0;
-      document.getElementById('psTempleTitle').textContent = (temple.shortTitle || temple.name || '') + ' • 📸 आजचे फोटो दर्शन';
-      document.getElementById('psMetaText').textContent = (latestObj.date || '') + (latestObj.pujaTitle ? ' • ' + latestObj.pujaTitle : '');
-      const srcEl = document.getElementById('psSourceInfo');
-      if (latestObj.sourcePlatform) {
-        srcEl.innerHTML = '📸 स्त्रोत: <span class="text-[#EA580C]">' + latestObj.sourcePlatform + '</span>' + (latestObj.sourceUrl ? ' <a href="' + latestObj.sourceUrl + '" target="_blank" rel="noopener noreferrer" class="underline ml-1 text-blue-700">पाहा ↗</a>' : '');
-      } else {
-        srcEl.textContent = '📸 दैनिक अलंकार व आरती फोटो दर्शन';
-      }
-      document.getElementById('psMoreLink').href = 'daily-darshan.html?id=' + encodeURIComponent(temple.id);
-      updatePhotoSlideshow();
+      document.getElementById('psTempleTitle').textContent = temple.shortTitle || temple.name || '';
       document.getElementById('photoSlideshowModal').classList.remove('hidden');
+      renderPsTabs();
+      updatePhotoSlideshow();
+      startPsAuto();
+
+      try {
+        if (typeof db !== 'undefined' && db) {
+          db.ref(`dailyDarshan/archive/${temple.id}`).once('value').then(snap => {
+            const arch = snap.val();
+            if (arch && !document.getElementById('photoSlideshowModal').classList.contains('hidden')) {
+              const merged = buildPsBatches(latestObj, arch);
+              if (merged.length > psEvents.length) {
+                psEvents = merged;
+                renderPsTabs();
+              }
+            }
+          }).catch(() => {});
+        }
+      } catch (_) {}
     };
+
     window.closePhotoSlideshow = function() {
+      stopPsAuto();
+      const v = document.getElementById('psVideoEl');
+      if (v) { v.pause(); v.src = ''; v.classList.add('hidden'); }
+      const mb = document.getElementById('psVideoMuteBtn');
+      if (mb) mb.classList.add('hidden');
+      setPsHoldVisuals(false);
       document.getElementById('photoSlideshowModal').classList.add('hidden');
     };
-    window.stepPhotoSlideshow = function(dir) {
-      if (!psList.length) return;
-      psIdx = (psIdx + dir + psList.length) % psList.length;
+
+    window.stepPhotoSlideshow = function(dir, isAuto) {
+      const ev = psEvents[psEventIdx];
+      if (!ev || !ev.photos || !ev.photos.length) return;
+      psIdx = (psIdx + dir + ev.photos.length) % ev.photos.length;
       updatePhotoSlideshow();
+      if (!isAuto) startPsAuto();
     };
+
     function updatePhotoSlideshow() {
-      const item = psList[psIdx] || {};
-      document.getElementById('psMainImg').src = item.url || item;
-      document.getElementById('psCounterBadge').textContent = (psIdx + 1) + ' / ' + psList.length;
+      const ev = psEvents[psEventIdx];
+      if (!ev || !ev.photos || !ev.photos.length) return;
+      const item = ev.photos[psIdx] || ev.photos[0];
+      const img = document.getElementById('psMainImg');
+      const bg = document.getElementById('psPhotoBg');
+      const vid = document.getElementById('psVideoEl');
+      const mb = document.getElementById('psVideoMuteBtn');
+      const isVid = item.type === 'video';
+      if (isVid && vid) {
+        img.classList.add('hidden');
+        if (bg) bg.classList.add('hidden');
+        vid.classList.remove('hidden');
+        if (mb) mb.classList.remove('hidden');
+        vid.src = item.url;
+        vid.muted = false;
+        vid.volume = 1.0;
+        if (mb) mb.textContent = '🔊';
+        vid.play().catch(() => {
+          vid.muted = true;
+          if (mb) mb.textContent = '🔇';
+          vid.play().catch(() => {});
+        });
+        stopPsAuto();
+        vid.onended = () => { if (ev.photos.length > 1) stepPhotoSlideshow(1); };
+      } else {
+        if (mb) mb.classList.add('hidden');
+        if (vid) { vid.pause(); vid.src = ''; vid.classList.add('hidden'); }
+        img.classList.remove('hidden');
+        if (bg) { bg.classList.remove('hidden'); bg.src = item.url; }
+        img.src = item.url;
+      }
+      document.getElementById('psMetaText').textContent = `${ev.title}${ev.date ? ' • ' + formatPsDate(ev.date) : ''}`;
+      document.getElementById('psCounterBadge').textContent = `${psIdx + 1} / ${ev.photos.length}`;
+      const dtEl = document.getElementById('psDateTime');
+      if (dtEl) {
+        const dtTxt = [item.date ? `📅 ${formatPsDate(item.date)}` : '', item.time ? `🕒 ${item.time}` : ''].filter(Boolean).join(' • ');
+        dtEl.textContent = dtTxt || '📅 ताजे दर्शन';
+      }
+      const srcEl = document.getElementById('psSourceInfo');
+      if (srcEl) {
+        const sName = item.source || '';
+        const sUrl = item.sourceUrl || '';
+        if (sName) {
+          srcEl.innerHTML = sUrl
+            ? `<a href="${sUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="inline-flex items-center gap-1 h-7 px-3 rounded-full bg-white/10 hover:bg-white/20 text-amber-300 text-[11px] font-bold border border-amber-400/50 truncate">📸 सौजन्य: ${sName} ↗</a>`
+            : `<span class="inline-flex items-center gap-1 h-7 px-3 rounded-full bg-white/10 text-amber-200 text-[11px] font-bold border border-white/15 truncate">📸 सौजन्य: ${sName}</span>`;
+        } else {
+          srcEl.innerHTML = '';
+        }
+      }
     }
+
+    function setPsHoldVisuals(holding) {
+      const img = document.getElementById('psMainImg');
+      const bg = document.getElementById('psPhotoBg');
+      const vid = document.getElementById('psVideoEl');
+      const topHdr = document.getElementById('psTopHeader');
+      const evTabs = document.getElementById('psEventTabs');
+      const tabsHint = document.getElementById('psTabsHint');
+      const metaBar = document.getElementById('psMetaBar');
+      const hintTxt = document.getElementById('psHintText');
+      const isVidActive = vid && !vid.classList.contains('hidden');
+      if (holding) {
+        if (isVidActive) vid.style.transform = 'scale(1.14)';
+        else if (img) img.style.transform = 'scale(1.16)';
+        if (bg) bg.classList.add('hidden');
+        if (topHdr) topHdr.classList.add('hidden');
+        if (evTabs) evTabs.classList.add('hidden');
+        if (tabsHint) tabsHint.classList.add('hidden');
+        if (metaBar) metaBar.classList.add('hidden');
+        if (hintTxt) hintTxt.classList.add('hidden');
+        document.querySelectorAll('.ps-stage-ctrl').forEach(el => el.classList.add('opacity-0', 'pointer-events-none'));
+      } else {
+        if (img) img.style.transform = '';
+        if (vid) vid.style.transform = '';
+        if (bg && !isVidActive) bg.classList.remove('hidden');
+        if (topHdr) topHdr.classList.remove('hidden');
+        if (evTabs) evTabs.classList.remove('hidden');
+        if (tabsHint) tabsHint.classList.toggle('hidden', psEvents.length <= 1);
+        if (metaBar) metaBar.classList.remove('hidden');
+        if (hintTxt) hintTxt.classList.remove('hidden');
+        document.querySelectorAll('.ps-stage-ctrl').forEach(el => el.classList.remove('opacity-0', 'pointer-events-none'));
+      }
+    }
+
+    (function bindPsStageGestures() {
+      const modal = document.getElementById('photoSlideshowModal');
+      const stage = document.getElementById('psPhotoStage');
+      if (modal) modal.addEventListener('click', () => closePhotoSlideshow());
+      if (!stage) return;
+      let sx = null, sy = null, ht = null;
+      stage.addEventListener('pointerdown', (e) => {
+        if (e.target.closest('button, a')) { sx = null; return; }
+        sx = e.clientX || 0; sy = e.clientY || 0;
+        clearTimeout(ht);
+        ht = setTimeout(() => { psHolding = true; stopPsAuto(); setPsHoldVisuals(true); }, 180);
+      });
+      const onUp = (e) => {
+        clearTimeout(ht);
+        if (psHolding) { psHolding = false; setPsHoldVisuals(false); startPsAuto(); }
+        if (e.target.closest('button, a') || sx === null) { sx = null; return; }
+        const dx = (e.clientX || 0) - sx;
+        const dy = (e.clientY || 0) - sy;
+        sx = null;
+        if (Math.abs(dx) >= 42 && Math.abs(dx) > Math.abs(dy)) stepPhotoSlideshow(dx < 0 ? 1 : -1);
+      };
+      const onCancel = () => {
+        clearTimeout(ht);
+        if (psHolding) { psHolding = false; setPsHoldVisuals(false); startPsAuto(); }
+      };
+      stage.addEventListener('pointerup', onUp);
+      stage.addEventListener('pointercancel', onCancel);
+      stage.addEventListener('pointerleave', onCancel);
+      stage.addEventListener('contextmenu', (e) => e.preventDefault());
+    })();
 
     let customOfflineTitle = '🙏 सध्या लाईव्ह दर्शन तात्पुरते बंद आहे';
     let customHeaderTextColor = '';
@@ -1825,7 +2095,7 @@
         const badgeHtml = hasFeed
           ? `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-red-600 text-white border border-red-400 text-[10px] sm:text-xs font-bold shadow">LIVE ●</span>`
           : (hasDailyPhotos
-              ? `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-[#EA580C] text-white border border-orange-300 text-[10px] sm:text-xs font-bold shadow">📸 आजचे फोटो दर्शन</span>`
+              ? `<span class="pop-soft inline-flex items-center justify-center text-center px-2.5 py-1 rounded-xl bg-[#05344E]/95 text-amber-200 border-2 border-amber-400 shadow-xl font-extrabold cq-msg-lg">⏸️ Live दर्शन बंद आहे. आजचे फोटो पहा.</span>`
               : `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md bg-slate-600 text-white border border-slate-400 text-[10px] sm:text-xs font-semibold shadow">प्रतीक्षेत</span>`);
 
         const titleColor = isDark ? 'text-white group-hover:text-neutral-200' : 'text-black group-hover:text-neutral-700';
@@ -1840,7 +2110,7 @@
           <div class="${imgBoxClass}">
             <img src="${temple.image}" alt="${temple.shortTitle}" class="${imgFitClass}" />
             <div class="absolute inset-0 bg-white/15 pointer-events-none"></div>
-            <div class="absolute top-2 left-2 flex items-center gap-1.5 flex-wrap">
+            <div class="absolute top-2 inset-x-2 flex items-center gap-1.5 flex-wrap">
               ${badgeHtml}
               ${isPandharpur ? '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-[#EA580C] text-white border border-orange-300/80 text-[10px] sm:text-xs font-bold shadow">🚩 पंढरपूर विशेष</span>' : ''}
             </div>

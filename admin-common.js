@@ -202,38 +202,80 @@ function populateFontSelect(id, previewId = null) {
 }
 
 function showToast(msg, isError = false) {
+  if (!document.getElementById('modernToastAnimStyle')) {
+    const st = document.createElement('style');
+    st.id = 'modernToastAnimStyle';
+    st.textContent = `
+      @keyframes popSpringIn {
+        0% { opacity: 0; transform: scale(0.84) translateY(14px); }
+        65% { opacity: 1; transform: scale(1.03) translateY(-2px); }
+        100% { opacity: 1; transform: scale(1) translateY(0); }
+      }
+      @keyframes drawCheckStroke {
+        from { stroke-dashoffset: 48; }
+        to { stroke-dashoffset: 0; }
+      }
+      .modern-pop-card { animation: popSpringIn 0.34s cubic-bezier(0.22, 1, 0.36, 1) both; }
+      .modern-check-path { stroke-dasharray: 48; stroke-dashoffset: 48; animation: drawCheckStroke 0.42s 0.12s ease-out forwards; }
+    `;
+    document.head.appendChild(st);
+  }
+
   let pop = document.getElementById('adminCenterToastPopup');
   if (!pop) {
     pop = document.createElement('div');
     pop.id = 'adminCenterToastPopup';
-    pop.className = 'hidden fixed inset-0 z-[10000] bg-black/35 backdrop-blur-[1px] flex items-center justify-center p-4';
+    pop.className = 'hidden fixed inset-0 z-[10000] bg-slate-900/45 backdrop-blur-sm flex items-center justify-center p-4';
     pop.innerHTML = `
-      <div class="admin-toast-card w-full max-w-sm rounded-3xl bg-white border-2 shadow-2xl p-6 text-center space-y-3 fade-in-up">
-        <div class="admin-toast-icon w-14 h-14 mx-auto rounded-full flex items-center justify-center text-3xl shadow-inner"></div>
-        <div class="admin-toast-msg text-base sm:text-lg font-extrabold leading-snug"></div>
+      <div class="modern-pop-card relative w-full max-w-sm rounded-3xl bg-white/95 backdrop-blur-md border shadow-[0_25px_60px_-12px_rgba(5,52,78,0.35)] overflow-hidden p-6 text-center space-y-3.5">
+        <div class="admin-toast-top-bar absolute top-0 inset-x-0 h-1.5"></div>
+        <div class="admin-toast-icon w-16 h-16 mx-auto rounded-2xl flex items-center justify-center shadow-sm"></div>
+        <div class="space-y-1">
+          <div class="admin-toast-title text-xs font-extrabold uppercase tracking-wider"></div>
+          <div class="admin-toast-msg text-base sm:text-lg font-extrabold leading-snug text-[#05344E]"></div>
+        </div>
         <div class="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
-          <div class="admin-toast-bar h-full rounded-full transition-all duration-[3000ms] ease-linear" style="width:100%"></div>
+          <div class="admin-toast-bar h-full rounded-full" style="width:100%"></div>
         </div>
       </div>
     `;
     pop.addEventListener('click', () => pop.classList.add('hidden'));
     document.body.appendChild(pop);
   }
-  const card = pop.querySelector('.admin-toast-card');
+
+  const card = pop.querySelector('.modern-pop-card');
+  const topBar = pop.querySelector('.admin-toast-top-bar');
   const icon = pop.querySelector('.admin-toast-icon');
+  const titleEl = pop.querySelector('.admin-toast-title');
   const msgEl = pop.querySelector('.admin-toast-msg');
   const bar = pop.querySelector('.admin-toast-bar');
 
-  card.className = 'admin-toast-card w-full max-w-sm rounded-3xl bg-white border-2 shadow-2xl p-6 text-center space-y-3 fade-in-up ' +
-    (isError ? 'border-rose-300' : 'border-emerald-300');
-  icon.className = 'admin-toast-icon w-14 h-14 mx-auto rounded-full flex items-center justify-center text-3xl shadow-inner animate-bounce ' +
-    (isError ? 'bg-rose-100 text-rose-600' : 'bg-emerald-100 text-emerald-600');
-  icon.textContent = isError ? '⚠️' : '✅';
-  msgEl.className = 'admin-toast-msg text-base sm:text-lg font-extrabold leading-snug ' +
-    (isError ? 'text-rose-700' : 'text-[#05344E]');
+  // Re-trigger spring animation
+  card.style.animation = 'none';
+  void card.offsetWidth;
+  card.style.animation = '';
+
+  if (isError) {
+    card.className = 'modern-pop-card relative w-full max-w-sm rounded-3xl bg-white/95 backdrop-blur-md border border-rose-200 shadow-[0_25px_60px_-12px_rgba(225,29,72,0.28)] overflow-hidden p-6 text-center space-y-3.5';
+    topBar.className = 'admin-toast-top-bar absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-rose-500 to-orange-500';
+    icon.className = 'admin-toast-icon w-16 h-16 mx-auto rounded-2xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center shadow-sm';
+    icon.innerHTML = '<svg class="w-9 h-9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+    titleEl.className = 'admin-toast-title text-xs font-extrabold uppercase tracking-wider text-rose-600';
+    titleEl.textContent = 'लक्ष द्या';
+    msgEl.className = 'admin-toast-msg text-base sm:text-lg font-extrabold leading-snug text-rose-800';
+    bar.className = 'admin-toast-bar h-full rounded-full bg-gradient-to-r from-rose-500 to-orange-500';
+  } else {
+    card.className = 'modern-pop-card relative w-full max-w-sm rounded-3xl bg-white/95 backdrop-blur-md border border-emerald-200 shadow-[0_25px_60px_-12px_rgba(16,185,129,0.28)] overflow-hidden p-6 text-center space-y-3.5';
+    topBar.className = 'admin-toast-top-bar absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-[#05344E] via-emerald-500 to-amber-400';
+    icon.className = 'admin-toast-icon w-16 h-16 mx-auto rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center shadow-sm';
+    icon.innerHTML = '<svg class="w-9 h-9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path class="modern-check-path" d="M20 6L9 17l-5-5"/></svg>';
+    titleEl.className = 'admin-toast-title text-xs font-extrabold uppercase tracking-wider text-emerald-600';
+    titleEl.textContent = 'यशस्वी झाले';
+    msgEl.className = 'admin-toast-msg text-base sm:text-lg font-extrabold leading-snug text-[#05344E]';
+    bar.className = 'admin-toast-bar h-full rounded-full bg-gradient-to-r from-[#05344E] via-emerald-500 to-amber-400';
+  }
   msgEl.textContent = msg;
 
-  bar.className = 'admin-toast-bar h-full rounded-full ' + (isError ? 'bg-rose-500' : 'bg-emerald-500');
   bar.style.transition = 'none';
   bar.style.width = '100%';
   pop.classList.remove('hidden');
@@ -714,6 +756,11 @@ function initAdminGuard(onAuthed, isLoginPage = false) {
       hdr.addEventListener('click', (e) => {
         if (e.target.closest('a, input, select, textarea') || (e.target.closest('button') && !e.target.closest('.admin-acc-hdr'))) return;
         const isOpen = sec.dataset.accOpen === '1';
+        if (!isOpen) {
+          sections.forEach(other => {
+            if (other !== sec && other.dataset.accOpen === '1') setSectionState(other, false);
+          });
+        }
         setSectionState(sec, !isOpen);
       });
     });

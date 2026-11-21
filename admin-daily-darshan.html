@@ -52,7 +52,7 @@
           <input id="uploadPresetInput" type="text" placeholder="उदा. darshan_unsigned" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-[#05344E] outline-none" />
         </div>
         <div class="flex items-end">
-          <button type="button" id="saveCloudBtn" class="w-full px-4 py-2 rounded-xl bg-[#05344E] hover:bg-[#084160] text-white text-sm font-bold cursor-pointer transition">☁️ Cloudinary सेव्ह करा</button>
+          <span class="w-full px-3 py-2 rounded-xl bg-amber-50 border border-amber-200 text-[11px] font-bold text-amber-900 text-center">तळाच्या मुख्य सेव्ह बटनाने सेव्ह होईल</span>
         </div>
         <p class="sm:col-span-3 text-[11px] text-slate-500">टीप: Cloudinary Dashboard → Settings → Upload → Upload Presets मध्ये जाऊन Signing Mode: <strong>Unsigned</strong> असा Preset तयार करा.</p>
       </div>
@@ -160,7 +160,7 @@
             <input id="newTempleCoverFile" type="file" accept="image/*" class="block w-full text-xs text-slate-600 mb-1.5 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-200 file:text-slate-800 cursor-pointer" />
             <input id="newTempleCoverUrl" type="url" placeholder="https://..." class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:border-[#05344E] outline-none" />
           </div>
-          <button type="button" id="saveNewTempleBtn" class="w-full px-4 py-2.5 rounded-xl bg-[#05344E] hover:bg-[#084160] text-white text-sm font-bold cursor-pointer transition">➕ देवस्थान ब्लॉक सेव्ह करा</button>
+          <button type="button" id="saveNewTempleBtn" class="w-full px-4 py-2.5 rounded-xl bg-[#05344E] hover:bg-[#084160] text-white text-sm font-bold cursor-pointer transition">➕ नवीन देवस्थान जोडा</button>
         </div>
       </section>
 
@@ -253,10 +253,14 @@
             <span>सोर्स प्लॅटफॉर्म बॅज दाखवा</span>
           </label>
         </div>
-        <button type="button" id="saveDailyUiBtn" class="px-5 py-2.5 rounded-xl bg-[#05344E] hover:bg-[#084160] text-white text-sm font-bold shadow cursor-pointer transition">💾 सर्व सेटिंग्ज व क्रम सेव्ह करा</button>
+        
       </div>
     </section>
 
+
+    <div class="sticky bottom-3 z-20 flex justify-end">
+      <button type="button" id="saveDailyUiBtn" class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#0a4d70] hover:opacity-95 text-white text-sm font-bold shadow-lg cursor-pointer transition">💾 सर्व सेटिंग्ज व क्रम सेव्ह करा</button>
+    </div>
   </main>
 
   <script>
@@ -690,14 +694,6 @@
       document.getElementById('cloudFormWrap').classList.toggle('hidden');
     });
 
-    document.getElementById('saveCloudBtn').addEventListener('click', async () => {
-      const cloudName = document.getElementById('cloudNameInput').value.trim();
-      const uploadPreset = document.getElementById('uploadPresetInput').value.trim();
-      if (!cloudName || !uploadPreset) return showToast('Cloud Name आणि Upload Preset दोन्ही भरा.', true);
-      await db.ref('siteConfig/cloudinary').set({ cloudName, uploadPreset });
-      cloudCfg = { cloudName, uploadPreset };
-      showToast('Cloudinary सेटिंग सेव्ह झाली!');
-    });
 
     document.getElementById('templeSelect').addEventListener('change', () => {
       syncSelectedTempleDefaults();
@@ -815,6 +811,12 @@ document.getElementById('saveDailyUiBtn').addEventListener('click', async () => 
           showSource: document.getElementById('uiShowSourceChk').checked
         };
         const updates = { 'siteConfig/dailyDarshanUI': uiPayload };
+        const cName = document.getElementById('cloudNameInput').value.trim();
+        const cPreset = document.getElementById('uploadPresetInput').value.trim();
+        if (cName && cPreset) {
+          updates['siteConfig/cloudinary'] = { cloudName: cName, uploadPreset: cPreset };
+          cloudCfg = { cloudName: cName, uploadPreset: cPreset };
+        }
         const inputs = Array.from(document.querySelectorAll('.temple-order-input'));
         inputs.forEach((inp, idx) => {
           const tid = inp.getAttribute('data-order-id');

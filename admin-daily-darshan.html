@@ -445,14 +445,31 @@
         return;
       }
 
+      const renderThumb = (p, idx, scope) => {
+        const u = p.url || p;
+        return `
+          <div class="relative group rounded-xl overflow-hidden border border-slate-300 bg-white aspect-square">
+            <img src="${u}" class="w-full h-full object-cover" loading="lazy" />
+            <label class="absolute top-1.5 left-1.5 w-6 h-6 rounded-md bg-white/90 border border-slate-300 shadow flex items-center justify-center cursor-pointer" title="डिलीटसाठी निवडा">
+              <input type="checkbox" class="photo-del-chk w-4 h-4 accent-rose-600 cursor-pointer" data-scope="${scope}" data-idx="${idx}" />
+            </label>
+            <button type="button" onclick="deleteSinglePhoto('${id}', '${scope}', ${idx})" title="हा फोटो डिलीट करा"
+              class="absolute top-1.5 right-1.5 w-6 h-6 rounded-md bg-rose-600/95 hover:bg-rose-700 text-white text-xs font-bold shadow flex items-center justify-center cursor-pointer">🗑️</button>
+          </div>
+        `;
+      };
+
       let html = '';
-      if (latestMap[id] && Array.isArray(latestMap[id].photos)) {
+      if (latestMap[id] && Array.isArray(latestMap[id].photos) && latestMap[id].photos.length) {
         const lat = latestMap[id];
         html += `
-          <div class="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200 space-y-2">
-            <div class="text-xs font-extrabold text-[#05344E]">✨ ताजे (Latest) — ${lat.date || ''} • ${lat.pujaTitle || ''} ${lat.sourcePlatform ? `(${lat.sourcePlatform})` : ''}</div>
+          <div class="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200 space-y-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="text-xs font-extrabold text-[#05344E]">✨ ताजे (Latest) — ${lat.date || ''} • ${lat.pujaTitle || ''} ${lat.sourcePlatform ? `(${lat.sourcePlatform})` : ''}</div>
+              <button type="button" onclick="deleteSelectedPhotos('${id}', 'latest')" class="px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold shadow-xs cursor-pointer">🗑️ निवडलेले डिलीट करा</button>
+            </div>
             <div class="grid grid-cols-3 sm:grid-cols-6 gap-2">
-              ${lat.photos.map(p => `<div class="rounded-xl overflow-hidden border border-amber-300 bg-white aspect-square"><img src="${p.url || p}" class="w-full h-full object-cover" /></div>`).join('')}
+              ${lat.photos.map((p, i) => renderThumb(p, i, 'latest')).join('')}
             </div>
           </div>
         `;
@@ -461,21 +478,97 @@
       dates.forEach(dt => {
         const dayObj = arch[dt] || {};
         const photos = Array.isArray(dayObj.photos) ? dayObj.photos : [];
+        if (!photos.length) return;
         html += `
-          <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-            <div class="text-xs font-bold text-slate-800">📅 ${dt} — ${dayObj.pujaTitle || 'दैनिक दर्शन'} ${dayObj.sourcePlatform ? `• स्त्रोत: ${dayObj.sourcePlatform}` : ''}</div>
+          <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="text-xs font-bold text-slate-800">📅 ${dt} — ${dayObj.pujaTitle || 'दैनिक दर्शन'} ${dayObj.sourcePlatform ? `• स्त्रोत: ${dayObj.sourcePlatform}` : ''}</div>
+              <button type="button" onclick="deleteSelectedPhotos('${id}', '${dt}')" class="px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-bold shadow-xs cursor-pointer">🗑️ निवडलेले डिलीट करा</button>
+            </div>
             <div class="grid grid-cols-3 sm:grid-cols-6 gap-2">
-              ${photos.map(p => `
-                <div class="rounded-xl overflow-hidden border border-slate-300 bg-white aspect-square">
-                  <img src="${p.url || p}" class="w-full h-full object-cover" loading="lazy" />
-                </div>
-              `).join('')}
+              ${photos.map((p, i) => renderThumb(p, i, dt)).join('')}
             </div>
           </div>
         `;
       });
-      box.innerHTML = html;
+      box.innerHTML = html || '<p class="text-xs text-slate-500">या देवस्थानासाठी अद्याप कोणतेही दैनिक फोटो अपलोड केलेले नाहीत.</p>';
     }
+
+    async function removePhotosByIndices(templeId, scope, indicesToRemove) {
+      if (!db || !indicesToRemove.length) return;
+      const idxSet = new Set(indicesToRemove);
+      const path = scope === 'latest' ? `dailyDarshan/latest/${templeId}` : `dailyDarshan/archive/${templeId}/${scope}`;
+      const snap = await db.ref(path).once('value');
+      const data = snap.val();
+      if (!data || !Array.isArray(data.photos)) return;
+      const remaining = data.photos.filter((_, i) => !idxSet.has(i));
+      if (remaining.length) {
+        await db.ref(`${path}/photos`).set(remaining);
+      } else {
+        await db.ref(path).remove();
+      }
+      showToast(`${indicesToRemove.length} फोटो डिलीट केले!`);
+      loadSelectedTempleArchive();
+    }
+
+    window.deleteSinglePhoto = async function(templeId, scope, idx) {
+      if (!confirm('हा फोटो कायमचा डिलीट करायचा का?')) return;
+      try {
+        await removePhotosByIndices(templeId, scope, [idx]);
+      } catch (err) {
+        showToast(err.message || 'फोटो डिलीट करताना त्रुटी आली.', true);
+      }
+    };
+
+    window.deleteSelectedPhotos = async function(templeId, scope) {
+      const chks = Array.from(document.querySelectorAll(`.photo-del-chk[data-scope="${scope}"]:checked`));
+      if (!chks.length) return showToast('कृपया आधी किमान एक फोटो सिलेक्ट करा.', true);
+      if (!confirm(`निवडलेले ${chks.length} फोटो कायमचे डिलीट करायचे का?`)) return;
+      try {
+        const indices = chks.map(c => Number(c.getAttribute('data-idx')));
+        await removePhotosByIndices(templeId, scope, indices);
+      } catch (err) {
+        showToast(err.message || 'फोटो डिलीट करताना त्रुटी आली.', true);
+      }
+    };
+
+    async function removePhotosByIndices(templeId, scope, indicesToRemove) {
+      if (!db || !indicesToRemove.length) return;
+      const idxSet = new Set(indicesToRemove);
+      const path = scope === 'latest' ? `dailyDarshan/latest/${templeId}` : `dailyDarshan/archive/${templeId}/${scope}`;
+      const snap = await db.ref(path).once('value');
+      const data = snap.val();
+      if (!data || !Array.isArray(data.photos)) return;
+      const remaining = data.photos.filter((_, i) => !idxSet.has(i));
+      if (remaining.length) {
+        await db.ref(`${path}/photos`).set(remaining);
+      } else {
+        await db.ref(path).remove();
+      }
+      showToast(`${indicesToRemove.length} फोटो डिलीट केले!`);
+      loadSelectedTempleArchive();
+    }
+
+    window.deleteSinglePhoto = async function(templeId, scope, idx) {
+      if (!confirm('हा फोटो कायमचा डिलीट करायचा का?')) return;
+      try {
+        await removePhotosByIndices(templeId, scope, [idx]);
+      } catch (err) {
+        showToast(err.message || 'फोटो डिलीट करताना त्रुटी आली.', true);
+      }
+    };
+
+    window.deleteSelectedPhotos = async function(templeId, scope) {
+      const chks = Array.from(document.querySelectorAll(`.photo-del-chk[data-scope="${scope}"]:checked`));
+      if (!chks.length) return showToast('कृपया आधी किमान एक फोटो सिलेक्ट करा.', true);
+      if (!confirm(`निवडलेले ${chks.length} फोटो कायमचे डिलीट करायचे का?`)) return;
+      try {
+        const indices = chks.map(c => Number(c.getAttribute('data-idx')));
+        await removePhotosByIndices(templeId, scope, indices);
+      } catch (err) {
+        showToast(err.message || 'फोटो डिलीट करताना त्रुटी आली.', true);
+      }
+    };
 
     document.getElementById('toggleCloudBtn').addEventListener('click', () => {
       document.getElementById('cloudFormWrap').classList.toggle('hidden');

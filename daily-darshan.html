@@ -68,23 +68,31 @@
   </header>
 
   <!-- Mobile Drawer -->
-  <div id="mobileMenuDrawer" class="hidden fixed inset-0 z-50 flex justify-end">
-    <div id="menuBackdrop" class="absolute inset-0 bg-slate-900/60 backdrop-blur-xs"></div>
-    <aside class="relative w-72 max-w-[85vw] h-full bg-white text-slate-900 shadow-2xl flex flex-col">
-      <div class="p-4 bg-[#05344E] text-white flex items-center justify-between border-b border-amber-400/50">
-        <span class="font-bold text-lg">दर्शन सेतू लाईव्ह</span>
-        <button id="menuCloseBtn" type="button" class="px-2.5 py-1 rounded-lg bg-red-600 text-white text-xs font-bold cursor-pointer">✕ बंद करा</button>
+  <div id="mobileMenuDrawer" class="hidden fixed inset-0 z-50 bg-black/55 opacity-0 transition-opacity duration-300 flex justify-end" role="dialog" aria-modal="true">
+    <div id="mobileMenuPanel" class="w-60 sm:w-64 max-w-[70vw] h-full bg-white text-slate-900 shadow-2xl flex flex-col overflow-hidden transition-all duration-300 ease-out translate-x-full">
+      <div class="bg-gradient-to-r from-[#031926] via-[#05344E] to-[#084160] text-white px-4 py-3.5 border-b-2 border-amber-400 flex items-center justify-between">
+        <div class="font-khand text-lg font-bold tracking-wide">🛕 पोर्टल मेनू</div>
+        <button id="menuCloseBtn" type="button" onclick="window.closePortalMenu && window.closePortalMenu()" aria-label="मेनू बंद करा" class="w-8 h-8 rounded-lg bg-white/15 hover:bg-white/25 text-white flex items-center justify-center font-bold cursor-pointer">✕</button>
       </div>
-      <nav class="flex-1 overflow-y-auto p-3 space-y-1 text-sm font-bold">
-        <a href="index.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>🏠</span><span>मुख्य पान</span></a>
-        <a href="daily-darshan.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-amber-50 text-[#EA580C] border border-amber-200 transition"><span>📸</span><span>दैनिक फोटो दर्शन</span></a>
-        <a href="panchang.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📅</span><span>आजचे पंचांग</span></a>
-        <a href="about.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>ℹ️</span><span>आमच्याबद्दल</span></a>
-        <a href="advertising.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📢</span><span>जाहिरात द्या</span></a>
-        <a href="contact.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📞</span><span>संपर्क करा</span></a>
-        <a href="legal-links.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>🔗</span><span>पोर्टल माहिती व कायदेशीर दुवे</span></a>
+      <nav id="mobileMenuNav" class="flex-1 overflow-y-auto p-3 space-y-1.5 text-sm font-bold">
+        <div class="rounded-xl border border-slate-200 overflow-hidden">
+          <button id="menuTempleInfoToggle" type="button" onclick="window.togglePortalMenuInfo && window.togglePortalMenuInfo()" class="w-full flex items-center justify-between px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100 text-[#05344E] cursor-pointer">
+            <span class="flex items-center gap-3"><span>🕰️</span><span>आरती वेळापत्रक व माहिती</span></span>
+            <span id="menuTempleInfoArrow" class="text-xs">▼</span>
+          </button>
+          <div id="menuTempleInfoList" class="hidden bg-white px-2 py-1.5 space-y-1 border-t border-slate-100"></div>
+        </div>
+        <div id="mobileMenuDynamicLinks" class="space-y-1.5">
+          <a href="index.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>🏠</span><span>मुख्य पान</span></a>
+          <a href="daily-darshan.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-amber-50 text-[#EA580C] border border-amber-200 transition"><span>📸</span><span>दैनिक फोटो दर्शन</span></a>
+          <a href="panchang.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>🗓️</span><span>आजचे पंचांग व सणवार</span></a>
+          <a href="advertising.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📢</span><span>जाहिरात द्या</span></a>
+          <a href="contact.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>📞</span><span>संपर्क करा</span></a>
+          <a href="about.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>ℹ️</span><span>आमच्याबद्दल</span></a>
+          <a href="legal-links.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>🔗</span><span>पोर्टल माहिती व कायदेशीर दुवे</span></a>
+        </div>
       </nav>
-    </aside>
+    </div>
   </div>
 
   <main class="flex-1 max-w-7xl xl:max-w-[1400px] w-full mx-auto p-4 sm:p-6 space-y-6">
@@ -120,18 +128,9 @@
 
     <!-- View 2: Single Temple Photos (Latest + 7 Days Archive) -->
     <section id="templeDetailView" class="hidden space-y-5">
-      <div class="bg-white rounded-3xl border border-amber-200 shadow-sm p-4 sm:p-6 space-y-3">
-        <div class="flex flex-wrap items-center justify-between gap-2">
-          <a href="daily-darshan.html" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#05344E] text-xs sm:text-sm font-bold transition">← सर्व देवस्थाने पहा</a>
-          <div id="detailSourceWrap" class="hidden flex items-center gap-2 flex-wrap">
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-50 border border-sky-200 text-[#05344E] text-xs font-bold">
-              <span>📸 फोटो स्त्रोत / सौजन्य:</span>
-              <span id="detailSourceName" class="text-[#EA580C]"></span>
-            </span>
-            <a id="detailSourceLink" href="#" target="_blank" rel="noopener noreferrer" class="hidden inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#05344E] hover:bg-[#084160] text-white text-xs font-bold transition">मूळ पेज पहा ↗</a>
-          </div>
-        </div>
-        <h2 id="detailTempleName" class="text-2xl sm:text-3xl font-bold text-[#05344E]"></h2>
+      <div class="bg-white rounded-3xl border border-amber-200 shadow-sm p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
+        <h2 id="detailTempleName" class="text-xl sm:text-3xl font-bold text-[#05344E] min-w-0"></h2>
+        <a href="daily-darshan.html" class="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#05344E] hover:bg-[#084160] text-white text-xs sm:text-sm font-bold shadow-sm transition">← सर्व देवस्थाने पहा</a>
       </div>
 
       <!-- Latest Photos -->
@@ -207,10 +206,75 @@
     if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
     const db = firebase.database();
 
-    // Drawer controls
-    document.getElementById('menuOpenBtn').addEventListener('click', () => document.getElementById('mobileMenuDrawer').classList.remove('hidden'));
-    document.getElementById('menuCloseBtn').addEventListener('click', () => document.getElementById('mobileMenuDrawer').classList.add('hidden'));
-    document.getElementById('menuBackdrop').addEventListener('click', () => document.getElementById('mobileMenuDrawer').classList.add('hidden'));
+    // Portal Menu Drawer (Same as Main Page)
+    window.openPortalMenu = function() {
+      const d = document.getElementById('mobileMenuDrawer');
+      const p = document.getElementById('mobileMenuPanel');
+      if (!d) return;
+      d.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        d.classList.remove('opacity-0');
+        if (p) p.classList.remove('translate-x-full');
+      });
+    };
+    window.closePortalMenu = function() {
+      const d = document.getElementById('mobileMenuDrawer');
+      const p = document.getElementById('mobileMenuPanel');
+      if (!d) return;
+      d.classList.add('opacity-0');
+      if (p) p.classList.add('translate-x-full');
+      setTimeout(() => d.classList.add('hidden'), 280);
+    };
+    window.togglePortalMenuInfo = function() {
+      const box = document.getElementById('menuTempleInfoList');
+      const arr = document.getElementById('menuTempleInfoArrow');
+      if (!box) return;
+      const hidden = box.classList.toggle('hidden');
+      if (arr) arr.textContent = hidden ? '▼' : '▲';
+    };
+
+    const drawerEl = document.getElementById('mobileMenuDrawer');
+    const menuOpenBtn = document.getElementById('menuOpenBtn');
+    if (menuOpenBtn) menuOpenBtn.onclick = () => window.openPortalMenu();
+    if (drawerEl) {
+      drawerEl.addEventListener('click', (e) => {
+        if (e.target === drawerEl) window.closePortalMenu();
+      });
+    }
+
+    const escMenu = (s) => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const FALLBACK_MENU_TEMPLES = [
+      { id: 'pandharpur', shortTitle: 'श्री विठ्ठल रुक्मिणी, पंढरपूर' },
+      { id: 'kolhapur', shortTitle: 'श्री अंबाबाई महालक्ष्मी, कोल्हापूर' },
+      { id: 'tuljapur', shortTitle: 'श्री तुळजाभवानी, तुळजापूर' },
+      { id: 'shirdi', shortTitle: 'श्री साईबाबा, शिर्डी' },
+      { id: 'dagdusheth', shortTitle: 'दगडूशेठ गणपती, पुणे' },
+      { id: 'siddhivinayak', shortTitle: 'श्री सिद्धिविनायक, मुंबई' }
+    ];
+    function renderPortalMenuTemples(list) {
+      const box = document.getElementById('menuTempleInfoList');
+      if (!box) return;
+      box.innerHTML = list.filter(t => t && t.id && !t.deleted).map(t =>
+        `<a href="temple-info.html?id=${encodeURIComponent(t.id)}" class="block px-3 py-2 rounded-lg text-xs font-bold text-slate-700 hover:bg-amber-50 hover:text-[#EA580C] transition">🛕 ${escMenu(t.shortTitle || t.title || t.id)}</a>`
+      ).join('');
+    }
+    renderPortalMenuTemples(FALLBACK_MENU_TEMPLES);
+
+    db.ref('temples').on('value', (snap) => {
+      const val = snap.val();
+      const arr = Array.isArray(val) ? val : (val ? Object.values(val) : []);
+      if (arr.length) renderPortalMenuTemples(arr.sort((a,b) => (Number(a.order)||999)-(Number(b.order)||999)));
+    });
+
+    db.ref('siteConfig/menuLinks').on('value', (snap) => {
+      const m = snap.val();
+      const box = document.getElementById('mobileMenuDynamicLinks');
+      if (box && m && Array.isArray(m.items) && m.items.length) {
+        box.innerHTML = m.items.filter(it => it && it.enabled !== false && it.label && it.url).map(it =>
+          `<a href="${escMenu(it.url)}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-slate-100 text-slate-800 transition"><span>${escMenu(it.icon || '🔗')}</span><span>${escMenu(it.label)}</span></a>`
+        ).join('');
+      }
+    });
 
     const urlParams = new URLSearchParams(window.location.search);
     const selectedId = (urlParams.get('id') || '').trim();
@@ -241,11 +305,18 @@
       document.getElementById('lbCounter').textContent = `${lbIndex + 1} / ${lbItems.length}`;
     }
 
-    function renderPhotoCards(container, photos, title, dateLabel) {
+    function renderPhotoCards(container, photos, title, dateLabel, srcName, srcUrl) {
       if (!photos || !photos.length) {
         container.innerHTML = '<div class="col-span-full text-center text-sm text-slate-500 py-6">या विभागासाठी अद्याप फोटो उपलब्ध नाहीत.</div>';
         return;
       }
+      const badgeTxt = srcName ? `📸 सौजन्य: ${srcName}` : '';
+      const badgeHtml = badgeTxt
+        ? (srcUrl
+            ? `<a href="${srcUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="absolute bottom-2 right-2 px-2.5 py-0.5 rounded-full bg-black/75 hover:bg-[#05344E] text-amber-200 text-[10px] sm:text-[11px] font-bold shadow border border-amber-300/40 max-w-[88%] truncate">${badgeTxt} ↗</a>`
+            : `<span class="absolute bottom-2 right-2 px-2.5 py-0.5 rounded-full bg-black/75 text-amber-200 text-[10px] sm:text-[11px] font-bold shadow border border-amber-300/40 max-w-[88%] truncate">${badgeTxt}</span>`)
+        : '';
+
       container.innerHTML = photos.map((p, idx) => {
         const u = p.url || p;
         const cap = p.pujaTitle || 'दैनिक दर्शन';
@@ -254,7 +325,8 @@
             class="group bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-md transition cursor-pointer flex flex-col">
             <div class="aspect-[4/3] bg-slate-200 overflow-hidden relative">
               <img src="${u}" alt="${cap}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
-              <span class="absolute bottom-2 right-2 px-2.5 py-0.5 rounded-full bg-black/65 text-white text-[11px] font-bold">🔍 मोठे पहा</span>
+              <span class="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-black/55 text-white text-[10px] font-bold">🔍 मोठे पहा</span>
+              ${badgeHtml}
             </div>
             <div class="px-3.5 py-2.5 flex items-center justify-between gap-2 text-xs">
               <span class="font-bold text-[#05344E] truncate">${cap}</span>
@@ -291,7 +363,7 @@
         grid.innerHTML = `<div class="col-span-full text-center text-sm text-slate-500 py-6">${dt} या तारखेचे फोटो उपलब्ध नाहीत.</div>`;
         return;
       }
-      renderPhotoCards(grid, val.photos, title, dt);
+      renderPhotoCards(grid, val.photos, title, dt, val.sourcePlatform || '', val.sourceUrl || '');
     }
 
     // Load Header & Master config
@@ -424,19 +496,10 @@
 
         const srcName = lat.sourcePlatform || temple.sourcePlatform || '';
         const srcUrl = lat.sourceUrl || temple.sourceUrl || '';
-        if (srcName || srcUrl) {
-          document.getElementById('detailSourceWrap').classList.remove('hidden');
-          document.getElementById('detailSourceName').textContent = srcName || 'अधिकृत देवस्थान';
-          const srcA = document.getElementById('detailSourceLink');
-          if (srcUrl) {
-            srcA.href = srcUrl;
-            srcA.classList.remove('hidden');
-          }
-        }
 
         const latPhotos = Array.isArray(lat.photos) ? lat.photos : [];
         document.getElementById('latestMetaBadge').textContent = lat.date ? `${lat.date} • ${lat.pujaTitle || ''}` : 'ताजे अपडेट';
-        renderPhotoCards(document.getElementById('latestPhotosGrid'), latPhotos, title, lat.date || '');
+        renderPhotoCards(document.getElementById('latestPhotosGrid'), latPhotos, title, lat.date || '', srcName, srcUrl);
 
         // Only show past dates (up to 7 days) that actually have uploaded photos
         const tabsBox = document.getElementById('sevenDaysTabs');
@@ -485,7 +548,7 @@
             <a href="daily-darshan.html?id=${encodeURIComponent(t.id)}" class="group bg-white rounded-2xl border-2 border-amber-200 hover:border-[#EA580C] overflow-hidden shadow-sm hover:shadow-md transition flex flex-col">
               <div class="h-28 sm:h-36 bg-slate-100 relative overflow-hidden">
                 <img src="${cover}" alt="${title}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
-                ${lat.date ? `<span class="absolute top-1.5 left-1.5 px-2 py-0.5 rounded-full bg-[#EA580C] text-white text-[10px] font-bold shadow">✨ ${lat.date}</span>` : ''}
+                ${lat.date ? `<span class="absolute top-2 left-2 px-3 py-1 rounded-full bg-[#05344E]/95 text-amber-300 border-2 border-amber-400 text-xs sm:text-sm font-bold shadow-lg tracking-wide">📅 ${lat.date}</span>` : ''}
                 ${srcName ? `<span class="absolute bottom-1.5 right-1.5 px-2 py-0.5 rounded-full bg-black/65 text-amber-200 text-[9px] font-bold">📸 ${srcName}</span>` : ''}
               </div>
               <div class="p-2.5 sm:p-3 flex items-center justify-between gap-1.5">

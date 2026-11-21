@@ -154,12 +154,12 @@
 
     <!-- View 1: All Temple Blocks -->
     <section id="blocksListView" class="space-y-4">
-      <div class="bg-white rounded-2xl border border-amber-200 shadow-sm p-3.5 sm:p-5 flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <span class="inline-block px-3 py-0.5 rounded-full bg-orange-100 text-[#EA580C] text-xs font-bold mb-1">दैनिक अलंकार व आरती</span>
-          <h2 class="text-xl sm:text-2xl font-bold text-[#05344E]">📸 दैनिक फोटो दर्शन</h2>
-          <p class="text-sm text-slate-600 mt-0.5">ज्या देवस्थानांचे थेट लाईव्ह प्रक्षेपण उपलब्ध नाही, त्यांचे रोजचे आरती व अलंकार फोटो येथे पहा.</p>
+      <div class="bg-gradient-to-r from-[#031926] via-[#05344E] to-[#0a4d70] text-white rounded-3xl p-5 sm:p-6 shadow-md border border-amber-400/30 space-y-2.5">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <h2 class="font-khand text-2xl sm:text-3xl font-bold text-amber-200">📸 दैनिक फोटो दर्शन</h2>
+          <span class="px-3 py-1 rounded-full bg-white/15 border border-amber-300/40 text-amber-100 text-xs font-bold">✨ दैनिक अलंकार व आरती</span>
         </div>
+        <p class="text-sm sm:text-base text-amber-100 font-medium">ज्या देवस्थानांचे थेट लाईव्ह प्रक्षेपण उपलब्ध नाही, त्यांचे रोजचे आरती व अलंकार फोटो येथे पहा.</p>
       </div>
 
       <div id="templeBlocksGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
@@ -661,9 +661,7 @@
         if (u.borderColor && !isFeat) btn.style.borderColor = u.borderColor;
       });
 
-      if (u.titleColor) {
-        document.querySelectorAll('#templeBlocksGrid h3').forEach(h => h.style.color = u.titleColor);
-      }
+      // Keep high-contrast white title on dark navy card footer
     }
     db.ref('siteConfig/dailyDarshanUI').on('value', (s) => {
       dailyUiCfg = { ...dailyUiCfg, ...(s.val() || {}) };
@@ -723,15 +721,20 @@
               <div class="card-img-box ${isFeat ? 'h-48 sm:h-64' : 'h-28 sm:h-36'} bg-slate-100 relative overflow-hidden w-full">
                 <img src="${cover}" alt="${title}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
                 ${isFeat ? `<div class="pointer-events-none absolute inset-0 overflow-hidden"><div class="ott-shimmer-beam w-1/3 h-full bg-gradient-to-r from-transparent via-amber-200/35 to-transparent"></div></div><span class="absolute top-2 right-2 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-[#EA580C] to-amber-500 text-white text-[10px] sm:text-xs font-extrabold shadow">⭐ प्रमुख दर्शन</span>` : ''}
-                ${lat.date ? `<span class="absolute top-2 left-2 px-3 py-1 rounded-full bg-[#05344E]/95 text-amber-300 border-2 border-amber-400 text-xs sm:text-sm font-bold shadow-lg tracking-wide">📅 ${formatDisplayDate(lat.date)}</span>` : ''}
                 ${srcName ? `<span class="absolute bottom-1.5 right-1.5 px-2 py-0.5 rounded-full bg-black/65 text-amber-200 text-[9px] font-bold">📸 ${srcName}</span>` : ''}
               </div>
-              <div class="p-2.5 sm:p-3 flex items-center justify-between gap-1.5 w-full">
-                <div class="min-w-0">
-                  <h3 class="font-bold ${isFeat ? 'text-base sm:text-lg' : 'text-sm sm:text-base'} text-[#05344E] truncate">${title}</h3>
-                  <p class="text-[11px] text-slate-500 truncate">${lat.pujaTitle || 'फोटो दर्शन पहा'}</p>
+              <div class="relative px-2.5 pb-2.5 pt-2 sm:px-3 sm:pb-3 flex flex-col w-full bg-gradient-to-r from-[#031926] via-[#05344E] to-[#0a4d70] border-t border-amber-400/40">
+                ${lat.date ? `<div class="relative z-20 -mt-5 mb-1 flex justify-start"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-[#031926] text-amber-300 border border-amber-400 text-[10px] sm:text-xs font-bold shadow-md tracking-wide">📅 ${formatDisplayDate(lat.date)}</span></div>` : ''}
+                <div class="flex items-center justify-between gap-1.5 w-full">
+                  <div class="min-w-0">
+                    <h3 class="font-bold ${isFeat ? 'text-base sm:text-lg' : 'text-sm sm:text-base'} text-white truncate drop-shadow-sm">${title}</h3>
+                    <p class="text-[11px] text-amber-200/90 truncate">${lat.pujaTitle || 'फोटो दर्शन पहा'}</p>
+                  </div>
+                  <span class="shrink-0 px-3 py-1.5 rounded-full bg-amber-400 group-hover:bg-amber-300 text-[#05344E] text-xs sm:text-sm font-extrabold flex items-center gap-1.5 shadow-md transition">
+                    <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                    <span>पहा</span>
+                  </span>
                 </div>
-                <span class="shrink-0 w-7 h-7 rounded-full bg-amber-100 text-[#EA580C] group-hover:bg-[#EA580C] group-hover:text-white flex items-center justify-center text-xs font-bold transition">→</span>
               </div>
             </button>
           `;
@@ -752,7 +755,7 @@
     }
   </script>
   <!-- Brief Full-Page Skeleton Shimmer (~380ms) -->
-  <div id="siteSkeletonOverlay" class="fixed inset-x-0 top-[64px] bottom-0 z-25 bg-slate-50/95 p-4 sm:p-6 overflow-hidden transition-opacity duration-200">
+  <div id="siteSkeletonOverlay" class="fixed inset-x-0 top-[64px] bottom-0 z-40 bg-slate-50 p-4 sm:p-6 overflow-hidden transition-opacity duration-200">
     <div class="max-w-6xl mx-auto space-y-4">
       <div class="h-20 w-full rounded-2xl site-skel border border-slate-200/70"></div>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">

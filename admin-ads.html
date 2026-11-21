@@ -790,6 +790,8 @@
           publishedStr: formatPubDateTime(s.publishedAt),
           durationStr: formatDurationMarathi(s.publishedAt, s.expiresAt),
           expiresStr: s.expiresAt ? formatPubDateTime(s.expiresAt) : 'अमर्याद',
+          image: s.image || '',
+          pageCounts: st.byPage || {},
           pages: formatPageStats(st.byPage),
           days7Arr: get7DayRows(st.daily)
         });
@@ -808,7 +810,7 @@
         const ptc = Number((pr.daily && pr.daily[todayKey] && pr.daily[todayKey].clicks) || 0);
         const prSp = (currentAds.preRollSponsor || document.getElementById('preRollSponsor')?.value || '').trim() || '—';
         if (filterVal === 'preroll') { totalV = pv; totalC = pc; }
-        items.push({ name: 'Pre-Roll जाहिरात', sponsor: prSp, title: 'व्हिडिओ पूर्व जाहिरात', link: currentAds.preRollLink || '—', views: pv, clicks: pc, today: ptc, ctr: pv > 0 ? ((pc / pv) * 100).toFixed(1) + '%' : '0.0%', publishedStr: formatPubDateTime(currentAds.preRollPublishedAt), durationStr: formatDurationMarathi(currentAds.preRollPublishedAt, currentAds.preRollExpiresAt), expiresStr: currentAds.preRollExpiresAt ? formatPubDateTime(currentAds.preRollExpiresAt) : 'अमर्याद', pages: formatPageStats(pr.byPage), days7Arr: get7DayRows(pr.daily) });
+        items.push({ name: 'Pre-Roll जाहिरात', sponsor: prSp, title: 'व्हिडिओ पूर्व जाहिरात', link: currentAds.preRollLink || '—', views: pv, clicks: pc, today: ptc, ctr: pv > 0 ? ((pc / pv) * 100).toFixed(1) + '%' : '0.0%', publishedStr: formatPubDateTime(currentAds.preRollPublishedAt), durationStr: formatDurationMarathi(currentAds.preRollPublishedAt, currentAds.preRollExpiresAt), expiresStr: currentAds.preRollExpiresAt ? formatPubDateTime(currentAds.preRollExpiresAt) : 'अमर्याद', image: currentAds.preRollImage || '', pageCounts: pr.byPage || {}, pages: formatPageStats(pr.byPage), days7Arr: get7DayRows(pr.daily) });
       }
       if (filterVal === 'all' || filterVal === 'splash') {
         const sp = stats.splash || {};
@@ -816,122 +818,160 @@
         const stc = Number((sp.daily && sp.daily[todayKey] && sp.daily[todayKey].clicks) || 0);
         const spSp = (currentAds.splashSponsor || document.getElementById('splashSponsor')?.value || '').trim() || '—';
         if (filterVal === 'splash') { totalV = sv; totalC = sc; }
-        items.push({ name: 'Splash पॉपअप जाहिरात', sponsor: spSp, title: 'मुख्य स्क्रीन पॉपअप', link: currentAds.splashLink || '—', views: sv, clicks: sc, today: stc, ctr: sv > 0 ? ((sc / sv) * 100).toFixed(1) + '%' : '0.0%', publishedStr: formatPubDateTime(currentAds.splashPublishedAt), durationStr: formatDurationMarathi(currentAds.splashPublishedAt, currentAds.splashExpiresAt), expiresStr: currentAds.splashExpiresAt ? formatPubDateTime(currentAds.splashExpiresAt) : 'अमर्याद', pages: formatPageStats(sp.byPage), days7Arr: get7DayRows(sp.daily) });
+        items.push({ name: 'Splash पॉपअप जाहिरात', sponsor: spSp, title: 'मुख्य स्क्रीन पॉपअप', link: currentAds.splashLink || '—', views: sv, clicks: sc, today: stc, ctr: sv > 0 ? ((sc / sv) * 100).toFixed(1) + '%' : '0.0%', publishedStr: formatPubDateTime(currentAds.splashPublishedAt), durationStr: formatDurationMarathi(currentAds.splashPublishedAt, currentAds.splashExpiresAt), expiresStr: currentAds.splashExpiresAt ? formatPubDateTime(currentAds.splashExpiresAt) : 'अमर्याद', image: currentAds.splashImage || '', pageCounts: sp.byPage || {}, pages: formatPageStats(sp.byPage), days7Arr: get7DayRows(sp.daily) });
       }
       return { dtDisplay, dtTimeDisplay, dtFile, totalV, totalC, items, filterVal };
     }
 
     window.exportAdReportJpg = function() {
       const { dtTimeDisplay, dtFile, totalV, totalC, items } = buildAdReportRows();
-      const W = 1160;
-      const sumRowH = 104;
-      const dateRowH = 40;
-      const show7DayTable = items.length > 0;
-      const totalDateRows = show7DayTable ? (items.length * 7) : 0;
-      const H = Math.max(580, 230 + items.length * sumRowH + (show7DayTable ? (110 + totalDateRows * dateRowH) : 40) + 60);
+      const W = 1080;
+      // Aggregate 7-day & page counts across selected items
+      const dayLabels = (items[0] && items[0].days7Arr) ? items[0].days7Arr.map(d => d.date).reverse() : [];
+      const dayTotals = dayLabels.map((_, revIdx) => {
+        const origIdx = dayLabels.length - 1 - revIdx;
+        return items.reduce((sum, it) => sum + Number((it.days7Arr && it.days7Arr[origIdx] && it.days7Arr[origIdx].clicks) || 0), 0);
+      });
+      const pHome = items.reduce((s, it) => s + Number((it.pageCounts && it.pageCounts.home) || 0), 0);
+      const pDaily = items.reduce((s, it) => s + Number((it.pageCounts && it.pageCounts.daily) || 0), 0);
+      const pPanchang = items.reduce((s, it) => s + Number((it.pageCounts && it.pageCounts.panchang) || 0), 0);
+      const pTemple = items.reduce((s, it) => s + Number((it.pageCounts && it.pageCounts.temple) || 0), 0);
+      const pSum = Math.max(1, pHome + pDaily + pPanchang + pTemple);
+
+      const rowH = 54;
+      const H = 980 + items.length * rowH;
       const canvas = document.createElement('canvas');
       canvas.width = W; canvas.height = H;
       const ctx = canvas.getContext('2d');
 
-      ctx.fillStyle = '#FFFBEB';
-      ctx.fillRect(0, 0, W, H);
-
-      const grad = ctx.createLinearGradient(0, 0, W, 0);
-      grad.addColorStop(0, '#031926'); grad.addColorStop(0.5, '#05344E'); grad.addColorStop(1, '#0a4d70');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, W, 132);
-      ctx.fillStyle = '#F59E0B';
-      ctx.fillRect(0, 128, W, 4);
-
-      ctx.fillStyle = '#FDE68A';
-      ctx.font = 'bold 34px sans-serif';
-      ctx.fillText('DARSHAN SETU® — जाहिरात क्लिक व व्ह्यूज रिपोर्ट', 40, 52);
-      ctx.fillStyle = '#E2E8F0';
-      ctx.font = 'bold 19px sans-serif';
-      ctx.fillText(`Export दिनांक व वेळ: ${dtTimeDisplay}   •   एकूण Views: ${totalV}   •   एकूण Clicks: ${totalC}`, 40, 95);
-
-      let y = 160;
-      ctx.fillStyle = '#05344E';
-      ctx.fillRect(40, y, W - 80, 44);
+      // Pure white background + top bar
       ctx.fillStyle = '#FFFFFF';
-      ctx.font = 'bold 18px sans-serif';
-      ctx.fillText('जाहिरात / स्लाईड', 56, y + 29);
-      ctx.fillText('जाहिरातदार (Sponsor)', 330, y + 29);
-      ctx.fillText('Views', 620, y + 29);
-      ctx.fillText('Clicks', 740, y + 29);
-      ctx.fillText('आज', 860, y + 29);
-      ctx.fillText('CTR', 970, y + 29);
-      y += 44;
+      ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#05344E';
+      ctx.font = 'bold 34px sans-serif';
+      ctx.fillText('DARSHAN SETU® Analytics', 48, 62);
 
-      items.forEach((it, idx) => {
-        ctx.fillStyle = idx % 2 === 0 ? '#FFFFFF' : '#F8FAFC';
-        ctx.fillRect(40, y, W - 80, sumRowH);
-        ctx.strokeStyle = '#CBD5E1';
-        ctx.strokeRect(40, y, W - 80, sumRowH);
-        ctx.fillStyle = '#05344E';
-        ctx.font = 'bold 19px sans-serif';
-        ctx.fillText(String(it.name).slice(0, 24), 56, y + 32);
-        ctx.fillStyle = '#EA580C';
-        ctx.font = 'bold 18px sans-serif';
-        ctx.fillText(String(it.sponsor || '—').slice(0, 24), 330, y + 32);
-        ctx.fillStyle = '#0369A1';
-        ctx.font = 'bold 20px sans-serif';
-        ctx.fillText(String(it.views), 620, y + 32);
-        ctx.fillStyle = '#047857';
-        ctx.fillText(String(it.clicks), 740, y + 32);
-        ctx.fillStyle = '#B45309';
-        ctx.fillText(String(it.today), 860, y + 32);
-        ctx.fillStyle = '#05344E';
-        ctx.fillText(String(it.ctr), 970, y + 32);
-        ctx.fillStyle = '#475569';
-        ctx.font = '14px sans-serif';
-        ctx.fillText(String(it.pages || ''), 56, y + 62);
-        ctx.fillStyle = '#05344E';
-        ctx.font = 'bold 13px sans-serif';
-        ctx.fillText(`पब्लिश: ${it.publishedStr || '—'}  •  चाललेला कालावधी: ${it.durationStr || '—'}`, 56, y + 86);
-        y += sumRowH;
+      // Export badge top-right
+      ctx.fillStyle = '#F1F5F9';
+      ctx.strokeStyle = '#CBD5E1';
+      ctx.beginPath(); ctx.roundRect(690, 30, 342, 42, 21); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#334155';
+      ctx.font = 'bold 16px sans-serif';
+      ctx.fillText(`Export: ${dtTimeDisplay}`, 712, 57);
+
+      // Saffron divider line
+      ctx.fillStyle = '#EA580C';
+      ctx.fillRect(48, 86, W - 96, 4);
+
+      // Campaign Summary Card
+      ctx.fillStyle = '#F8FAFC';
+      ctx.strokeStyle = '#CBD5E1';
+      ctx.beginPath(); ctx.roundRect(48, 112, W - 96, 128, 16); ctx.fill(); ctx.stroke();
+      const firstIt = items[0] || {};
+      const titleLine = items.length === 1
+        ? `${firstIt.name}${firstIt.sponsor && firstIt.sponsor !== '—' ? ' — ' + firstIt.sponsor : ''}`
+        : `एकूण निवडलेल्या जाहिराती: ${items.length}`;
+      ctx.fillStyle = '#05344E';
+      ctx.font = 'bold 26px sans-serif';
+      ctx.fillText(titleLine.slice(0, 44), 72, 158);
+      ctx.fillStyle = '#475569';
+      ctx.font = 'bold 18px sans-serif';
+      ctx.fillText(`पब्लिश: ${firstIt.publishedStr || '—'}   •   कालावधी: ${firstIt.durationStr || '—'}`, 72, 198);
+
+      // Left Card: 7-Day Vertical Bar Chart
+      ctx.fillStyle = '#FFFFFF';
+      ctx.strokeStyle = '#E2E8F0';
+      ctx.beginPath(); ctx.roundRect(48, 266, 620, 360, 16); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#05344E';
+      ctx.font = 'bold 21px sans-serif';
+      ctx.fillText('मागील ७ दिवसांचे क्लिक्स (7-Day Trend)', 72, 306);
+
+      const maxBar = Math.max(1, ...dayTotals);
+      const chartBaseY = 568;
+      const chartMaxH = 195;
+      dayTotals.forEach((val, i) => {
+        const bx = 82 + i * 80;
+        const bh = Math.max(6, Math.round((val / maxBar) * chartMaxH));
+        const by = chartBaseY - bh;
+        ctx.fillStyle = (i === dayTotals.length - 1) ? '#EA580C' : '#05344E';
+        ctx.beginPath(); ctx.roundRect(bx, by, 48, bh, [8, 8, 0, 0]); ctx.fill();
+        ctx.fillStyle = '#0F172A';
+        ctx.font = 'bold 16px sans-serif';
+        ctx.fillText(String(val), bx + 14, by - 10);
+        ctx.fillStyle = '#64748B';
+        ctx.font = 'bold 14px sans-serif';
+        const shortDt = (dayLabels[i] || '').slice(0, 6);
+        ctx.fillText(shortDt, bx + 2, chartBaseY + 24);
       });
 
-      if (show7DayTable) {
-        y += 34;
-        ctx.fillStyle = '#05344E';
-        ctx.font = 'bold 22px sans-serif';
-        ctx.fillText('📆 दिनांकनिहाय मागील ७ दिवसांचे क्लिक्स (Table Format)', 40, y);
-        y += 18;
-        ctx.fillStyle = '#05344E';
-        ctx.fillRect(40, y, W - 80, 40);
-        ctx.fillStyle = '#FFFFFF';
+      // Right Card: Page Breakdown Progress Bars
+      ctx.fillStyle = '#FFFFFF';
+      ctx.strokeStyle = '#E2E8F0';
+      ctx.beginPath(); ctx.roundRect(692, 266, 340, 360, 16); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#05344E';
+      ctx.font = 'bold 21px sans-serif';
+      ctx.fillText('पेज विश्लेषण (Page Share)', 716, 306);
+
+      const pageRows = [
+        { lbl: 'मुख्य पेज', val: pHome, col: '#05344E' },
+        { lbl: 'दैनिक फोटो दर्शन', val: pDaily, col: '#EA580C' },
+        { lbl: 'आजचे पंचांग', val: pPanchang, col: '#059669' },
+        { lbl: 'मंदिर माहिती', val: pTemple, col: '#D97706' }
+      ];
+      pageRows.forEach((pr, idx) => {
+        const py = 352 + idx * 66;
+        const pct = Math.round((pr.val / pSum) * 100);
+        ctx.fillStyle = '#0F172A';
         ctx.font = 'bold 17px sans-serif';
-        ctx.fillText('जाहिरात / स्लाईड', 56, y + 26);
-        ctx.fillText('जाहिरातदार', 340, y + 26);
-        ctx.fillText('दिनांक', 660, y + 26);
-        ctx.fillText('क्लिक्स (Clicks)', 900, y + 26);
-        y += 40;
-        let rIdx = 0;
-        items.forEach(it => {
-          (it.days7Arr || []).forEach(d => {
-            ctx.fillStyle = rIdx % 2 === 0 ? '#FFFFFF' : '#F8FAFC';
-            ctx.fillRect(40, y, W - 80, dateRowH);
-            ctx.strokeStyle = '#E2E8F0';
-            ctx.strokeRect(40, y, W - 80, dateRowH);
-            ctx.fillStyle = '#05344E';
-            ctx.font = 'bold 16px sans-serif';
-            ctx.fillText(String(it.name).slice(0, 24), 56, y + 26);
-            ctx.fillStyle = '#475569';
-            ctx.fillText(String(it.sponsor || '—').slice(0, 24), 340, y + 26);
-            ctx.fillStyle = '#0F172A';
-            ctx.fillText(d.date, 660, y + 26);
-            ctx.fillStyle = d.clicks > 0 ? '#047857' : '#64748B';
-            ctx.fillText(String(d.clicks), 900, y + 26);
-            y += dateRowH;
-            rIdx++;
-          });
-        });
-      }
+        ctx.fillText(`${pr.lbl}: ${pr.val} (${pct}%)`, 716, py);
+        ctx.fillStyle = '#E2E8F0';
+        ctx.beginPath(); ctx.roundRect(716, py + 12, 290, 12, 6); ctx.fill();
+        ctx.fillStyle = pr.col;
+        ctx.beginPath(); ctx.roundRect(716, py + 12, Math.max(8, Math.round(290 * pct / 100)), 12, 6); ctx.fill();
+      });
+
+      // Bottom Summary Table
+      let ty = 656;
+      ctx.fillStyle = '#05344E';
+      ctx.font = 'bold 22px sans-serif';
+      ctx.fillText('कामगिरीचा गोषवारा (Performance Summary)', 48, ty);
+      ty += 18;
+      ctx.fillStyle = '#05344E';
+      ctx.fillRect(48, ty, W - 96, 44);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 17px sans-serif';
+      ctx.fillText('जाहिरात / स्लाईड', 64, ty + 28);
+      ctx.fillText('जाहिरातदार', 340, ty + 28);
+      ctx.fillText('Views', 620, ty + 28);
+      ctx.fillText('Clicks', 745, ty + 28);
+      ctx.fillText('आज', 865, ty + 28);
+      ctx.fillText('CTR', 960, ty + 28);
+      ty += 44;
+
+      items.forEach((it, i) => {
+        ctx.fillStyle = i % 2 === 0 ? '#FFFFFF' : '#F8FAFC';
+        ctx.fillRect(48, ty, W - 96, rowH);
+        ctx.strokeStyle = '#CBD5E1';
+        ctx.strokeRect(48, ty, W - 96, rowH);
+        ctx.fillStyle = '#05344E';
+        ctx.font = 'bold 17px sans-serif';
+        ctx.fillText(String(it.name).slice(0, 24), 64, ty + 33);
+        ctx.fillStyle = '#EA580C';
+        ctx.fillText(String(it.sponsor || '—').slice(0, 22), 340, ty + 33);
+        ctx.fillStyle = '#0369A1';
+        ctx.fillText(String(it.views), 620, ty + 33);
+        ctx.fillStyle = '#047857';
+        ctx.fillText(String(it.clicks), 745, ty + 33);
+        ctx.fillStyle = '#B45309';
+        ctx.fillText(String(it.today), 865, ty + 33);
+        ctx.fillStyle = '#05344E';
+        ctx.fillText(String(it.ctr), 960, ty + 33);
+        ty += rowH;
+      });
 
       ctx.fillStyle = '#64748B';
       ctx.font = 'bold 15px sans-serif';
-      ctx.fillText(`© २०२६ DARSHAN SETU® • darshansetu.live • Generated: ${dtTimeDisplay}`, 40, H - 20);
+      ctx.fillText(`© २०२६ DARSHAN SETU® • darshansetu.live • Export: ${dtTimeDisplay}`, 48, H - 24);
 
       const url = canvas.toDataURL('image/jpeg', 0.94);
       const a = document.createElement('a');
@@ -940,50 +980,86 @@
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      showToast('निवडलेला जाहिरात रिपोर्ट JPG डाउनलोड झाला!');
+      showToast('प्रोफेशनल JPG रिपोर्ट डाउनलोड झाला!');
     };
 
     window.exportAdReportPdf = function() {
       const { dtTimeDisplay, totalV, totalC, items } = buildAdReportRows();
+      const dayLabels = (items[0] && items[0].days7Arr) ? items[0].days7Arr.map(d => d.date).reverse() : [];
+      const dayTotals = dayLabels.map((_, revIdx) => {
+        const origIdx = dayLabels.length - 1 - revIdx;
+        return items.reduce((sum, it) => sum + Number((it.days7Arr && it.days7Arr[origIdx] && it.days7Arr[origIdx].clicks) || 0), 0);
+      });
+      const maxBar = Math.max(1, ...dayTotals);
+      const barsHtml = dayTotals.map((val, i) => {
+        const hPct = Math.max(8, Math.round((val / maxBar) * 100));
+        const bg = (i === dayTotals.length - 1) ? '#EA580C' : '#05344E';
+        return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:140px;">
+          <div style="font-size:11px;font-weight:800;margin-bottom:4px;">${val}</div>
+          <div style="width:70%;height:${hPct}%;background:${bg};border-radius:6px 6px 0 0;"></div>
+          <div style="font-size:10px;color:#64748B;margin-top:5px;font-weight:700;">${esc((dayLabels[i] || '').slice(0, 6))}</div>
+        </div>`;
+      }).join('');
+
+      const pHome = items.reduce((s, it) => s + Number((it.pageCounts && it.pageCounts.home) || 0), 0);
+      const pDaily = items.reduce((s, it) => s + Number((it.pageCounts && it.pageCounts.daily) || 0), 0);
+      const pPanchang = items.reduce((s, it) => s + Number((it.pageCounts && it.pageCounts.panchang) || 0), 0);
+      const pTemple = items.reduce((s, it) => s + Number((it.pageCounts && it.pageCounts.temple) || 0), 0);
+      const pSum = Math.max(1, pHome + pDaily + pPanchang + pTemple);
+      const pageBarsHtml = [
+        { lbl: 'मुख्य पेज', val: pHome, col: '#05344E' },
+        { lbl: 'दैनिक फोटो दर्शन', val: pDaily, col: '#EA580C' },
+        { lbl: 'आजचे पंचांग', val: pPanchang, col: '#059669' },
+        { lbl: 'मंदिर माहिती', val: pTemple, col: '#D97706' }
+      ].map(p => {
+        const pct = Math.round((p.val / pSum) * 100);
+        return `<div style="margin-bottom:10px;">
+          <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:3px;"><span>${p.lbl}</span><span>${p.val} (${pct}%)</span></div>
+          <div style="height:8px;background:#E2E8F0;border-radius:99px;overflow:hidden;"><div style="width:${pct}%;height:100%;background:${p.col};"></div></div>
+        </div>`;
+      }).join('');
+
+      const firstIt = items[0] || {};
       const rowsHtml = items.map(it => `
         <tr>
-          <td><strong>${esc(it.name)}</strong>${it.title && it.title !== '—' ? '<br><small>' + esc(it.title) + '</small>' : ''}</td>
+          <td><strong>${esc(it.name)}</strong></td>
           <td style="font-weight:700;color:#EA580C;">${esc(it.sponsor)}</td>
+          <td style="font-size:11px;">${esc(it.publishedStr || '—')}<br><small style="color:#475569;">${esc(it.durationStr || '—')}</small></td>
           <td style="text-align:center;font-weight:700;color:#0369A1;">${it.views}</td>
           <td style="text-align:center;font-weight:700;color:#047857;">${it.clicks}</td>
           <td style="text-align:center;font-weight:700;color:#B45309;">${it.today}</td>
           <td style="text-align:center;font-weight:700;">${it.ctr}</td>
-        </tr>
-        <tr><td colspan="6" style="background:#FFFBEB;font-size:11px;color:#05344E;padding:6px 10px;"><strong>पेजनिहाय क्लिक्स:</strong> ${esc(it.pages)}</td></tr>`).join('');
+        </tr>`).join('');
 
-      const dateRowsHtml = items.flatMap(it => (it.days7Arr || []).map(d => `
-        <tr>
-          <td><strong>${esc(it.name)}</strong></td>
-          <td style="color:#EA580C;font-weight:700;">${esc(it.sponsor)}</td>
-          <td>${esc(d.date)}</td>
-          <td style="text-align:center;font-weight:700;color:${d.clicks > 0 ? '#047857' : '#64748B'};">${d.clicks}</td>
-        </tr>`)).join('');
-
-      const w = window.open('', '_blank', 'width=960,height=720');
+      const w = window.open('', '_blank', 'width=980,height=760');
       if (!w) { showToast('कृपया ब्राउझर पॉपअप अनुमती द्या.', true); return; }
-      w.document.write(`<!DOCTYPE html><html lang="mr"><head><meta charset="UTF-8"><title>DARSHAN SETU — जाहिरात रिपोर्ट</title>
+      w.document.write(`<!DOCTYPE html><html lang="mr"><head><meta charset="UTF-8"><title>DARSHAN SETU® Analytics Report</title>
         <style>
-          body{font-family:'Noto Sans Devanagari',sans-serif;margin:24px;color:#0F172A;}
-          .hdr{background:#05344E;color:#fff;padding:16px 20px;border-radius:12px;border-bottom:4px solid #F59E0B;margin-bottom:16px;}
-          .hdr h1{margin:0;font-size:20px;color:#FDE68A;}
-          .hdr p{margin:6px 0 0;font-size:12.5px;color:#E2E8F0;}
-          h2{font-size:15px;color:#05344E;margin:20px 0 8px;}
-          table{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:14px;}
+          body{font-family:'Noto Sans Devanagari',sans-serif;margin:28px;color:#0F172A;background:#fff;}
+          .top{display:flex;justify-content:space-between;align-items:center;border-bottom:4px solid #EA580C;padding-bottom:12px;margin-bottom:18px;}
+          .top h1{margin:0;font-size:22px;color:#05344E;}
+          .badge{background:#F1F5F9;border:1px solid #CBD5E1;padding:6px 12px;border-radius:99px;font-size:12px;font-weight:700;color:#334155;}
+          .camp{background:#F8FAFC;border:1px solid #CBD5E1;border-radius:12px;padding:14px 16px;margin-bottom:18px;}
+          .grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;margin-bottom:18px;}
+          .card{border:1px solid #E2E8F0;border-radius:12px;padding:14px;}
+          .card h3{margin:0 0 12px;font-size:14px;color:#05344E;}
+          table{width:100%;border-collapse:collapse;font-size:12.5px;}
           th{background:#05344E;color:#fff;padding:9px 8px;text-align:left;}
-          td{padding:8px;border:1px solid #CBD5E1;vertical-align:top;}
+          td{padding:8px;border:1px solid #CBD5E1;}
+          tr:nth-child(even){background:#F8FAFC;}
           .ftr{margin-top:18px;font-size:11px;color:#64748B;text-align:center;}
-          @media print{body{margin:10px;}}
+          @media print{body{margin:12px;}}
         </style></head><body>
-        <div class="hdr"><h1>DARSHAN SETU® — जाहिरात क्लिक व व्ह्यूज रिपोर्ट</h1><p>Export दिनांक व वेळ: ${dtTimeDisplay} • एकूण Views: ${totalV} • एकूण Clicks: ${totalC}</p></div>
-        <h2>१. मुख्य जाहिरात सारांश</h2>
-        <table><thead><tr><th>जाहिरात / स्लाईड</th><th>जाहिरातदार (Sponsor)</th><th style="text-align:center;">Views</th><th style="text-align:center;">Clicks</th><th style="text-align:center;">आज</th><th style="text-align:center;">CTR</th></tr></thead><tbody>${rowsHtml}</tbody></table>
-        <h2>२. दिनांकनिहाय मागील ७ दिवसांचे क्लिक्स</h2>
-        <table><thead><tr><th>जाहिरात / स्लाईड</th><th>जाहिरातदार (Sponsor)</th><th>दिनांक</th><th style="text-align:center;">क्लिक्स (Clicks)</th></tr></thead><tbody>${dateRowsHtml}</tbody></table>
+        <div class="top"><h1>DARSHAN SETU® Analytics</h1><span class="badge">Export: ${dtTimeDisplay}</span></div>
+        <div class="camp">
+          <div style="font-size:16px;font-weight:800;color:#05344E;">${items.length === 1 ? esc(firstIt.name + (firstIt.sponsor && firstIt.sponsor !== '—' ? ' — ' + firstIt.sponsor : '')) : 'एकूण निवडलेल्या जाहिराती: ' + items.length}</div>
+          <div style="font-size:12px;color:#475569;margin-top:4px;font-weight:700;">पब्लिश: ${esc(firstIt.publishedStr || '—')} • कालावधी: ${esc(firstIt.durationStr || '—')} • एकूण Views: ${totalV} • एकूण Clicks: ${totalC}</div>
+        </div>
+        <div class="grid2">
+          <div class="card"><h3>मागील ७ दिवसांचे क्लिक्स (7-Day Click Trend)</h3><div style="display:flex;align-items:flex-end;gap:6px;padding-top:10px;">${barsHtml}</div></div>
+          <div class="card"><h3>पेज विश्लेषण (Page Breakdown)</h3>${pageBarsHtml}</div>
+        </div>
+        <table><thead><tr><th>जाहिरात / स्लाईड</th><th>जाहिरातदार</th><th>पब्लिश व कालावधी</th><th style="text-align:center;">Views</th><th style="text-align:center;">Clicks</th><th style="text-align:center;">आज</th><th style="text-align:center;">CTR</th></tr></thead><tbody>${rowsHtml}</tbody></table>
         <div class="ftr">© २०२६ DARSHAN SETU® • darshansetu.live • Export: ${dtTimeDisplay}</div>
         </body></html>`);
       w.document.close();

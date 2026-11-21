@@ -49,19 +49,23 @@
 <body class="min-h-screen flex flex-col">
 
   <!-- Unified Header -->
-  <header id="appHeader" class="bg-[#05344E] text-white border-b-2 border-amber-400/80 shadow-md sticky top-0 z-40 transition-colors duration-300">
-    <div class="hdr-inner max-w-7xl xl:max-w-[1400px] mx-auto flex items-center justify-between gap-2">
+  <header id="appHeader" class="bg-gradient-to-r from-[#031926] via-[#05344E] to-[#084160] text-white border-b-2 border-amber-400/80 shadow-md sticky top-0 z-30">
+    <div class="hdr-inner max-w-7xl xl:max-w-[1400px] mx-auto flex items-center justify-between gap-3">
       <a href="index.html" class="flex items-center gap-2.5 min-w-0">
-        <img id="headerEmblem" src="icon-192.png" alt="दर्शन सेतू लाईव्ह" class="rounded-xl border border-amber-300/70 bg-white/95 object-contain shrink-0 shadow-sm" />
-        <h1 id="headerTitle" class="truncate text-white tracking-wide">दर्शन सेतू लाईव्ह</h1>
+        <div id="headerEmblem" class="w-11 h-11 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-amber-400 shrink-0 shadow-md bg-white"><img id="headerLogoImg" src="data:image/jpeg;base64,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" alt="लाईव्ह दर्शन पोर्टल" class="w-full h-full object-cover brightness-110" /></div>
+        <div class="min-w-0">
+          <h1 id="headerTitle" class="font-khand bg-gradient-to-r from-white via-amber-200 to-amber-400 bg-clip-text text-transparent leading-[1.3] pt-0.5 tracking-[0.04em] truncate" style="font-size: clamp(26px, 6.8vw, 40px);">दर्शन सेतू लाईव्ह</h1>
+        </div>
       </a>
       <div class="flex items-center gap-2 shrink-0">
-        <a href="index.html" class="hdr-home-4d shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border-2 text-xs sm:text-sm font-bold transition">
-          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>
-          <span class="hidden sm:inline">मुख्य पान</span>
-        </a>
-        <button id="menuOpenBtn" type="button" aria-label="मेनू उघडा" class="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 border border-white/25 flex items-center justify-center shrink-0 cursor-pointer transition">
-          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+        <a href="index.html" aria-label="मुख्य पेज" title="मुख्य पेज" class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-white via-amber-50 to-amber-200 text-[#05344E] border-2 border-amber-400 shadow-md flex items-center justify-center transition hover:scale-105 shrink-0">
+        <svg class="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 10.5L12 3l9 7.5"/>
+          <path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/>
+        </svg>
+      </a>
+        <button id="menuOpenBtn" type="button" onclick="window.openPortalMenu && window.openPortalMenu()" aria-label="मेनू उघडा" class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white/10 hover:bg-white/20 border border-amber-300/40 text-amber-200 flex items-center justify-center shadow-sm transition cursor-pointer shrink-0">
+          <svg class="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
       </div>
     </div>
@@ -134,52 +138,50 @@
       </div>
     </section>
 
-    <!-- View 2: Single Temple Photos (Latest + 7 Days Archive) -->
-    <section id="templeDetailView" class="hidden space-y-5">
-      <div class="bg-white rounded-3xl border border-amber-200 shadow-sm p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
-        <h2 id="detailTempleName" class="text-xl sm:text-3xl font-bold text-[#05344E] min-w-0"></h2>
-        <a href="daily-darshan.html" class="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#05344E] hover:bg-[#084160] text-white text-xs sm:text-sm font-bold shadow-sm transition">← सर्व देवस्थाने पहा</a>
-      </div>
-
-      <!-- Latest Photos -->
-      <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
-        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
-          <h3 class="text-lg sm:text-xl font-bold text-[#05344E] flex items-center gap-2"><span>✨</span><span>ताजे अपलोड केलेले फोटोज</span></h3>
-          <span id="latestMetaBadge" class="text-xs font-bold px-3 py-1 rounded-full bg-amber-100 text-amber-900"></span>
-        </div>
-        <div id="latestPhotosGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-      </div>
-
-      <!-- Last 7 Days Archive -->
-      <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
-        <div class="border-b border-slate-100 pb-3">
-          <h3 class="text-lg sm:text-xl font-bold text-[#05344E] flex items-center gap-2"><span>📅</span><span>मागील ७ दिवसांचे फोटोज</span></h3>
-          <p class="text-xs text-slate-500 mt-0.5">पाहण्यासाठी खालील तारखेवर क्लिक करा (आवश्यक तेवढेच फोटो लोड होतील).</p>
-        </div>
-        <div id="sevenDaysTabs" class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1"></div>
-        <div id="archivePhotosGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div class="col-span-full text-center text-sm text-slate-500 py-4">वरील तारखेवर क्लिक करून त्या दिवसाचे फोटो पहा.</div>
-        </div>
-      </div>
-    </section>
-
   </main>
 
-  <!-- Lightbox Slideshow Modal -->
-  <div id="lightboxModal" class="hidden fixed inset-0 z-50 bg-slate-950/92 backdrop-blur-sm flex flex-col">
-    <div class="flex items-center justify-between gap-3 px-4 py-3 bg-slate-900/90 text-white border-b border-white/10">
-      <div class="min-w-0">
-        <div id="lbTitle" class="text-base sm:text-lg font-bold truncate"></div>
-        <div id="lbSubtitle" class="text-xs text-amber-300 truncate"></div>
+  <!-- Popup Auto-Scroll Darshan Modal (Fixed Standard Size, Natural Resolution, Hold-to-Zoom with Blurred Header/Tabs) -->
+  <div id="darshanSlideshowModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-2.5 sm:p-5">
+    <div id="darshanModalCard" class="w-[92vw] max-w-[460px] bg-gradient-to-b from-[#031926] to-[#05344E] rounded-3xl border-2 border-amber-400/75 shadow-2xl p-3 sm:p-4 flex flex-col gap-2.5" onclick="event.stopPropagation()">
+      <!-- Top Title + Close (blurs when holding photo) -->
+      <div id="modalTopHeader" class="flex items-center justify-between gap-2 px-1 text-white transition-all duration-200">
+        <div class="min-w-0">
+          <h3 id="modalTempleTitle" class="text-lg sm:text-xl font-bold text-amber-300 truncate leading-tight"></h3>
+          <p id="modalActiveEventSub" class="text-[11px] sm:text-xs text-amber-100/80 truncate"></p>
+        </div>
+        <button type="button" onclick="closeDarshanModal()" aria-label="बंद करा" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/15 hover:bg-rose-600 text-white font-bold flex items-center justify-center cursor-pointer shrink-0 transition">✕</button>
       </div>
-      <button type="button" onclick="closeLightbox()" class="shrink-0 px-3.5 py-1.5 rounded-full bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm font-bold cursor-pointer">✕ बंद करा</button>
+
+      <!-- Event / Pooja Filter Pill Buttons (blurs when holding photo) -->
+      <div id="modalEventTabs" class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 px-1 border-y border-white/10 min-h-[38px] transition-all duration-200"></div>
+
+      <!-- Fixed Portrait-Friendly Standard Size Photo Stage (3:4) + Ambient Photo Color Backdrop -->
+      <div id="modalPhotoStage" class="relative w-full aspect-[3/4] max-h-[66vh] bg-[#041824] rounded-2xl overflow-hidden border border-amber-400/40 shadow-inner flex items-center justify-center select-none touch-manipulation transition-all duration-200" style="-webkit-user-select:none; -webkit-touch-callout:none;">
+        <!-- Ambient Blurred Color Shade Layer from Current Photo -->
+        <img id="modalPhotoBg" src="" alt="" aria-hidden="true" draggable="false"
+          class="absolute inset-0 w-full h-full object-cover scale-125 blur-2xl opacity-85 brightness-75 pointer-events-none select-none" />
+
+        <!-- Actual Photo at Natural Aspect Ratio -->
+        <img id="modalPhotoImg" src="" alt="दैनिक दर्शन" draggable="false"
+          class="relative z-10 max-w-full max-h-full w-auto h-auto object-contain transition-transform duration-300 ease-out select-none drop-shadow-xl"
+          style="-webkit-touch-callout:none; transform-origin:center center;" />
+
+        <!-- Counter -->
+        <span id="modalPhotoCounter" class="modal-stage-ctrl z-20 absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-full bg-black/75 text-white text-[11px] font-bold border border-white/20 transition-opacity duration-200">1 / 1</span>
+
+        <!-- Left / Right Step Arrows -->
+        <button type="button" onclick="event.stopPropagation(); stepDarshanSlide(-1)" class="modal-stage-ctrl z-20 absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 hover:bg-black/85 text-white text-xl font-bold flex items-center justify-center cursor-pointer transition-opacity duration-200">‹</button>
+        <button type="button" onclick="event.stopPropagation(); stepDarshanSlide(1)" class="modal-stage-ctrl z-20 absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 hover:bg-black/85 text-white text-xl font-bold flex items-center justify-center cursor-pointer transition-opacity duration-200">›</button>
+
+        <!-- Aligned Bottom Bar: Date/Time (Left) + Source (Right) -->
+        <div class="modal-stage-ctrl z-20 absolute bottom-2.5 inset-x-2.5 flex items-center justify-between gap-2 pointer-events-none transition-opacity duration-200">
+          <div id="modalPhotoDateTime" class="pointer-events-auto inline-flex items-center h-7 px-3 rounded-full bg-black/80 text-white text-[10px] sm:text-xs font-bold border border-white/25 shadow truncate max-w-[49%]"></div>
+          <div id="modalPhotoSourceWrap" class="pointer-events-auto flex items-center justify-end max-w-[49%]"></div>
+        </div>
+      </div>
+
+      <p id="modalHintText" class="text-center text-[11px] text-amber-100/75 transition-all duration-200">💡 फोटोवर बोट धरून ठेवल्यास झूम होईल • बाहेर कुठेही टच केल्यास बंद होईल</p>
     </div>
-    <div class="flex-1 relative flex items-center justify-center p-3 sm:p-6 overflow-hidden">
-      <button type="button" onclick="stepLightbox(-1)" aria-label="मागील फोटो" class="absolute left-3 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/15 hover:bg-white/30 text-white text-xl font-bold flex items-center justify-center cursor-pointer">‹</button>
-      <img id="lbImage" src="" alt="दर्शन फोटो" class="max-w-full max-h-full rounded-2xl object-contain shadow-2xl" />
-      <button type="button" onclick="stepLightbox(1)" aria-label="पुढील फोटो" class="absolute right-3 z-10 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/15 hover:bg-white/30 text-white text-xl font-bold flex items-center justify-center cursor-pointer">›</button>
-    </div>
-    <div id="lbCounter" class="text-center text-xs font-bold text-slate-300 pb-3"></div>
   </div>
 
   <!-- Visitor Counter & WhatsApp Bar -->
@@ -313,184 +315,267 @@
     const urlParams = new URLSearchParams(window.location.search);
     const selectedId = (urlParams.get('id') || '').trim();
 
-    let lbItems = [];
-    let lbIndex = 0;
+    let allModalEvents = [];
+    let activeEventIdx = 0;
+    let activeSlideIdx = 0;
+    let autoScrollTimer = null;
+    let isHoldingPhoto = false;
+    let cachedLatestMap = {};
+    let cachedTemplesMap = {};
 
-    window.openLightbox = function(items, idx, title) {
-      lbItems = items || [];
-      if (!lbItems.length) return;
-      lbIndex = Math.max(0, Math.min(idx || 0, lbItems.length - 1));
-      document.getElementById('lbTitle').textContent = title || 'दैनिक फोटो दर्शन';
-      updateLightbox();
-      document.getElementById('lightboxModal').classList.remove('hidden');
-    };
-    window.closeLightbox = function() {
-      document.getElementById('lightboxModal').classList.add('hidden');
-    };
-    window.stepLightbox = function(dir) {
-      if (!lbItems.length) return;
-      lbIndex = (lbIndex + dir + lbItems.length) % lbItems.length;
-      updateLightbox();
-    };
-    function updateLightbox() {
-      const it = lbItems[lbIndex] || {};
-      document.getElementById('lbImage').src = it.url || it;
-      document.getElementById('lbSubtitle').textContent = (it.pujaTitle || '') + (it.date ? ' • ' + it.date : '');
-      document.getElementById('lbCounter').textContent = `${lbIndex + 1} / ${lbItems.length}`;
-    }
+    function groupEventsForModal(templeId) {
+      const temple = cachedTemplesMap[templeId] || { id: templeId, name: templeId };
+      const lat = cachedLatestMap[templeId] || {};
+      const defaultSrc = lat.sourcePlatform || temple.sourcePlatform || '';
+      const defaultUrl = lat.sourceUrl || temple.sourceUrl || '';
+      const eventsMap = {};
 
-    function renderPhotoCards(container, photos, title, dateLabel, srcName, srcUrl) {
-      if (!photos || !photos.length) {
-        container.innerHTML = '<div class="col-span-full text-center text-sm text-slate-500 py-6">या विभागासाठी अद्याप फोटो उपलब्ध नाहीत.</div>';
-        return;
-      }
-      const badgeTxt = srcName ? `📸 सौजन्य: ${srcName}` : '';
-      const badgeHtml = badgeTxt
-        ? (srcUrl
-            ? `<a href="${srcUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="absolute bottom-2 right-2 px-2.5 py-0.5 rounded-full bg-black/75 hover:bg-[#05344E] text-amber-200 text-[10px] sm:text-[11px] font-bold shadow border border-amber-300/40 max-w-[88%] truncate">${badgeTxt} ↗</a>`
-            : `<span class="absolute bottom-2 right-2 px-2.5 py-0.5 rounded-full bg-black/75 text-amber-200 text-[10px] sm:text-[11px] font-bold shadow border border-amber-300/40 max-w-[88%] truncate">${badgeTxt}</span>`)
-        : '';
-
-      container.innerHTML = photos.map((p, idx) => {
-        const u = p.url || p;
-        const cap = p.pujaTitle || 'दैनिक दर्शन';
-        return `
-          <div onclick='openLightbox(${JSON.stringify(photos.map(x => ({ url: x.url || x, pujaTitle: x.pujaTitle || cap, date: dateLabel || "" })))}, ${idx}, ${JSON.stringify(title)})'
-            class="group bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-md transition cursor-pointer flex flex-col">
-            <div class="aspect-[4/3] bg-slate-200 overflow-hidden relative">
-              <img src="${u}" alt="${cap}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
-              <span class="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-black/55 text-white text-[10px] font-bold">🔍 मोठे पहा</span>
-              ${badgeHtml}
-            </div>
-            <div class="px-3.5 py-2.5 flex items-center justify-between gap-2 text-xs">
-              <span class="font-bold text-[#05344E] truncate">${cap}</span>
-              ${dateLabel ? `<span class="text-slate-500 shrink-0">${dateLabel}</span>` : ''}
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function buildLast7DaysList() {
-      const arr = [];
-      for (let i = 1; i <= 7; i++) {
-        const d = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
-        const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-        const label = d.toLocaleDateString('mr-IN', { day: 'numeric', month: 'short' });
-        arr.push({ iso, label });
-      }
-      return arr;
-    }
-
-    async function loadArchiveDate(templeId, dt, title, btnEl) {
-      document.querySelectorAll('#sevenDaysTabs button').forEach(b => {
-        b.className = 'shrink-0 px-3.5 py-1.5 rounded-full text-xs font-bold border border-slate-300 bg-slate-50 text-slate-700 hover:bg-amber-50 cursor-pointer transition';
-      });
-      if (btnEl) {
-        btnEl.className = 'shrink-0 px-3.5 py-1.5 rounded-full text-xs font-bold border border-[#EA580C] bg-[#EA580C] text-white shadow cursor-pointer transition';
-      }
-      const grid = document.getElementById('archivePhotosGrid');
-      grid.innerHTML = '<div class="col-span-full text-center text-sm text-slate-500 py-5">⏳ या तारखेचे फोटो लोड होत आहेत...</div>';
-      const snap = await db.ref(`dailyDarshan/archive/${templeId}/${dt}`).once('value');
-      const val = snap.val();
-      if (!val || !Array.isArray(val.photos) || !val.photos.length) {
-        grid.innerHTML = `<div class="col-span-full text-center text-sm text-slate-500 py-6">${dt} या तारखेचे फोटो उपलब्ध नाहीत.</div>`;
-        return;
-      }
-      renderPhotoCards(grid, val.photos, title, dt, val.sourcePlatform || '', val.sourceUrl || '');
-    }
-
-    // Load Header & Master config
-    db.ref('siteConfig/header').on('value', (s) => {
-      const h = s.val();
-      if (!h) return;
-      if (h.title) document.getElementById('headerTitle').textContent = h.title;
-      if (h.logoUrl) document.getElementById('headerEmblem').src = h.logoUrl;
-      if (h.footerText) document.getElementById('appFooter').textContent = h.footerText;
-    });
-    db.ref('siteConfig/visitors').on('value', (s) => {
-      const v = s.val();
-      if (v && v.count) document.getElementById('visitorCountText').textContent = Number(v.count).toLocaleString('mr-IN');
-    });
-
-    
-    // Ad Slider Loader (Khand Bold default)
-    let ddSlideTimer = null;
-    let ddSlideIdx = 0;
-    db.ref('siteConfig/ads').on('value', (s) => {
-      const a = s.val() || {};
-      const sec = document.getElementById('mainAdSliderSection');
-      const track = document.getElementById('mainAdTrack');
-      const dots = document.getElementById('mainAdDots');
-      const prevBtn = document.getElementById('mainAdPrevBtn');
-      const nextBtn = document.getElementById('mainAdNextBtn');
-      const slides = Array.isArray(a.bannerSlides) ? a.bannerSlides.filter(x => x && x.image) : [];
-      if (ddSlideTimer) { clearInterval(ddSlideTimer); ddSlideTimer = null; }
-      if (!a.bannerEnabled || !slides.length) {
-        sec.classList.add('hidden');
-        return;
-      }
-      sec.classList.remove('hidden');
-      ddSlideIdx = 0;
-      track.innerHTML = slides.map((sl, idx) => {
-        const href = sl.link && /^https?:/i.test(sl.link) ? sl.link : '#';
-        const target = href === '#' ? '' : 'target="_blank" rel="noopener noreferrer"';
-        const cap = sl.text && sl.text.trim() ? `<div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 via-black/45 to-transparent px-3 py-2 text-white text-xs sm:text-sm font-bold truncate text-center" style="font-family:'Khand','Noto Sans Devanagari',sans-serif;">${sl.text.trim()}</div>` : '';
-        return `<a href="${href}" ${target} class="relative w-full h-full shrink-0 block"><img src="${sl.image}" alt="जाहिरात ${idx + 1}" class="w-full h-full object-cover" />${cap}</a>`;
-      }).join('');
-      const show = (i) => {
-        ddSlideIdx = ((i % slides.length) + slides.length) % slides.length;
-        track.style.transform = `translateX(-${ddSlideIdx * 100}%)`;
-        dots.innerHTML = slides.length > 1 ? slides.map((_, d) => `<button type="button" onclick="window._ddGoSlide(${d})" class="h-2 rounded-full transition-all cursor-pointer ${d === ddSlideIdx ? 'w-5 bg-[#05344E]' : 'w-2 bg-slate-400'}"></button>`).join('') : '';
+      const addPhotos = (photos, fallbackTitle, fallbackDate, srcPlat, srcUrl, isLatest) => {
+        (photos || []).forEach((p) => {
+          const obj = typeof p === 'string' ? { url: p } : (p || {});
+          const pTitle = obj.pujaTitle || fallbackTitle || 'दैनिक दर्शन';
+          const bid = obj.batchId || ((isLatest ? 'lat_' : 'arch_' + fallbackDate + '_') + pTitle);
+          if (!eventsMap[bid]) {
+            let tm = obj.batchTime || '';
+            if (!tm && obj.uploadedAt) {
+              const d = new Date(obj.uploadedAt);
+              if (!isNaN(d)) tm = d.toLocaleTimeString('mr-IN', { hour: '2-digit', minute: '2-digit' });
+            }
+            eventsMap[bid] = {
+              key: bid,
+              title: pTitle,
+              date: fallbackDate || '',
+              time: tm,
+              sourcePlatform: obj.sourcePlatform || srcPlat || defaultSrc,
+              sourceUrl: obj.sourceUrl || srcUrl || defaultUrl,
+              isLatest: !!isLatest,
+              photos: []
+            };
+          }
+          eventsMap[bid].photos.push({
+            url: obj.url || p,
+            pujaTitle: pTitle,
+            date: fallbackDate || '',
+            time: obj.batchTime || eventsMap[bid].time || '',
+            sourcePlatform: obj.sourcePlatform || srcPlat || defaultSrc,
+            sourceUrl: obj.sourceUrl || srcUrl || defaultUrl
+          });
+        });
       };
-      window._ddGoSlide = (d) => show(d);
-      if (slides.length > 1) {
-        prevBtn.classList.remove('hidden');
-        nextBtn.classList.remove('hidden');
-        prevBtn.onclick = () => show(ddSlideIdx - 1);
-        nextBtn.onclick = () => show(ddSlideIdx + 1);
-        ddSlideTimer = setInterval(() => show(ddSlideIdx + 1), 4500);
-      } else {
-        prevBtn.classList.add('hidden');
-        nextBtn.classList.add('hidden');
-      }
-      show(0);
-    });
 
-    
-    let dailyUiCfg = { colsMobile: '2', colsDesktop: '4', blockHeight: 'md', borderColor: '', titleColor: '', showSlider: true, showSource: true };
-    function applyDailyUiSettings() {
-      const u = dailyUiCfg || {};
-      const hEl = document.querySelector('#blocksListView h2');
-      const pEl = document.querySelector('#blocksListView p');
-      if (hEl && u.heading) hEl.textContent = u.heading;
-      if (pEl && u.subtitle) pEl.textContent = u.subtitle;
-      const grid = document.getElementById('templeBlocksGrid');
-      if (grid) {
-        const mc = u.colsMobile === '1' ? 'grid-cols-1' : 'grid-cols-2';
-        const dc = u.colsDesktop === '2' ? 'lg:grid-cols-2' : (u.colsDesktop === '3' ? 'lg:grid-cols-3' : 'lg:grid-cols-4');
-        grid.className = `grid ${mc} sm:grid-cols-3 ${dc} gap-2.5 sm:gap-4`;
+      if (lat && Array.isArray(lat.photos) && lat.photos.length) {
+        addPhotos(lat.photos, lat.pujaTitle, lat.date || '', lat.sourcePlatform, lat.sourceUrl, true);
       }
-      const sliderSec = document.getElementById('mainAdSliderSection');
-      if (sliderSec && u.showSlider === false) sliderSec.classList.add('hidden');
-      const srcWrap = document.getElementById('detailSourceWrap');
-      if (srcWrap && u.showSource === false) srcWrap.classList.add('hidden');
-      const hMap = { sm: 'h-24 sm:h-28', md: 'h-28 sm:h-36', lg: 'h-36 sm:h-48' };
-      const imgCls = hMap[u.blockHeight] || hMap.md;
-      document.querySelectorAll('#templeBlocksGrid a > div:first-child').forEach(d => {
-        d.className = imgCls + ' bg-slate-100 relative overflow-hidden';
-      });
-      if (u.borderColor) {
-        document.querySelectorAll('#templeBlocksGrid a').forEach(a => a.style.borderColor = u.borderColor);
-      }
-      if (u.titleColor) {
-        document.querySelectorAll('#templeBlocksGrid h3').forEach(h => h.style.color = u.titleColor);
+      return Object.values(eventsMap);
+    }
+
+    function stopAutoScroll() {
+      if (autoScrollTimer) {
+        clearInterval(autoScrollTimer);
+        autoScrollTimer = null;
       }
     }
-    db.ref('siteConfig/dailyDarshanUI').on('value', (s) => {
-      dailyUiCfg = { ...dailyUiCfg, ...(s.val() || {}) };
-      applyDailyUiSettings();
+
+    function startAutoScroll() {
+      stopAutoScroll();
+      const ev = allModalEvents[activeEventIdx];
+      if (!ev || !ev.photos || ev.photos.length <= 1) return;
+      autoScrollTimer = setInterval(() => {
+        if (!isHoldingPhoto) {
+          stepDarshanSlide(1, true);
+        }
+      }, 4000);
+    }
+
+    function renderModalEventTabs() {
+      const box = document.getElementById('modalEventTabs');
+      if (!box) return;
+      box.innerHTML = allModalEvents.map((ev, idx) => {
+        const isAct = idx === activeEventIdx;
+        const label = ev.isLatest ? `✨ ${ev.title}` : `📅 ${ev.date} • ${ev.title}`;
+        return `<button type="button" onclick="selectModalEvent(${idx})" class="shrink-0 px-3.5 py-1.5 rounded-full text-xs font-bold border transition cursor-pointer ${isAct ? 'bg-amber-400 text-[#031926] border-amber-300 shadow' : 'bg-white/15 hover:bg-white/25 text-white border-white/25'}">${label}</button>`;
+      }).join('');
+    }
+
+    function renderCurrentSlide() {
+      const ev = allModalEvents[activeEventIdx];
+      if (!ev || !ev.photos || !ev.photos.length) return;
+      const p = ev.photos[activeSlideIdx] || ev.photos[0];
+      document.getElementById('modalPhotoImg').src = p.url;
+      const bgEl = document.getElementById('modalPhotoBg'); if (bgEl) bgEl.src = p.url;
+      document.getElementById('modalActiveEventSub').textContent = `${ev.title}${ev.date ? ' • ' + ev.date : ''}`;
+      document.getElementById('modalPhotoCounter').textContent = `${activeSlideIdx + 1} / ${ev.photos.length}`;
+
+      const dtEl = document.getElementById('modalPhotoDateTime');
+      const dtTxt = [p.date ? `📅 ${p.date}` : '', p.time ? `🕒 ${p.time}` : ''].filter(Boolean).join(' • ');
+      dtEl.textContent = dtTxt || '📅 ताजे दर्शन';
+
+      const srcWrap = document.getElementById('modalPhotoSourceWrap');
+      const srcName = p.sourcePlatform || ev.sourcePlatform || '';
+      const srcUrl = p.sourceUrl || ev.sourceUrl || '';
+      if (srcName) {
+        srcWrap.innerHTML = srcUrl
+          ? `<a href="${srcUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="inline-flex items-center h-7 px-3 rounded-full bg-black/80 hover:bg-[#05344E] text-amber-200 text-[10px] sm:text-xs font-bold border border-amber-300/45 shadow truncate max-w-full">📸 सौजन्य: ${srcName} ↗</a>`
+          : `<span class="inline-flex items-center h-7 px-3 rounded-full bg-black/80 text-amber-200 text-[10px] sm:text-xs font-bold border border-amber-300/45 shadow truncate max-w-full">📸 सौजन्य: ${srcName}</span>`;
+      } else {
+        srcWrap.innerHTML = '';
+      }
+    }
+
+    window.selectModalEvent = function(idx) {
+      activeEventIdx = Math.max(0, Math.min(idx, allModalEvents.length - 1));
+      activeSlideIdx = 0;
+      renderModalEventTabs();
+      renderCurrentSlide();
+      startAutoScroll();
+    };
+
+    window.stepDarshanSlide = function(dir, fromTimer) {
+      const ev = allModalEvents[activeEventIdx];
+      if (!ev || !ev.photos || !ev.photos.length) return;
+      activeSlideIdx = (activeSlideIdx + dir + ev.photos.length) % ev.photos.length;
+      renderCurrentSlide();
+      if (!fromTimer) startAutoScroll();
+    };
+
+        window.closeDarshanModal = function() {
+      stopAutoScroll();
+      isHoldingPhoto = false;
+      if (typeof setHoldVisuals === 'function') setHoldVisuals(false);
+      document.getElementById('darshanSlideshowModal').classList.add('hidden');
+    };
+
+    window.openTempleDarshanModal = async function(templeId) {
+      const temple = cachedTemplesMap[templeId] || { id: templeId, name: templeId };
+      document.getElementById('modalTempleTitle').textContent = temple.name || temple.shortTitle || templeId;
+      allModalEvents = groupEventsForModal(templeId);
+
+      activeEventIdx = 0;
+      activeSlideIdx = 0;
+      document.getElementById('darshanSlideshowModal').classList.remove('hidden');
+      renderModalEventTabs();
+      renderCurrentSlide();
+      startAutoScroll();
+
+      try {
+        const archSnap = await db.ref(`dailyDarshan/archive/${templeId}`).once('value');
+        const arch = archSnap.val() || {};
+        const todayIso = new Date().toISOString().slice(0, 10);
+        const dates = Object.keys(arch)
+          .filter(dt => dt <= todayIso && arch[dt] && Array.isArray(arch[dt].photos) && arch[dt].photos.length)
+          .sort((a, b) => b.localeCompare(a))
+          .slice(0, 7);
+
+        const lat = cachedLatestMap[templeId] || {};
+        dates.forEach(dt => {
+          if (dt === lat.date) return;
+          const dayObj = arch[dt];
+          const dayMap = {};
+          dayObj.photos.forEach(p => {
+            const obj = typeof p === 'string' ? { url: p } : (p || {});
+            const pTitle = obj.pujaTitle || dayObj.pujaTitle || 'दैनिक दर्शन';
+            const bid = obj.batchId || (`arch_${dt}_${pTitle}`);
+            if (!dayMap[bid]) {
+              let tm = obj.batchTime || '';
+              if (!tm && obj.uploadedAt) {
+                const d = new Date(obj.uploadedAt);
+                if (!isNaN(d)) tm = d.toLocaleTimeString('mr-IN', { hour: '2-digit', minute: '2-digit' });
+              }
+              dayMap[bid] = {
+                key: bid,
+                title: pTitle,
+                date: dt,
+                time: tm,
+                sourcePlatform: obj.sourcePlatform || dayObj.sourcePlatform || temple.sourcePlatform || '',
+                sourceUrl: obj.sourceUrl || dayObj.sourceUrl || temple.sourceUrl || '',
+                isLatest: false,
+                photos: []
+              };
+            }
+            dayMap[bid].photos.push({
+              url: obj.url || p,
+              pujaTitle: pTitle,
+              date: dt,
+              time: obj.batchTime || dayMap[bid].time || '',
+              sourcePlatform: obj.sourcePlatform || dayObj.sourcePlatform || temple.sourcePlatform || '',
+              sourceUrl: obj.sourceUrl || dayObj.sourceUrl || temple.sourceUrl || ''
+            });
+          });
+          Object.values(dayMap).forEach(ev => allModalEvents.push(ev));
+        });
+        renderModalEventTabs();
+        if (!allModalEvents.length) {
+          document.getElementById('modalActiveEventSub').textContent = 'या देवस्थानासाठी अद्याप फोटो अपलोड केलेले नाहीत.';
+          document.getElementById('modalPhotoImg').src = temple.image || 'icon-512.png';
+          document.getElementById('modalPhotoCounter').textContent = '0 / 0';
+          document.getElementById('modalPhotoDateTime').textContent = '';
+          document.getElementById('modalPhotoSourceWrap').innerHTML = '';
+        } else if (activeSlideIdx === 0 && !document.getElementById('modalPhotoImg').getAttribute('src')) {
+          renderCurrentSlide();
+          startAutoScroll();
+        }
+      } catch (e) {}
+    };
+
+    // Tap outside photo & buttons closes modal
+    document.getElementById('darshanSlideshowModal').addEventListener('click', () => {
+      closeDarshanModal();
     });
+
+    // Hold on photo -> shrink popup window tightly to the zoomed photo size & pause auto-scroll
+    const modalCard = document.getElementById('darshanModalCard');
+    const photoStage = document.getElementById('modalPhotoStage');
+    const photoImg = document.getElementById('modalPhotoImg');
+    const photoBg = document.getElementById('modalPhotoBg');
+    const topHdr = document.getElementById('modalTopHeader');
+    const evTabs = document.getElementById('modalEventTabs');
+    const hintTxt = document.getElementById('modalHintText');
+    const setHoldVisuals = (holding) => {
+      if (holding) {
+        if (modalCard) {
+          modalCard.classList.remove('w-[92vw]', 'max-w-[460px]', 'p-3', 'sm:p-4', 'gap-2.5');
+          modalCard.classList.add('w-auto', 'max-w-[94vw]', 'p-1.5', 'gap-0');
+        }
+        photoStage.classList.remove('w-full', 'aspect-[3/4]', 'max-h-[66vh]');
+        photoStage.classList.add('w-auto', 'max-w-[91vw]', 'max-h-[84vh]');
+        photoImg.classList.remove('max-w-full', 'max-h-full');
+        photoImg.classList.add('max-w-[90vw]', 'max-h-[82vh]', 'scale-[1.06]');
+        if (photoBg) photoBg.classList.add('hidden');
+        if (topHdr) topHdr.classList.add('hidden');
+        if (evTabs) evTabs.classList.add('hidden');
+        if (hintTxt) hintTxt.classList.add('hidden');
+        document.querySelectorAll('.modal-stage-ctrl').forEach(el => el.classList.add('opacity-0'));
+      } else {
+        if (modalCard) {
+          modalCard.classList.add('w-[92vw]', 'max-w-[460px]', 'p-3', 'sm:p-4', 'gap-2.5');
+          modalCard.classList.remove('w-auto', 'max-w-[94vw]', 'p-1.5', 'gap-0');
+        }
+        photoStage.classList.add('w-full', 'aspect-[3/4]', 'max-h-[66vh]');
+        photoStage.classList.remove('w-auto', 'max-w-[91vw]', 'max-h-[84vh]');
+        photoImg.classList.add('max-w-full', 'max-h-full');
+        photoImg.classList.remove('max-w-[90vw]', 'max-h-[82vh]', 'scale-[1.06]');
+        if (photoBg) photoBg.classList.remove('hidden');
+        if (topHdr) topHdr.classList.remove('hidden');
+        if (evTabs) evTabs.classList.remove('hidden');
+        if (hintTxt) hintTxt.classList.remove('hidden');
+        document.querySelectorAll('.modal-stage-ctrl').forEach(el => el.classList.remove('opacity-0'));
+      }
+    };
+    const startHold = (e) => {
+      if (e.target.closest('button, a')) return;
+      isHoldingPhoto = true;
+      setHoldVisuals(true);
+    };
+    const endHold = () => {
+      if (!isHoldingPhoto) return;
+      isHoldingPhoto = false;
+      setHoldVisuals(false);
+    };
+    photoStage.addEventListener('pointerdown', startHold);
+    photoStage.addEventListener('pointerup', endHold);
+    photoStage.addEventListener('pointercancel', endHold);
+    photoStage.addEventListener('pointerleave', endHold);
+    photoStage.addEventListener('contextmenu', (e) => e.preventDefault());
 
     // Main Data Loader
     Promise.all([
@@ -517,85 +602,44 @@
       baseTemples.forEach(t => { if (t && t.id && !t.deleted) merged[t.id] = { ...(merged[t.id] || {}), ...t }; });
       Object.values(customTemples).forEach(t => { if (t && t.id) merged[t.id] = { ...(merged[t.id] || {}), ...t }; });
 
-      if (selectedId) {
-        // Detail View for ?id=...
-        document.getElementById('blocksListView').classList.add('hidden');
-        document.getElementById('templeDetailView').classList.remove('hidden');
+      cachedTemplesMap = merged;
+      cachedLatestMap = latestMap;
 
-        const temple = merged[selectedId] || { id: selectedId, name: selectedId };
-        const lat = latestMap[selectedId] || {};
-        const title = temple.name || temple.shortTitle || selectedId;
-        document.getElementById('detailTempleName').textContent = title;
-        document.title = `${title} — दैनिक फोटो दर्शन`;
+      const list = Object.values(merged)
+        .filter(t => !t.hiddenInDaily && (latestMap[t.id] || (customTemples[t.id] && !DEFAULT_IDS.has(t.id))))
+        .sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
 
-        const srcName = lat.sourcePlatform || temple.sourcePlatform || '';
-        const srcUrl = lat.sourceUrl || temple.sourceUrl || '';
-
-        const latPhotos = Array.isArray(lat.photos) ? lat.photos : [];
-        document.getElementById('latestMetaBadge').textContent = lat.date ? `${lat.date} • ${lat.pujaTitle || ''}` : 'ताजे अपडेट';
-        renderPhotoCards(document.getElementById('latestPhotosGrid'), latPhotos, title, lat.date || '', srcName, srcUrl);
-
-        // Only show past dates (up to 7 days) that actually have uploaded photos
-        const tabsBox = document.getElementById('sevenDaysTabs');
-        const archiveGrid = document.getElementById('archivePhotosGrid');
-        tabsBox.innerHTML = '';
-        db.ref(`dailyDarshan/archive/${selectedId}`).once('value').then((archSnap) => {
-          const arch = archSnap.val() || {};
-          const todayIso = new Date().toISOString().slice(0, 10);
-          const datesWithPhotos = Object.keys(arch)
-            .filter(dt => dt !== lat.date && dt <= todayIso && arch[dt] && Array.isArray(arch[dt].photos) && arch[dt].photos.length > 0)
-            .sort((a, b) => b.localeCompare(a))
-            .slice(0, 7);
-          if (!datesWithPhotos.length) {
-            archiveGrid.innerHTML = '<div class="col-span-full text-center text-xs sm:text-sm text-slate-500 py-4">मागील दिवसांचे फोटो उपलब्ध होताच येथे दिसतील.</div>';
-            return;
-          }
-          datesWithPhotos.forEach((dt) => {
-            const dObj = new Date(dt + 'T00:00:00');
-            const label = isNaN(dObj) ? dt : dObj.toLocaleDateString('mr-IN', { day: 'numeric', month: 'short' });
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.textContent = `📅 ${label}`;
-            btn.className = 'shrink-0 px-3.5 py-1.5 rounded-full text-xs font-bold border border-slate-300 bg-slate-50 text-slate-700 hover:bg-amber-50 cursor-pointer transition';
-            btn.onclick = () => loadArchiveDate(selectedId, dt, title, btn);
-            tabsBox.appendChild(btn);
-          });
-        });
+      const grid = document.getElementById('templeBlocksGrid');
+      if (!list.length) {
+        grid.innerHTML = '<div class="col-span-full bg-white rounded-2xl border border-slate-200 p-8 text-center text-sm text-slate-500">सध्या कोणतेही दैनिक पूजा फोटो उपलब्ध नाहीत. अ‍ॅडमिन पॅनलमधून फोटो अपलोड केल्यावर येथे दिसतील.</div>';
       } else {
-        // Blocks List View
-        const list = Object.values(merged)
-          .filter(t => !t.hiddenInDaily && (latestMap[t.id] || (customTemples[t.id] && !DEFAULT_IDS.has(t.id))))
-          .sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
-
-        const grid = document.getElementById('templeBlocksGrid');
-        if (!list.length) {
-          grid.innerHTML = '<div class="col-span-full bg-white rounded-2xl border border-slate-200 p-8 text-center text-sm text-slate-500">सध्या कोणतेही दैनिक पूजा फोटो उपलब्ध नाहीत. अ‍ॅडमिन पॅनलमधून फोटो अपलोड केल्यावर येथे दिसतील.</div>';
-          return;
-        }
-
         grid.innerHTML = list.map(t => {
           const lat = latestMap[t.id] || {};
           const cover = (lat.photos && lat.photos[0] && (lat.photos[0].url || lat.photos[0])) || t.image || 'icon-512.png';
           const title = t.shortTitle || t.name || t.id;
           const srcName = lat.sourcePlatform || t.sourcePlatform || '';
           return `
-            <a href="daily-darshan.html?id=${encodeURIComponent(t.id)}" class="group bg-white rounded-2xl border-2 border-amber-200 hover:border-[#EA580C] overflow-hidden shadow-sm hover:shadow-md transition flex flex-col">
-              <div class="h-28 sm:h-36 bg-slate-100 relative overflow-hidden">
+            <button type="button" onclick="openTempleDarshanModal('${t.id}')" class="group text-left bg-white rounded-2xl border-2 border-amber-200 hover:border-[#EA580C] overflow-hidden shadow-sm hover:shadow-md transition flex flex-col cursor-pointer">
+              <div class="h-28 sm:h-36 bg-slate-100 relative overflow-hidden w-full">
                 <img src="${cover}" alt="${title}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
                 ${lat.date ? `<span class="absolute top-2 left-2 px-3 py-1 rounded-full bg-[#05344E]/95 text-amber-300 border-2 border-amber-400 text-xs sm:text-sm font-bold shadow-lg tracking-wide">📅 ${lat.date}</span>` : ''}
                 ${srcName ? `<span class="absolute bottom-1.5 right-1.5 px-2 py-0.5 rounded-full bg-black/65 text-amber-200 text-[9px] font-bold">📸 ${srcName}</span>` : ''}
               </div>
-              <div class="p-2.5 sm:p-3 flex items-center justify-between gap-1.5">
+              <div class="p-2.5 sm:p-3 flex items-center justify-between gap-1.5 w-full">
                 <div class="min-w-0">
                   <h3 class="font-bold text-sm sm:text-base text-[#05344E] truncate">${title}</h3>
                   <p class="text-[11px] text-slate-500 truncate">${lat.pujaTitle || 'फोटो दर्शन पहा'}</p>
                 </div>
                 <span class="shrink-0 w-7 h-7 rounded-full bg-amber-100 text-[#EA580C] group-hover:bg-[#EA580C] group-hover:text-white flex items-center justify-center text-xs font-bold transition">→</span>
               </div>
-            </a>
+            </button>
           `;
         }).join('');
         applyDailyUiSettings();
+      }
+
+      if (selectedId && merged[selectedId]) {
+        openTempleDarshanModal(selectedId);
       }
     });
   </script>

@@ -154,7 +154,7 @@
     
     
 
-    <!-- View 1: All Temple Blocks -->
+    <!-- View 1: All Temple Horizontal Blocks -->
     <section id="blocksListView" class="space-y-4">
       <div class="bg-gradient-to-r from-[#031926] via-[#05344E] to-[#0a4d70] text-white rounded-3xl p-5 sm:p-6 shadow-md border border-amber-400/30 space-y-2.5">
         <div class="flex flex-wrap items-center justify-between gap-2">
@@ -164,26 +164,46 @@
         <p class="text-sm sm:text-base text-amber-100 font-medium">ज्या देवस्थानांचे थेट लाईव्ह प्रक्षेपण उपलब्ध नाही, त्यांचे रोजचे आरती व अलंकार फोटो येथे पहा.</p>
       </div>
 
-      <!-- Date Filter Pills: Today vs Last 7 Days -->
-      <div id="dailyDateFilterBar" class="flex flex-wrap items-center justify-between gap-2 bg-white/90 rounded-2xl border border-amber-200/90 px-3 py-2 shadow-xs">
-        <div class="flex flex-wrap items-center gap-2">
-          <button type="button" id="filterBtn7Days" onclick="setDailyDateFilter('7days')" class="px-3.5 py-1.5 rounded-full border text-xs sm:text-sm font-extrabold transition cursor-pointer flex items-center gap-1.5 bg-gradient-to-r from-[#031926] via-[#05344E] to-[#0a4d70] text-amber-300 border-amber-400 shadow-md">
-            <span>🗓️ मागील ७ दिवस</span>
-            <span id="filterCount7Days" class="px-1.5 py-0.5 rounded-full bg-amber-400 text-[#031926] text-[10px] font-black">0</span>
+      <div id="templeBlocksGrid" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div class="col-span-full bg-white rounded-2xl border border-slate-200 p-8 text-center text-sm text-slate-500">⏳ देवस्थानांची माहिती लोड होत आहे...</div>
+      </div>
+    </section>
+
+    <!-- View 2: Single Temple Dedicated Page (?temple=id) -->
+    <section id="templeDetailView" class="hidden space-y-4">
+      <div class="bg-gradient-to-r from-[#031926] via-[#05344E] to-[#0a4d70] text-white rounded-3xl p-4 sm:p-5 shadow-md border border-amber-400/40 space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <button type="button" onclick="closeTempleDetailPage()" class="px-3.5 py-1.5 rounded-full bg-white/15 hover:bg-white/25 border border-white/25 text-white text-xs sm:text-sm font-extrabold flex items-center gap-1.5 cursor-pointer transition">
+            <span>←</span><span>सर्व मंदिरे</span>
           </button>
-          <button type="button" id="filterBtnToday" onclick="setDailyDateFilter('today')" class="px-3.5 py-1.5 rounded-full border text-xs sm:text-sm font-extrabold transition cursor-pointer flex items-center gap-1.5 bg-white text-[#05344E] border-slate-300 hover:border-amber-400">
-            <span>📅 आजचे फोटो</span>
-            <span id="filterCountToday" class="px-1.5 py-0.5 rounded-full bg-slate-100 text-[#05344E] text-[10px] font-black">0</span>
+          <button type="button" onclick="shareCurrentDetailTemple()" class="px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 text-[#031926] border border-white/80 shadow-[0_0_12px_rgba(251,191,36,0.55)] text-xs sm:text-sm font-extrabold flex items-center gap-1.5 cursor-pointer transition">
+            <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            <span>शेअर करा</span>
           </button>
         </div>
-        <div class="flex items-center gap-2 w-full sm:w-auto">
-          <input id="dailySearchInput" type="search" oninput="setDailySearchQuery(this.value)" placeholder="🔍 मंदिर शोधा..." aria-label="मंदिर शोधा" class="w-full sm:w-44 px-3 py-1.5 rounded-full border border-slate-300 bg-slate-50 focus:bg-white focus:border-[#05344E] focus:outline-none text-xs font-bold text-[#05344E]" />
-          <span id="dailyFilterDateHint" class="hidden sm:inline text-[11px] font-bold text-slate-500 whitespace-nowrap"></span>
+        <div>
+          <h2 id="detailTempleTitle" class="font-khand text-2xl sm:text-3xl font-bold text-amber-200 leading-tight"></h2>
+          <p id="detailTempleSub" class="text-xs sm:text-sm text-amber-100/90 mt-0.5"></p>
         </div>
       </div>
 
-      <div id="templeBlocksGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
-        <div class="col-span-full bg-white rounded-2xl border border-slate-200 p-8 text-center text-sm text-slate-500">⏳ देवस्थानांची माहिती लोड होत आहे...</div>
+      <!-- Filter Bar inside Single Temple View: Today first, Last 7 Days second + Temple Switcher Dropdown -->
+      <div class="flex flex-wrap items-center justify-between gap-2 bg-white/95 rounded-2xl border border-amber-200/90 px-3 py-2.5 shadow-xs">
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" id="detailFilterToday" onclick="setDetailDateFilter('today')" class="px-3.5 py-1.5 rounded-full border text-xs sm:text-sm font-extrabold transition cursor-pointer flex items-center gap-1.5 bg-white text-[#05344E] border-slate-300 hover:border-amber-400">
+            <span>📅 आजचे फोटो</span>
+            <span id="detailCountToday" class="px-1.5 py-0.5 rounded-full bg-slate-100 text-[#05344E] text-[10px] font-black">0</span>
+          </button>
+          <button type="button" id="detailFilter7Days" onclick="setDetailDateFilter('7days')" class="px-3.5 py-1.5 rounded-full border text-xs sm:text-sm font-extrabold transition cursor-pointer flex items-center gap-1.5 bg-gradient-to-r from-[#031926] via-[#05344E] to-[#0a4d70] text-amber-300 border-amber-400 shadow-md">
+            <span>🗓️ मागील ७ दिवस</span>
+            <span id="detailCount7Days" class="px-1.5 py-0.5 rounded-full bg-amber-400 text-[#031926] text-[10px] font-black">0</span>
+          </button>
+        </div>
+        <select id="detailTempleSwitch" onchange="if(this.value) openTempleDetailPage(this.value)" aria-label="दुसरे मंदिर निवडा" class="w-full sm:w-52 px-3 py-1.5 rounded-full border-2 border-[#05344E]/25 bg-slate-50 focus:bg-white focus:border-[#05344E] focus:outline-none text-xs font-extrabold text-[#05344E] cursor-pointer"></select>
+      </div>
+
+      <div id="detailGalleryContainer" class="space-y-4">
+        <div class="bg-white rounded-2xl border border-slate-200 p-8 text-center text-sm text-slate-500">⏳ फोटो लोड होत आहेत...</div>
       </div>
     </section>
 
@@ -199,7 +219,10 @@
           <p id="modalActiveEventSub" class="text-[11px] sm:text-xs text-amber-100/80 truncate"></p>
         </div>
         <div class="flex items-center gap-1.5 shrink-0">
-          <button type="button" onclick="shareCurrentModalTemple()" aria-label="शेअर करा" title="शेअर करा" class="h-8 sm:h-9 px-2.5 rounded-full bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-400/50 text-emerald-200 text-xs font-extrabold flex items-center gap-1 cursor-pointer transition">📤 <span class="hidden sm:inline">शेअर</span></button>
+          <button type="button" onclick="shareCurrentModalTemple()" aria-label="शेअर करा" title="शेअर करा" class="h-8 sm:h-9 px-3 rounded-full bg-gradient-to-r from-amber-400 to-yellow-300 hover:from-amber-300 hover:to-yellow-200 text-[#031926] border border-white/80 shadow-[0_0_12px_rgba(251,191,36,0.55)] text-xs font-extrabold flex items-center gap-1.5 cursor-pointer transition">
+            <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            <span>शेअर</span>
+          </button>
           <button type="button" onclick="closeDarshanModal()" aria-label="बंद करा" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/15 hover:bg-rose-600 text-white font-bold flex items-center justify-center cursor-pointer transition">✕</button>
         </div>
       </div>
@@ -739,7 +762,9 @@
         });
 
       window.__dailyAllList = list;
-      window.__dailyDateMode = window.__dailyDateMode || '7days';
+      const cachedTempleEvents = {};
+      let activeDetailTempleId = null;
+      let detailDateMode = '7days';
 
       const normalizeIsoDate = (val) => {
         if (!val) return '';
@@ -753,101 +778,213 @@
         const d = new Date();
         return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
       };
-      const isWithinLast7Days = (iso) => {
-        if (!iso) return true;
-        const today = new Date(getTodayIsoLocal() + 'T00:00:00');
-        const dt = new Date(iso + 'T00:00:00');
-        if (isNaN(dt.getTime())) return true;
-        const diffDays = Math.floor((today - dt) / 86400000);
-        return diffDays >= -1 && diffDays <= 7;
-      };
 
-      const renderFilteredDailyGrid = () => {
+      const renderHorizontalTempleBlocks = () => {
         const todayIso = getTodayIsoLocal();
-        const all = window.__dailyAllList || [];
-        const todayList = all.filter(t => normalizeIsoDate((latestMap[t.id] || {}).date) === todayIso);
-        const weekList = all.filter(t => isWithinLast7Days(normalizeIsoDate((latestMap[t.id] || {}).date)));
-
-        const c7 = document.getElementById('filterCount7Days');
-        const ct = document.getElementById('filterCountToday');
-        const hint = document.getElementById('dailyFilterDateHint');
-        if (c7) c7.textContent = String(weekList.length);
-        if (ct) ct.textContent = String(todayList.length);
-        if (hint) hint.textContent = window.__dailyDateMode === 'today' ? `आज: ${formatDisplayDate(todayIso)}` : 'अलीकडील ७ दिवसांचे दर्शन';
-
-        const btn7 = document.getElementById('filterBtn7Days');
-        const btnT = document.getElementById('filterBtnToday');
-        const activeCls = 'px-3.5 py-1.5 rounded-full border text-xs sm:text-sm font-extrabold transition cursor-pointer flex items-center gap-1.5 bg-gradient-to-r from-[#031926] via-[#05344E] to-[#0a4d70] text-amber-300 border-amber-400 shadow-md';
-        const idleCls = 'px-3.5 py-1.5 rounded-full border text-xs sm:text-sm font-extrabold transition cursor-pointer flex items-center gap-1.5 bg-white text-[#05344E] border-slate-300 hover:border-amber-400';
-        if (btn7) btn7.className = window.__dailyDateMode === '7days' ? activeCls : idleCls;
-        if (btnT) btnT.className = window.__dailyDateMode === 'today' ? activeCls : idleCls;
-        if (c7) c7.className = window.__dailyDateMode === '7days' ? 'px-1.5 py-0.5 rounded-full bg-amber-400 text-[#031926] text-[10px] font-black' : 'px-1.5 py-0.5 rounded-full bg-slate-100 text-[#05344E] text-[10px] font-black';
-        if (ct) ct.className = window.__dailyDateMode === 'today' ? 'px-1.5 py-0.5 rounded-full bg-amber-400 text-[#031926] text-[10px] font-black' : 'px-1.5 py-0.5 rounded-full bg-slate-100 text-[#05344E] text-[10px] font-black';
-
-        const q = (window.__dailySearchQ || '').trim().toLowerCase();
-        const baseShow = window.__dailyDateMode === 'today' ? todayList : weekList;
-        const showList = q ? baseShow.filter(t => {
-          const lat = latestMap[t.id] || {};
-          const hay = `${t.shortTitle || ''} ${t.name || ''} ${lat.pujaTitle || ''}`.toLowerCase();
-          return hay.includes(q);
-        }) : baseShow;
-
         const grid = document.getElementById('templeBlocksGrid');
-        if (!showList.length) {
-          grid.innerHTML = q
-            ? '<div class="col-span-full bg-white rounded-2xl border border-slate-200 p-8 text-center text-sm text-slate-600">शोधलेल्या नावाचे मंदिर सापडले नाही.</div>'
-            : (window.__dailyDateMode === 'today'
-              ? '<div class="col-span-full bg-white rounded-2xl border border-amber-200 p-8 text-center text-sm text-slate-600 space-y-2"><div class="font-bold text-[#05344E]">आजचे नवीन फोटो अद्याप अपलोड झालेले नाहीत.</div><button type="button" onclick="setDailyDateFilter(\'7days\')" class="px-4 py-1.5 rounded-full bg-[#05344E] text-amber-300 text-xs font-extrabold cursor-pointer">🗓️ मागील ७ दिवसांचे फोटो पहा</button></div>'
-              : '<div class="col-span-full bg-white rounded-2xl border border-slate-200 p-8 text-center text-sm text-slate-500">सध्या कोणतेही दैनिक पूजा फोटो उपलब्ध नाहीत. अ‍ॅडमिन पॅनलमधून फोटो अपलोड केल्यावर येथे दिसतील.</div>');
+        if (!list.length) {
+          grid.innerHTML = '<div class="col-span-full bg-white rounded-2xl border border-slate-200 p-8 text-center text-sm text-slate-500">सध्या कोणतेही दैनिक पूजा फोटो उपलब्ध नाहीत. अ‍ॅडमिन पॅनलमधून फोटो अपलोड केल्यावर येथे दिसतील.</div>';
           return;
         }
-        grid.innerHTML = showList.map(t => {
+        grid.innerHTML = list.map(t => {
           const lat = latestMap[t.id] || {};
           const cover = (lat.photos && lat.photos[0] && (lat.photos[0].url || lat.photos[0])) || t.image || 'icon-512.png';
           const title = t.shortTitle || t.name || t.id;
-          const srcName = lat.sourcePlatform || t.sourcePlatform || '';
           const isFeat = Boolean(featId && t.id === featId);
           const isTodayCard = normalizeIsoDate(lat.date) === todayIso;
           const pCnt = Array.isArray(lat.photos) ? lat.photos.length : 0;
           const hasVid = Boolean(lat.video || lat.videoUrl);
           return `
-            <button type="button" data-card-wrap="1" data-featured="${isFeat ? '1' : '0'}" onclick="openTempleDarshanModal('${t.id}')"
-              class="group text-left rounded-2xl overflow-hidden transition flex flex-col cursor-pointer ${isFeat ? 'col-span-full featured-pandharpur-card border-2 border-amber-400' : 'bg-white border-2 border-amber-200 hover:border-[#EA580C] shadow-sm hover:shadow-md'}">
-              <div class="card-img-box ${isFeat ? 'h-48 sm:h-64' : 'h-28 sm:h-36'} bg-slate-100 relative overflow-hidden w-full">
+            <button type="button" onclick="openTempleDetailPage('${t.id}')"
+              class="group text-left rounded-2xl overflow-hidden transition flex items-stretch gap-3 p-2.5 sm:p-3 cursor-pointer bg-gradient-to-r from-white via-amber-50/75 to-sky-50/80 ${isFeat ? 'md:col-span-2 border-2 border-amber-400 shadow-md' : 'border border-amber-200 hover:border-[#EA580C] shadow-xs hover:shadow-md'}">
+              <div class="relative w-24 h-24 sm:w-28 sm:h-24 shrink-0 rounded-xl overflow-hidden bg-slate-100 border border-amber-300/80">
                 <img src="${cover}" alt="${title}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
-                <div class="absolute top-2 left-2 flex flex-wrap items-center gap-1 z-10">
-                  ${isTodayCard ? `<span class="px-2 py-0.5 rounded-full bg-emerald-600/95 text-white border border-emerald-300/80 text-[9px] sm:text-[10px] font-extrabold shadow">✨ आजचे</span>` : ''}
-                  ${(pCnt > 0 || hasVid) ? `<span class="px-2 py-0.5 rounded-full bg-black/70 text-amber-200 border border-white/20 text-[9px] sm:text-[10px] font-bold shadow">${pCnt > 0 ? `📸 ${pCnt}` : ''}${pCnt > 0 && hasVid ? ' • ' : ''}${hasVid ? '🎬' : ''}</span>` : ''}
-                </div>
-                ${isFeat ? `<div class="pointer-events-none absolute inset-0 overflow-hidden"><div class="ott-shimmer-beam w-1/3 h-full bg-gradient-to-r from-transparent via-amber-200/35 to-transparent"></div></div><span class="absolute top-2 right-2 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-[#EA580C] to-amber-500 text-white text-[10px] sm:text-xs font-extrabold shadow">⭐ प्रमुख दर्शन</span>` : ''}
-                ${srcName ? `<span class="absolute bottom-1.5 right-1.5 px-2 py-0.5 rounded-full bg-black/65 text-amber-200 text-[9px] font-bold">📸 ${srcName}</span>` : ''}
+                ${isTodayCard ? `<span class="absolute top-1 left-1 px-1.5 py-0.5 rounded-full bg-emerald-600/95 text-white border border-emerald-300/80 text-[9px] font-extrabold shadow">✨ आजचे</span>` : ''}
+                ${isFeat ? `<span class="absolute bottom-1 left-1 px-1.5 py-0.5 rounded-full bg-gradient-to-r from-[#EA580C] to-amber-500 text-white text-[9px] font-extrabold shadow">⭐ प्रमुख</span>` : ''}
               </div>
-              <div class="relative px-2.5 pb-2.5 pt-2 sm:px-3 sm:pb-3 flex flex-col w-full bg-gradient-to-r from-[#031926] via-[#05344E] to-[#0a4d70] border-t border-amber-400/40">
-                ${lat.date ? `<div class="relative z-20 -mt-5 mb-1 flex justify-start"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-[#031926] text-amber-300 border border-amber-400 text-[10px] sm:text-xs font-bold shadow-md tracking-wide">📅 ${formatDisplayDate(lat.date)}</span></div>` : ''}
-                <div class="flex items-center justify-between gap-1.5 w-full">
-                  <div class="min-w-0 flex-1">
-                    <h3 class="font-bold ${isFeat ? 'text-base sm:text-lg' : 'text-xs sm:text-sm'} text-white line-clamp-2 leading-tight drop-shadow-sm">${title}</h3>
-                    <p class="text-[10px] sm:text-[11px] text-amber-200/90 truncate mt-0.5">${lat.pujaTitle || 'फोटो दर्शन पहा'}</p>
-                  </div>
-                  <span class="shrink-0 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full bg-amber-400 group-hover:bg-amber-300 text-[#05344E] text-[11px] sm:text-xs font-extrabold flex items-center gap-1 shadow-md transition">
-                    <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                    <span>पहा</span>
-                  </span>
+              <div class="min-w-0 flex-1 flex flex-col justify-between py-0.5">
+                <div>
+                  <h3 class="font-extrabold text-sm sm:text-base text-[#05344E] line-clamp-2 leading-tight">${title}</h3>
+                  <p class="text-[11px] sm:text-xs text-slate-600 font-semibold truncate mt-0.5">${lat.pujaTitle || 'दैनिक अलंकार व आरती फोटो'}</p>
                 </div>
+                <div class="flex flex-wrap items-center gap-1.5 mt-1.5">
+                  ${lat.date ? `<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-amber-100 text-[#9A3412] border border-amber-300 text-[10px] font-bold">📅 ${formatDisplayDate(lat.date)}</span>` : ''}
+                  ${(pCnt > 0 || hasVid) ? `<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-sky-50 text-[#05344E] border border-sky-200 text-[10px] font-bold">${pCnt > 0 ? `📸 ${pCnt}` : ''}${pCnt > 0 && hasVid ? ' • ' : ''}${hasVid ? '🎬' : ''}</span>` : ''}
+                </div>
+              </div>
+              <div class="shrink-0 self-center">
+                <span class="px-3 py-1.5 rounded-full bg-amber-400 group-hover:bg-amber-300 text-[#05344E] text-xs font-extrabold flex items-center gap-1 shadow-sm transition">
+                  <span>पहा</span><span>→</span>
+                </span>
               </div>
             </button>
           `;
         }).join('');
-        applyDailyUiSettings();
       };
-      window.setDailyDateFilter = (mode) => {
-        window.__dailyDateMode = mode === 'today' ? 'today' : '7days';
-        renderFilteredDailyGrid();
+
+      const loadTempleArchiveEvents = async (templeId) => {
+        if (cachedTempleEvents[templeId]) return cachedTempleEvents[templeId];
+        const base = groupEventsForModal(templeId);
+        try {
+          const archSnap = await db.ref(`dailyDarshan/archive/${templeId}`).once('value');
+          const arch = archSnap.val() || {};
+          const todayIso = getTodayIsoLocal();
+          const dates = Object.keys(arch)
+            .filter(dt => dt <= todayIso && arch[dt] && Array.isArray(arch[dt].photos) && arch[dt].photos.length)
+            .sort((a, b) => b.localeCompare(a))
+            .slice(0, 7);
+          const lat = cachedLatestMap[templeId] || {};
+          dates.forEach(dt => {
+            if (dt === lat.date) return;
+            const dayObj = arch[dt];
+            const dayMap = {};
+            dayObj.photos.forEach(p => {
+              const obj = typeof p === 'string' ? { url: p } : (p || {});
+              const pTitle = obj.pujaTitle || dayObj.pujaTitle || 'दैनिक दर्शन';
+              const bid = obj.batchId || (`arch_${dt}_${pTitle}`);
+              if (!dayMap[bid]) {
+                let tm = obj.batchTime || '';
+                if (!tm && obj.uploadedAt) {
+                  try { tm = new Date(obj.uploadedAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }).toUpperCase(); } catch(_) {}
+                }
+                dayMap[bid] = { id: bid, title: pTitle, date: dt, time: tm, sourcePlatform: obj.sourcePlatform || dayObj.sourcePlatform || '', sourceUrl: obj.sourceUrl || dayObj.sourceUrl || '', photos: [], video: '' };
+              }
+              dayMap[bid].photos.push({ url: obj.url || obj, time: obj.time || '', sourcePlatform: obj.sourcePlatform || '', sourceUrl: obj.sourceUrl || '' });
+            });
+            Object.values(dayMap).forEach(ev => base.push(ev));
+          });
+        } catch (e) {}
+        cachedTempleEvents[templeId] = base;
+        return base;
       };
-      window.setDailySearchQuery = (val) => {
-        window.__dailySearchQ = val || '';
-        renderFilteredDailyGrid();
+
+      const renderTempleDetailGallery = async (templeId) => {
+        const events = await loadTempleArchiveEvents(templeId);
+        if (activeDetailTempleId !== templeId) return;
+        const todayIso = getTodayIsoLocal();
+        const todayEvs = events.filter(ev => normalizeIsoDate(ev.date) === todayIso);
+        const countPhotos = (arr) => arr.reduce((sum, ev) => sum + ((ev.photos && ev.photos.length) || 0) + (ev.video ? 1 : 0), 0);
+
+        const cT = document.getElementById('detailCountToday');
+        const c7 = document.getElementById('detailCount7Days');
+        if (cT) cT.textContent = String(countPhotos(todayEvs));
+        if (c7) c7.textContent = String(countPhotos(events));
+
+        const btnT = document.getElementById('detailFilterToday');
+        const btn7 = document.getElementById('detailFilter7Days');
+        const activeCls = 'px-3.5 py-1.5 rounded-full border text-xs sm:text-sm font-extrabold transition cursor-pointer flex items-center gap-1.5 bg-gradient-to-r from-[#031926] via-[#05344E] to-[#0a4d70] text-amber-300 border-amber-400 shadow-md';
+        const idleCls = 'px-3.5 py-1.5 rounded-full border text-xs sm:text-sm font-extrabold transition cursor-pointer flex items-center gap-1.5 bg-white text-[#05344E] border-slate-300 hover:border-amber-400';
+        if (btnT) btnT.className = detailDateMode === 'today' ? activeCls : idleCls;
+        if (btn7) btn7.className = detailDateMode === '7days' ? activeCls : idleCls;
+        if (cT) cT.className = detailDateMode === 'today' ? 'px-1.5 py-0.5 rounded-full bg-amber-400 text-[#031926] text-[10px] font-black' : 'px-1.5 py-0.5 rounded-full bg-slate-100 text-[#05344E] text-[10px] font-black';
+        if (c7) c7.className = detailDateMode === '7days' ? 'px-1.5 py-0.5 rounded-full bg-amber-400 text-[#031926] text-[10px] font-black' : 'px-1.5 py-0.5 rounded-full bg-slate-100 text-[#05344E] text-[10px] font-black';
+
+        const showEvs = detailDateMode === 'today' ? todayEvs : events;
+        const box = document.getElementById('detailGalleryContainer');
+        if (!showEvs.length) {
+          box.innerHTML = detailDateMode === 'today'
+            ? '<div class="bg-white rounded-2xl border border-amber-200 p-8 text-center text-sm text-slate-600 space-y-2"><div class="font-bold text-[#05344E]">आजचे नवीन फोटो या मंदिरासाठी अद्याप अपलोड झालेले नाहीत.</div><button type="button" onclick="setDetailDateFilter(\'7days\')" class="px-4 py-1.5 rounded-full bg-[#05344E] text-amber-300 text-xs font-extrabold cursor-pointer">🗓️ मागील ७ दिवसांचे फोटो पहा</button></div>'
+            : '<div class="bg-white rounded-2xl border border-slate-200 p-8 text-center text-sm text-slate-500">या मंदिराचे फोटो उपलब्ध नाहीत.</div>';
+          return;
+        }
+
+        box.innerHTML = showEvs.map((ev) => {
+          const evIdx = events.indexOf(ev);
+          const photos = ev.photos || [];
+          const dtDisp = ev.date ? formatDisplayDate(ev.date) : '';
+          return `
+            <div class="bg-white rounded-2xl border border-amber-200 shadow-xs overflow-hidden">
+              <div class="bg-gradient-to-r from-amber-50 via-white to-sky-50 border-b border-amber-200 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2">
+                <div class="min-w-0">
+                  <div class="text-sm sm:text-base font-extrabold text-[#05344E] truncate">${ev.title || 'दैनिक दर्शन'}</div>
+                  <div class="text-[11px] text-[#9A3412] font-bold">${dtDisp ? '📅 ' + dtDisp : ''}${ev.time ? ' • 🕒 ' + ev.time : ''}</div>
+                </div>
+                ${ev.sourcePlatform ? `<span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-[#05344E] border border-amber-300 text-[10px] font-bold">📸 ${ev.sourcePlatform}</span>` : ''}
+              </div>
+              <div class="p-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-3">
+                ${photos.map((p, pIdx) => {
+                  const u = p.url || p;
+                  return `
+                    <button type="button" onclick="openDetailPhotoInModal('${templeId}', ${evIdx}, ${pIdx})" class="group relative aspect-[4/3] rounded-xl overflow-hidden bg-slate-100 border border-slate-200 hover:border-amber-500 shadow-xs cursor-pointer">
+                      <img src="${u}" alt="${ev.title || 'दर्शन'}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+                      <span class="absolute bottom-1.5 right-1.5 px-2 py-0.5 rounded-full bg-black/65 text-white text-[10px] font-bold">${pIdx + 1}/${photos.length}</span>
+                    </button>
+                  `;
+                }).join('')}
+                ${ev.video ? `
+                  <button type="button" onclick="openDetailPhotoInModal('${templeId}', ${evIdx}, ${photos.length})" class="group relative aspect-[4/3] rounded-xl overflow-hidden bg-[#031926] border-2 border-amber-400 shadow-xs cursor-pointer flex flex-col items-center justify-center text-amber-300 gap-1">
+                    <span class="text-2xl">🎬</span>
+                    <span class="text-xs font-extrabold">व्हिडिओ पहा</span>
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
       };
+
+      window.openDetailPhotoInModal = async (templeId, evIdx, slideIdx) => {
+        const events = await loadTempleArchiveEvents(templeId);
+        const temple = cachedTemplesMap[templeId] || { id: templeId, name: templeId };
+        document.getElementById('modalTempleTitle').textContent = temple.name || temple.shortTitle || templeId;
+        allModalEvents = events.slice();
+        activeEventIdx = Math.max(0, Math.min(evIdx, allModalEvents.length - 1));
+        activeSlideIdx = Math.max(0, slideIdx || 0);
+        document.getElementById('darshanSlideshowModal').classList.remove('hidden');
+        renderModalEventTabs();
+        renderCurrentSlide();
+        startAutoScroll();
+      };
+
+      window.openTempleDetailPage = (templeId, skipPush) => {
+        if (!templeId || !merged[templeId]) return;
+        activeDetailTempleId = templeId;
+        const t = merged[templeId];
+        const lat = latestMap[templeId] || {};
+        document.getElementById('blocksListView').classList.add('hidden');
+        document.getElementById('templeDetailView').classList.remove('hidden');
+        document.getElementById('detailTempleTitle').textContent = t.name || t.shortTitle || templeId;
+        document.getElementById('detailTempleSub').textContent = (lat.pujaTitle || 'दैनिक अलंकार व आरती') + (lat.date ? ' • ' + formatDisplayDate(lat.date) : '');
+        const sw = document.getElementById('detailTempleSwitch');
+        if (sw) {
+          sw.innerHTML = list.map(x => `<option value="${x.id}" ${x.id === templeId ? 'selected' : ''}>🛕 ${x.shortTitle || x.name || x.id}</option>`).join('');
+        }
+        if (!skipPush) {
+          const u = new URL(window.location.href);
+          u.searchParams.set('temple', templeId);
+          history.pushState({ templeId }, '', u.toString());
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        renderTempleDetailGallery(templeId);
+      };
+
+      window.closeTempleDetailPage = (skipPush) => {
+        activeDetailTempleId = null;
+        document.getElementById('templeDetailView').classList.add('hidden');
+        document.getElementById('blocksListView').classList.remove('hidden');
+        if (!skipPush) {
+          const u = new URL(window.location.href);
+          u.searchParams.delete('temple');
+          history.pushState({}, '', u.toString());
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      window.setDetailDateFilter = (mode) => {
+        detailDateMode = mode === 'today' ? 'today' : '7days';
+        if (activeDetailTempleId) renderTempleDetailGallery(activeDetailTempleId);
+      };
+
+      window.shareCurrentDetailTemple = async () => {
+        const title = document.getElementById('detailTempleTitle')?.textContent || 'दैनिक फोटो दर्शन';
+        const url = window.location.href;
+        const msg = `🙏 ${title}\nदर्शन सेतू वर आजचे अलंकार व आरती फोटो पहा:\n${url}`;
+        if (navigator.share) {
+          try { await navigator.share({ title, text: msg, url }); return; } catch (_) {}
+        }
+        window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank', 'noopener');
+      };
+
       window.shareCurrentModalTemple = async () => {
         const tEl = document.getElementById('modalTempleTitle');
         const sEl = document.getElementById('modalActiveEventSub');
@@ -860,10 +997,17 @@
         }
         window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank', 'noopener');
       };
-      renderFilteredDailyGrid();
+
+      window.addEventListener('popstate', () => {
+        const tid = new URLSearchParams(window.location.search).get('temple');
+        if (tid && merged[tid]) openTempleDetailPage(tid, true);
+        else closeTempleDetailPage(true);
+      });
+
+      renderHorizontalTempleBlocks();
 
       if (selectedId && merged[selectedId]) {
-        openTempleDarshanModal(selectedId);
+        openTempleDetailPage(selectedId, true);
       }
     });
   </script>

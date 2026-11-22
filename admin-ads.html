@@ -88,6 +88,7 @@
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">क्लिक लिंक (URL)</label>
             <input id="preRollSponsor" type="text" placeholder="जाहिरातदाराचे नाव (Sponsor — रिपोर्टसाठी ऐच्छिक)" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-bold text-[#05344E]" />
+          <input id="preRollWhatsapp" type="tel" placeholder="जाहिरातदाराचा WhatsApp नंबर (ऐच्छिक, उदा. 98XXXXXXXX)" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-bold text-emerald-800" />
           <input id="preRollLink" type="url" placeholder="https://..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
           <div class="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-slate-50 border border-slate-200 px-3 py-2">
             <span id="preRollPubLabel" class="text-xs font-bold text-slate-600">🕒 पब्लिश: —</span>
@@ -163,6 +164,7 @@
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">क्लिक लिंक (URL)</label>
             <input id="splashSponsor" type="text" placeholder="जाहिरातदाराचे नाव (Sponsor — रिपोर्टसाठी ऐच्छिक)" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-bold text-[#05344E]" />
+          <input id="splashWhatsapp" type="tel" placeholder="जाहिरातदाराचा WhatsApp नंबर (ऐच्छिक, उदा. 98XXXXXXXX)" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-bold text-emerald-800" />
           <input id="splashLink" type="url" placeholder="https://..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
           <div class="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-slate-50 border border-slate-200 px-3 py-2">
             <span id="splashPubLabel" class="text-xs font-bold text-slate-600">🕒 पब्लिश: —</span>
@@ -242,6 +244,7 @@
               <button type="button" onclick="exportAdReportCsv()" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs cursor-pointer">📥 CSV</button>
               <button type="button" onclick="exportAdReportJpg()" class="px-2.5 py-1 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold shadow-xs cursor-pointer">🖼️ JPG</button>
               <button type="button" onclick="exportAdReportPdf()" class="px-2.5 py-1 rounded-lg bg-[#EA580C] hover:bg-orange-700 text-white text-xs font-bold shadow-xs cursor-pointer">📄 PDF</button>
+              <button type="button" onclick="shareAdReportWhatsapp()" class="px-2.5 py-1 rounded-lg bg-[#25D366] hover:bg-emerald-600 text-white text-xs font-bold shadow-xs cursor-pointer">💬 WhatsApp</button>
             <button id="cleanOrphanStatsBtn" type="button" onclick="cleanOrphanAdStats()" class="hidden px-3 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold cursor-pointer">🧹 काढलेल्या स्लाईड्सचा जुना डेटा साफ करा</button>
             </div>
           </div>
@@ -456,6 +459,8 @@
         if (stInp) currentAds.bannerSlides[idx].text = stInp.value.trim();
         const spInp = card.querySelector('.slot-sponsor');
         if (spInp) currentAds.bannerSlides[idx].sponsor = spInp.value.trim();
+        const waInp = card.querySelector('.slot-whatsapp');
+        if (waInp) currentAds.bannerSlides[idx].whatsapp = waInp.value.trim();
         
       });
     }
@@ -485,6 +490,8 @@
             <input type="file" accept="image/*" class="slot-file hidden" />
           </label>
 
+          <input type="text" value="${esc(s.sponsor || '')}" placeholder="जाहिरातदाराचे नाव (Sponsor — रिपोर्टसाठी ऐच्छिक)" class="slot-sponsor w-full px-3 py-1.5 rounded-xl border border-slate-300 bg-white text-xs font-bold text-[#05344E]" />
+          <input type="tel" value="${esc(s.whatsapp || '')}" placeholder="जाहिरातदाराचा WhatsApp नंबर (ऐच्छिक, उदा. 98XXXXXXXX)" class="slot-whatsapp w-full px-3 py-1.5 rounded-xl border border-slate-300 bg-white text-xs font-bold text-emerald-800" />
           <input type="url" class="slot-link w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white focus:outline-none focus:border-[#05344E]" value="${esc(s.link)}" placeholder="लिंक (https://...)" />
           <div class="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-slate-50 border border-slate-200 px-3 py-2">
             <span class="text-[11px] font-bold text-slate-600">🕒 पब्लिश: <span class="text-[#05344E]">${formatPubDateTime(s.publishedAt || Date.now())}</span></span>
@@ -693,6 +700,7 @@
                     <span class="px-2.5 py-1 rounded-lg bg-white border border-emerald-200 text-emerald-800">👆 ${clicks.toLocaleString('en-IN')}</span>
                     <span class="px-2.5 py-1 rounded-lg bg-white border border-amber-200 text-amber-900">📅 आज: ${todayClicks}</span>
                     <span class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-[#05344E]">CTR: ${ctr}%</span>
+                    <button type="button" onclick="shareAdReportWhatsapp('slide:${idx}')" class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-300 cursor-pointer">💬 WA</button>
                     <button type="button" onclick="resetSingleAdStat('banners/${adId}')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 cursor-pointer">🔄 Reset</button>
                   </div>
                 </div>
@@ -724,12 +732,21 @@
       const selEl = document.getElementById('exportReportFilter');
       if (selEl) {
         const prevVal = window.__selectedExportFilter || selEl.value || 'all';
-        const slideOpts = slides.map((s, idx) => ({ s, idx }))
-          .filter(x => x.s && (x.s.image || x.s.text || x.s.link))
-          .map(({ s, idx }) => `<option value="slide:${idx}">फक्त स्लाईड ${idx + 1}${s.sponsor ? ' — ' + esc(s.sponsor).slice(0, 18) : (s.text ? ' (' + esc(s.text).slice(0, 18) + ')' : '')}</option>`)
-          .join('');
-        selEl.innerHTML = `<option value="all">सर्व जाहिराती (All)</option><option value="banners">फक्त सर्व स्लाईडर्स</option>${slideOpts}<option value="preroll">फक्त Pre-Roll जाहिरात</option><option value="splash">फक्त Splash जाहिरात</option>`;
-        if ([...selEl.options].some(o => o.value === prevVal)) { selEl.value = prevVal; window.__selectedExportFilter = prevVal; } else { window.__selectedExportFilter = selEl.value || 'all'; }
+        const activeForSel = slides.map((s, idx) => ({ s, idx })).filter(x => x.s && (x.s.image || x.s.text || x.s.link || x.s.sponsor));
+        const sig = activeForSel.map(x => `${x.idx}:${x.s.sponsor||''}:${x.s.text||''}`).join('|');
+        if (selEl.dataset.sig !== sig) {
+          selEl.dataset.sig = sig;
+          const slideOpts = activeForSel
+            .map(({ s, idx }) => `<option value="slide:${idx}">फक्त स्लाईड ${idx + 1}${s.sponsor ? ' — ' + esc(s.sponsor).slice(0, 18) : (s.text ? ' (' + esc(s.text).slice(0, 18) + ')' : '')}</option>`)
+            .join('');
+          selEl.innerHTML = `<option value="all">सर्व जाहिराती (All)</option><option value="banners">फक्त सर्व स्लाईडर्स</option>${slideOpts}<option value="preroll">फक्त Pre-Roll जाहिरात</option><option value="splash">फक्त Splash जाहिरात</option>`;
+        }
+        if ([...selEl.options].some(o => o.value === prevVal)) {
+          selEl.value = prevVal;
+          window.__selectedExportFilter = prevVal;
+        } else {
+          window.__selectedExportFilter = selEl.value || 'all';
+        }
       }
 
       const orphanKeys = Object.keys(banners).filter(k => !activeIds.has(k));
@@ -752,7 +769,7 @@
       const dtFile = dtDisplay.replace(/ /g, '_');
 
       const filterEl = document.getElementById('exportReportFilter');
-      const filterVal = (filterEl && filterEl.value) || window.__selectedExportFilter || 'all';
+      const filterVal = window.__selectedExportFilter || (filterEl && filterEl.value) || 'all';
       const items = [];
       let totalV = 0, totalC = 0;
 
@@ -783,6 +800,7 @@
         items.push({
           name: `बॅनर स्लाईड ${idx + 1}`,
           sponsor: spName,
+          whatsapp: (s.whatsapp || (domCards[idx] ? (domCards[idx].querySelector('.slot-whatsapp')?.value || '').trim() : '') || '').trim(),
           title: s.text || '—',
           link: s.link || '—',
           views: v, clicks: c, today: tc,
@@ -810,7 +828,7 @@
         const ptc = Number((pr.daily && pr.daily[todayKey] && pr.daily[todayKey].clicks) || 0);
         const prSp = (currentAds.preRollSponsor || document.getElementById('preRollSponsor')?.value || '').trim() || '—';
         if (filterVal === 'preroll') { totalV = pv; totalC = pc; }
-        items.push({ name: 'Pre-Roll जाहिरात', sponsor: prSp, title: 'व्हिडिओ पूर्व जाहिरात', link: currentAds.preRollLink || '—', views: pv, clicks: pc, today: ptc, ctr: pv > 0 ? ((pc / pv) * 100).toFixed(1) + '%' : '0.0%', publishedStr: formatPubDateTime(currentAds.preRollPublishedAt), durationStr: formatDurationMarathi(currentAds.preRollPublishedAt, currentAds.preRollExpiresAt), expiresStr: currentAds.preRollExpiresAt ? formatPubDateTime(currentAds.preRollExpiresAt) : 'अमर्याद', image: currentAds.preRollImage || '', pageCounts: pr.byPage || {}, pages: formatPageStats(pr.byPage), days7Arr: get7DayRows(pr.daily) });
+        items.push({ name: 'Pre-Roll जाहिरात', sponsor: prSp, whatsapp: (currentAds.preRollWhatsapp || document.getElementById('preRollWhatsapp')?.value || '').trim(), title: 'व्हिडिओ पूर्व जाहिरात', link: currentAds.preRollLink || '—', views: pv, clicks: pc, today: ptc, ctr: pv > 0 ? ((pc / pv) * 100).toFixed(1) + '%' : '0.0%', publishedStr: formatPubDateTime(currentAds.preRollPublishedAt), durationStr: formatDurationMarathi(currentAds.preRollPublishedAt, currentAds.preRollExpiresAt), expiresStr: currentAds.preRollExpiresAt ? formatPubDateTime(currentAds.preRollExpiresAt) : 'अमर्याद', image: currentAds.preRollImage || '', pageCounts: pr.byPage || {}, pages: formatPageStats(pr.byPage), days7Arr: get7DayRows(pr.daily) });
       }
       if (filterVal === 'all' || filterVal === 'splash') {
         const sp = stats.splash || {};
@@ -818,9 +836,54 @@
         const stc = Number((sp.daily && sp.daily[todayKey] && sp.daily[todayKey].clicks) || 0);
         const spSp = (currentAds.splashSponsor || document.getElementById('splashSponsor')?.value || '').trim() || '—';
         if (filterVal === 'splash') { totalV = sv; totalC = sc; }
-        items.push({ name: 'Splash पॉपअप जाहिरात', sponsor: spSp, title: 'मुख्य स्क्रीन पॉपअप', link: currentAds.splashLink || '—', views: sv, clicks: sc, today: stc, ctr: sv > 0 ? ((sc / sv) * 100).toFixed(1) + '%' : '0.0%', publishedStr: formatPubDateTime(currentAds.splashPublishedAt), durationStr: formatDurationMarathi(currentAds.splashPublishedAt, currentAds.splashExpiresAt), expiresStr: currentAds.splashExpiresAt ? formatPubDateTime(currentAds.splashExpiresAt) : 'अमर्याद', image: currentAds.splashImage || '', pageCounts: sp.byPage || {}, pages: formatPageStats(sp.byPage), days7Arr: get7DayRows(sp.daily) });
+        items.push({ name: 'Splash पॉपअप जाहिरात', sponsor: spSp, whatsapp: (currentAds.splashWhatsapp || document.getElementById('splashWhatsapp')?.value || '').trim(), title: 'मुख्य स्क्रीन पॉपअप', link: currentAds.splashLink || '—', views: sv, clicks: sc, today: stc, ctr: sv > 0 ? ((sc / sv) * 100).toFixed(1) + '%' : '0.0%', publishedStr: formatPubDateTime(currentAds.splashPublishedAt), durationStr: formatDurationMarathi(currentAds.splashPublishedAt, currentAds.splashExpiresAt), expiresStr: currentAds.splashExpiresAt ? formatPubDateTime(currentAds.splashExpiresAt) : 'अमर्याद', image: currentAds.splashImage || '', pageCounts: sp.byPage || {}, pages: formatPageStats(sp.byPage), days7Arr: get7DayRows(sp.daily) });
       }
       return { dtDisplay, dtTimeDisplay, dtFile, totalV, totalC, items, filterVal };
+    }
+
+    window.shareAdReportWhatsapp = function(overrideFilter) {
+      const sel = document.getElementById('exportReportFilter');
+      const prevF = sel ? sel.value : 'all';
+      if (overrideFilter && sel) { sel.value = overrideFilter; window.__selectedExportFilter = overrideFilter; }
+      const { dtTimeDisplay, items } = buildAdReportRows();
+      if (overrideFilter && sel) { sel.value = prevF; window.__selectedExportFilter = prevF; }
+      if (!items.length) { showToast('शेअर करण्यासाठी जाहिरात डेटा नाही.', true); return; }
+
+      const blocks = items.map(it => [
+        `*${it.name}*${it.sponsor && it.sponsor !== '—' ? ' (' + it.sponsor + ')' : ''}`,
+        `🕒 पब्लिश: ${it.publishedStr || '—'}`,
+        `⏳ कालावधी: ${it.durationStr || '—'}`,
+        `👁️ एकूण Views: ${it.views} | 👆 एकूण Clicks: ${it.clicks} | 📊 CTR: ${it.ctr}`,
+        `📅 आजचे Clicks: ${it.today}`,
+        `📍 ${it.pages}`
+      ].join('\n')).join('\n\n');
+
+      const msg = `🙏 *DARSHAN SETU® — जाहिरात कामगिरी रिपोर्ट*\n(${dtTimeDisplay})\n\n${blocks}\n\n🌐 https://darshansetu.live`;
+      const rawWa = (items.length === 1 && items[0].whatsapp) ? items[0].whatsapp : '';
+      let digits = String(rawWa || '').replace(/\D/g, '');
+      if (digits.length === 10) digits = '91' + digits;
+      const waUrl = digits ? `https://wa.me/${digits}?text=${encodeURIComponent(msg)}` : `https://wa.me/?text=${encodeURIComponent(msg)}`;
+      window.open(waUrl, '_blank', 'noopener,noreferrer');
+    };
+
+    let __adDailyCleaned = false;
+    function cleanupOldAdStatsDaily(stats) {
+      if (__adDailyCleaned || !stats || typeof fbDb === 'undefined') return;
+      __adDailyCleaned = true;
+      const cutoffIso = new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 10);
+      const banners = stats.banners || {};
+      Object.keys(banners).forEach(adId => {
+        const dl = (banners[adId] && banners[adId].daily) || {};
+        Object.keys(dl).forEach(dt => {
+          if (dt < cutoffIso) fbDb.ref(`adStats/banners/${adId}/daily/${dt}`).remove().catch(() => {});
+        });
+      });
+      ['preroll', 'splash'].forEach(k => {
+        const dl = (stats[k] && stats[k].daily) || {};
+        Object.keys(dl).forEach(dt => {
+          if (dt < cutoffIso) fbDb.ref(`adStats/${k}/daily/${dt}`).remove().catch(() => {});
+        });
+      });
     }
 
     window.exportAdReportJpg = function() {
@@ -844,24 +907,27 @@
       canvas.width = W; canvas.height = H;
       const ctx = canvas.getContext('2d');
 
-      // Pure white background + top bar
-      ctx.fillStyle = '#FFFFFF';
+      // Warm cream background matching portal + Branded Navy-Gold Header
+      ctx.fillStyle = '#FFFBEB';
       ctx.fillRect(0, 0, W, H);
-      ctx.fillStyle = '#05344E';
+      const hGrad = ctx.createLinearGradient(0, 0, W, 0);
+      hGrad.addColorStop(0, '#031926'); hGrad.addColorStop(0.5, '#05344E'); hGrad.addColorStop(1, '#084160');
+      ctx.fillStyle = hGrad;
+      ctx.fillRect(0, 0, W, 94);
+      ctx.fillStyle = '#FBBF24';
+      ctx.fillRect(0, 90, W, 4);
+
+      ctx.fillStyle = '#FDE68A';
       ctx.font = 'bold 34px sans-serif';
-      ctx.fillText('DARSHAN SETU® Analytics', 48, 62);
+      ctx.fillText('दर्शन सेतू लाईव्ह • AD ANALYTICS', 48, 58);
 
       // Export badge top-right
-      ctx.fillStyle = '#F1F5F9';
-      ctx.strokeStyle = '#CBD5E1';
-      ctx.beginPath(); ctx.roundRect(690, 30, 342, 42, 21); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = '#334155';
+      ctx.fillStyle = 'rgba(255,255,255,0.14)';
+      ctx.strokeStyle = '#FBBF24';
+      ctx.beginPath(); ctx.roundRect(684, 24, 348, 42, 21); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#FEF3C7';
       ctx.font = 'bold 16px sans-serif';
-      ctx.fillText(`Export: ${dtTimeDisplay}`, 712, 57);
-
-      // Saffron divider line
-      ctx.fillStyle = '#EA580C';
-      ctx.fillRect(48, 86, W - 96, 4);
+      ctx.fillText(`Export: ${dtTimeDisplay}`, 706, 51);
 
       // Campaign Summary Card
       ctx.fillStyle = '#F8FAFC';
@@ -969,9 +1035,15 @@
         ty += rowH;
       });
 
-      ctx.fillStyle = '#64748B';
-      ctx.font = 'bold 15px sans-serif';
-      ctx.fillText(`© २०२६ DARSHAN SETU® • darshansetu.live • Export: ${dtTimeDisplay}`, 48, H - 24);
+      const fGrad = ctx.createLinearGradient(0, H - 58, W, H - 58);
+      fGrad.addColorStop(0, '#031926'); fGrad.addColorStop(0.5, '#05344E'); fGrad.addColorStop(1, '#031926');
+      ctx.fillStyle = fGrad;
+      ctx.fillRect(0, H - 58, W, 58);
+      ctx.fillStyle = '#FBBF24';
+      ctx.fillRect(0, H - 58, W, 3);
+      ctx.fillStyle = '#FDE68A';
+      ctx.font = 'bold 16px sans-serif';
+      ctx.fillText(`© २०२६ DARSHAN SETU® • darshansetu.live • Export: ${dtTimeDisplay}`, 48, H - 22);
 
       const url = canvas.toDataURL('image/jpeg', 0.94);
       const a = document.createElement('a');
@@ -1035,10 +1107,10 @@
       if (!w) { showToast('कृपया ब्राउझर पॉपअप अनुमती द्या.', true); return; }
       w.document.write(`<!DOCTYPE html><html lang="mr"><head><meta charset="UTF-8"><title>DARSHAN SETU® Analytics Report</title>
         <style>
-          body{font-family:'Noto Sans Devanagari',sans-serif;margin:28px;color:#0F172A;background:#fff;}
-          .top{display:flex;justify-content:space-between;align-items:center;border-bottom:4px solid #EA580C;padding-bottom:12px;margin-bottom:18px;}
-          .top h1{margin:0;font-size:22px;color:#05344E;}
-          .badge{background:#F1F5F9;border:1px solid #CBD5E1;padding:6px 12px;border-radius:99px;font-size:12px;font-weight:700;color:#334155;}
+          body{font-family:'Noto Sans Devanagari',sans-serif;margin:20px;color:#0F172A;background:#FFFBEB;}
+          .top{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(to right,#031926,#05344E,#084160);color:#fff;padding:16px 20px;border-radius:14px;border-bottom:4px solid #FBBF24;margin-bottom:18px;}
+          .top h1{margin:0;font-size:22px;color:#FDE68A;}
+          .badge{background:rgba(255,255,255,0.14);border:1px solid #FBBF24;padding:6px 12px;border-radius:99px;font-size:12px;font-weight:700;color:#FEF3C7;}
           .camp{background:#F8FAFC;border:1px solid #CBD5E1;border-radius:12px;padding:14px 16px;margin-bottom:18px;}
           .grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;margin-bottom:18px;}
           .card{border:1px solid #E2E8F0;border-radius:12px;padding:14px;}
@@ -1047,7 +1119,7 @@
           th{background:#05344E;color:#fff;padding:9px 8px;text-align:left;}
           td{padding:8px;border:1px solid #CBD5E1;}
           tr:nth-child(even){background:#F8FAFC;}
-          .ftr{margin-top:18px;font-size:11px;color:#64748B;text-align:center;}
+          .ftr{margin-top:20px;background:linear-gradient(to right,#031926,#05344E,#031926);color:#FDE68A;border-top:3px solid #FBBF24;border-radius:10px;padding:10px 14px;font-size:12px;font-weight:700;text-align:center;}
           @media print{body{margin:12px;}}
         </style></head><body>
         <div class="top"><h1>DARSHAN SETU® Analytics</h1><span class="badge">Export: ${dtTimeDisplay}</span></div>
@@ -1113,6 +1185,7 @@
 
     fbDb.ref('adStats').on('value', (snap) => {
       cachedAdStats = snap.val() || {};
+      cleanupOldAdStatsDaily(cachedAdStats);
       renderAdReports();
     });
 
@@ -1135,6 +1208,7 @@
         document.getElementById('preRollSkipAfter').value = String(ads.preRollSkipAfter || 5);
         document.getElementById('preRollLink').value = ads.preRollLink || '';
         if (document.getElementById('preRollSponsor')) document.getElementById('preRollSponsor').value = ads.preRollSponsor || '';
+        if (document.getElementById('preRollWhatsapp')) document.getElementById('preRollWhatsapp').value = ads.preRollWhatsapp || '';
         syncSingleSchedLabels();
         document.getElementById('preRollText').value = ads.preRollText || '';
         if (ads.preRollFontFamily) document.getElementById('preRollFontSelect').value = ads.preRollFontFamily;
@@ -1151,6 +1225,7 @@
         document.getElementById('splashFreq').value = ads.splashFrequency || 'always';
         document.getElementById('splashLink').value = ads.splashLink || '';
         if (document.getElementById('splashSponsor')) document.getElementById('splashSponsor').value = ads.splashSponsor || '';
+        if (document.getElementById('splashWhatsapp')) document.getElementById('splashWhatsapp').value = ads.splashWhatsapp || '';
         syncSingleSchedLabels();
         document.getElementById('splashText').value = ads.splashText || '';
         if (ads.splashFontFamily) document.getElementById('splashFontSelect').value = ads.splashFontFamily;
@@ -1174,6 +1249,7 @@
           const img = file ? await compressImageFile(file, 900, 320, 0.82) : (prev.image || '');
           const stEl = cards[i].querySelector('.slot-text');
           const spEl = cards[i].querySelector('.slot-sponsor');
+          const waEl = cards[i].querySelector('.slot-whatsapp');
           const adId = prev.adId || ('ad_' + Date.now().toString(36) + '_' + i + '_' + Math.random().toString(36).slice(2, 6));
           const hasContent = Boolean(img || (stEl && stEl.value.trim()) || cards[i].querySelector('.slot-link').value.trim());
           const pubMs = prev.publishedAt || (hasContent ? Date.now() : 0);
@@ -1181,6 +1257,7 @@
           slides.push({
             adId,
             sponsor: spEl ? spEl.value.trim() : (prev.sponsor || ''),
+            whatsapp: waEl ? waEl.value.trim() : (prev.whatsapp || ''),
             publishedAt: pubMs,
             expiresAt: expMs,
             image: img,
@@ -1236,6 +1313,7 @@
           preRollDuration: Math.max(2, Math.min(60, Number(document.getElementById('preRollDuration').value) || 10)),
           preRollSkipAfter: Number(document.getElementById('preRollSkipAfter').value) || 5,
           preRollSponsor: (document.getElementById('preRollSponsor')?.value || '').trim(),
+          preRollWhatsapp: (document.getElementById('preRollWhatsapp')?.value || '').trim(),
           preRollPublishedAt: currentAds.preRollPublishedAt || (preRollEnabled ? Date.now() : 0),
           preRollExpiresAt: currentAds.preRollExpiresAt || 0,
           preRollLink: document.getElementById('preRollLink').value.trim(),
@@ -1250,6 +1328,7 @@
           splashSkipAfter: Number(document.getElementById('splashSkipAfter').value) || 5,
           splashFrequency: document.getElementById('splashFreq').value,
           splashSponsor: (document.getElementById('splashSponsor')?.value || '').trim(),
+          splashWhatsapp: (document.getElementById('splashWhatsapp')?.value || '').trim(),
           splashPublishedAt: currentAds.splashPublishedAt || (splashEnabled ? Date.now() : 0),
           splashExpiresAt: currentAds.splashExpiresAt || 0,
           splashLink: document.getElementById('splashLink').value.trim(),

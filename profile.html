@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>🙏 माझे भक्ती प्रोफाइल — दर्शन सेतू लाईव्ह</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Khand:wght@600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { font-family: 'Noto Sans Devanagari', sans-serif; background: #f1f5f9; color: #0f172a; margin: 0; padding-bottom: 78px; }
+    .font-khand { font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; }
+    .shimmer { background: linear-gradient(90deg, #e2e8f0 25%, #f8fafc 50%, #e2e8f0 75%); background-size: 200% 100%; animation: sh 1.3s infinite; }
+    @keyframes sh { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .bnav { position: fixed; bottom: 0; left: 0; right: 0; height: 66px; background: #071320; border-top: 1px solid rgba(251,191,36,0.28); display: grid; grid-template-columns: repeat(5, 1fr); z-index: 40; }
+    .bnav-item { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: #94a3b8; font-size: 11px; font-weight: 700; text-decoration: none; cursor: pointer; }
+    .bnav-item.active { color: #FCD34D; }
+    .bnav-item.active::before { content: ''; position: absolute; top: 0; left: 18%; right: 18%; height: 3px; border-radius: 0 0 6px 6px; background: linear-gradient(90deg, #F59E0B, #FDE68A, #F59E0B); box-shadow: 0 2px 10px rgba(251,191,36,0.85); }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+  </style>
+</head>
+<body class="min-h-screen">
+  <!-- Exact Webportal Header -->
+  <header class="bg-gradient-to-r from-[#031926] via-[#05344E] to-[#084160] text-white shadow-md border-b-2 border-amber-400/80 sticky top-0 z-30">
+    <div class="max-w-3xl mx-auto px-3 py-2 flex items-center justify-between gap-2">
+      <a href="index.html" class="flex items-center gap-2.5 min-w-0 flex-1">
+        <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-amber-400 shrink-0 bg-white">
+          <img src="data:image/webp;base64,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" alt="दर्शन सेतू लाईव्ह" class="w-full h-full object-cover" />
+        </div>
+        <h1 class="font-khand bg-gradient-to-r from-white via-amber-200 to-amber-400 bg-clip-text text-transparent text-2xl sm:text-3xl leading-tight truncate">दर्शन सेतू लाईव्ह</h1>
+      </a>
+      <div class="flex items-center gap-2 shrink-0">
+        <a href="reels.html" class="w-10 h-10 rounded-xl bg-amber-400/20 hover:bg-amber-400/35 border border-amber-300/60 flex items-center justify-center text-lg" title="दर्शन शॉर्ट्स">🎬</a>
+        <button id="menuBtn" type="button" class="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 border border-amber-300/40 text-amber-200 flex items-center justify-center">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Quick Nav Drawer -->
+  <div id="navDrawer" class="hidden fixed inset-0 z-50 bg-black/55 backdrop-blur-sm">
+    <div class="w-72 max-w-[82vw] h-full bg-white text-slate-900 p-4 space-y-2 shadow-2xl">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+        <span class="font-extrabold text-[#05344E]">🛕 दर्शन सेतू मेनू</span>
+        <button id="closeDrawerBtn" class="px-2 py-1 rounded-lg bg-slate-100 text-sm font-bold">✕</button>
+      </div>
+      <a href="index.html" class="block px-3 py-2.5 rounded-xl hover:bg-slate-100 font-bold text-sm">🏠 मुख्य पान (Live Darshan)</a>
+      <a href="reels.html" class="block px-3 py-2.5 rounded-xl bg-amber-50 text-[#05344E] font-bold text-sm">🎬 दर्शन शॉर्ट्स (Reels)</a>
+      <a href="daily-darshan.html" class="block px-3 py-2.5 rounded-xl hover:bg-slate-100 font-bold text-sm">📸 दैनिक फोटो दर्शन</a>
+      <a href="panchang.html" class="block px-3 py-2.5 rounded-xl hover:bg-slate-100 font-bold text-sm">📅 आजचे पंचांग</a>
+      <a href="legal-links.html" class="block px-3 py-2.5 rounded-xl hover:bg-slate-100 font-bold text-sm">📜 नियम व गोपनीयता</a>
+    </div>
+  </div>
+
+  <main class="max-w-xl mx-auto p-3 sm:p-4 space-y-4">
+    <div id="profSkel" class="space-y-3">
+      <div class="h-44 rounded-3xl shimmer"></div>
+      <div class="h-24 rounded-2xl shimmer"></div>
+      <div class="h-52 rounded-2xl shimmer"></div>
+    </div>
+
+    <!-- 1. Guest Gateway -->
+    <section id="blkGate" class="hidden bg-white rounded-3xl border border-amber-200 shadow-sm p-5 space-y-4 text-center">
+      <div class="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-[#05344E] to-[#084160] text-amber-300 flex items-center justify-center text-3xl shadow-md border-2 border-amber-400">🙏</div>
+      <div>
+        <h2 class="text-xl font-extrabold text-[#05344E]">भाविक भक्त खाते</h2>
+        <p class="text-xs text-slate-600 mt-1">तुमचे आवडते दर्शन रील्स सेव्ह करण्यासाठी, मंदिरे फॉलो करण्यासाठी व भक्तीमय कमेंट्ससाठी साईन-अप किंवा लॉगिन करा.</p>
+      </div>
+      <div class="space-y-2.5">
+        <button id="goRegisterBtn" type="button" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#05344E] to-[#084160] text-amber-300 font-extrabold text-sm shadow-md">🆕 नवीन भक्त आहात? रजिस्टर करा →</button>
+        <button id="goLoginBtn" type="button" class="w-full py-3.5 rounded-2xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-[#05344E] font-extrabold text-sm">🔑 आधीच खाते आहे? लॉगिन करा →</button>
+      </div>
+    </section>
+
+    <!-- 2. Login / Registration Wizard -->
+    <section id="blkWizard" class="hidden space-y-4">
+      <div id="wizStep1" class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="bg-gradient-to-r from-[#031926] via-[#05344E] to-[#084160] text-white p-4 text-center border-b-2 border-amber-400">
+          <h2 id="authCardTitle" class="text-lg font-extrabold text-amber-300">🙏 भाविक भक्त साईन अप</h2>
+          <p class="text-xs text-slate-200 mt-0.5">१-टॅप गुगल किंवा ईमेलने सुरक्षित प्रवेश</p>
+        </div>
+        <div class="p-4 sm:p-5 space-y-3.5">
+          <div id="termsAgreeWrap" class="flex items-center gap-2.5 p-3 rounded-2xl bg-amber-50/80 border border-amber-200">
+            <input id="agreeTermsChk" type="checkbox" class="w-4 h-4 accent-[#05344E] shrink-0" />
+            <button id="openTermsBtn" type="button" class="text-left text-xs font-extrabold text-[#05344E] underline decoration-amber-500">📜 साइन-अप अटी आणि शर्ती वाचा व मान्य करा.</button>
+          </div>
+          <button id="googleAuthBtn" type="button" class="w-full py-3 rounded-2xl border-2 border-slate-200 hover:border-[#05344E] bg-white font-extrabold text-sm text-slate-800 flex items-center justify-center gap-2 shadow-sm transition">
+            <span>🔵</span><span>Google ने १-टॅप पुढे जा</span>
+          </button>
+          <div class="flex items-center gap-2 text-[11px] text-slate-400"><div class="flex-1 h-px bg-slate-200"></div><span>किंवा ईमेलने</span><div class="flex-1 h-px bg-slate-200"></div></div>
+          <div id="regNameWarn" class="text-[11px] bg-sky-50 border border-sky-200 text-sky-900 rounded-xl p-2.5 font-bold">ℹ️ टीप: नाव नंतर बदलता येणार नाही, त्यामुळे आपले खरे नाव नोंदवा.</div>
+          <input id="authEmail" type="email" placeholder="तुमचा ईमेल (उदा. bhakt@gmail.com)" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm" />
+          <input id="authPass" type="password" placeholder="पासवर्ड (किमान ६ अक्षरे)" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm" />
+          <div class="flex items-center justify-between gap-2">
+            <button id="forgotPassBtn" type="button" class="text-xs font-bold text-[#05344E] underline">पासवर्ड विसरलात? रिसेट लिंक पाठवा</button>
+            <button id="switchAuthModeBtn" type="button" class="text-xs font-bold text-amber-700 underline">लॉगिन करा</button>
+          </div>
+          <button id="emailAuthBtn" type="button" class="w-full py-3 rounded-2xl bg-[#05344E] text-amber-300 font-extrabold text-sm shadow-md">पुढे जा →</button>
+        </div>
+      </div>
+
+      <div id="wizStep2" class="hidden bg-white rounded-3xl border border-sky-200 shadow-sm p-4 sm:p-5 space-y-3">
+        <div class="text-sm font-extrabold text-[#05344E]">२. भक्ताची ओळख आणि पत्ता</div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">संपूर्ण नाव (एकदा सेव्ह झाल्यावर लॉक राहील) *</label>
+          <input id="regName" type="text" placeholder="उदा. श्रीराम कुलकर्णी" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">जन्मतारीख (वाढदिवस शुभेच्छांसाठी) *</label>
+            <input id="regDob" type="date" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">जिल्हा (महाराष्ट्र) *</label>
+            <select id="regDistrict" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white"></select>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">गाव / शहर</label>
+            <input id="regCity" type="text" placeholder="उदा. पंढरपूर" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">व्हॉट्सॲप नंबर (पूर्णपणे गोपनीय)</label>
+            <input id="regWhatsapp" type="tel" maxlength="10" placeholder="१० अंकी मोबाईल नंबर" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">१-ओळीची भक्ती ओळख (Bio)</label>
+          <input id="regBio" type="text" maxlength="80" placeholder="उदा. 🙏 जय हरी विठ्ठल! रोज सकाळी दर्शन." class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+        </div>
+        <button id="toStep3Btn" type="button" class="w-full py-3 rounded-2xl bg-[#05344E] text-amber-300 font-extrabold text-sm">पुढे जा →</button>
+      </div>
+
+      <div id="wizStep3" class="hidden bg-white rounded-3xl border border-amber-200 shadow-sm p-4 sm:p-5 space-y-3">
+        <div class="text-sm font-extrabold text-[#05344E]">३. भक्ती आवड व स्तोत्र निवड</div>
+        <div id="bhaktiChipsWrap" class="flex flex-wrap gap-2"></div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">आवडती आरती / स्तोत्र</label>
+          <select id="regAarti" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white">
+            <option value="युगे अठ्ठावीस विटेवरी उभा">🪔 युगे अठ्ठावीस विटेवरी उभा</option>
+            <option value="सुखकर्ता दुखहर्ता">🌺 सुखकर्ता दुखहर्ता (गणपती आरती)</option>
+            <option value="लवथवती विक्राळा">🔱 लवथवती विक्राळा (शंकर आरती)</option>
+            <option value="मनाचे श्लोक / हरिपाठ">📿 मनाचे श्लोक / हरिपाठ</option>
+            <option value="हनुमान चालीसा">🚩 हनुमान चालीसा</option>
+          </select>
+        </div>
+        <button id="toStep4Btn" type="button" class="w-full py-3 rounded-2xl bg-[#05344E] text-amber-300 font-extrabold text-sm">पुढे जा →</button>
+      </div>
+
+      <div id="wizStep4" class="hidden bg-white rounded-3xl border border-emerald-200 shadow-sm p-4 sm:p-5 space-y-3">
+        <div class="text-sm font-extrabold text-[#05344E]">४. तुमची आवडती मंदिरे फॉलो करा</div>
+        <div id="wizTemplesGrid" class="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto"></div>
+        <button id="finishRegBtn" type="button" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-extrabold text-sm shadow-md">✓ प्रोफाइल पूर्ण करा व व्हेरिफाइड व्हा</button>
+      </div>
+    </section>
+
+    <!-- 3. Signed-In Devotee Profile -->
+    <section id="blkProfile" class="hidden space-y-4">
+      <div id="welcomeBanner" class="hidden p-3.5 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-300 text-xs text-[#05344E] font-bold"></div>
+
+      <div class="bg-gradient-to-br from-[#FFFDF7] via-[#FFF8EB] to-[#FEF3C7]/40 rounded-3xl border border-amber-200 shadow-sm p-4 sm:p-5 space-y-4">
+        <div class="flex items-start gap-4">
+          <div class="relative shrink-0">
+            <img id="profAvatar" src="" alt="भक्त फोटो" class="w-24 h-24 rounded-full object-cover border-4 border-amber-400 shadow-md bg-white" />
+            <button id="editNoteBtn" type="button" class="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap px-2.5 py-0.5 rounded-full bg-white border border-amber-300 shadow text-[10px] font-extrabold text-[#05344E]">🙏 <span id="profNoteText">जय हरी विठ्ठल!</span></button>
+          </div>
+          <div class="min-w-0 flex-1 space-y-1.5">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <h2 id="profName" class="text-2xl font-extrabold text-[#05344E] leading-tight">भक्त</h2>
+              <button id="profBadgeBtn" type="button" class="inline-flex items-center justify-center shrink-0" title="दर्शनसेतू .लाईव्ह व्हेरिफाइड">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 1.5l2.2 1.9 2.9-.4 1.1 2.7 2.7 1.1-.4 2.9 1.9 2.3-1.9 2.3.4 2.9-2.7 1.1-1.1 2.7-2.9-.4-2.2 1.9-2.2-1.9-2.9.4-1.1-2.7-2.7-1.1.4-2.9-1.9-2.3 1.9-2.3-.4-2.9 2.7-1.1 1.1-2.7 2.9.4L12 1.5z" fill="url(#goldGrad)"/>
+                  <path d="M8.5 12.3l2.3 2.3 4.8-5" stroke="#031926" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+                  <defs><linearGradient id="goldGrad" x1="2" y1="2" x2="22" y2="22"><stop stop-color="#FDE68A"/><stop offset="0.5" stop-color="#F59E0B"/><stop offset="1" stop-color="#D97706"/></linearGradient></defs>
+                </svg>
+              </button>
+            </div>
+            <div id="profLoc" class="text-xs text-slate-600 font-bold">📍 महाराष्ट्र</div>
+            <div class="grid grid-cols-3 gap-1.5 pt-1">
+              <div class="bg-sky-50 border border-sky-200 rounded-xl py-1.5 px-1 text-center"><div id="statSaved" class="text-sm font-extrabold text-sky-900">0</div><div class="text-[10px] text-sky-700 font-bold">🔖 सेव्ह रील्स</div></div>
+              <div class="bg-amber-50 border border-amber-200 rounded-xl py-1.5 px-1 text-center"><div id="statFollowed" class="text-sm font-extrabold text-amber-900">0</div><div class="text-[10px] text-amber-700 font-bold">🛕 फॉलो मंदिरे</div></div>
+              <div class="bg-emerald-50 border border-emerald-200 rounded-xl py-1.5 px-1 text-center"><div id="statStreak" class="text-sm font-extrabold text-emerald-900">1</div><div class="text-[10px] text-emerald-700 font-bold">🔥 दर्शन दिवस</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="profBio" class="text-xs sm:text-sm text-slate-700 font-medium pt-1"></div>
+        <div id="profChips" class="flex flex-wrap gap-1.5"></div>
+        <div class="flex items-center justify-between gap-2 bg-white/90 border border-amber-200 rounded-2xl px-3 py-2 text-xs">
+          <span class="font-bold text-[#05344E] truncate">🪔 आवडती आरती: <span id="profAarti">युगे अठ्ठावीस</span></span>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button id="editProfBtn" type="button" class="flex-1 py-2.5 rounded-xl bg-[#05344E] text-amber-300 font-extrabold text-xs shadow-sm">✏️ माहिती बदला</button>
+          <button id="shareProfBtn" type="button" class="flex-1 py-2.5 rounded-xl bg-amber-100 text-[#05344E] border border-amber-300 font-extrabold text-xs">📤 शेअर करा</button>
+          <button id="gearMenuBtn" type="button" class="w-11 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-300 text-lg flex items-center justify-center" title="अधिक पर्याय">⚙️</button>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200 p-3.5 space-y-2">
+        <div class="text-xs font-extrabold text-[#05344E]">🛕 फॉलो केलेली मंदिरे (रील्स पहा)</div>
+        <div id="followedHighlights" class="flex items-center gap-3 overflow-x-auto no-scrollbar pb-1"></div>
+      </div>
+
+      <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
+        <div class="grid grid-cols-4 border-b border-slate-200 bg-slate-50 text-xs font-extrabold">
+          <button data-ptab="saved" class="ptab py-3 text-[#05344E] border-b-2 border-[#05344E] bg-white">🔖 सेव्ह</button>
+          <button data-ptab="likes" class="ptab py-3 text-slate-500">❤️ लाईक्स</button>
+          <button data-ptab="comments" class="ptab py-3 text-slate-500">💬 कमेंट्स</button>
+          <button data-ptab="alerts" class="ptab py-3 text-slate-500">🔔 सूचना</button>
+        </div>
+        <div id="profTabBody" class="p-3.5 min-h-[160px]"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="badgePopup" class="hidden fixed top-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-slate-900/90 backdrop-blur text-amber-300 border border-amber-400/60 text-xs font-extrabold shadow-xl">✓ दर्शनसेतू .लाईव्ह व्हेरिफाइड</div>
+
+  <div id="termsModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center">
+    <div class="w-full max-w-lg bg-white rounded-t-3xl sm:rounded-3xl p-5 space-y-3 max-h-[82vh] flex flex-col">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+        <h3 class="text-base font-extrabold text-[#05344E]">📜 साइन-अप अटी आणि शर्ती</h3>
+        <button id="closeTermsBtn" type="button" class="px-2.5 py-1 rounded-lg bg-slate-100 text-xs font-bold">✕</button>
+      </div>
+      <div id="termsBodyText" class="text-xs text-slate-700 leading-relaxed space-y-1.5 overflow-y-auto flex-1 whitespace-pre-line"></div>
+      <button id="acceptTermsBtn" type="button" class="w-full py-3 rounded-2xl bg-emerald-600 text-white font-extrabold text-sm">✅ मला सर्व अटी व शर्ती मान्य आहेत</button>
+    </div>
+  </div>
+
+  <div id="gearModal" class="hidden fixed inset-0 z-50 bg-black/55 backdrop-blur-sm flex items-end justify-center">
+    <div class="w-full max-w-lg bg-white rounded-t-3xl p-5 space-y-2.5">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+        <span class="font-extrabold text-[#05344E] text-sm">⚙️ प्रोफाइल सेटिंग्ज व मदत</span>
+        <button id="closeGearBtn" type="button" class="px-2.5 py-1 rounded-lg bg-slate-100 text-xs font-bold">✕</button>
+      </div>
+      <div id="gearMenuItemsWrap" class="space-y-2"></div>
+    </div>
+  </div>
+
+  <div id="reportModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center">
+    <div class="w-full max-w-lg bg-white rounded-t-3xl sm:rounded-3xl p-5 space-y-3 max-h-[88vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+        <h3 class="text-base font-extrabold text-[#05344E]">⚠️ अडचण / तक्रार नोंदवा</h3>
+        <button id="closeReportBtn" type="button" class="px-2.5 py-1 rounded-lg bg-slate-100 text-xs font-bold">✕</button>
+      </div>
+      <div id="reportReelContext" class="hidden text-xs bg-amber-50 border border-amber-200 rounded-xl p-2.5 font-bold text-[#05344E]"></div>
+      <div class="flex flex-wrap gap-1.5" id="reportTypeChips"></div>
+      <textarea id="reportDetailsInp" rows="3" placeholder="तुमची अडचण किंवा सूचना सविस्तर लिहा..." class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs"></textarea>
+      <button id="submitReportBtn" type="button" class="w-full py-3 rounded-2xl bg-[#05344E] text-amber-300 font-extrabold text-sm">📩 दर्शन सेतू टीमकडे पाठवा</button>
+      <div class="border-t border-slate-200 pt-3 space-y-2">
+        <div class="text-xs font-extrabold text-slate-700">माझ्या मागील तक्रारी व दर्शन सेतू टीमचे उत्तर</div>
+        <div id="myReportsList" class="space-y-2 text-xs"></div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="bnav">
+    <a href="index.html" class="bnav-item">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 01-1 1h-4.5v-5.5h-5V21H5a1 1 0 01-1-1v-9.5z" fill="#FCD34D" fill-opacity="0.22" stroke="currentColor" stroke-width="1.9"/></svg>
+      <span>मुख्य पान</span>
+    </a>
+    <a href="panchang.html" class="bnav-item">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="#FCD34D" fill-opacity="0.22" stroke="currentColor" stroke-width="1.9"/><path d="M8 3v4M16 3v4M3.5 9.5h17" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
+      <span>पंचांग</span>
+    </a>
+    <a href="reels.html?search=1" class="bnav-item">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.5" fill="#FCD34D" fill-opacity="0.22" stroke="currentColor" stroke-width="1.9"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/></svg>
+      <span>शोधा</span>
+    </a>
+    <button id="navAlertsBtn" type="button" class="bnav-item bg-transparent border-0">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 9a6 6 0 1112 0c0 4.5 2 6 2 6H4s2-1.5 2-6z" fill="#FCD34D" fill-opacity="0.22" stroke="currentColor" stroke-width="1.9"/><path d="M10 19a2 2 0 004 0" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
+      <span>सूचना</span>
+    </button>
+    <a href="profile.html" class="bnav-item active">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8.5" r="3.8" fill="#FCD34D" fill-opacity="0.35" stroke="currentColor" stroke-width="1.9"/><path d="M4.5 20c1-4 4-6 7.5-6s6.5 2 7.5 6" fill="#FCD34D" fill-opacity="0.22" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
+      <span>प्रोफाइल</span>
+    </a>
+  </nav>
+
+  <script>
+    const FIREBASE_CONFIG = {
+      apiKey: 'AIzaSyCI1oILspru4DCLuUQvNohtKArFVVMy4Xc',
+      authDomain: 'livedarshan-204ed.firebaseapp.com',
+      databaseURL: 'https://livedarshan-204ed-default-rtdb.asia-southeast1.firebasedatabase.app',
+      projectId: 'livedarshan-204ed',
+      storageBucket: 'livedarshan-204ed.firebasestorage.app',
+      messagingSenderId: '76847755872',
+      appId: '1:76847755872:web:5de22983493926bb8bc905'
+    };
+    if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+    const fbAuth = firebase.auth();
+    const fbDb = firebase.database();
+
+    const DISTRICTS = ['अहिल्यानगर (अहमदनगर)','अकोला','अमरावती','छत्रपती संभाजीनगर','बीड','भंडारा','बुलढाणा','चंद्रपूर','धुळे','गडचिरोली','गोंदिया','हिंगोली','जळगाव','जालना','कोल्हापूर','लातूर','मुंबई शहर','मुंबई उपनगर','नागपूर','नांदेड','नंदुरबार','नाशिक','धाराशिव (उस्मानाबाद)','पालघर','परभणी','पुणे','रायगड','रत्नागिरी','सांगली','सातारा','सिंधुदुर्ग','सोलापूर','ठाणे','वर्धा','वाशिम','यवतमाळ'];
+    const BHAKTI_CHIPS = ['🚩 वारकरी संप्रदाय','🔱 शिवभक्त','🌺 गणेशभक्त','🙏 दत्तभक्त','🪔 देवीभक्त','📿 रामभक्त','✨ श्री स्वामी समर्थ','🦚 कृष्णभक्त'];
+    const REPORT_ISSUES = ['ऑडिओ वाजत नाही','फोटो/व्हिडिओ लोड होत नाही','चुकीचे मंदिर नाव','कमेंट समस्या','खाते/लॉगिन अडचण','इतर तक्रार'];
+
+    let authMode = 'register';
+    let currentUser = null;
+    let userProfile = null;
+    let shortsCfg = null;
+    let templesMap = {};
+    let selectedChips = [];
+    let selectedTemples = {};
+    let selectedReportIssue = REPORT_ISSUES[0];
+    let activePTab = 'saved';
+    let isEditingProfile = false;
+    const urlParams = new URLSearchParams(location.search);
+
+    document.getElementById('menuBtn').onclick = () => document.getElementById('navDrawer').classList.remove('hidden');
+    document.getElementById('closeDrawerBtn').onclick = () => document.getElementById('navDrawer').classList.add('hidden');
+    document.getElementById('regDistrict').innerHTML = DISTRICTS.map(d => `<option value="${d}">${d}</option>`).join('');
+    document.getElementById('bhaktiChipsWrap').innerHTML = BHAKTI_CHIPS.map(c => `<button type="button" onclick="toggleBhaktiChip(this,'${c}')" class="px-2.5 py-1.5 rounded-full border border-slate-300 bg-slate-50 text-xs font-bold">${c}</button>`).join('');
+    document.getElementById('reportTypeChips').innerHTML = REPORT_ISSUES.map((r, i) => `<button type="button" onclick="pickReportIssue(this,'${r}')" class="px-2.5 py-1.5 rounded-full border text-xs font-bold ${i===0?'bg-[#05344E] text-amber-300 border-[#05344E]':'bg-slate-50 text-slate-700 border-slate-300'}">${r}</button>`).join('');
+
+    window.toggleBhaktiChip = (btn, val) => {
+      const idx = selectedChips.indexOf(val);
+      if (idx === -1) { selectedChips.push(val); btn.className = 'px-2.5 py-1.5 rounded-full border border-[#05344E] bg-[#05344E] text-amber-300 text-xs font-bold'; }
+      else { selectedChips.splice(idx, 1); btn.className = 'px-2.5 py-1.5 rounded-full border border-slate-300 bg-slate-50 text-xs font-bold'; }
+    };
+    window.pickReportIssue = (btn, val) => {
+      selectedReportIssue = val;
+      document.querySelectorAll('#reportTypeChips button').forEach(b => b.className = 'px-2.5 py-1.5 rounded-full border bg-slate-50 text-slate-700 border-slate-300 text-xs font-bold');
+      btn.className = 'px-2.5 py-1.5 rounded-full border bg-[#05344E] text-amber-300 border-[#05344E] text-xs font-bold';
+    };
+
+    async function boot() {
+      const [cfgSnap, tSnap] = await Promise.all([
+        fbDb.ref('siteConfig/shortsConfig').once('value'),
+        fbDb.ref('temples').once('value')
+      ]);
+      shortsCfg = cfgSnap.val() || {};
+      templesMap = tSnap.val() || {};
+      const termsTxt = (shortsCfg.moderation && shortsCfg.moderation.termsText) || '१. ही सेवा पूर्णपणे निःशुल्क आहे.\n२. खरे नाव नोंदवा (नंतर बदलता येणार नाही).\n३. मोबाईल नंबर गोपनीय राहील.';
+      document.getElementById('termsBodyText').textContent = termsTxt;
+      renderWizTemples();
+
+      fbAuth.onAuthStateChanged(async (user) => {
+        currentUser = user;
+        document.getElementById('profSkel').classList.add('hidden');
+        if (!user) {
+          document.getElementById('blkProfile').classList.add('hidden');
+          document.getElementById('blkWizard').classList.add('hidden');
+          document.getElementById('blkGate').classList.remove('hidden');
+          return;
+        }
+        const uSnap = await fbDb.ref(`shortsUsers/${user.uid}`).once('value');
+        userProfile = uSnap.val();
+        if (!userProfile || !userProfile.dob) {
+          document.getElementById('blkGate').classList.add('hidden');
+          document.getElementById('blkProfile').classList.add('hidden');
+          document.getElementById('blkWizard').classList.remove('hidden');
+          document.getElementById('wizStep1').classList.add('hidden');
+          document.getElementById('wizStep2').classList.remove('hidden');
+          if (user.displayName) {
+            document.getElementById('regName').value = user.displayName;
+            document.getElementById('regName').readOnly = true;
+          }
+        } else {
+          showProfile(false);
+        }
+      });
+    }
+
+    function renderWizTemples() {
+      const grid = document.getElementById('wizTemplesGrid');
+      grid.innerHTML = Object.entries(templesMap).slice(0, 14).map(([id, t]) => `
+        <button type="button" onclick="toggleWizTemple(this,'${id}')" class="p-2.5 rounded-2xl border border-slate-200 bg-slate-50 text-left text-xs font-bold flex items-center gap-2">
+          <span>🛕</span><span class="truncate">${t.name || t.title || id}</span>
+        </button>`).join('');
+    }
+    window.toggleWizTemple = (btn, id) => {
+      if (selectedTemples[id]) { delete selectedTemples[id]; btn.classList.remove('border-emerald-500','bg-emerald-50'); }
+      else { selectedTemples[id] = true; btn.classList.add('border-emerald-500','bg-emerald-50'); }
+    };
+
+    function setAuthMode(m) {
+      authMode = m;
+      const isReg = m === 'register';
+      document.getElementById('authCardTitle').textContent = isReg ? '🙏 भाविक भक्त साईन अप' : '🔑 भाविक भक्त लॉगिन';
+      document.getElementById('termsAgreeWrap').classList.toggle('hidden', !isReg);
+      document.getElementById('regNameWarn').classList.toggle('hidden', !isReg);
+      document.getElementById('switchAuthModeBtn').textContent = isReg ? 'आधीच खाते आहे? लॉगिन करा' : 'नवीन भक्त? रजिस्टर करा';
+      document.getElementById('emailAuthBtn').textContent = isReg ? 'ईमेलने साईन अप करा →' : 'लॉगिन करा →';
+    }
+    document.getElementById('goRegisterBtn').onclick = () => {
+      setAuthMode('register');
+      document.getElementById('blkGate').classList.add('hidden');
+      document.getElementById('blkWizard').classList.remove('hidden');
+      document.getElementById('wizStep1').classList.remove('hidden');
+    };
+    document.getElementById('goLoginBtn').onclick = () => {
+      setAuthMode('login');
+      document.getElementById('blkGate').classList.add('hidden');
+      document.getElementById('blkWizard').classList.remove('hidden');
+      document.getElementById('wizStep1').classList.remove('hidden');
+    };
+    document.getElementById('switchAuthModeBtn').onclick = () => setAuthMode(authMode === 'register' ? 'login' : 'register');
+
+    document.getElementById('openTermsBtn').onclick = () => document.getElementById('termsModal').classList.remove('hidden');
+    document.getElementById('closeTermsBtn').onclick = () => document.getElementById('termsModal').classList.add('hidden');
+    document.getElementById('acceptTermsBtn').onclick = () => {
+      document.getElementById('agreeTermsChk').checked = true;
+      document.getElementById('termsModal').classList.add('hidden');
+    };
+
+    function checkTermsIfReg() {
+      if (authMode === 'register' && !document.getElementById('agreeTermsChk').checked) {
+        alert('कृपया आधी साइन-अप अटी आणि शर्ती वाचा व मान्य करा.');
+        return false;
+      }
+      return true;
+    }
+
+    document.getElementById('googleAuthBtn').onclick = async () => {
+      if (!checkTermsIfReg()) return;
+      try {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        await fbAuth.signInWithPopup(provider);
+      } catch (e) { alert('Google लॉगिन त्रुटी: ' + e.message); }
+    };
+
+    document.getElementById('emailAuthBtn').onclick = async () => {
+      if (!checkTermsIfReg()) return;
+      const email = document.getElementById('authEmail').value.trim();
+      const pass = document.getElementById('authPass').value;
+      if (!email || pass.length < 6) return alert('योग्य ईमेल आणि किमान ६ अक्षरी पासवर्ड टाका.');
+      try {
+        if (authMode === 'register') {
+          const cred = await fbAuth.createUserWithEmailAndPassword(email, pass);
+          try { await cred.user.sendEmailVerification(); } catch(_) {}
+          alert('तुमच्या ईमेलवर पडताळणी लिंक पाठवली आहे. आता प्रोफाइल माहिती भरा.');
+        } else {
+          await fbAuth.signInWithEmailAndPassword(email, pass);
+        }
+      } catch (e) { alert('लॉगिन/साईन-अप त्रुटी: ' + e.message); }
+    };
+
+    document.getElementById('forgotPassBtn').onclick = async () => {
+      const email = document.getElementById('authEmail').value.trim();
+      if (!email) return alert('कृपया वर तुमचा ईमेल लिहा, मग रिसेट लिंक पाठवली जाईल.');
+      try {
+        await fbAuth.sendPasswordResetEmail(email);
+        alert('तुमच्या ईमेलवर पासवर्ड रिसेट लिंक पाठवली आहे.');
+      } catch (e) { alert(e.message); }
+    };
+
+    document.getElementById('toStep3Btn').onclick = () => {
+      const nm = document.getElementById('regName').value.trim();
+      const dob = document.getElementById('regDob').value;
+      if (!nm || !dob) return alert('कृपया संपूर्ण नाव आणि जन्मतारीख भरा.');
+      document.getElementById('wizStep2').classList.add('hidden');
+      document.getElementById('wizStep3').classList.remove('hidden');
+    };
+    document.getElementById('toStep4Btn').onclick = () => {
+      if (isEditingProfile) { saveEditedProfile(); return; }
+      document.getElementById('wizStep3').classList.add('hidden');
+      document.getElementById('wizStep4').classList.remove('hidden');
+    };
+    document.getElementById('finishRegBtn').onclick = async () => {
+      if (!currentUser) return;
+      const payload = {
+        uid: currentUser.uid,
+        name: document.getElementById('regName').value.trim(),
+        nameLocked: true,
+        email: currentUser.email || '',
+        photoURL: currentUser.photoURL || 'icon-192.png',
+        dob: document.getElementById('regDob').value,
+        district: document.getElementById('regDistrict').value,
+        city: document.getElementById('regCity').value.trim(),
+        whatsapp: document.getElementById('regWhatsapp').value.trim(),
+        bio: document.getElementById('regBio').value.trim() || '🙏 जय हरी विठ्ठल!',
+        bhaktiIdentity: selectedChips,
+        favAarti: document.getElementById('regAarti').value,
+        followedTemples: selectedTemples,
+        statusNote: 'जय हरी विठ्ठल!',
+        warningCount: 0,
+        blocked: false,
+        streakDays: 1,
+        createdAt: Date.now()
+      };
+      await fbDb.ref(`shortsUsers/${currentUser.uid}`).set(payload);
+      userProfile = payload;
+      showProfile(true);
+    };
+
+    async function saveEditedProfile() {
+      const upd = {
+        dob: document.getElementById('regDob').value,
+        district: document.getElementById('regDistrict').value,
+        city: document.getElementById('regCity').value.trim(),
+        whatsapp: document.getElementById('regWhatsapp').value.trim(),
+        bio: document.getElementById('regBio').value.trim(),
+        bhaktiIdentity: selectedChips,
+        favAarti: document.getElementById('regAarti').value
+      };
+      await fbDb.ref(`shortsUsers/${currentUser.uid}`).update(upd);
+      userProfile = { ...userProfile, ...upd };
+      isEditingProfile = false;
+      document.getElementById('wizStep3').classList.add('hidden');
+      document.getElementById('blkWizard').classList.add('hidden');
+      showProfile(false);
+    }
+
+    async function showProfile(isNew) {
+      document.getElementById('blkGate').classList.add('hidden');
+      document.getElementById('blkWizard').classList.add('hidden');
+      document.getElementById('blkProfile').classList.remove('hidden');
+
+      const wb = document.getElementById('welcomeBanner');
+      if (isNew) {
+        wb.innerHTML = '🙏 अभिनंदन, आपण व्हेरिफाइड भक्त झालात. आता अनलिमिटेड रील्स सेव्ह, आवडती मंदिरे फॉलो व भक्तीमय कमेंट्सचा आनंद घ्या!';
+        wb.classList.remove('hidden');
+      } else if (authMode === 'login') {
+        wb.innerHTML = '🙏 नमस्कार, आपले पुन्हा दर्शन शॉर्ट्स मध्ये स्वागत आहे!';
+        wb.classList.remove('hidden');
+      }
+
+      document.getElementById('profAvatar').src = userProfile.photoURL || 'icon-192.png';
+      document.getElementById('profName').textContent = userProfile.name || 'भक्त';
+      document.getElementById('profNoteText').textContent = userProfile.statusNote || 'जय हरी विठ्ठल!';
+      document.getElementById('profLoc').textContent = `📍 ${userProfile.city ? userProfile.city + ', ' : ''}${userProfile.district || 'महाराष्ट्र'}`;
+      document.getElementById('profBio').textContent = userProfile.bio || '';
+      document.getElementById('profAarti').textContent = userProfile.favAarti || 'युगे अठ्ठावीस विटेवरी उभा';
+      document.getElementById('profChips').innerHTML = (userProfile.bhaktiIdentity || []).map(c => `<span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[11px] font-bold">${c}</span>`).join('');
+
+      const [savedSnap, likesSnap] = await Promise.all([
+        fbDb.ref(`shortsUserSaved/${currentUser.uid}`).once('value'),
+        fbDb.ref(`shortsUserLikes/${currentUser.uid}`).once('value')
+      ]);
+      const savedObj = savedSnap.val() || {};
+      const likesObj = likesSnap.val() || {};
+      const folObj = userProfile.followedTemples || {};
+
+      document.getElementById('statSaved').textContent = Object.keys(savedObj).length;
+      document.getElementById('statFollowed').textContent = Object.keys(folObj).length;
+      document.getElementById('statStreak').textContent = userProfile.streakDays || 1;
+
+      const fWrap = document.getElementById('followedHighlights');
+      const folKeys = Object.keys(folObj);
+      fWrap.innerHTML = folKeys.length ? folKeys.map(tid => {
+        const t = templesMap[tid] || {};
+        return `<a href="reels.html?temple=${tid}" class="shrink-0 flex flex-col items-center gap-1 w-[72px] text-center">
+          <div class="w-[68px] h-[68px] rounded-full p-0.5 bg-gradient-to-tr from-amber-400 to-orange-500"><img src="${t.image || t.photo || 'icon-192.png'}" class="w-full h-full rounded-full object-cover bg-white border-2 border-white"/></div>
+          <span class="text-[10px] font-bold text-slate-700 truncate w-full">${t.name || tid}</span>
+        </a>`;
+      }).join('') : '<div class="text-xs text-slate-400 py-2">अद्याप कोणतेही मंदिर फॉलो केलेले नाही — रील्सवर फॉलो करा!</div>';
+
+      renderGearMenu();
+      renderPTab(activePTab, savedObj, likesObj);
+      if (urlParams.get('tab') === 'report') openReportModal();
+    }
+
+    document.getElementById('profBadgeBtn').onclick = () => {
+      const p = document.getElementById('badgePopup');
+      p.textContent = '✓ ' + ((shortsCfg.ui && shortsCfg.ui.badgeText) || 'दर्शनसेतू .लाईव्ह व्हेरिफाइड');
+      p.classList.remove('hidden');
+      setTimeout(() => p.classList.add('hidden'), 2500);
+    };
+
+    document.getElementById('editNoteBtn').onclick = async () => {
+      const nv = prompt('तुमची आजची भक्ती स्टेटस टीप लिहा (उदा. 🙏 जय हरी विठ्ठल!):', userProfile.statusNote || '');
+      if (nv && nv.trim()) {
+        await fbDb.ref(`shortsUsers/${currentUser.uid}/statusNote`).set(nv.trim().slice(0, 30));
+        userProfile.statusNote = nv.trim().slice(0, 30);
+        document.getElementById('profNoteText').textContent = userProfile.statusNote;
+      }
+    };
+
+    document.getElementById('editProfBtn').onclick = () => {
+      isEditingProfile = true;
+      document.getElementById('blkProfile').classList.add('hidden');
+      document.getElementById('blkWizard').classList.remove('hidden');
+      document.getElementById('wizStep1').classList.add('hidden');
+      document.getElementById('wizStep2').classList.remove('hidden');
+      document.getElementById('regName').value = userProfile.name || '';
+      document.getElementById('regName').readOnly = true;
+      document.getElementById('regDob').value = userProfile.dob || '';
+      document.getElementById('regDistrict').value = userProfile.district || DISTRICTS[0];
+      document.getElementById('regCity').value = userProfile.city || '';
+      document.getElementById('regWhatsapp').value = userProfile.whatsapp || '';
+      document.getElementById('regBio').value = userProfile.bio || '';
+      selectedChips = [...(userProfile.bhaktiIdentity || [])];
+    };
+
+    document.getElementById('shareProfBtn').onclick = () => {
+      const txt = `🙏 माझे दर्शन सेतू भक्ती प्रोफाइल पहा: ${location.href}`;
+      if (navigator.share) navigator.share({ title: 'दर्शन सेतू भक्ती प्रोफाइल', text: txt, url: location.href });
+      else window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank');
+    };
+
+    function renderGearMenu() {
+      const items = (shortsCfg.menus && shortsCfg.menus.profileGearMenu) || [
+        { label: '⚠️ अडचण / तक्रार नोंदवा', url: 'profile.html?tab=report' },
+        { label: '📜 नियम व गोपनीयता', url: 'legal-links.html' },
+        { label: '🚪 लॉग-आऊट करा', url: 'action:logout' }
+      ];
+      document.getElementById('gearMenuItemsWrap').innerHTML = items.map(it => {
+        if ((it.url || '').includes('report')) return `<button type="button" onclick="openReportModal()" class="w-full text-left px-4 py-3 rounded-2xl bg-amber-50 hover:bg-amber-100 text-[#05344E] font-extrabold text-sm">${it.label}</button>`;
+        if (it.url === 'action:logout') return `<button type="button" onclick="doLogout()" class="w-full text-left px-4 py-3 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-extrabold text-sm">${it.label}</button>`;
+        return `<a href="${it.url || '#'}" class="block px-4 py-3 rounded-2xl bg-slate-50 hover:bg-slate-100 text-slate-800 font-bold text-sm">${it.label}</a>`;
+      }).join('');
+    }
+    document.getElementById('gearMenuBtn').onclick = () => document.getElementById('gearModal').classList.remove('hidden');
+    document.getElementById('closeGearBtn').onclick = () => document.getElementById('gearModal').classList.add('hidden');
+    window.doLogout = async () => { await fbAuth.signOut(); document.getElementById('gearModal').classList.add('hidden'); };
+
+    document.querySelectorAll('.ptab').forEach(btn => {
+      btn.onclick = async () => {
+        activePTab = btn.dataset.ptab;
+        document.querySelectorAll('.ptab').forEach(b => b.className = 'ptab py-3 text-slate-500');
+        btn.className = 'ptab py-3 text-[#05344E] border-b-2 border-[#05344E] bg-white';
+        const [savedSnap, likesSnap] = await Promise.all([
+          fbDb.ref(`shortsUserSaved/${currentUser.uid}`).once('value'),
+          fbDb.ref(`shortsUserLikes/${currentUser.uid}`).once('value')
+        ]);
+        renderPTab(activePTab, savedSnap.val() || {}, likesSnap.val() || {});
+      };
+    });
+    document.getElementById('navAlertsBtn').onclick = () => {
+      const alBtn = document.querySelector('[data-ptab="alerts"]');
+      if (alBtn) alBtn.click();
+    };
+
+    async function renderPTab(tab, savedObj, likesObj) {
+      const box = document.getElementById('profTabBody');
+      if (tab === 'saved' || tab === 'likes') {
+        const obj = tab === 'saved' ? savedObj : likesObj;
+        const keys = Object.keys(obj);
+        if (!keys.length) { box.innerHTML = `<div class="text-xs text-slate-400 text-center py-6">अद्याप कोणतेही रील्स ${tab==='saved'?'सेव्ह':'लाईक'} केलेले नाहीत.</div>`; return; }
+        box.innerHTML = `<div class="grid grid-cols-3 gap-2">${keys.map(id => {
+          const it = obj[id] || {};
+          return `<a href="reels.html?reel=${id}" class="relative aspect-[9/14] rounded-xl overflow-hidden bg-slate-900 border border-slate-200 block">
+            <img src="${it.thumb || 'icon-192.png'}" class="w-full h-full object-cover"/>
+            <div class="absolute inset-x-0 bottom-0 p-1.5 bg-gradient-to-t from-black/80 text-white text-[10px] font-bold truncate">${it.templeName || 'दर्शन'}</div>
+          </a>`;
+        }).join('')}</div>`;
+      } else if (tab === 'comments') {
+        const cSnap = await fbDb.ref(`shortsUserComments/${currentUser.uid}`).limitToLast(20).once('value');
+        const cs = Object.values(cSnap.val() || {}).reverse();
+        box.innerHTML = cs.length ? cs.map(c => `<div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 mb-2 text-xs"><div class="font-bold text-[#05344E]">${c.reelTitle || 'दर्शन रील'}</div><div class="text-slate-700 mt-0.5">${c.text}</div></div>`).join('') : '<div class="text-xs text-slate-400 text-center py-6">अद्याप कोणत्याही कमेंट्स नाहीत.</div>';
+      } else if (tab === 'alerts') {
+        const bSnap = await fbDb.ref('shortsBroadcasts').limitToLast(25).once('value');
+        const list = Object.values(bSnap.val() || {}).filter(b => b.targetUid === 'all' || b.targetUid === currentUser.uid).reverse();
+        box.innerHTML = list.length ? list.map(b => `<div class="p-3 rounded-2xl bg-amber-50/70 border border-amber-200 mb-2 text-xs"><div class="font-extrabold text-[#05344E]">🔔 ${b.title}</div><div class="text-slate-700 mt-1">${b.body}</div></div>`).join('') : '<div class="text-xs text-slate-400 text-center py-6">कोणतीही नवीन सूचना नाही.</div>';
+      }
+    }
+
+    window.openReportModal = async () => {
+      document.getElementById('gearModal').classList.add('hidden');
+      document.getElementById('reportModal').classList.remove('hidden');
+      const rTitle = urlParams.get('reelTitle');
+      const ctxEl = document.getElementById('reportReelContext');
+      if (rTitle) { ctxEl.textContent = '🎬 संबंधित रील: ' + rTitle; ctxEl.classList.remove('hidden'); }
+      const snap = await fbDb.ref('shortsReports').orderByChild('uid').equalTo(currentUser.uid).once('value');
+      const mine = Object.values(snap.val() || {}).reverse();
+      document.getElementById('myReportsList').innerHTML = mine.length ? mine.map(r => `
+        <div class="p-2.5 rounded-xl border ${r.status==='resolved'?'border-emerald-200 bg-emerald-50/40':'border-amber-200 bg-amber-50/50'}">
+          <div class="flex justify-between font-bold"><span>${r.issueType}</span><span>${r.status==='resolved'?'✓ निराकरण झाले':'⏳ प्रलंबित'}</span></div>
+          <div class="text-slate-600 mt-0.5">${r.details}</div>
+          ${r.adminReply ? `<div class="mt-1.5 p-2 rounded-lg bg-white border border-emerald-200 text-[#05344E] font-bold">🛡️ दर्शन सेतू टीम: ${r.adminReply}</div>` : ''}
+        </div>`).join('') : '<div class="text-slate-400">कोणतीही मागील तक्रार नाही.</div>';
+    };
+    document.getElementById('closeReportBtn').onclick = () => document.getElementById('reportModal').classList.add('hidden');
+    document.getElementById('submitReportBtn').onclick = async () => {
+      const details = document.getElementById('reportDetailsInp').value.trim();
+      if (!details) return alert('कृपया तुमची अडचण लिहा.');
+      await fbDb.ref('shortsReports').push({
+        uid: currentUser.uid,
+        userName: userProfile.name || 'भक्त',
+        reelId: urlParams.get('reelId') || '',
+        reelTitle: urlParams.get('reelTitle') || '',
+        issueType: selectedReportIssue,
+        details,
+        status: 'pending',
+        createdAt: Date.now()
+      });
+      document.getElementById('reportDetailsInp').value = '';
+      alert('तुमची तक्रार दर्शन सेतू टीमकडे पाठवली आहे!');
+      openReportModal();
+    };
+
+    boot();
+  </script>
+</body>
+</html>

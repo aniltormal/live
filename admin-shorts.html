@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎬 दर्शन शॉर्ट्स — लाईव्ह दर्शन अ‍ॅडमिन</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Khand:wght@500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+  <style>
+    .chip-on { background: #05344E; color: #FCD34D; border-color: #05344E; }
+    .chip-off { background: #f8fafc; color: #334155; border-color: #cbd5e1; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+  <header id="adminTopHeader"></header>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6 pb-24">
+    <!-- Auth / Skeleton Gate -->
+    <div id="authGateMsg" class="w-full space-y-4">
+      <div class="h-20 w-full rounded-2xl admin-skel border border-slate-200/70"></div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="h-24 rounded-2xl admin-skel border border-slate-200/70"></div>
+        <div class="h-24 rounded-2xl admin-skel border border-slate-200/70"></div>
+        <div class="h-24 rounded-2xl admin-skel border border-slate-200/70"></div>
+      </div>
+      <div class="h-28 w-full rounded-2xl admin-skel border border-slate-200/70"></div>
+      <div class="h-28 w-full rounded-2xl admin-skel border border-slate-200/70"></div>
+    </div>
+
+    <div id="pageContent" class="hidden space-y-4 fade-in-up">
+      <!-- Top KPI Strip + Quick Open Reels Admin Mode -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div class="bg-gradient-to-br from-[#05344E] to-[#084160] text-white rounded-2xl p-4 shadow-sm border border-amber-400/50 flex items-center justify-between">
+          <div>
+            <div class="text-xs text-amber-200 font-bold">नोंदणीकृत भक्त</div>
+            <div id="kpiUsers" class="text-2xl font-extrabold text-white mt-0.5">—</div>
+          </div>
+          <div class="text-3xl">🙏</div>
+        </div>
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-amber-200 flex items-center justify-between">
+          <div>
+            <div class="text-xs text-slate-500 font-bold">प्रलंबित तक्रारी</div>
+            <div id="kpiReports" class="text-2xl font-extrabold text-amber-600 mt-0.5">—</div>
+          </div>
+          <div class="text-3xl">⚠️</div>
+        </div>
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-emerald-200 flex items-center justify-between gap-2">
+          <div>
+            <div class="text-xs text-slate-500 font-bold">Admin-on-Reels मोड</div>
+            <a href="reels.html?admin=1" target="_blank" class="inline-flex items-center gap-1.5 mt-1 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-sm transition">🛡️ रील्स फीडवर उघडा →</a>
+          </div>
+          <div class="text-3xl">🎬</div>
+        </div>
+      </div>
+
+      <!-- १. ऑडिओ आणि प्लेबॅक सेटिंग्ज -->
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 space-y-4">
+        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">१. ऑडिओ आणि प्लेबॅक सेटिंग्ज (मंदिरनिहाय १० MP3)</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs text-slate-600 mb-1">रील कालावधी (सेकंद)</label>
+            <select id="cfgDuration" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white">
+              <option value="8">८ सेकंद</option>
+              <option value="10">१० सेकंद (डिफॉल्ट)</option>
+              <option value="12">१२ सेकंद</option>
+            </select>
+          </div>
+          <label class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer">
+            <input id="cfgRandomAudio" type="checkbox" class="w-4 h-4 accent-[#05344E]" />
+            <span class="text-xs sm:text-sm text-slate-800">प्रत्येक वेळी रँडम भक्ती ऑडिओ वाजवा</span>
+          </label>
+          <label class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer">
+            <input id="cfgAutoScroll" type="checkbox" class="w-4 h-4 accent-[#05344E]" />
+            <span class="text-xs sm:text-sm text-slate-800">कालावधी संपल्यावर ऑटो-स्क्रोल करा</span>
+          </label>
+        </div>
+        <div class="border-t border-slate-100 pt-3 space-y-2.5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <label class="text-xs font-bold text-[#05344E]">मंदिर निवडा (GitHub `darshansetu-audio` MP3 लिंक - कमाल १०)</label>
+            <select id="audioTempleSelect" class="rounded-xl border border-slate-300 px-3 py-1.5 text-xs bg-white min-w-[220px]"></select>
+          </div>
+          <div id="templeTracksList" class="space-y-2"></div>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <input id="newTrackTitle" type="text" placeholder="आरती / भजन नाव (उदा. श्री विठ्ठल आरती)" class="flex-1 rounded-xl border border-slate-300 px-3 py-2 text-xs" />
+            <input id="newTrackUrl" type="url" placeholder="https://raw.githubusercontent.com/.../darshansetu-audio/main/track.mp3" class="flex-[2] rounded-xl border border-slate-300 px-3 py-2 text-xs" />
+            <button id="addTrackBtn" type="button" class="px-4 py-2 rounded-xl bg-[#05344E] text-amber-300 text-xs font-extrabold hover:bg-[#084160] transition">+ ऑडिओ जोडा</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- २. फीड आणि कंटेंट कंट्रोल -->
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 space-y-4">
+        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">२. फीड आणि कंटेंट कंट्रोल</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+          <div>
+            <label class="block text-xs text-slate-600 mb-1">रील्स दाखवण्याची मर्यादा</label>
+            <select id="cfgDaysLimit" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white">
+              <option value="7">मागील ७ दिवस</option>
+              <option value="15">मागील १५ दिवस</option>
+              <option value="30">मागील ३० दिवस</option>
+            </select>
+          </div>
+          <label class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer">
+            <input id="cfgFreshOnTop" type="checkbox" class="w-4 h-4 accent-[#05344E]" />
+            <span class="text-xs sm:text-sm">आजचे ताजे फोटो सर्वात वर</span>
+          </label>
+          <label class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer">
+            <input id="cfgSmartShuffle" type="checkbox" class="w-4 h-4 accent-[#05344E]" />
+            <span class="text-xs sm:text-sm">जुन्या फोटोंचे स्मार्ट शफल</span>
+          </label>
+          <label class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer">
+            <input id="cfgSyncHidden" type="checkbox" class="w-4 h-4 accent-[#05344E]" />
+            <span class="text-xs sm:text-sm">लपवलेली मंदिरे सिंक करा</span>
+          </label>
+        </div>
+        <div id="hiddenReelsWrap" class="text-xs text-slate-600 bg-slate-50 rounded-xl p-3 border border-slate-200">
+          लपवलेले रील्स: <span id="hiddenReelsList" class="font-bold text-[#05344E]">काहीही नाही</span>
+        </div>
+      </section>
+
+      <!-- ३. UI, व्हेरिफाइड बॅज आणि रेडीमेड कमेंट्स -->
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 space-y-4">
+        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">३. UI, व्हेरिफाइड बॅज आणि रेडीमेड कमेंट्स</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-slate-600 mb-1">व्हेरिफाइड बॅज पॉपअप मजकूर</label>
+            <input id="cfgBadgeText" type="text" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+          </div>
+          <label class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer mt-auto">
+            <input id="cfgShowLiveBtn" type="checkbox" class="w-4 h-4 accent-[#05344E]" />
+            <span class="text-xs sm:text-sm">रील्सवर '🔴 LIVE Darshan घ्या' बटण दाखवा</span>
+          </label>
+        </div>
+        <div>
+          <label class="block text-xs text-slate-600 mb-1">भक्तांसाठी रेडीमेड भक्ती कमेंट्स (प्रत्येक ओळीत एक)</label>
+          <textarea id="cfgPresetComments" rows="3" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs"></textarea>
+        </div>
+      </section>
+
+      <!-- ४. ⋮ आणि प्रोफाइल ⚙️ मेनू मॅनेजर -->
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 space-y-4">
+        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">४. डायनॅमिक ⋮ (रील्स) व ⚙️ (प्रोफाइल) मेनू मॅनेजर</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="space-y-2">
+            <div class="text-xs font-extrabold text-slate-700">रील्स `⋮` मेनू पर्याय</div>
+            <div id="moreMenuList" class="space-y-1.5"></div>
+            <div class="flex gap-2">
+              <input id="newMoreLabel" type="text" placeholder="पर्याय नाव" class="flex-1 rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs" />
+              <input id="newMoreUrl" type="text" placeholder="लिंक (ऐच्छिक)" class="flex-1 rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs" />
+              <button id="addMoreMenuBtn" type="button" class="px-3 py-1.5 rounded-xl bg-[#05344E] text-white text-xs font-bold">+</button>
+            </div>
+          </div>
+          <div class="space-y-2">
+            <div class="text-xs font-extrabold text-slate-700">प्रोफाइल `⚙️` मेनू पर्याय</div>
+            <div id="gearMenuList" class="space-y-1.5"></div>
+            <div class="flex gap-2">
+              <input id="newGearLabel" type="text" placeholder="पर्याय नाव" class="flex-1 rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs" />
+              <input id="newGearUrl" type="text" placeholder="लिंक (ऐच्छिक)" class="flex-1 rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs" />
+              <button id="addGearMenuBtn" type="button" class="px-3 py-1.5 rounded-xl bg-[#05344E] text-white text-xs font-bold">+</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ५. व्हर्टिकल लाईव्ह दर्शन पॉपअप व वॉटरमार्क -->
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 space-y-3">
+        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">५. व्हर्टिकल लाईव्ह दर्शन पॉपअप व वॉटरमार्क</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <label class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer">
+            <input id="cfgLivePopupEnabled" type="checkbox" class="w-4 h-4 accent-[#05344E]" />
+            <span class="text-xs sm:text-sm">रील्सवरच व्हर्टिकल लाईव्ह पॉपअप उघडा</span>
+          </label>
+          <div>
+            <label class="block text-xs text-slate-600 mb-1">वॉटरमार्क मजकूर</label>
+            <input id="cfgWatermarkText" type="text" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs text-slate-600 mb-1">वॉटरमार्क पारदर्शकता (०.२ ते १.०)</label>
+            <input id="cfgWatermarkOpacity" type="number" step="0.1" min="0.2" max="1" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs text-slate-600 mb-1">डिस्क्लेमर (Disclaimer) मजकूर</label>
+          <input id="cfgDisclaimer" type="text" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs" />
+        </div>
+      </section>
+
+      <!-- ६. भक्त तक्रार निवारण व ब्रॉडकास्ट सूचना -->
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 space-y-4">
+        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">६. भक्त तक्रारी (दर्शन सेतू टीम उत्तर) व सूचना ब्रॉडकास्ट</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div class="space-y-2">
+            <div class="text-xs font-extrabold text-slate-700">अलीकडील भक्त तक्रारी</div>
+            <div id="reportsListWrap" class="space-y-2 max-h-80 overflow-y-auto pr-1"></div>
+          </div>
+          <div class="space-y-2.5 bg-amber-50/70 border border-amber-200 rounded-2xl p-4">
+            <div class="text-xs font-extrabold text-[#05344E]">📣 सर्व भक्तांना सूचना (दर्शन सेतू टीम) पाठवा</div>
+            <input id="bcTitle" type="text" placeholder="सूचनेचे शीर्षक (उदा. आषाढी एकादशी विशेष)" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs bg-white" />
+            <textarea id="bcBody" rows="3" placeholder="संपूर्ण संदेश येथे लिहा..." class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs bg-white"></textarea>
+            <button id="sendBroadcastBtn" type="button" class="w-full py-2.5 rounded-xl bg-[#05344E] hover:bg-[#084160] text-amber-300 text-xs font-extrabold transition">🔔 सर्व भक्तांना सूचना पाठवा</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ७. भक्त विश्लेषण, ब्लॉक/अनब्लॉक व वाढदिवस -->
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 space-y-4">
+        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">७. भक्त विश्लेषण (जिल्हा / वय), ब्लॉक व वाढदिवस शुभेच्छा</h2>
+        <div id="analyticsSummary" class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs"></div>
+        <div class="flex flex-wrap items-center gap-2">
+          <input id="userSearchInp" type="text" placeholder="नाव, जिल्हा किंवा ईमेलने भक्त शोधा..." class="flex-1 min-w-[200px] rounded-xl border border-slate-300 px-3 py-2 text-xs" />
+          <button id="refreshUsersBtn" type="button" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold">🔄 यादी रिफ्रेश करा</button>
+        </div>
+        <div id="usersListWrap" class="space-y-2 max-h-96 overflow-y-auto pr-1"></div>
+      </section>
+
+      <!-- ८. इन-फीड प्रायोजित जाहिराती, लोगो URL व स्केलेटन लोडर -->
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 space-y-4">
+        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">८. इन-फीड प्रायोजित जाहिराती, लोगो URL व स्केलेटन लोडर</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <label class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer">
+            <input id="cfgAdsEnabled" type="checkbox" class="w-4 h-4 accent-[#05344E]" />
+            <span class="text-xs sm:text-sm">इन-फीड प्रायोजित कार्ड दाखवा</span>
+          </label>
+          <div>
+            <label class="block text-xs text-slate-600 mb-1">दर किती रील्सनंतर जाहिरात?</label>
+            <input id="cfgAdsAfterN" type="number" min="2" max="15" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+          </div>
+          <label class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer">
+            <input id="cfgSkeletonEnabled" type="checkbox" class="w-4 h-4 accent-[#05344E]" />
+            <span class="text-xs sm:text-sm">Shimmer स्केलेटन लोडर चालू ठेवा</span>
+          </label>
+        </div>
+        <div>
+          <label class="block text-xs text-slate-600 mb-1">कस्टम 'दर्शन शॉर्ट्स' लोगो URL (रिकामे ठेवल्यास डिफॉल्ट WebP लोगो राहील)</label>
+          <input id="cfgCustomLogoUrl" type="url" placeholder="https://..." class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs" />
+        </div>
+        <div class="border-t border-slate-100 pt-3 space-y-2">
+          <div class="text-xs font-extrabold text-slate-700">इन-फीड जाहिरात कार्ड्स</div>
+          <div id="adsListWrap" class="space-y-2"></div>
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+            <input id="newAdTitle" type="text" placeholder="जाहिरात शीर्षक" class="rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs" />
+            <input id="newAdCta" type="text" placeholder="बटण मजकूर (उदा. अधिक पहा)" class="rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs" />
+            <input id="newAdUrl" type="url" placeholder="क्लिक लिंक (https://...)" class="rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs" />
+            <div class="flex gap-2">
+              <input id="newAdImg" type="url" placeholder="फोटो URL" class="flex-1 rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs" />
+              <button id="addAdBtn" type="button" class="px-3 py-1.5 rounded-xl bg-[#05344E] text-white text-xs font-bold">+</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ९. ऑटो शब्द फिल्टर आणि साइन-अप अटी व शर्ती -->
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 space-y-4">
+        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">९. ऑटो शब्द फिल्टर (कमेंट मॉडरेशन) व साइन-अप अटी व शर्ती</h2>
+        <div>
+          <label class="block text-xs text-slate-600 mb-1">प्रतिबंधित शब्द (स्वल्पविराम `,` देऊन लिहा — असे शब्द असलेली कमेंट आपोआप थांबवली जाईल)</label>
+          <input id="cfgBannedWords" type="text" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs" />
+        </div>
+        <div>
+          <label class="block text-xs text-slate-600 mb-1">भक्त साइन-अप अटी व शर्ती (पॉपअप मजकूर - प्रत्येक मुद्दा नवीन ओळीत)</label>
+          <textarea id="cfgTermsText" rows="5" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs"></textarea>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Sticky Save Bar -->
+  <div id="stickySaveBar" class="hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur border-t border-amber-300 px-4 py-2.5 shadow-lg">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
+      <span class="text-xs text-slate-600 hidden sm:inline">बदल केल्यानंतर सेव्ह बटण दाबा — लगेच `reels.html` व `profile.html` वर लागू होईल.</span>
+      <button id="saveAllShortsBtn" type="button" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#05344E] to-[#084160] hover:opacity-95 text-amber-300 text-sm font-extrabold shadow-md transition">💾 सर्व सेटिंग्ज सेव्ह करा</button>
+    </div>
+  </div>
+
+  <script src="admin-common.js"></script>
+  <script>
+    const DEFAULT_SHORTS_CFG = {
+      audio: { durationSec: 10, randomAudio: true, autoScroll: false, templeTracks: {} },
+      feed: { daysLimit: 15, freshOnTop: true, smartShuffle: true, syncHiddenTemples: true, hiddenReelIds: {} },
+      ui: {
+        badgeText: 'दर्शनसेतू .लाईव्ह व्हेरिफाइड',
+        showLiveBtn: true,
+        presetComments: ['🙏 जय हरी विठ्ठल!', '🌸 सुंदर दर्शन झाले!', '🚩 हर हर महादेव!', '🪔 मंगल आरती दर्शन!', '🙏 श्री स्वामी समर्थ!'],
+        customLogoUrl: '',
+        skeletonEnabled: true
+      },
+      menus: {
+        moreMenu: [
+          { label: '⚠️ या रीलबाबत तक्रार नोंदवा', url: 'profile.html?tab=report', active: true },
+          { label: '🛕 मंदिराची संपूर्ण माहिती पहा', url: 'temple-info.html', active: true },
+          { label: '🔗 व्हॉट्सॲपवर शेअर करा', url: 'action:share', active: true }
+        ],
+        profileGearMenu: [
+          { label: '⚠️ अडचण / तक्रार नोंदवा', url: 'profile.html?tab=report', active: true },
+          { label: '📜 नियम व गोपनीयता', url: 'legal-links.html', active: true },
+          { label: '🚪 लॉग-आऊट करा', url: 'action:logout', active: true }
+        ]
+      },
+      livePopup: {
+        enabled: true,
+        watermarkText: 'दर्शन सेतू . लाईव्ह',
+        watermarkOpacity: 0.75,
+        disclaimer: 'ही लाईव्ह स्ट्रीम संबंधित देवस्थानच्या अधिकृत प्रसारणातून दाखवली जात आहे.'
+      },
+      ads: { enabled: true, afterEveryN: 4, items: [] },
+      moderation: {
+        bannedWords: ['स्पॅम', 'spam', 'http://', 'bit.ly', 'अश्लील', 'शिवी'],
+        termsText: '१. ही सेवा पूर्णपणे निःशुल्क आणि भक्तीभावाने दिली जाते.\n२. साइन-अप करताना आपले खरे नाव नोंदवा (नंतर बदलता येणार नाही).\n३. भक्तांचा मोबाईल नंबर पूर्णपणे गोपनीय राहील.\n४. कमेंट्समध्ये असभ्य, राजकीय किंवा स्पॅम मजकूर लिहू नये.\n५. ३ वेळा वॉर्निंग मिळाल्यास खाते आपोआप ब्लॉक केले जाईल.\n६. तक्रारीसाठी फक्त अधिकृत "अडचण / तक्रार नोंदवा" पर्याय वापरावा.\n७. देवस्थानचे फोटो व ऑडिओ फक्त वैयक्तिक दर्शनासाठी आहेत.\n८. सेवेचे नियम अद्ययावत करण्याचे अधिकार दर्शन सेतू टीमकडे राहतील.\n९. साइन-अप करून आपण या सर्व अटी मान्य करत आहात.'
+      }
+    };
+
+    let cfg = JSON.parse(JSON.stringify(DEFAULT_SHORTS_CFG));
+    let templesMap = {};
+    let usersMap = {};
+    let reportsMap = {};
+
+    renderAdminShell('shorts', '🎬 दर्शन शॉर्ट्स (Reels) व्यवस्थापन');
+
+    initAdminGuard(async (user) => {
+      document.getElementById('stickySaveBar').classList.remove('hidden');
+      await Promise.all([loadTemples(), loadShortsConfig(), loadReports(), loadUsers()]);
+      bindActions();
+    });
+
+    async function loadTemples() {
+      const snap = await fbDb.ref('temples').once('value');
+      templesMap = snap.val() || {};
+      const sel = document.getElementById('audioTempleSelect');
+      const entries = Object.entries(templesMap);
+      sel.innerHTML = entries.length
+        ? entries.map(([id, t]) => `<option value="${id}">${t.name || t.title || id}</option>`).join('')
+        : '<option value="vitthal">श्री विठ्ठल-रुक्मिणी मंदिर, पंढरपूर</option>';
+      sel.onchange = renderTempleTracks;
+    }
+
+    async function loadShortsConfig() {
+      const snap = await fbDb.ref('siteConfig/shortsConfig').once('value');
+      const val = snap.val();
+      if (val) {
+        cfg = {
+          audio: { ...DEFAULT_SHORTS_CFG.audio, ...(val.audio || {}) },
+          feed: { ...DEFAULT_SHORTS_CFG.feed, ...(val.feed || {}) },
+          ui: { ...DEFAULT_SHORTS_CFG.ui, ...(val.ui || {}) },
+          menus: { ...DEFAULT_SHORTS_CFG.menus, ...(val.menus || {}) },
+          livePopup: { ...DEFAULT_SHORTS_CFG.livePopup, ...(val.livePopup || {}) },
+          ads: { ...DEFAULT_SHORTS_CFG.ads, ...(val.ads || {}) },
+          moderation: { ...DEFAULT_SHORTS_CFG.moderation, ...(val.moderation || {}) }
+        };
+      }
+      fillConfigForm();
+    }
+
+    function fillConfigForm() {
+      document.getElementById('cfgDuration').value = String(cfg.audio.durationSec || 10);
+      document.getElementById('cfgRandomAudio').checked = !!cfg.audio.randomAudio;
+      document.getElementById('cfgAutoScroll').checked = !!cfg.audio.autoScroll;
+      document.getElementById('cfgDaysLimit').value = String(cfg.feed.daysLimit || 15);
+      document.getElementById('cfgFreshOnTop').checked = !!cfg.feed.freshOnTop;
+      document.getElementById('cfgSmartShuffle').checked = !!cfg.feed.smartShuffle;
+      document.getElementById('cfgSyncHidden').checked = !!cfg.feed.syncHiddenTemples;
+      document.getElementById('cfgBadgeText').value = cfg.ui.badgeText || '';
+      document.getElementById('cfgShowLiveBtn').checked = cfg.ui.showLiveBtn !== false;
+      document.getElementById('cfgPresetComments').value = (cfg.ui.presetComments || []).join('\n');
+      document.getElementById('cfgLivePopupEnabled').checked = cfg.livePopup.enabled !== false;
+      document.getElementById('cfgWatermarkText').value = cfg.livePopup.watermarkText || '';
+      document.getElementById('cfgWatermarkOpacity').value = cfg.livePopup.watermarkOpacity ?? 0.75;
+      document.getElementById('cfgDisclaimer').value = cfg.livePopup.disclaimer || '';
+      document.getElementById('cfgAdsEnabled').checked = !!cfg.ads.enabled;
+      document.getElementById('cfgAdsAfterN').value = cfg.ads.afterEveryN || 4;
+      document.getElementById('cfgSkeletonEnabled').checked = cfg.ui.skeletonEnabled !== false;
+      document.getElementById('cfgCustomLogoUrl').value = cfg.ui.customLogoUrl || '';
+      document.getElementById('cfgBannedWords').value = (cfg.moderation.bannedWords || []).join(', ');
+      document.getElementById('cfgTermsText').value = cfg.moderation.termsText || '';
+
+      renderTempleTracks();
+      renderHiddenReels();
+      renderMenuLists();
+      renderAdsList();
+    }
+
+    function renderTempleTracks() {
+      const tid = document.getElementById('audioTempleSelect').value;
+      const tracks = (cfg.audio.templeTracks && cfg.audio.templeTracks[tid]) || [];
+      const box = document.getElementById('templeTracksList');
+      if (!tracks.length) {
+        box.innerHTML = '<div class="text-xs text-slate-400 py-2">या मंदिरासाठी अद्याप MP3 ऑडिओ जोडलेला नाही (कमाल १० जोडू शकता).</div>';
+        return;
+      }
+      box.innerHTML = tracks.map((tr, i) => `
+        <div class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+          <div class="min-w-0 flex-1">
+            <div class="font-bold text-[#05344E] truncate">🎵 ${tr.title}</div>
+            <div class="text-[11px] text-slate-500 truncate">${tr.url}</div>
+          </div>
+          <button type="button" onclick="removeTrack('${tid}', ${i})" class="px-2.5 py-1 rounded-lg bg-rose-100 text-rose-700 font-bold hover:bg-rose-200">हटवा</button>
+        </div>`).join('');
+    }
+    window.removeTrack = (tid, idx) => {
+      cfg.audio.templeTracks[tid].splice(idx, 1);
+      renderTempleTracks();
+    };
+
+    function renderHiddenReels() {
+      const hid = Object.keys(cfg.feed.hiddenReelIds || {}).filter(k => cfg.feed.hiddenReelIds[k]);
+      const el = document.getElementById('hiddenReelsList');
+      if (!hid.length) { el.textContent = 'काहीही नाही'; return; }
+      el.innerHTML = hid.map(id => `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-amber-100 text-amber-900 mr-1">${id} <button type="button" onclick="unhideReel('${id}')" class="text-rose-700 font-extrabold">✕</button></span>`).join('');
+    }
+    window.unhideReel = async (id) => {
+      delete cfg.feed.hiddenReelIds[id];
+      await fbDb.ref(`siteConfig/shortsConfig/feed/hiddenReelIds/${id}`).remove();
+      renderHiddenReels();
+      showToast('रील पुन्हा दृश्यमान केले!');
+    };
+
+    function renderMenuLists() {
+      const draw = (arr, elId, kind) => {
+        document.getElementById(elId).innerHTML = (arr || []).map((m, i) => `
+          <div class="flex items-center justify-between gap-2 p-2 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+            <span class="truncate font-bold">${m.label} <span class="text-slate-400 font-normal">(${m.url || '-'})</span></span>
+            <button type="button" onclick="delMenu('${kind}', ${i})" class="px-2 py-0.5 rounded bg-rose-100 text-rose-700 font-bold">✕</button>
+          </div>`).join('');
+      };
+      draw(cfg.menus.moreMenu, 'moreMenuList', 'moreMenu');
+      draw(cfg.menus.profileGearMenu, 'gearMenuList', 'profileGearMenu');
+    }
+    window.delMenu = (kind, i) => { cfg.menus[kind].splice(i, 1); renderMenuLists(); };
+
+    function renderAdsList() {
+      const box = document.getElementById('adsListWrap');
+      const items = cfg.ads.items || [];
+      if (!items.length) { box.innerHTML = '<div class="text-xs text-slate-400">कोणतीही इन-फीड जाहिरात नाही.</div>'; return; }
+      box.innerHTML = items.map((ad, i) => `
+        <div class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-amber-50/70 border border-amber-200 text-xs">
+          <div class="min-w-0 flex-1">
+            <div class="font-extrabold text-[#05344E] truncate">${ad.title} — [${ad.ctaText || 'पहा'}]</div>
+            <div class="text-[11px] text-slate-500 truncate">${ad.ctaUrl}</div>
+          </div>
+          <button type="button" onclick="delAd(${i})" class="px-2.5 py-1 rounded-lg bg-rose-100 text-rose-700 font-bold">हटवा</button>
+        </div>`).join('');
+    }
+    window.delAd = (i) => { cfg.ads.items.splice(i, 1); renderAdsList(); };
+
+    async function loadReports() {
+      const snap = await fbDb.ref('shortsReports').limitToLast(40).once('value');
+      reportsMap = snap.val() || {};
+      const entries = Object.entries(reportsMap).reverse();
+      const pendingCount = entries.filter(([, r]) => r.status !== 'resolved').length;
+      document.getElementById('kpiReports').textContent = pendingCount;
+
+      const box = document.getElementById('reportsListWrap');
+      if (!entries.length) { box.innerHTML = '<div class="text-xs text-slate-400 py-3">अद्याप कोणतीही तक्रार नाही.</div>'; return; }
+      box.innerHTML = entries.map(([rid, r]) => `
+        <div class="p-3 rounded-xl border ${r.status === 'resolved' ? 'border-emerald-200 bg-emerald-50/40' : 'border-amber-200 bg-amber-50/50'} space-y-1.5 text-xs">
+          <div class="flex items-center justify-between gap-2">
+            <span class="font-extrabold text-[#05344E]">${r.userName || 'भक्त'} • ${r.issueType || 'तक्रार'}</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold ${r.status === 'resolved' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-200 text-amber-900'}">${r.status === 'resolved' ? '✓ निराकरण झाले' : '⏳ प्रलंबित'}</span>
+          </div>
+          <div class="text-slate-700">${r.details || ''}</div>
+          ${r.reelTitle ? `<div class="text-[11px] text-slate-500">रील: ${r.reelTitle}</div>` : ''}
+          <div class="flex gap-2 pt-1">
+            <input id="repInp_${rid}" type="text" value="${(r.adminReply || '').replace(/"/g, '&quot;')}" placeholder="दर्शन सेतू टीम म्हणून उत्तर लिहा..." class="flex-1 rounded-lg border border-slate-300 px-2.5 py-1 text-xs bg-white" />
+            <button type="button" onclick="replyReport('${rid}')" class="px-3 py-1 rounded-lg bg-[#05344E] text-amber-300 font-bold">उत्तर पाठवा</button>
+          </div>
+        </div>`).join('');
+    }
+    window.replyReport = async (rid) => {
+      const reply = document.getElementById(`repInp_${rid}`).value.trim();
+      if (!reply) return showToast('कृपया उत्तर लिहा', true);
+      await fbDb.ref(`shortsReports/${rid}`).update({
+        adminReply: reply,
+        status: 'resolved',
+        repliedBy: 'दर्शन सेतू टीम',
+        updatedAt: Date.now()
+      });
+      showToast('तक्रारीचे उत्तर सेव्ह झाले!');
+      loadReports();
+    };
+
+    async function loadUsers() {
+      const snap = await fbDb.ref('shortsUsers').limitToLast(200).once('value');
+      usersMap = snap.val() || {};
+      const list = Object.entries(usersMap);
+      document.getElementById('kpiUsers').textContent = list.length;
+
+      // Analytics: top district, today birthdays, blocked count
+      const todayMD = new Date().toISOString().slice(5, 10);
+      let bdayCount = 0, blockedCount = 0;
+      const distCount = {};
+      list.forEach(([, u]) => {
+        if (u.dob && u.dob.slice(5, 10) === todayMD) bdayCount++;
+        if (u.blocked) blockedCount++;
+        if (u.district) distCount[u.district] = (distCount[u.district] || 0) + 1;
+      });
+      const topDist = Object.entries(distCount).sort((a, b) => b[1] - a[1])[0];
+      document.getElementById('analyticsSummary').innerHTML = `
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200"><div class="text-slate-500">एकूण भक्त</div><div class="text-lg font-extrabold text-[#05344E]">${list.length}</div></div>
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200"><div class="text-slate-500">आघाडीचा जिल्हा</div><div class="text-sm font-extrabold text-[#05344E] truncate">${topDist ? topDist[0] + ' (' + topDist[1] + ')' : '—'}</div></div>
+        <div class="p-3 rounded-xl bg-amber-50 border border-amber-200"><div class="text-amber-700">🎂 आजचे वाढदिवस</div><div class="text-lg font-extrabold text-amber-800">${bdayCount}</div></div>
+        <div class="p-3 rounded-xl bg-rose-50 border border-rose-200"><div class="text-rose-700">🚫 ब्लॉक केलेले</div><div class="text-lg font-extrabold text-rose-800">${blockedCount}</div></div>
+      `;
+      renderUsersList();
+    }
+
+    function renderUsersList() {
+      const q = (document.getElementById('userSearchInp').value || '').trim().toLowerCase();
+      const todayMD = new Date().toISOString().slice(5, 10);
+      const filtered = Object.entries(usersMap).filter(([, u]) => {
+        if (!q) return true;
+        return `${u.name || ''} ${u.district || ''} ${u.email || ''}`.toLowerCase().includes(q);
+      });
+      const box = document.getElementById('usersListWrap');
+      if (!filtered.length) { box.innerHTML = '<div class="text-xs text-slate-400 py-3">कोणतेही भक्त सापडले नाहीत.</div>'; return; }
+      box.innerHTML = filtered.map(([uid, u]) => {
+        const isBday = u.dob && u.dob.slice(5, 10) === todayMD;
+        return `
+        <div class="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-xl border ${u.blocked ? 'border-rose-300 bg-rose-50/50' : 'border-slate-200 bg-slate-50/60'} text-xs">
+          <div class="min-w-0 flex-1">
+            <div class="font-extrabold text-[#05344E]">${u.name || 'भक्त'} ${isBday ? '🎂' : ''} <span class="text-[11px] font-normal text-slate-500">(${u.district || 'जिल्हा नाही'} • वॉर्निंग: ${u.warningCount || 0}/3)</span></div>
+            <div class="text-[11px] text-slate-500 truncate">${u.email || ''} • फॉलो: ${Object.keys(u.followedTemples || {}).length}</div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            ${isBday ? `<button type="button" onclick="wishBday('${uid}', '${(u.name || 'भक्त').replace(/'/g, '')}')" class="px-2.5 py-1 rounded-lg bg-amber-400 text-[#031926] font-extrabold">🎂 शुभेच्छा</button>` : ''}
+            <button type="button" onclick="warnUser('${uid}')" class="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-900 font-bold">⚠️ वॉर्निंग</button>
+            <button type="button" onclick="toggleBlockUser('${uid}')" class="px-2.5 py-1 rounded-lg ${u.blocked ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white'} font-bold">${u.blocked ? '✓ अनब्लॉक' : '🚫 ब्लॉक'}</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    window.warnUser = async (uid) => {
+      const cur = usersMap[uid] || {};
+      const next = (cur.warningCount || 0) + 1;
+      const autoBlock = next >= 3;
+      await fbDb.ref(`shortsUsers/${uid}`).update({ warningCount: next, blocked: autoBlock || !!cur.blocked });
+      await fbDb.ref('shortsBroadcasts').push({
+        targetUid: uid,
+        title: '⚠️ दर्शन सेतू टीम कडून सूचना',
+        body: autoBlock ? '३ वॉर्निंग पूर्ण झाल्यामुळे आपले खाते तात्पुरते ब्लॉक करण्यात आले आहे.' : `कृपया मर्यादित व भक्तीमय भाषेतच कमेंट्स करा (वॉर्निंग ${next}/3).`,
+        createdAt: Date.now()
+      });
+      showToast(autoBlock ? '३/३ वॉर्निंग — भक्त ब्लॉक झाले!' : `वॉर्निंग ${next}/3 पाठवली!`);
+      loadUsers();
+    };
+    window.toggleBlockUser = async (uid) => {
+      const next = !((usersMap[uid] || {}).blocked);
+      await fbDb.ref(`shortsUsers/${uid}/blocked`).set(next);
+      showToast(next ? 'भक्त ब्लॉक केले!' : 'भक्त अनब्लॉक केले!');
+      loadUsers();
+    };
+    window.wishBday = async (uid, name) => {
+      await fbDb.ref('shortsBroadcasts').push({
+        targetUid: uid,
+        title: '🎂 दर्शन सेतू टीम कडून वाढदिवसाच्या शुभेच्छा!',
+        body: `🙏 नमस्कार ${name}, आपणास वाढदिवसाच्या हार्दिक भक्तीमय शुभेच्छा! श्री विठ्ठल-रुक्मिणी कृपेने आपले आयुष्य सुखमय होवो.`,
+        createdAt: Date.now()
+      });
+      showToast(`${name} यांना वाढदिवसाच्या शुभेच्छा पाठवल्या!`);
+    };
+
+    function bindActions() {
+      document.getElementById('addTrackBtn').onclick = () => {
+        const tid = document.getElementById('audioTempleSelect').value;
+        const title = document.getElementById('newTrackTitle').value.trim();
+        const url = document.getElementById('newTrackUrl').value.trim();
+        if (!title || !url) return showToast('ऑडिओ नाव व MP3 लिंक भरा', true);
+        if (!cfg.audio.templeTracks) cfg.audio.templeTracks = {};
+        if (!cfg.audio.templeTracks[tid]) cfg.audio.templeTracks[tid] = [];
+        if (cfg.audio.templeTracks[tid].length >= 10) return showToast('एका मंदिरासाठी कमाल १० MP3 मर्यादा आहे', true);
+        cfg.audio.templeTracks[tid].push({ title, url, active: true });
+        document.getElementById('newTrackTitle').value = '';
+        document.getElementById('newTrackUrl').value = '';
+        renderTempleTracks();
+      };
+
+      document.getElementById('addMoreMenuBtn').onclick = () => {
+        const label = document.getElementById('newMoreLabel').value.trim();
+        const url = document.getElementById('newMoreUrl').value.trim();
+        if (!label) return;
+        cfg.menus.moreMenu.push({ label, url, active: true });
+        document.getElementById('newMoreLabel').value = '';
+        document.getElementById('newMoreUrl').value = '';
+        renderMenuLists();
+      };
+      document.getElementById('addGearMenuBtn').onclick = () => {
+        const label = document.getElementById('newGearLabel').value.trim();
+        const url = document.getElementById('newGearUrl').value.trim();
+        if (!label) return;
+        cfg.menus.profileGearMenu.push({ label, url, active: true });
+        document.getElementById('newGearLabel').value = '';
+        document.getElementById('newGearUrl').value = '';
+        renderMenuLists();
+      };
+
+      document.getElementById('addAdBtn').onclick = () => {
+        const title = document.getElementById('newAdTitle').value.trim();
+        const ctaText = document.getElementById('newAdCta').value.trim() || 'अधिक पहा';
+        const ctaUrl = document.getElementById('newAdUrl').value.trim();
+        const mediaUrl = document.getElementById('newAdImg').value.trim();
+        if (!title || !ctaUrl) return showToast('जाहिरात शीर्षक आणि लिंक भरा', true);
+        cfg.ads.items.push({ title, ctaText, ctaUrl, mediaUrl, active: true });
+        document.getElementById('newAdTitle').value = '';
+        document.getElementById('newAdCta').value = '';
+        document.getElementById('newAdUrl').value = '';
+        document.getElementById('newAdImg').value = '';
+        renderAdsList();
+      };
+
+      document.getElementById('sendBroadcastBtn').onclick = async () => {
+        const title = document.getElementById('bcTitle').value.trim();
+        const body = document.getElementById('bcBody').value.trim();
+        if (!title || !body) return showToast('सूचनेचे शीर्षक व संदेश भरा', true);
+        await fbDb.ref('shortsBroadcasts').push({ targetUid: 'all', title, body, createdAt: Date.now() });
+        document.getElementById('bcTitle').value = '';
+        document.getElementById('bcBody').value = '';
+        showToast('सर्व भक्तांना सूचना पाठवली गेली!');
+      };
+
+      document.getElementById('userSearchInp').oninput = renderUsersList;
+      document.getElementById('refreshUsersBtn').onclick = loadUsers;
+
+      document.getElementById('saveAllShortsBtn').onclick = async () => {
+        cfg.audio.durationSec = Number(document.getElementById('cfgDuration').value) || 10;
+        cfg.audio.randomAudio = document.getElementById('cfgRandomAudio').checked;
+        cfg.audio.autoScroll = document.getElementById('cfgAutoScroll').checked;
+        cfg.feed.daysLimit = Number(document.getElementById('cfgDaysLimit').value) || 15;
+        cfg.feed.freshOnTop = document.getElementById('cfgFreshOnTop').checked;
+        cfg.feed.smartShuffle = document.getElementById('cfgSmartShuffle').checked;
+        cfg.feed.syncHiddenTemples = document.getElementById('cfgSyncHidden').checked;
+        cfg.ui.badgeText = document.getElementById('cfgBadgeText').value.trim() || 'दर्शनसेतू .लाईव्ह व्हेरिफाइड';
+        cfg.ui.showLiveBtn = document.getElementById('cfgShowLiveBtn').checked;
+        cfg.ui.presetComments = document.getElementById('cfgPresetComments').value.split('\n').map(s => s.trim()).filter(Boolean);
+        cfg.ui.skeletonEnabled = document.getElementById('cfgSkeletonEnabled').checked;
+        cfg.ui.customLogoUrl = document.getElementById('cfgCustomLogoUrl').value.trim();
+        cfg.livePopup.enabled = document.getElementById('cfgLivePopupEnabled').checked;
+        cfg.livePopup.watermarkText = document.getElementById('cfgWatermarkText').value.trim();
+        cfg.livePopup.watermarkOpacity = Number(document.getElementById('cfgWatermarkOpacity').value) || 0.75;
+        cfg.livePopup.disclaimer = document.getElementById('cfgDisclaimer').value.trim();
+        cfg.ads.enabled = document.getElementById('cfgAdsEnabled').checked;
+        cfg.ads.afterEveryN = Number(document.getElementById('cfgAdsAfterN').value) || 4;
+        cfg.moderation.bannedWords = document.getElementById('cfgBannedWords').value.split(',').map(s => s.trim()).filter(Boolean);
+        cfg.moderation.termsText = document.getElementById('cfgTermsText').value.trim();
+
+        await fbDb.ref('siteConfig/shortsConfig').set(cfg);
+        showToast('सर्व दर्शन शॉर्ट्स सेटिंग्ज यशस्वीरित्या सेव्ह झाल्या!');
+      };
+    }
+  </script>
+</body>
+</html>

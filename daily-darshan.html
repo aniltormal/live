@@ -489,8 +489,8 @@
       if (srcName) {
         const ico = getSourceBrandIcon(srcName, srcUrl);
         srcWrap.innerHTML = srcUrl
-          ? `<a href="${srcUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="inline-flex items-center gap-1.5 h-7 px-3 rounded-full bg-black/80 hover:bg-[#05344E] text-amber-200 text-[10px] sm:text-xs font-bold border border-amber-300/45 shadow truncate max-w-full">${ico}<span class="truncate">सौजन्य: ${srcName} ↗</span></a>`
-          : `<span class="inline-flex items-center gap-1.5 h-7 px-3 rounded-full bg-black/80 text-amber-200 text-[10px] sm:text-xs font-bold border border-amber-300/45 shadow truncate max-w-full">${ico}<span class="truncate">सौजन्य: ${srcName}</span></span>`;
+          ? `<a href="${srcUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" title="सौजन्य: ${srcName}" aria-label="सौजन्य: ${srcName}" class="inline-flex items-center gap-1.5 h-7 px-3 rounded-full bg-black/80 hover:bg-[#05344E] text-amber-200 text-[10px] sm:text-xs font-bold border border-amber-300/45 shadow"><span>सौजन्य:</span>${ico}<span class="text-[10px]">↗</span></a>`
+          : `<span title="सौजन्य: ${srcName}" aria-label="सौजन्य: ${srcName}" class="inline-flex items-center gap-1.5 h-7 px-3 rounded-full bg-black/80 text-amber-200 text-[10px] sm:text-xs font-bold border border-amber-300/45 shadow"><span>सौजन्य:</span>${ico}</span>`;
       } else {
         srcWrap.innerHTML = '';
       }
@@ -665,7 +665,8 @@
       const dx = (e.clientX || 0) - swipeStartX;
       const dy = (e.clientY || 0) - swipeStartY;
       swipeStartX = null;
-      if (Math.abs(dx) >= 42 && Math.abs(dx) > Math.abs(dy)) {
+      if (Math.abs(dx) >= 34 && Math.abs(dx) > Math.abs(dy)) {
+        tSwipeX = null;
         stepDarshanSlide(dx < 0 ? 1 : -1);
       }
     };
@@ -694,6 +695,7 @@
       const dy = e.changedTouches[0].clientY - tSwipeY;
       tSwipeX = null;
       if (Math.abs(dx) >= 34 && Math.abs(dx) > Math.abs(dy)) {
+        swipeStartX = null;
         clearTimeout(holdTimer);
         endHold();
         stepDarshanSlide(dx < 0 ? 1 : -1);

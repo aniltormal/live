@@ -230,6 +230,27 @@
       animation: playTriClick 1.9s ease-in-out infinite;
       transform-origin: center center;
     }
+      @keyframes ytInfoPeek1b {
+      0%, 22% { max-width: 0; opacity: 0; margin-left: 0; }
+      30%, 72% { max-width: 120px; opacity: 1; margin-left: 5px; }
+      80%, 100% { max-width: 0; opacity: 0; margin-left: 0; }
+    }
+    .yt-info-pill-1b {
+      background: linear-gradient(90deg, #031926, #084160);
+      color: #FDE68A;
+      border: 1.5px solid #FBBF24;
+    }
+    .yt-info-pill-1b .yt-info-lbl {
+      font-family: 'Khand', 'Noto Sans Devanagari', sans-serif;
+      font-weight: 700;
+      animation: ytInfoPeek1b 5s ease-in-out infinite;
+    }
+    .yt-info-pill-1b:hover .yt-info-lbl {
+      animation: none;
+      max-width: 120px;
+      opacity: 1;
+      margin-left: 5px;
+    }
   </style>
 
   <style id="siteSkelStyle">
@@ -1530,6 +1551,7 @@
     };
 
     window.openPhotoSlideshow = function(temple, passedLatest) {
+      window.__psActiveTemple = temple || null;
       const latestObj = passedLatest || dailyLatestMap[temple.id];
       psEvents = buildPsBatches(latestObj, null);
       if (!psEvents.length) {
@@ -1545,8 +1567,9 @@
       startPsAuto();
 
       try {
-        if (typeof db !== 'undefined' && db) {
-          db.ref(`dailyDarshan/archive/${temple.id}`).once('value').then(snap => {
+        const _db = (typeof fbDb !== 'undefined' && fbDb) ? fbDb : (typeof db !== 'undefined' ? db : null);
+        if (_db) {
+          _db.ref(`dailyDarshan/archive/${temple.id}`).once('value').then(snap => {
             const arch = snap.val();
             if (arch && !document.getElementById('photoSlideshowModal').classList.contains('hidden')) {
               const merged = buildPsBatches(latestObj, arch);
@@ -1619,13 +1642,13 @@
       }
       const srcEl = document.getElementById('psSourceInfo');
       if (srcEl) {
-        const sName = item.source || '';
-        const sUrl = item.sourceUrl || '';
+        const sName = item.source || (window.__psActiveTemple && window.__psActiveTemple.sourcePlatform) || '';
+        const sUrl = item.sourceUrl || (window.__psActiveTemple && window.__psActiveTemple.sourceUrl) || '';
         if (sName) {
           const ico = getSourceBrandIcon(sName, sUrl);
           srcEl.innerHTML = sUrl
-            ? `<a href="${sUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="inline-flex items-center gap-1.5 h-7 px-3 rounded-full bg-white/10 hover:bg-white/20 text-amber-300 text-[11px] font-bold border border-amber-400/50 truncate">${ico}<span class="truncate">सौजन्य: ${sName} ↗</span></a>`
-            : `<span class="inline-flex items-center gap-1.5 h-7 px-3 rounded-full bg-white/10 text-amber-200 text-[11px] font-bold border border-white/15 truncate">${ico}<span class="truncate">सौजन्य: ${sName}</span></span>`;
+            ? `<a href="${sUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" title="सौजन्य: ${sName}" aria-label="सौजन्य: ${sName}" class="inline-flex items-center gap-1.5 h-7 px-3 rounded-full bg-white/10 hover:bg-white/20 text-amber-300 text-[11px] font-bold border border-amber-400/50"><span>सौजन्य:</span>${ico}<span class="text-[10px]">↗</span></a>`
+            : `<span title="सौजन्य: ${sName}" aria-label="सौजन्य: ${sName}" class="inline-flex items-center gap-1.5 h-7 px-3 rounded-full bg-white/10 text-amber-200 text-[11px] font-bold border border-white/15"><span>सौजन्य:</span>${ico}</span>`;
         } else {
           srcEl.innerHTML = '';
         }
@@ -1684,7 +1707,7 @@
         const dx = (e.clientX || 0) - sx;
         const dy = (e.clientY || 0) - sy;
         sx = null;
-        if (Math.abs(dx) >= 42 && Math.abs(dx) > Math.abs(dy)) stepPhotoSlideshow(dx < 0 ? 1 : -1);
+        if (Math.abs(dx) >= 34 && Math.abs(dx) > Math.abs(dy)) { tsx = null; stepPhotoSlideshow(dx < 0 ? 1 : -1); }
       };
       const onCancel = () => {
         clearTimeout(ht);
@@ -1707,6 +1730,7 @@
         const dy = e.changedTouches[0].clientY - tsy;
         tsx = null;
         if (Math.abs(dx) >= 34 && Math.abs(dx) > Math.abs(dy)) {
+          sx = null;
           clearTimeout(ht);
           if (psHolding) { psHolding = false; setPsHoldVisuals(false); startPsAuto(); }
           stepPhotoSlideshow(dx < 0 ? 1 : -1);
@@ -2149,8 +2173,9 @@
               ${isPandharpur ? '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-[#EA580C] text-white border border-orange-300/80 text-[10px] sm:text-xs font-bold shadow">🚩 पंढरपूर विशेष</span>' : ''}
             </div>
             <a href="temple-info.html?id=${encodeURIComponent(temple.id)}" onclick="event.stopPropagation();" aria-label="मंदिर माहिती" title="मंदिर माहिती व वेळापत्रक"
-              class="absolute top-2 right-2 z-10 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-amber-200 border border-amber-300/60 flex items-center justify-center shadow-md hover:scale-110 transition-all duration-200">
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="16" x2="12" y2="11"/><circle cx="12" cy="7.5" r="1" fill="currentColor" stroke="none"/></svg>
+              class="yt-info-pill-1b absolute top-2 right-2 z-10 h-7 sm:h-8 px-1.5 sm:px-2 rounded-full inline-flex items-center overflow-hidden shadow-md hover:scale-105 transition-all duration-200">
+              <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="11"/><circle cx="12" cy="7.5" r="1" fill="currentColor" stroke="none"/></svg>
+              <span class="yt-info-lbl text-[13px] sm:text-[14px] leading-none whitespace-nowrap overflow-hidden">अधिक माहिती पहा</span>
             </a>
           </div>
           <div class="relative px-2.5 py-2.5 sm:px-3.5 sm:py-3 flex-1 flex items-center justify-between gap-2">

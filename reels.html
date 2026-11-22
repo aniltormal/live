@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>🎬 दर्शन शॉर्ट्स — दर्शन सेतू लाईव्ह</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Khand:wght@600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.15/dist/hls.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
@@ -14,6 +14,7 @@
   <style>
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html, body { margin: 0; padding: 0; height: 100%; background: #000; color: #fff; font-family: 'Noto Sans Devanagari', sans-serif; overflow: hidden; }
+    .font-khand { font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; letter-spacing: 0.02em; }
     .app-shell { position: relative; width: 100%; max-width: 480px; height: 100dvh; margin: 0 auto; background: #050a12; overflow: hidden; }
     .feed { height: calc(100% - 66px); overflow-y: scroll; scroll-snap-type: y mandatory; scroll-behavior: smooth; transition: height 0.25s ease; }
     .feed::-webkit-scrollbar { display: none; }
@@ -217,10 +218,10 @@
       try {
       const [cfgData, tData, dtData, ddSnap, archData] = await Promise.all([
         getCachedOrFetch('ds_shorts_cfg_v1', 'siteConfig/shortsConfig', 300000),
-        getCachedOrFetch('ds_temples_v1', 'temples', 600000),
-        getCachedOrFetch('ds_dtemples_v1', 'dailyDarshan/temples', 600000),
+        getCachedOrFetch('ds_temples_v2', 'temples', 600000),
+        getCachedOrFetch('ds_dtemples_v2', 'dailyDarshan/temples', 600000),
         fbDb.ref('dailyDarshan/latest').once('value').catch(() => ({ val: () => ({}) })),
-        getCachedOrFetch('ds_dd_arch_v1', 'dailyDarshan/archive', 600000)
+        getCachedOrFetch('ds_dd_arch_v2', 'dailyDarshan/archive', 600000)
       ]);
       shortsCfg = cfgData || {};
       const mergedT = {};
@@ -282,16 +283,26 @@
         if (hiddenIds[rid]) return;
         if (filterTemple && tid !== filterTemple) return;
         const tThumb = tInfo.image || tInfo.photo || tInfo.thumb || tInfo.img || pUrl;
+        let liveUrl = tInfo.streamUrl || tInfo.liveUrl || tInfo.m3u8 || tInfo.youtube || tInfo.url || '';
+        if (!liveUrl) {
+          const allT = Object.values(templesMap);
+          const matchT = allT.find(x => x && x.streamUrl && ((x.id && tid && (x.id.includes(tid) || tid.includes(x.id))) || (x.name && tInfo.name && x.name === tInfo.name)));
+          if (matchT) liveUrl = matchT.streamUrl;
+        }
+        const srcPlat = (typeof rawItem === 'object' && rawItem && rawItem.sourcePlatform) || data.sourcePlatform || tInfo.sourcePlatform || '';
+        const srcUrl = (typeof rawItem === 'object' && rawItem && rawItem.sourceUrl) || data.sourceUrl || tInfo.sourceUrl || '';
         targetArr.push({
           id: rid,
           templeId: tid,
           templeName: tInfo.name || tInfo.shortTitle || tInfo.title || data.templeName || tid,
-          templeImg: isVid ? optImg(tThumb) : optImg(tThumb),
+          templeImg: optImg(tThumb),
           mediaUrl: isVid ? pUrl : optImg(pUrl),
           isVideo: isVid,
           date: data.date || dtLabel || 'आजचे दर्शन',
-          liveUrl: tInfo.liveUrl || tInfo.streamUrl || tInfo.m3u8 || tInfo.youtube || tInfo.url || '',
-          liveType: tInfo.type || tInfo.streamType || '',
+          sourcePlatform: srcPlat,
+          sourceUrl: srcUrl,
+          liveUrl,
+          liveType: tInfo.streamType || tInfo.type || '',
           ts: data.updatedAt || Date.now()
         });
       };
@@ -392,19 +403,24 @@
 
           <div class="bottom-left">
             <div class="flex items-center gap-2">
-              <img src="${r.templeImg}" class="w-9 h-9 rounded-full object-cover border-2 border-amber-400 shrink-0"/>
-              <div class="min-w-0 flex-1">
-                <div class="flex items-center gap-1">
-                  <span class="font-extrabold text-sm text-white truncate">${r.templeName}</span>
-                  <button type="button" onclick="showVerifiedPopup()" class="shrink-0" title="व्हेरिफाइड">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 1.5l2.2 1.9 2.9-.4 1.1 2.7 2.7 1.1-.4 2.9 1.9 2.3-1.9 2.3.4 2.9-2.7 1.1-1.1 2.7-2.9-.4-2.2 1.9-2.2-1.9-2.9.4-1.1-2.7-2.7-1.1.4-2.9-1.9-2.3 1.9-2.3-.4-2.9 2.7-1.1 1.1-2.7 2.9.4L12 1.5z" fill="#F59E0B"/><path d="M8.5 12.3l2.3 2.3 4.8-5" stroke="#031926" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  </button>
+              <a href="temple-info.html?id=${encodeURIComponent(r.templeId)}" class="flex items-center gap-2 min-w-0 flex-1 no-underline text-white">
+                <img src="${r.templeImg}" onerror="this.onerror=null;this.src='${r.isVideo ? 'icon-192.png' : r.mediaUrl}'" class="w-10 h-10 rounded-full object-cover border-2 border-amber-400 shrink-0 bg-white"/>
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-1">
+                    <span class="font-khand font-bold text-base text-white truncate">${r.templeName}</span>
+                    <span onclick="event.preventDefault();event.stopPropagation();showVerifiedPopup();" class="shrink-0 cursor-pointer" title="व्हेरिफाइड">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 1.5l2.2 1.9 2.9-.4 1.1 2.7 2.7 1.1-.4 2.9 1.9 2.3-1.9 2.3.4 2.9-2.7 1.1-1.1 2.7-2.9-.4-2.2 1.9-2.2-1.9-2.9.4-1.1-2.7-2.7-1.1.4-2.9-1.9-2.3 1.9-2.3-.4-2.9 2.7-1.1 1.1-2.7 2.9.4L12 1.5z" fill="#F59E0B"/><path d="M8.5 12.3l2.3 2.3 4.8-5" stroke="#031926" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </span>
+                  </div>
+                  <div class="flex items-center flex-wrap gap-x-2 gap-y-0.5 text-[11px] text-amber-200 font-bold">
+                    <span>📅 ${r.date}</span>
+                    ${r.sourcePlatform ? (r.sourceUrl ? `<span onclick="event.preventDefault();event.stopPropagation();window.open('${r.sourceUrl}','_blank')" class="text-sky-200 underline cursor-pointer">📸 ${r.sourcePlatform}</span>` : `<span class="text-sky-200">📸 ${r.sourcePlatform}</span>`) : ''}
+                  </div>
                 </div>
-                <div class="text-[11px] text-amber-200 font-bold">📅 ${r.date}</div>
-              </div>
-              <button type="button" onclick="toggleFollow(this,'${r.templeId}')" class="px-2.5 py-1 rounded-full text-[11px] font-extrabold border ${isFol ? 'bg-white/20 border-white/40 text-white' : 'bg-amber-400 border-amber-300 text-[#031926]'}">${isFol ? '✓ फॉलो केले' : '+ फॉलो'}</button>
+              </a>
+              <button type="button" onclick="toggleFollow(this,'${r.templeId}')" class="shrink-0 px-2.5 py-1 rounded-full text-[11px] font-extrabold border ${isFol ? 'bg-white/20 border-white/40 text-white' : 'bg-amber-400 border-amber-300 text-[#031926]'}">${isFol ? '✓ फॉलो केले' : '+ फॉलो'}</button>
             </div>
-            ${showLive && r.liveUrl ? `<button type="button" onclick="openLivePopup(${i})" class="self-start px-3.5 py-1.5 rounded-full bg-rose-600 hover:bg-rose-700 text-white text-xs font-extrabold shadow-lg flex items-center gap-1.5"><span>🔴</span><span>LIVE Darshan घ्या</span></button>` : ''}
+            ${showLive && r.liveUrl ? `<button type="button" onclick="openLivePopup(${i})" class="font-khand self-start px-3.5 py-1.5 rounded-full bg-rose-600 hover:bg-rose-700 text-white text-sm font-bold shadow-lg flex items-center gap-1.5"><span>🔴</span><span>LIVE Darshan घ्या</span></button>` : ''}
           </div>
 
           <div class="actions">
@@ -439,10 +455,20 @@
       const feed = document.getElementById('reelsFeed');
       const obs = new IntersectionObserver((entries) => {
         entries.forEach(en => {
+          const vid = en.target.querySelector('video.reel-bg');
           if (en.isIntersecting) {
             currentReelIdx = Number(en.target.dataset.idx) || 0;
-            playReelAudio(reelsList[currentReelIdx]);
+            const r = reelsList[currentReelIdx];
+            if (vid) {
+              vid.muted = isMuted;
+              vid.play().catch(() => {});
+              document.getElementById('bgAudio').pause();
+            } else {
+              playReelAudio(r);
+            }
             scheduleAutoScroll();
+          } else if (vid) {
+            vid.pause();
           }
         });
       }, { root: feed, threshold: 0.7 });
@@ -477,8 +503,16 @@
     document.getElementById('muteBtn').onclick = () => {
       isMuted = !isMuted;
       const audio = document.getElementById('bgAudio');
-      audio.muted = isMuted;
-      if (!isMuted) audio.play().catch(() => {});
+      const activeEl = document.querySelector(`.reel[data-idx="${currentReelIdx}"]`);
+      const activeVid = activeEl && activeEl.querySelector('video.reel-bg');
+      if (activeVid) {
+        activeVid.muted = isMuted;
+        if (!isMuted) activeVid.play().catch(() => {});
+        audio.pause();
+      } else {
+        audio.muted = isMuted;
+        if (!isMuted) audio.play().catch(() => {});
+      }
       document.getElementById('muteBtn').textContent = isMuted ? '🔇' : '🔊';
     };
 
@@ -500,20 +534,27 @@
     }
 
     window.toggleLike = async (btn, idx) => {
-      if (!requireLogin()) return;
       const r = reelsList[idx];
+      if (!r || r.isAd) return;
       const iconEl = btn.querySelector('span');
       const liked = iconEl.textContent === '❤️';
       iconEl.textContent = liked ? '🤍' : '❤️';
+      try {
+        const gl = JSON.parse(localStorage.getItem('ds_guest_likes_v1') || '{}');
+        if (!liked) gl[r.id] = 1; else delete gl[r.id];
+        localStorage.setItem('ds_guest_likes_v1', JSON.stringify(gl));
+      } catch(_) {}
       if (!liked) {
         const b = document.createElement('div');
         b.className = 'petal-burst';
         b.textContent = '🌸🙏🌸';
         btn.closest('.reel').appendChild(b);
         setTimeout(() => b.remove(), 750);
-        await fbDb.ref(`shortsUserLikes/${currentUser.uid}/${r.id}`).set({ thumb: r.mediaUrl, templeName: r.templeName, ts: Date.now() });
-      } else {
-        await fbDb.ref(`shortsUserLikes/${currentUser.uid}/${r.id}`).remove();
+        if (currentUser) {
+          fbDb.ref(`shortsUserLikes/${currentUser.uid}/${r.id}`).set({ thumb: r.mediaUrl, templeName: r.templeName, ts: Date.now() }).catch(() => {});
+        }
+      } else if (currentUser) {
+        fbDb.ref(`shortsUserLikes/${currentUser.uid}/${r.id}`).remove().catch(() => {});
       }
     };
 

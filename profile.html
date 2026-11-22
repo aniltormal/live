@@ -330,8 +330,8 @@
 
     async function boot() {
       const [cfgSnap, tSnap] = await Promise.all([
-        fbDb.ref('siteConfig/shortsConfig').once('value'),
-        fbDb.ref('temples').once('value')
+        fbDb.ref('siteConfig/shortsConfig').once('value').catch(() => ({ val: () => ({}) })),
+        fbDb.ref('temples').once('value').catch(() => ({ val: () => ({}) }))
       ]);
       shortsCfg = cfgSnap.val() || {};
       const rawT = tSnap.val() || {};
@@ -591,9 +591,9 @@
     };
 
     document.getElementById('shareProfBtn').onclick = () => {
-      const txt = `🙏 माझे दर्शन सेतू भक्ती प्रोफाइल पहा: ${location.href}`;
-      if (navigator.share) navigator.share({ title: 'दर्शन सेतू भक्ती प्रोफाइल', text: txt, url: location.href });
-      else window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank');
+      const msgOnly = '🙏 माझे दर्शन सेतू भक्ती प्रोफाइल पहा:';
+      if (navigator.share) navigator.share({ title: 'दर्शन सेतू भक्ती प्रोफाइल', text: msgOnly, url: location.href });
+      else window.open('https://wa.me/?text=' + encodeURIComponent(msgOnly + ' ' + location.href), '_blank');
     };
 
     function renderGearMenu() {

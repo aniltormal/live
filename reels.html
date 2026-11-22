@@ -202,18 +202,24 @@
           if (Date.now() - parsed.ts < ttlMs) return parsed.data;
         }
       } catch(_) {}
-      const snap = await fbDb.ref(refPath).once('value');
-      const data = snap.val() || {};
-      try { localStorage.setItem(key, JSON.stringify({ ts: Date.now(), data })); } catch(_) {}
-      return data;
+      try {
+        const snap = await fbDb.ref(refPath).once('value');
+        const data = snap.val() || {};
+        try { localStorage.setItem(key, JSON.stringify({ ts: Date.now(), data })); } catch(_) {}
+        return data;
+      } catch(err) {
+        console.warn('RTDB read fallback for', refPath, err && err.message);
+        return {};
+      }
     }
 
     async function boot() {
+      try {
       const [cfgData, tData, dtData, ddSnap, archData] = await Promise.all([
         getCachedOrFetch('ds_shorts_cfg_v1', 'siteConfig/shortsConfig', 300000),
         getCachedOrFetch('ds_temples_v1', 'temples', 600000),
         getCachedOrFetch('ds_dtemples_v1', 'dailyDarshan/temples', 600000),
-        fbDb.ref('dailyDarshan/latest').once('value'),
+        fbDb.ref('dailyDarshan/latest').once('value').catch(() => ({ val: () => ({}) })),
         getCachedOrFetch('ds_dd_arch_v1', 'dailyDarshan/archive', 600000)
       ]);
       shortsCfg = cfgData || {};
@@ -229,6 +235,11 @@
 
       const latest = ddSnap.val() || {};
       buildReelsFeed(latest, archData || {});
+
+      } catch (e) {
+        console.error('Reels boot error:', e);
+        document.getElementById('reelsSkel').classList.add('hidden');
+      }
 
       fbAuth.onAuthStateChanged(async (user) => {
         currentUser = user;
@@ -536,9 +547,9 @@
     window.shareReel = (idx) => {
       const r = reelsList[idx];
       const url = `${location.origin}${location.pathname}?reel=${r.id}`;
-      const txt = `🙏 ${r.templeName}चे मंगल दर्शन पहा: ${url}`;
-      if (navigator.share) navigator.share({ title: r.templeName, text: txt, url });
-      else window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank');
+      const msgOnly = `🙏 ${r.templeName}चे मंगल दर्शन पहा:`;
+      if (navigator.share) navigator.share({ title: r.templeName, text: msgOnly, url });
+      else window.open('https://wa.me/?text=' + encodeURIComponent(msgOnly + ' ' + url), '_blank');
     };
 
     // Split-View Comments

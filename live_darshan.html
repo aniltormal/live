@@ -230,10 +230,10 @@
       animation: playTriClick 1.9s ease-in-out infinite;
       transform-origin: center center;
     }
-      @keyframes ytInfoPeek1b {
-      0%, 22% { max-width: 0; opacity: 0; margin-left: 0; }
-      30%, 72% { max-width: 120px; opacity: 1; margin-left: 5px; }
-      80%, 100% { max-width: 0; opacity: 0; margin-left: 0; }
+      @keyframes ytInfoPeekOnce {
+      0%, 10% { max-width: 0; opacity: 0; margin-left: 0; }
+      24%, 76% { max-width: 120px; opacity: 1; margin-left: 5px; }
+      92%, 100% { max-width: 0; opacity: 0; margin-left: 0; }
     }
     .yt-info-pill-1b {
       background: linear-gradient(90deg, #031926, #084160);
@@ -243,7 +243,12 @@
     .yt-info-pill-1b .yt-info-lbl {
       font-family: 'Khand', 'Noto Sans Devanagari', sans-serif;
       font-weight: 700;
-      animation: ytInfoPeek1b 5s ease-in-out infinite;
+      max-width: 0;
+      opacity: 0;
+      margin-left: 0;
+    }
+    .yt-info-pill-1b.yt-peek-once .yt-info-lbl {
+      animation: ytInfoPeekOnce 3.6s ease-in-out 1 forwards;
     }
     .yt-info-pill-1b:hover .yt-info-lbl {
       animation: none;
@@ -2173,7 +2178,7 @@
               ${isPandharpur ? '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-[#EA580C] text-white border border-orange-300/80 text-[10px] sm:text-xs font-bold shadow">🚩 पंढरपूर विशेष</span>' : ''}
             </div>
             <a href="temple-info.html?id=${encodeURIComponent(temple.id)}" onclick="event.stopPropagation();" aria-label="मंदिर माहिती" title="मंदिर माहिती व वेळापत्रक"
-              class="yt-info-pill-1b absolute top-2 right-2 z-10 h-7 sm:h-8 px-1.5 sm:px-2 rounded-full inline-flex items-center overflow-hidden shadow-md hover:scale-105 transition-all duration-200">
+              data-yt-info-id="${temple.id}" class="yt-info-pill-1b absolute top-2 right-2 z-10 h-7 sm:h-8 px-1.5 sm:px-2 rounded-full inline-flex items-center overflow-hidden shadow-md hover:scale-105 transition-all duration-200">
               <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="11"/><circle cx="12" cy="7.5" r="1" fill="currentColor" stroke="none"/></svg>
               <span class="yt-info-lbl text-[13px] sm:text-[14px] leading-none whitespace-nowrap overflow-hidden">अधिक माहिती पहा</span>
             </a>
@@ -2202,6 +2207,29 @@
         btn.addEventListener('click', () => hasDailyPhotos ? openPhotoSlideshow(temple, dailyObj) : openTemplePopup(temple));
         el.templeGrid.appendChild(btn);
       });
+      if (typeof IntersectionObserver !== 'undefined') {
+        window.__ytPeekedIds = window.__ytPeekedIds || new Set();
+        if (!window.__ytInfoObserver) {
+          window.__ytInfoObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              const pill = entry.target;
+              const tid = pill.getAttribute('data-yt-info-id');
+              if (tid && !window.__ytPeekedIds.has(tid)) {
+                window.__ytPeekedIds.add(tid);
+                pill.classList.add('yt-peek-once');
+              }
+              window.__ytInfoObserver.unobserve(pill);
+            });
+          }, { threshold: 0.35 });
+        }
+        el.templeGrid.querySelectorAll('.yt-info-pill-1b[data-yt-info-id]').forEach((pill) => {
+          const tid = pill.getAttribute('data-yt-info-id');
+          if (tid && !window.__ytPeekedIds.has(tid)) {
+            window.__ytInfoObserver.observe(pill);
+          }
+        });
+      }
     }
 
     function sizeModalBoxToScreen() {

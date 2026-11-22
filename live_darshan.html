@@ -495,7 +495,7 @@
   
   <!-- Daily Photo Slideshow Popup (Exact Match to daily-darshan.html) -->
   <div id="photoSlideshowModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6">
-    <div id="psModalCard" class="w-[94vw] sm:w-[86vw] max-w-[780px] max-h-[92vh] bg-gradient-to-b from-[#031926] to-[#05344E] rounded-3xl border-2 border-amber-400/75 shadow-2xl p-1.5 sm:p-2.5 flex flex-col gap-1.5" onclick="event.stopPropagation()">
+    <div id="psModalCard" style="font-family: 'Khand', 'Noto Sans Devanagari', sans-serif; font-weight: 700;" class="w-[94vw] sm:w-[86vw] max-w-[780px] max-h-[95vh] bg-gradient-to-b from-[#031926] to-[#05344E] rounded-3xl border-2 border-amber-400/75 shadow-2xl p-1.5 sm:p-2.5 flex flex-col gap-1.5" onclick="event.stopPropagation()">
       <div id="psTopHeader" class="flex items-center justify-between gap-2 px-1 text-white transition-all duration-200">
         <div class="min-w-0">
           <h3 id="psTempleTitle" class="text-lg sm:text-xl font-bold text-amber-300 truncate leading-tight"></h3>
@@ -504,10 +504,12 @@
         <button type="button" onclick="closePhotoSlideshow()" aria-label="बंद करा" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/15 hover:bg-rose-600 text-white font-bold flex items-center justify-center cursor-pointer shrink-0 transition">✕</button>
       </div>
 
-      <div id="psEventTabs" class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 px-1 border-y border-white/10 min-h-[38px] transition-all duration-200"></div>
-      <div id="psTabsHint" class="hidden hint-float text-center text-[11px] sm:text-xs font-bold text-amber-200 bg-amber-500/15 border border-amber-400/35 rounded-full py-0.5 px-3 mx-auto tracking-wide transition-all duration-200">👆 येथे क्लिक करून वेगवेगळे फोटो बघा</div>
+      <div id="psMetaBar" class="ps-stage-ctrl flex items-center justify-between gap-2 px-1 py-1.5 border-y border-white/10 transition-opacity duration-200">
+        <div id="psDateTime" class="inline-flex items-center h-7 px-3 rounded-full bg-white/10 text-amber-100 text-[11px] font-bold border border-white/15 whitespace-nowrap"></div>
+        <div id="psSourceInfo" class="flex items-center justify-end max-w-[52%]"></div>
+      </div>
 
-      <div id="psPhotoStage" oncontextmenu="return false;" class="relative w-full h-[64vh] sm:h-[70vh] bg-[#041824] rounded-xl overflow-hidden flex items-center justify-center select-none touch-manipulation transition-all duration-200" style="-webkit-user-select:none; -webkit-touch-callout:none;">
+      <div id="psPhotoStage" oncontextmenu="return false;" class="relative w-full h-[72vh] sm:h-[76vh] bg-[#041824] rounded-xl overflow-hidden flex items-center justify-center select-none touch-pan-y transition-all duration-200" style="-webkit-user-select:none; -webkit-touch-callout:none;">
         <img id="psPhotoBg" src="" alt="" aria-hidden="true" draggable="false"
           class="absolute inset-0 w-full h-full object-cover scale-125 blur-2xl opacity-85 brightness-75 pointer-events-none select-none" />
         <img id="psMainImg" src="" alt="दैनिक दर्शन" draggable="false"
@@ -516,13 +518,8 @@
         <video id="psVideoEl" src="" autoplay playsinline class="hidden relative z-10 max-w-full max-h-full w-full h-full object-contain bg-black rounded-xl pointer-events-none select-none"></video>
         <span id="psCounterBadge" class="ps-stage-ctrl z-20 absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-black/75 text-white text-[11px] font-bold border border-white/20 transition-opacity duration-200">1 / 1</span>
         <button id="psVideoMuteBtn" type="button" onpointerdown="event.stopPropagation()" onpointerup="event.stopPropagation()" onclick="event.stopPropagation(); window.togglePsVideoMute && window.togglePsVideoMute()" aria-label="आवाज बंद/सुरू करा" class="hidden ps-stage-ctrl z-30 absolute top-2.5 right-2.5 w-9 h-9 rounded-full bg-black/80 hover:bg-black text-amber-300 border border-amber-400/70 shadow-lg flex items-center justify-center text-base cursor-pointer transition">🔊</button>
-        <button type="button" onpointerdown="event.stopPropagation()" onpointerup="event.stopPropagation()" onclick="event.stopPropagation(); stepPhotoSlideshow(-1)" aria-label="मागील" class="ps-stage-ctrl z-20 absolute left-2 top-1/2 -translate-y-1/2 w-8 h-10 rounded-full bg-black/55 hover:bg-black/80 text-white text-xl font-bold flex items-center justify-center cursor-pointer transition">‹</button>
-        <button type="button" onpointerdown="event.stopPropagation()" onpointerup="event.stopPropagation()" onclick="event.stopPropagation(); stepPhotoSlideshow(1)" aria-label="पुढील" class="ps-stage-ctrl z-20 absolute right-2 top-1/2 -translate-y-1/2 w-8 h-10 rounded-full bg-black/55 hover:bg-black/80 text-white text-xl font-bold flex items-center justify-center cursor-pointer transition">›</button>
-      </div>
-
-      <div id="psMetaBar" class="ps-stage-ctrl flex items-center justify-between gap-2 px-1 transition-opacity duration-200">
-        <div id="psDateTime" class="inline-flex items-center h-7 px-3 rounded-full bg-white/10 text-amber-100 text-[11px] font-bold border border-white/15 whitespace-nowrap"></div>
-        <div id="psSourceInfo" class="flex items-center justify-end max-w-[52%]"></div>
+        <button type="button" onpointerdown="event.stopPropagation()" onpointerup="event.stopPropagation()" onclick="event.stopPropagation(); stepPhotoSlideshow(-1)" aria-label="मागील" class="ps-stage-ctrl z-20 absolute left-2 top-1/2 -translate-y-1/2 w-8 h-10 rounded-full bg-black/25 hover:bg-black/50 text-white/75 hover:text-white border border-white/15 backdrop-blur-[1px] text-xl font-bold flex items-center justify-center cursor-pointer transition">‹</button>
+        <button type="button" onpointerdown="event.stopPropagation()" onpointerup="event.stopPropagation()" onclick="event.stopPropagation(); stepPhotoSlideshow(1)" aria-label="पुढील" class="ps-stage-ctrl z-20 absolute right-2 top-1/2 -translate-y-1/2 w-8 h-10 rounded-full bg-black/25 hover:bg-black/50 text-white/75 hover:text-white border border-white/15 backdrop-blur-[1px] text-xl font-bold flex items-center justify-center cursor-pointer transition">›</button>
       </div>
 
       <p id="psHintText" class="text-center text-[11px] text-amber-100/75 transition-all duration-200">💡 फोटोवर बोट धरून ठेवल्यास झूम होईल • बाहेर कुठेही टच केल्यास बंद होईल</p>
@@ -1625,9 +1622,10 @@
         const sName = item.source || '';
         const sUrl = item.sourceUrl || '';
         if (sName) {
+          const ico = getSourceBrandIcon(sName, sUrl);
           srcEl.innerHTML = sUrl
-            ? `<a href="${sUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="inline-flex items-center gap-1 h-7 px-3 rounded-full bg-white/10 hover:bg-white/20 text-amber-300 text-[11px] font-bold border border-amber-400/50 truncate">📸 सौजन्य: ${sName} ↗</a>`
-            : `<span class="inline-flex items-center gap-1 h-7 px-3 rounded-full bg-white/10 text-amber-200 text-[11px] font-bold border border-white/15 truncate">📸 सौजन्य: ${sName}</span>`;
+            ? `<a href="${sUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="inline-flex items-center gap-1.5 h-7 px-3 rounded-full bg-white/10 hover:bg-white/20 text-amber-300 text-[11px] font-bold border border-amber-400/50 truncate">${ico}<span class="truncate">सौजन्य: ${sName} ↗</span></a>`
+            : `<span class="inline-flex items-center gap-1.5 h-7 px-3 rounded-full bg-white/10 text-amber-200 text-[11px] font-bold border border-white/15 truncate">${ico}<span class="truncate">सौजन्य: ${sName}</span></span>`;
         } else {
           srcEl.innerHTML = '';
         }
@@ -1692,9 +1690,28 @@
         clearTimeout(ht);
         if (psHolding) { psHolding = false; setPsHoldVisuals(false); startPsAuto(); }
       };
+      stage.addEventListener('pointermove', (e) => {
+        if (sx !== null && Math.abs((e.clientX || 0) - sx) > 12) clearTimeout(ht);
+      });
       stage.addEventListener('pointerup', onUp);
       stage.addEventListener('pointercancel', onCancel);
       stage.addEventListener('pointerleave', onCancel);
+      let tsx = null, tsy = null;
+      stage.addEventListener('touchstart', (e) => {
+        if (e.target.closest('button, a') || !e.touches || !e.touches[0]) { tsx = null; return; }
+        tsx = e.touches[0].clientX; tsy = e.touches[0].clientY;
+      }, { passive: true });
+      stage.addEventListener('touchend', (e) => {
+        if (tsx === null || !e.changedTouches || !e.changedTouches[0]) return;
+        const dx = e.changedTouches[0].clientX - tsx;
+        const dy = e.changedTouches[0].clientY - tsy;
+        tsx = null;
+        if (Math.abs(dx) >= 34 && Math.abs(dx) > Math.abs(dy)) {
+          clearTimeout(ht);
+          if (psHolding) { psHolding = false; setPsHoldVisuals(false); startPsAuto(); }
+          stepPhotoSlideshow(dx < 0 ? 1 : -1);
+        }
+      }, { passive: true });
       stage.addEventListener('contextmenu', (e) => e.preventDefault());
     })();
 

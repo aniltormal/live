@@ -58,6 +58,14 @@
       50% { opacity: 1; transform: translateY(-1.5px); }
     }
     .hint-float { animation: hintFloat 2.2s ease-in-out infinite; }
+      @keyframes calPopOut {
+      0% { opacity: 0; transform: translateY(-8px) scale(0.94); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .cal-pop-anim {
+      animation: calPopOut 0.22s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      transform-origin: top center;
+    }
   </style>
 
   <style id="siteSkelStyle">
@@ -187,22 +195,45 @@
         </div>
       </div>
 
-      <!-- Filter Bar inside Single Temple View: Today first, Last 7 Days second + Temple Switcher Dropdown -->
-      <div class="flex flex-wrap items-center justify-between gap-2 bg-white/95 rounded-2xl border border-amber-200/90 px-3 py-2.5 shadow-xs">
-        <div class="flex flex-wrap items-center gap-2">
-          <button type="button" id="detailFilterToday" onclick="setDetailDateFilter('today')" class="px-3.5 py-1.5 rounded-full border text-xs sm:text-sm font-extrabold transition cursor-pointer flex items-center gap-1.5 bg-white text-[#05344E] border-slate-300 hover:border-amber-400">
+      <!-- Filter Bar inside Single Temple View -->
+      <div class="bg-white/95 rounded-2xl border border-amber-200/90 px-3 py-2.5 shadow-xs space-y-2.5">
+        <!-- Row 1: Date Filter Pills + Pop-out Calendar anchored right below the buttons -->
+        <div class="relative flex flex-wrap items-center gap-2" id="detailDateTabsRow">
+          <button type="button" id="detailFilterToday" onclick="setDetailDateFilter('today')" class="px-3.5 py-1.5 rounded-full border text-xs sm:text-sm font-extrabold transition cursor-pointer flex items-center gap-1.5 bg-gradient-to-r from-[#031926] via-[#05344E] to-[#0a4d70] text-amber-300 border-amber-400 shadow-md">
             <span>📅 आजचे फोटो</span>
-            <span id="detailCountToday" class="px-1.5 py-0.5 rounded-full bg-slate-100 text-[#05344E] text-[10px] font-black">0</span>
+            <span id="detailCountToday" class="px-1.5 py-0.5 rounded-full bg-amber-400 text-[#031926] text-[10px] font-black">0</span>
           </button>
-          <button type="button" id="detailFilter7Days" onclick="setDetailDateFilter('7days')" class="px-3.5 py-1.5 rounded-full border text-xs sm:text-sm font-extrabold transition cursor-pointer flex items-center gap-1.5 bg-gradient-to-r from-[#031926] via-[#05344E] to-[#0a4d70] text-amber-300 border-amber-400 shadow-md">
-            <span>🗓️ मागील ७ दिवस</span>
-            <span id="detailCount7Days" class="px-1.5 py-0.5 rounded-full bg-amber-400 text-[#031926] text-[10px] font-black">0</span>
-          </button>
+          <div id="detail7DayCalAnchor">
+            <button type="button" id="detailFilter7Days" onclick="toggleDetail7DayCal(event)" class="px-3.5 py-1.5 rounded-full border text-xs sm:text-sm font-extrabold transition cursor-pointer flex items-center gap-1.5 bg-white text-[#05344E] border-slate-300 hover:border-amber-400">
+              <span id="detail7DayBtnLabel">🗓️ मागील ७ दिवस</span>
+              <span id="detailCount7Days" class="px-1.5 py-0.5 rounded-full bg-slate-100 text-[#05344E] text-[10px] font-black">0</span>
+              <span class="text-[10px] opacity-75">▼</span>
+            </button>
+          </div>
+          <!-- Pop-out 7-Day Calendar directly below the button row, full width on mobile -->
+          <div id="detail7DayCalWrap" class="hidden cal-pop-anim absolute inset-x-0 sm:left-0 sm:right-auto top-full mt-2 z-50 w-full sm:w-[420px] bg-white rounded-2xl border-2 border-amber-400 p-3 shadow-2xl space-y-2">
+            <div class="flex items-center justify-between gap-2 border-b border-amber-100 pb-1.5">
+              <span class="text-xs font-extrabold text-[#05344E]">🗓️ मागील ७ दिवसांतील तारीख निवडा</span>
+              <span id="detailSelectedDateLabel" class="text-[11px] font-bold text-[#9A3412]"></span>
+            </div>
+            <div id="detail7DayCalGrid" class="grid grid-cols-4 sm:grid-cols-7 gap-1.5"></div>
+          </div>
         </div>
-        <select id="detailTempleSwitch" onchange="if(this.value) openTempleDetailPage(this.value)" aria-label="दुसरे मंदिर निवडा" class="w-full sm:w-52 px-3 py-1.5 rounded-full border-2 border-[#05344E]/25 bg-slate-50 focus:bg-white focus:border-[#05344E] focus:outline-none text-xs font-extrabold text-[#05344E] cursor-pointer"></select>
+
+        <!-- Row 2: Custom Searchable Temple Dropdown (matches screenshot style) -->
+        <div class="relative" id="detailTempleDdWrap">
+          <button type="button" id="detailTempleDdBtn" onclick="toggleDetailTempleDd(event)" class="w-full flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl border-2 border-[#05344E] bg-white text-xs sm:text-sm font-extrabold text-[#05344E] shadow-xs cursor-pointer transition">
+            <span id="detailTempleDdLabel" class="truncate">🛕 मंदिर निवडा</span>
+            <svg class="w-4 h-4 shrink-0 text-[#05344E]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div id="detailTempleDdMenu" class="hidden cal-pop-anim absolute inset-x-0 top-full mt-1.5 z-40 bg-white rounded-2xl border border-slate-200 shadow-2xl p-2 space-y-1.5">
+            <input id="detailTempleSearch" type="search" oninput="renderDetailTempleDdList(this.value)" onclick="event.stopPropagation()" placeholder="🔍 शोधा..." class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white focus:border-[#05344E] focus:outline-none text-xs sm:text-sm font-bold text-[#05344E]" />
+            <div id="detailTempleDdList" class="max-h-60 overflow-y-auto space-y-0.5 pr-0.5"></div>
+          </div>
+        </div>
       </div>
 
-      <div id="detailGalleryContainer" class="space-y-4">
+      <div id="detailGalleryContainer" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
         <div class="bg-white rounded-2xl border border-slate-200 p-8 text-center text-sm text-slate-500">⏳ फोटो लोड होत आहेत...</div>
       </div>
     </section>
@@ -791,7 +822,8 @@
       window.__dailyAllList = list;
       const cachedTempleEvents = {};
       let activeDetailTempleId = null;
-      let detailDateMode = '7days';
+      let detailDateMode = 'today';
+      let selectedArchiveDate = '';
 
       const isVideoMedia = (item) => {
         if (!item) return false;
@@ -923,12 +955,51 @@
         if (cT) cT.className = detailDateMode === 'today' ? 'px-1.5 py-0.5 rounded-full bg-amber-400 text-[#031926] text-[10px] font-black' : 'px-1.5 py-0.5 rounded-full bg-slate-100 text-[#05344E] text-[10px] font-black';
         if (c7) c7.className = detailDateMode === '7days' ? 'px-1.5 py-0.5 rounded-full bg-amber-400 text-[#031926] text-[10px] font-black' : 'px-1.5 py-0.5 rounded-full bg-slate-100 text-[#05344E] text-[10px] font-black';
 
-        const showEvs = detailDateMode === 'today' ? todayEvs : events;
+        const calWrap = document.getElementById('detail7DayCalWrap');
+        const calGrid = document.getElementById('detail7DayCalGrid');
+        const calLbl = document.getElementById('detailSelectedDateLabel');
+
+        // Build exactly last 7 days (yesterday back 7 days)
+        const last7Dates = [];
+        const M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        for (let i = 1; i <= 7; i++) {
+          const d = new Date();
+          d.setDate(d.getDate() - i);
+          const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+          const dayEvs = events.filter(ev => normalizeIsoDate(ev.date) === iso);
+          last7Dates.push({ iso, dayNum: String(d.getDate()).padStart(2, '0'), mon: M[d.getMonth()], cnt: countPhotos(dayEvs), isYest: i === 1 });
+        }
+
+        if (!selectedArchiveDate || !last7Dates.some(x => x.iso === selectedArchiveDate)) {
+          const withPhotos = last7Dates.find(x => x.cnt > 0);
+          selectedArchiveDate = (withPhotos || last7Dates[0]).iso;
+        }
+        const btnLbl = document.getElementById('detail7DayBtnLabel');
+        if (btnLbl) btnLbl.textContent = detailDateMode === '7days' ? `🗓️ ${formatDisplayDate(selectedArchiveDate)}` : '🗓️ मागील ७ दिवस';
+        if (calLbl) calLbl.textContent = formatDisplayDate(selectedArchiveDate);
+        if (calGrid) {
+          calGrid.innerHTML = last7Dates.map(d => {
+            const isSel = detailDateMode === '7days' && d.iso === selectedArchiveDate;
+            return `
+              <button type="button" onclick="selectArchiveDate('${d.iso}')"
+                class="rounded-xl p-1.5 border text-center transition cursor-pointer flex flex-col items-center justify-center gap-0.5 ${isSel ? 'bg-gradient-to-b from-[#031926] to-[#05344E] text-amber-300 border-amber-400 shadow-md' : 'bg-slate-50 hover:bg-amber-50 text-[#05344E] border-slate-200 hover:border-amber-300'}">
+                <span class="text-[9px] font-bold opacity-80">${d.isYest ? 'काल' : d.mon}</span>
+                <span class="text-xs font-black leading-tight">${d.dayNum}</span>
+                <span class="text-[9px] font-extrabold px-1 rounded-full ${isSel ? 'bg-amber-400 text-[#031926]' : (d.cnt > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-500')}">📸 ${d.cnt}</span>
+              </button>
+            `;
+          }).join('');
+        }
+        if (calWrap) calWrap.classList.toggle('hidden', !window.__detail7CalOpen);
+
+        const showEvs = detailDateMode === 'today'
+          ? todayEvs
+          : events.filter(ev => normalizeIsoDate(ev.date) === selectedArchiveDate);
         const box = document.getElementById('detailGalleryContainer');
         if (!showEvs.length) {
           box.innerHTML = detailDateMode === 'today'
-            ? '<div class="bg-white rounded-2xl border border-amber-200 p-8 text-center text-sm text-slate-600 space-y-2"><div class="font-bold text-[#05344E]">आजचे नवीन फोटो या मंदिरासाठी अद्याप अपलोड झालेले नाहीत.</div><button type="button" onclick="setDetailDateFilter(\'7days\')" class="px-4 py-1.5 rounded-full bg-[#05344E] text-amber-300 text-xs font-extrabold cursor-pointer">🗓️ मागील ७ दिवसांचे फोटो पहा</button></div>'
-            : '<div class="bg-white rounded-2xl border border-slate-200 p-8 text-center text-sm text-slate-500">या मंदिराचे फोटो उपलब्ध नाहीत.</div>';
+            ? '<div class="col-span-full bg-white rounded-2xl border border-amber-200 p-8 text-center text-sm text-slate-600 space-y-2"><div class="font-bold text-[#05344E]">आजचे नवीन फोटो या मंदिरासाठी अद्याप अपलोड झालेले नाहीत.</div><button type="button" onclick="setDetailDateFilter(\'7days\')" class="px-4 py-1.5 rounded-full bg-[#05344E] text-amber-300 text-xs font-extrabold cursor-pointer">🗓️ मागील ७ दिवसांतील तारीख निवडा</button></div>'
+            : `<div class="col-span-full bg-white rounded-2xl border border-amber-200 p-8 text-center text-sm text-slate-600"><div class="font-bold text-[#05344E]">${formatDisplayDate(selectedArchiveDate)} रोजी कोणतेही फोटो अपलोड झालेले नाहीत.</div></div>`;
           return;
         }
 
@@ -936,39 +1007,33 @@
           const evIdx = events.indexOf(ev);
           const photos = ev.photos || [];
           const dtDisp = ev.date ? formatDisplayDate(ev.date) : '';
+          const imgCnt = photos.filter(p => !isVideoMedia(p)).length;
+          const hasVid = Boolean(ev.video || photos.some(p => isVideoMedia(p)));
+          const firstImg = photos.find(p => !isVideoMedia(p));
+          const firstAny = firstImg || photos[0];
+          const coverUrl = firstAny ? (firstAny.url || firstAny) : 'icon-512.png';
+          const coverIsVid = Boolean(firstAny && isVideoMedia(firstAny) && !firstImg);
+          const poster = coverIsVid ? getVideoPoster(coverUrl) : '';
+          const srcPill = ev.sourcePlatform
+            ? (ev.sourceUrl
+              ? `<a href="${ev.sourceUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" title="सौजन्य: ${ev.sourcePlatform}" aria-label="सौजन्य: ${ev.sourcePlatform}" class="inline-flex items-center gap-1 h-6 px-2 rounded-full bg-black/75 hover:bg-[#05344E] text-amber-200 border border-amber-300/60 text-[10px] font-bold shadow"><span>सौजन्य:</span>${getSourceBrandIcon(ev.sourcePlatform, ev.sourceUrl)}<span>↗</span></a>`
+              : `<span onclick="event.stopPropagation()" title="सौजन्य: ${ev.sourcePlatform}" aria-label="सौजन्य: ${ev.sourcePlatform}" class="inline-flex items-center gap-1 h-6 px-2 rounded-full bg-black/75 text-amber-200 border border-white/25 text-[10px] font-bold shadow"><span>सौजन्य:</span>${getSourceBrandIcon(ev.sourcePlatform, '')}</span>`)
+            : '';
           return `
-            <div class="bg-white rounded-2xl border border-amber-200 shadow-xs overflow-hidden">
-              <div class="bg-gradient-to-r from-amber-50 via-white to-sky-50 border-b border-amber-200 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2">
-                <div class="min-w-0">
-                  <div class="text-sm sm:text-base font-extrabold text-[#05344E] truncate">${ev.title || 'दैनिक दर्शन'}</div>
-                  <div class="text-[11px] text-[#9A3412] font-bold">${dtDisp ? '📅 ' + dtDisp : ''}${ev.time ? ' • 🕒 ' + ev.time : ''}</div>
+            <div role="button" tabindex="0" onclick="openDetailPhotoInModal('${templeId}', ${evIdx}, 0)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openDetailPhotoInModal('${templeId}', ${evIdx}, 0);}"
+              class="group text-left rounded-2xl overflow-hidden bg-white border-2 border-amber-200 hover:border-[#EA580C] shadow-xs hover:shadow-md transition flex flex-col cursor-pointer">
+              <div class="relative aspect-[4/3] w-full bg-slate-900 overflow-hidden">
+                ${coverIsVid
+                  ? `<video src="${coverUrl}#t=0.5" ${poster ? `poster="${poster}"` : ''} muted playsinline preload="metadata" class="w-full h-full object-cover pointer-events-none"></video><div class="absolute inset-0 bg-black/20 flex items-center justify-center"><span class="w-9 h-9 rounded-full bg-amber-400/95 text-[#031926] shadow flex items-center justify-center pl-0.5 text-sm font-black">▶</span></div>`
+                  : `<img src="${coverUrl}" alt="${ev.title || 'दैनिक दर्शन'}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />`}
+                <div class="absolute top-1.5 left-1.5 flex items-center gap-1 z-10">
+                  <span class="px-2 py-0.5 rounded-full bg-black/75 text-amber-200 border border-white/20 text-[10px] font-extrabold shadow">${imgCnt > 0 ? `📸 ${imgCnt}` : ''}${imgCnt > 0 && hasVid ? ' • ' : ''}${hasVid ? '🎬' : ''}</span>
                 </div>
-                ${ev.sourcePlatform ? (ev.sourceUrl ? `<a href="${ev.sourceUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white hover:bg-amber-50 text-[#05344E] border border-amber-300 text-[10px] font-bold shadow-xs">${getSourceBrandIcon(ev.sourcePlatform, ev.sourceUrl)}<span>सौजन्य: ${ev.sourcePlatform} ↗</span></a>` : `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100 text-[#05344E] border border-amber-300 text-[10px] font-bold">${getSourceBrandIcon(ev.sourcePlatform, '')}<span>सौजन्य: ${ev.sourcePlatform}</span></span>`) : ''}
+                <div class="absolute bottom-1.5 right-1.5 z-10">${srcPill}</div>
               </div>
-              <div class="p-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-3">
-                ${photos.map((p, pIdx) => {
-                  const u = p.url || p;
-                  const isVid = isVideoMedia(p);
-                  const poster = isVid ? getVideoPoster(u) : '';
-                  return `
-                    <button type="button" onclick="openDetailPhotoInModal('${templeId}', ${evIdx}, ${pIdx})" class="group relative aspect-[4/3] rounded-xl overflow-hidden bg-slate-900 border ${isVid ? 'border-2 border-amber-400' : 'border-slate-200'} hover:border-amber-500 shadow-xs cursor-pointer">
-                      ${isVid
-                        ? `<video src="${u}#t=0.5" ${poster ? `poster="${poster}"` : ''} muted playsinline preload="metadata" class="w-full h-full object-cover pointer-events-none"></video>
-                           <div class="absolute inset-0 bg-black/25 flex items-center justify-center">
-                             <span class="w-11 h-11 rounded-full bg-amber-400/95 text-[#031926] shadow-lg flex items-center justify-center pl-0.5 text-lg font-black group-hover:scale-110 transition">▶</span>
-                           </div>
-                           <span class="absolute top-1.5 left-1.5 px-2 py-0.5 rounded-full bg-black/75 text-amber-300 border border-amber-400/50 text-[10px] font-extrabold">🎬 व्हिडिओ</span>`
-                        : `<img src="${u}" alt="${ev.title || 'दर्शन'}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />`}
-                      <span class="absolute bottom-1.5 right-1.5 px-2 py-0.5 rounded-full bg-black/65 text-white text-[10px] font-bold">${pIdx + 1}/${photos.length}</span>
-                    </button>
-                  `;
-                }).join('')}
-                ${ev.video ? `
-                  <button type="button" onclick="openDetailPhotoInModal('${templeId}', ${evIdx}, ${photos.length})" class="group relative aspect-[4/3] rounded-xl overflow-hidden bg-[#031926] border-2 border-amber-400 shadow-xs cursor-pointer flex flex-col items-center justify-center text-amber-300 gap-1">
-                    <span class="text-2xl">🎬</span>
-                    <span class="text-xs font-extrabold">व्हिडिओ पहा</span>
-                  </button>
-                ` : ''}
+              <div class="p-2.5 flex-1 flex flex-col justify-between gap-1 bg-gradient-to-r from-amber-50/80 via-white to-sky-50/70 border-t border-amber-200">
+                <div class="text-xs sm:text-sm font-extrabold text-[#05344E] line-clamp-2 leading-tight">${ev.title || 'दैनिक दर्शन'}</div>
+                <div class="text-[10px] sm:text-[11px] text-[#9A3412] font-bold truncate">${dtDisp ? '📅 ' + dtDisp : ''}${ev.time ? ' • 🕒 ' + ev.time : ''}</div>
               </div>
             </div>
           `;
@@ -988,19 +1053,61 @@
         startAutoScroll();
       };
 
+      window.renderDetailTempleDdList = (q) => {
+        const box = document.getElementById('detailTempleDdList');
+        if (!box) return;
+        const term = (q || '').trim().toLowerCase();
+        const items = term ? list.filter(x => `${x.shortTitle || ''} ${x.name || ''}`.toLowerCase().includes(term)) : list;
+        if (!items.length) {
+          box.innerHTML = '<div class="px-3 py-2 text-xs text-slate-500 text-center">मंदिर सापडले नाही</div>';
+          return;
+        }
+        box.innerHTML = items.map(x => {
+          const act = x.id === activeDetailTempleId;
+          const nm = x.shortTitle || x.name || x.id;
+          return `<button type="button" onclick="selectDetailTempleDd('${x.id}')" class="w-full flex items-center justify-between gap-2 px-3 py-2 rounded-xl text-left text-xs sm:text-sm font-bold transition cursor-pointer ${act ? 'bg-sky-50 text-[#05344E] font-extrabold' : 'text-slate-700 hover:bg-slate-50'}"><span class="truncate">${nm}</span>${act ? '<span class="text-[#05344E] font-black shrink-0">✓</span>' : ''}</button>`;
+        }).join('');
+      };
+      window.toggleDetailTempleDd = (e) => {
+        if (e && e.stopPropagation) e.stopPropagation();
+        const m = document.getElementById('detailTempleDdMenu');
+        if (!m) return;
+        const willOpen = m.classList.contains('hidden');
+        m.classList.toggle('hidden', !willOpen);
+        if (willOpen) {
+          window.__detail7CalOpen = false;
+          const cw = document.getElementById('detail7DayCalWrap');
+          if (cw) cw.classList.add('hidden');
+          renderDetailTempleDdList('');
+        }
+      };
+      window.selectDetailTempleDd = (id) => {
+        const m = document.getElementById('detailTempleDdMenu');
+        if (m) m.classList.add('hidden');
+        openTempleDetailPage(id);
+      };
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('#detailTempleDdWrap')) {
+          const m = document.getElementById('detailTempleDdMenu');
+          if (m) m.classList.add('hidden');
+        }
+      });
       window.openTempleDetailPage = (templeId, skipPush) => {
         if (!templeId || !merged[templeId]) return;
         activeDetailTempleId = templeId;
+        detailDateMode = 'today';
+        selectedArchiveDate = '';
         const t = merged[templeId];
         const lat = latestMap[templeId] || {};
         document.getElementById('blocksListView').classList.add('hidden');
         document.getElementById('templeDetailView').classList.remove('hidden');
         document.getElementById('detailTempleTitle').textContent = t.name || t.shortTitle || templeId;
         document.getElementById('detailTempleSub').textContent = (lat.pujaTitle || 'दैनिक अलंकार व आरती') + (lat.date ? ' • ' + formatDisplayDate(lat.date) : '');
-        const sw = document.getElementById('detailTempleSwitch');
-        if (sw) {
-          sw.innerHTML = list.map(x => `<option value="${x.id}" ${x.id === templeId ? 'selected' : ''}>🛕 ${x.shortTitle || x.name || x.id}</option>`).join('');
-        }
+        const ddLbl = document.getElementById('detailTempleDdLabel');
+        if (ddLbl) ddLbl.textContent = t.shortTitle || t.name || templeId;
+        const srch = document.getElementById('detailTempleSearch');
+        if (srch) srch.value = '';
+        renderDetailTempleDdList('');
         if (!skipPush) {
           const u = new URL(window.location.href);
           u.searchParams.set('temple', templeId);
@@ -1024,8 +1131,28 @@
 
       window.setDetailDateFilter = (mode) => {
         detailDateMode = mode === 'today' ? 'today' : '7days';
+        window.__detail7CalOpen = (detailDateMode === '7days');
         if (activeDetailTempleId) renderTempleDetailGallery(activeDetailTempleId);
       };
+      window.toggleDetail7DayCal = (e) => {
+        if (e && e.stopPropagation) e.stopPropagation();
+        window.__detail7CalOpen = !window.__detail7CalOpen;
+        const w = document.getElementById('detail7DayCalWrap');
+        if (w) w.classList.toggle('hidden', !window.__detail7CalOpen);
+      };
+      window.selectArchiveDate = (iso) => {
+        selectedArchiveDate = iso;
+        detailDateMode = '7days';
+        window.__detail7CalOpen = false;
+        if (activeDetailTempleId) renderTempleDetailGallery(activeDetailTempleId);
+      };
+      document.addEventListener('click', (e) => {
+        if (window.__detail7CalOpen && !e.target.closest('#detail7DayCalAnchor') && !e.target.closest('#detail7DayCalWrap')) {
+          window.__detail7CalOpen = false;
+          const w = document.getElementById('detail7DayCalWrap');
+          if (w) w.classList.add('hidden');
+        }
+      });
 
       window.shareCurrentDetailTemple = async () => {
         const title = document.getElementById('detailTempleTitle')?.textContent || 'दैनिक फोटो दर्शन';

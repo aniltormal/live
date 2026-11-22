@@ -237,9 +237,9 @@
             <div class="flex flex-wrap items-center gap-2">
               <select id="exportReportFilter" onchange="window.__selectedExportFilter = this.value" aria-label="Export डेटा निवडा" class="px-2.5 py-1 rounded-lg border border-slate-300 bg-white text-xs font-bold text-[#05344E] cursor-pointer">
                 <option value="all">सर्व जाहिराती (All)</option>
-                <option value="banners">फक्त सर्व स्लाईडर्स</option>
-                <option value="preroll">फक्त Pre-Roll जाहिरात</option>
-                <option value="splash">फक्त Splash जाहिरात</option>
+                <option value="banners">सर्व स्लाईडर्स</option>
+                <option value="preroll">Pre-Roll जाहिरात</option>
+                <option value="splash">Splash जाहिरात</option>
               </select>
               <button type="button" onclick="exportAdReportCsv()" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs cursor-pointer">📥 CSV</button>
               <button type="button" onclick="exportAdReportJpg()" class="px-2.5 py-1 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold shadow-xs cursor-pointer">🖼️ JPG</button>
@@ -534,6 +534,13 @@
           renderSlots(currentAds.bannerSlides);
         });
       });
+      box.querySelectorAll('.slot-sponsor, .slot-link').forEach((inp) => {
+        inp.addEventListener('input', () => {
+          syncSlotsFromDOM();
+          if (typeof renderAdReports === "function") renderAdReports();
+        });
+      });
+      if (typeof renderAdReports === "function") renderAdReports();
     }
 
     document.getElementById('addBannerSlotBtn').addEventListener('click', () => {
@@ -733,13 +740,13 @@
       if (selEl) {
         const prevVal = window.__selectedExportFilter || selEl.value || 'all';
         const activeForSel = slides.map((s, idx) => ({ s, idx })).filter(x => x.s && (x.s.image || x.s.text || x.s.link || x.s.sponsor));
-        const sig = activeForSel.map(x => `${x.idx}:${x.s.sponsor||''}:${x.s.text||''}`).join('|');
+        const sig = activeForSel.map(x => `${x.idx}:${x.s.adId||''}:${x.s.sponsor||''}:${x.s.text||''}`).join('|');
         if (selEl.dataset.sig !== sig) {
           selEl.dataset.sig = sig;
           const slideOpts = activeForSel
-            .map(({ s, idx }) => `<option value="slide:${idx}">फक्त स्लाईड ${idx + 1}${s.sponsor ? ' — ' + esc(s.sponsor).slice(0, 18) : (s.text ? ' (' + esc(s.text).slice(0, 18) + ')' : '')}</option>`)
+            .map(({ s, idx }) => `<option value="slide:${idx}">स्लाईड ${idx + 1}${s.sponsor ? ' — ' + esc(s.sponsor).slice(0, 18) : (s.text ? ' (' + esc(s.text).slice(0, 18) + ')' : '')}</option>`)
             .join('');
-          selEl.innerHTML = `<option value="all">सर्व जाहिराती (All)</option><option value="banners">फक्त सर्व स्लाईडर्स</option>${slideOpts}<option value="preroll">फक्त Pre-Roll जाहिरात</option><option value="splash">फक्त Splash जाहिरात</option>`;
+          selEl.innerHTML = `<option value="all">सर्व जाहिराती (All)</option><option value="banners">सर्व स्लाईडर्स</option>${slideOpts}<option value="preroll">Pre-Roll जाहिरात</option><option value="splash">Splash जाहिरात</option>`;
         }
         if ([...selEl.options].some(o => o.value === prevVal)) {
           selEl.value = prevVal;
@@ -1193,7 +1200,9 @@
         const ads = snap.val() || {};
         currentAds = Object.assign({ bannerSlides: [{}, {}, {}] }, ads);
         if (!Array.isArray(currentAds.bannerSlides) || currentAds.bannerSlides.length < 3) {
-          const base = Array.isArray(currentAds.bannerSlides) ? currentAds.bannerSlides : [];
+          const base = Array.isArray(currentAds.bannerSlides)
+            ? currentAds.bannerSlides
+            : (currentAds.bannerSlides && typeof currentAds.bannerSlides === "object" ? Object.values(currentAds.bannerSlides) : []);
           while (base.length < 3) base.push({});
           currentAds.bannerSlides = base;
         }

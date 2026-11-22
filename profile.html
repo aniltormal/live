@@ -334,7 +334,10 @@
         fbDb.ref('temples').once('value')
       ]);
       shortsCfg = cfgSnap.val() || {};
-      templesMap = tSnap.val() || {};
+      const rawT = tSnap.val() || {};
+      const normT = {};
+      (Array.isArray(rawT) ? rawT : Object.values(rawT)).forEach(t => { if (t && t.id && !t.deleted) normT[t.id] = t; });
+      templesMap = normT;
       const termsTxt = (shortsCfg.moderation && shortsCfg.moderation.termsText) || '१. ही सेवा पूर्णपणे निःशुल्क आहे.\n२. खरे नाव नोंदवा (नंतर बदलता येणार नाही).\n३. मोबाईल नंबर गोपनीय राहील.';
       document.getElementById('termsBodyText').textContent = termsTxt;
       renderWizTemples();

@@ -328,7 +328,10 @@
 
     async function loadTemples() {
       const snap = await fbDb.ref('temples').once('value');
-      templesMap = snap.val() || {};
+      const raw = snap.val() || {};
+      const norm = {};
+      (Array.isArray(raw) ? raw : Object.values(raw)).forEach(t => { if (t && t.id && !t.deleted) norm[t.id] = t; });
+      templesMap = norm;
       const sel = document.getElementById('audioTempleSelect');
       const entries = Object.entries(templesMap);
       sel.innerHTML = entries.length

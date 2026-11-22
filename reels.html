@@ -209,19 +209,26 @@
     }
 
     async function boot() {
-      const [cfgData, tData, ddSnap] = await Promise.all([
+      const [cfgData, tData, dtData, ddSnap, archData] = await Promise.all([
         getCachedOrFetch('ds_shorts_cfg_v1', 'siteConfig/shortsConfig', 300000),
         getCachedOrFetch('ds_temples_v1', 'temples', 600000),
-        fbDb.ref('dailyDarshan/latest').once('value')
+        getCachedOrFetch('ds_dtemples_v1', 'dailyDarshan/temples', 600000),
+        fbDb.ref('dailyDarshan/latest').once('value'),
+        getCachedOrFetch('ds_dd_arch_v1', 'dailyDarshan/archive', 600000)
       ]);
       shortsCfg = cfgData || {};
-      templesMap = tData || {};
+      const mergedT = {};
+      const arrT = Array.isArray(tData) ? tData : Object.values(tData || {});
+      arrT.forEach(t => { if (t && t.id && !t.deleted) mergedT[t.id] = t; });
+      const arrDT = Array.isArray(dtData) ? dtData : Object.values(dtData || {});
+      arrDT.forEach(t => { if (t && t.id) mergedT[t.id] = { ...(mergedT[t.id] || {}), ...t }; });
+      templesMap = mergedT;
       if (shortsCfg.ui && shortsCfg.ui.customLogoUrl) {
         document.getElementById('reelsLogoImg').src = shortsCfg.ui.customLogoUrl;
       }
 
       const latest = ddSnap.val() || {};
-      buildReelsFeed(latest);
+      buildReelsFeed(latest, archData || {});
 
       fbAuth.onAuthStateChanged(async (user) => {
         currentUser = user;
@@ -237,34 +244,75 @@
       });
     }
 
-    function buildReelsFeed(latestObj) {
+    function buildReelsFeed(latestObj, archObj) {
       const hiddenIds = (shortsCfg.feed && shortsCfg.feed.hiddenReelIds) || {};
       const syncHidden = !shortsCfg.feed || shortsCfg.feed.syncHiddenTemples !== false;
+      const daysLimit = (shortsCfg.feed && Number(shortsCfg.feed.daysLimit)) || 15;
+      const freshOnTop = !shortsCfg.feed || shortsCfg.feed.freshOnTop !== false;
       const filterTemple = urlParams.get('temple');
       const filterReel = urlParams.get('reel');
 
-      let items = [];
-      Object.entries(latestObj).forEach(([tid, data]) => {
+      const cutoffDate = new Date();
+      cutoffDate.setDate(cutoffDate.getDate() - daysLimit);
+      const cutoffIso = cutoffDate.toISOString().slice(0, 10);
+
+      let freshItems = [];
+      let oldItems = [];
+      const seenUrls = new Set();
+
+      const pushPhoto = (targetArr, tid, data, rawItem, dtLabel, idx) => {
+        const pUrl = typeof rawItem === 'string' ? rawItem : (rawItem && (rawItem.url || rawItem.src || rawItem.image)) || '';
+        if (!pUrl || seenUrls.has(pUrl)) return;
+        seenUrls.add(pUrl);
+        const isVid = (typeof rawItem === 'object' && rawItem && rawItem.type === 'video') || /\.(mp4|webm|mov)(\?|$)/i.test(pUrl);
         const tInfo = templesMap[tid] || {};
-        if (syncHidden && tInfo.visible === false) return;
+        if (syncHidden && (tInfo.visible === false || tInfo.hiddenInDaily)) return;
+        const rid = `${tid}_${dtLabel}_${idx}`.replace(/[^a-zA-Z0-9_-]/g, '_');
+        if (hiddenIds[rid]) return;
+        if (filterTemple && tid !== filterTemple) return;
+        const tThumb = tInfo.image || tInfo.photo || tInfo.thumb || tInfo.img || pUrl;
+        targetArr.push({
+          id: rid,
+          templeId: tid,
+          templeName: tInfo.name || tInfo.shortTitle || tInfo.title || data.templeName || tid,
+          templeImg: isVid ? optImg(tThumb) : optImg(tThumb),
+          mediaUrl: isVid ? pUrl : optImg(pUrl),
+          isVideo: isVid,
+          date: data.date || dtLabel || 'आजचे दर्शन',
+          liveUrl: tInfo.liveUrl || tInfo.streamUrl || tInfo.m3u8 || tInfo.youtube || tInfo.url || '',
+          liveType: tInfo.type || tInfo.streamType || '',
+          ts: data.updatedAt || Date.now()
+        });
+      };
+
+      Object.entries(latestObj || {}).forEach(([tid, data]) => {
         const photos = Array.isArray(data.photos) ? data.photos : (data.image ? [data.image] : (data.url ? [data.url] : []));
-        photos.forEach((pUrl, idx) => {
-          const rid = `${tid}_${idx}`;
-          if (hiddenIds[rid]) return;
-          if (filterTemple && tid !== filterTemple) return;
-          items.push({
-            id: rid,
-            templeId: tid,
-            templeName: tInfo.name || tInfo.title || data.templeName || tid,
-            templeImg: optImg(tInfo.image || tInfo.photo || pUrl),
-            mediaUrl: optImg(pUrl),
-            date: data.date || 'आजचे दर्शन',
-            liveUrl: tInfo.liveUrl || tInfo.streamUrl || tInfo.url || '',
-            liveType: tInfo.type || tInfo.streamType || '',
-            ts: data.updatedAt || Date.now()
-          });
+        photos.forEach((pUrl, idx) => pushPhoto(freshItems, tid, data, pUrl, data.date || 'latest', idx));
+      });
+
+      Object.entries(archObj || {}).forEach(([tid, datesMap]) => {
+        Object.entries(datesMap || {}).forEach(([dt, data]) => {
+          if (dt < cutoffIso || !data) return;
+          const photos = Array.isArray(data.photos) ? data.photos : [];
+          photos.forEach((pUrl, idx) => pushPhoto(oldItems, tid, data, pUrl, dt, idx));
         });
       });
+
+      if (shortsCfg.feed && shortsCfg.feed.smartShuffle && !filterReel) {
+        for (let i = oldItems.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [oldItems[i], oldItems[j]] = [oldItems[j], oldItems[i]];
+        }
+        if (!freshOnTop) {
+          freshItems = [...freshItems, ...oldItems];
+          oldItems = [];
+          for (let i = freshItems.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [freshItems[i], freshItems[j]] = [freshItems[j], freshItems[i]];
+          }
+        }
+      }
+      let items = [...freshItems, ...oldItems];
 
       // Fallback if latest is empty
       if (!items.length) {
@@ -284,12 +332,7 @@
         });
       }
 
-      if (shortsCfg.feed && shortsCfg.feed.smartShuffle && !filterReel) {
-        for (let i = items.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [items[i], items[j]] = [items[j], items[i]];
-        }
-      }
+
       if (filterReel) {
         const idx = items.findIndex(x => x.id === filterReel);
         if (idx > 0) { const [picked] = items.splice(idx, 1); items.unshift(picked); }
@@ -333,7 +376,7 @@
         }
         const isFol = !!followedMap[r.templeId];
         return `<div class="reel" data-idx="${i}" data-rid="${r.id}">
-          <img src="${r.mediaUrl}" loading="lazy" alt="${r.templeName}" class="reel-bg" />
+          ${r.isVideo ? `<video src="${r.mediaUrl}" autoplay muted loop playsinline preload="metadata" class="reel-bg"></video>` : `<img src="${r.mediaUrl}" loading="lazy" alt="${r.templeName}" class="reel-bg" />`}
           <div class="reel-grad"></div>
 
           <div class="bottom-left">

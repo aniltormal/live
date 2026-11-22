@@ -1348,7 +1348,12 @@
           return `<a href="temple-info.html?id=${encodeURIComponent(t.id)}" class="${cls}">${isP ? '⭐ ' : '🛕 '}${escM(t.shortTitle || t.title || t.name || t.id)}</a>`;
         }).join('');
       }
-      renderMenuTemples(DEF_TEMPLES);
+      try {
+        const cachedM = JSON.parse(localStorage.getItem('ds_menu_temples_v1') || '[]');
+        renderMenuTemples((Array.isArray(cachedM) && cachedM.length) ? cachedM : DEF_TEMPLES);
+      } catch(_) {
+        renderMenuTemples(DEF_TEMPLES);
+      }
 
       try {
         if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
@@ -1356,7 +1361,11 @@
           mdb.ref('temples').on('value', (snap) => {
             const val = snap.val();
             const arr = Array.isArray(val) ? val : (val && typeof val === 'object' ? Object.entries(val).map(([k, v]) => (v && typeof v === 'object' ? { id: v.id || k, ...v } : null)).filter(Boolean) : []);
-            if (arr.length) renderMenuTemples(arr.sort((a,b) => (Number(a.order)||999)-(Number(b.order)||999)));
+            if (arr.length) {
+              const sorted = arr.sort((a,b) => (Number(a.order)||999)-(Number(b.order)||999));
+              try { localStorage.setItem('ds_menu_temples_v1', JSON.stringify(sorted.filter(t => t && t.id && !t.deleted && !t.hidden).map(t => ({ id: t.id, shortTitle: t.shortTitle || t.title || t.name || t.id })))); } catch(_) {}
+              renderMenuTemples(sorted);
+            }
           });
           mdb.ref('siteConfig/menuLinks').on('value', (snap) => {
             const m = snap.val();

@@ -691,16 +691,7 @@
 
       const grid = document.getElementById('templeBlocksGrid');
       if (grid) {
-        const colsMap = {
-          '1': 'grid-cols-1',
-          '2': 'grid-cols-2 sm:grid-cols-2',
-          '3': 'grid-cols-2 sm:grid-cols-3',
-          '4': 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4',
-          '5': 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-5',
-          '6': 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-6'
-        };
-        const cCls = colsMap[String(u.gridCols || '2')] || 'grid-cols-2 sm:grid-cols-2';
-        grid.className = `grid ${cCls} gap-2.5 sm:gap-4`;
+        grid.className = 'grid grid-cols-1 md:grid-cols-2 gap-3';
       }
 
       const featHMap = { xs: 'h-36 sm:h-44', sm: 'h-40 sm:h-52', md: 'h-48 sm:h-64', lg: 'h-56 sm:h-72', xl: 'h-64 sm:h-80' };
@@ -766,6 +757,16 @@
       let activeDetailTempleId = null;
       let detailDateMode = '7days';
 
+      const isVideoMedia = (item) => {
+        if (!item) return false;
+        if (typeof item === 'object' && item.type === 'video') return true;
+        const u = String(typeof item === 'string' ? item : (item.url || ''));
+        return /\.(mp4|webm|mov)(\?|$)/i.test(u) || u.includes('/video/upload/');
+      };
+      const getVideoPoster = (u) => {
+        const s = String(u || '');
+        return s.includes('/video/upload/') ? s.replace(/\.(mp4|webm|mov)(\?.*)?$/i, '.jpg') : '';
+      };
       const normalizeIsoDate = (val) => {
         if (!val) return '';
         const s = String(val).trim();
@@ -788,17 +789,23 @@
         }
         grid.innerHTML = list.map(t => {
           const lat = latestMap[t.id] || {};
-          const cover = (lat.photos && lat.photos[0] && (lat.photos[0].url || lat.photos[0])) || t.image || 'icon-512.png';
+          const allMedia = Array.isArray(lat.photos) ? lat.photos : [];
+          const firstImg = allMedia.find(m => !isVideoMedia(m));
+          const firstAny = firstImg || allMedia[0];
+          const cover = (firstAny && (firstAny.url || firstAny)) || t.image || 'icon-512.png';
+          const coverIsVid = Boolean(firstAny && isVideoMedia(firstAny) && !firstImg);
           const title = t.shortTitle || t.name || t.id;
           const isFeat = Boolean(featId && t.id === featId);
           const isTodayCard = normalizeIsoDate(lat.date) === todayIso;
-          const pCnt = Array.isArray(lat.photos) ? lat.photos.length : 0;
-          const hasVid = Boolean(lat.video || lat.videoUrl);
+          const pCnt = allMedia.filter(m => !isVideoMedia(m)).length;
+          const hasVid = Boolean(lat.video || lat.videoUrl || allMedia.some(m => isVideoMedia(m)));
           return `
             <button type="button" onclick="openTempleDetailPage('${t.id}')"
               class="group text-left rounded-2xl overflow-hidden transition flex items-stretch gap-3 p-2.5 sm:p-3 cursor-pointer bg-gradient-to-r from-white via-amber-50/75 to-sky-50/80 ${isFeat ? 'md:col-span-2 border-2 border-amber-400 shadow-md' : 'border border-amber-200 hover:border-[#EA580C] shadow-xs hover:shadow-md'}">
               <div class="relative w-24 h-24 sm:w-28 sm:h-24 shrink-0 rounded-xl overflow-hidden bg-slate-100 border border-amber-300/80">
-                <img src="${cover}" alt="${title}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+                ${coverIsVid
+                  ? `<video src="${cover}#t=0.5" ${getVideoPoster(cover) ? `poster="${getVideoPoster(cover)}"` : ''} muted playsinline preload="metadata" class="w-full h-full object-cover pointer-events-none"></video><span class="absolute inset-0 flex items-center justify-center bg-black/25 text-white text-lg">▶</span>`
+                  : `<img src="${cover}" alt="${title}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />`}
                 ${isTodayCard ? `<span class="absolute top-1 left-1 px-1.5 py-0.5 rounded-full bg-emerald-600/95 text-white border border-emerald-300/80 text-[9px] font-extrabold shadow">✨ आजचे</span>` : ''}
                 ${isFeat ? `<span class="absolute bottom-1 left-1 px-1.5 py-0.5 rounded-full bg-gradient-to-r from-[#EA580C] to-amber-500 text-white text-[9px] font-extrabold shadow">⭐ प्रमुख</span>` : ''}
               </div>
@@ -849,7 +856,8 @@
                 }
                 dayMap[bid] = { id: bid, title: pTitle, date: dt, time: tm, sourcePlatform: obj.sourcePlatform || dayObj.sourcePlatform || '', sourceUrl: obj.sourceUrl || dayObj.sourceUrl || '', photos: [], video: '' };
               }
-              dayMap[bid].photos.push({ url: obj.url || obj, time: obj.time || '', sourcePlatform: obj.sourcePlatform || '', sourceUrl: obj.sourceUrl || '' });
+              const mUrl = obj.url || obj;
+              dayMap[bid].photos.push({ url: mUrl, type: obj.type || (isVideoMedia(mUrl) ? 'video' : 'image'), time: obj.time || '', sourcePlatform: obj.sourcePlatform || '', sourceUrl: obj.sourceUrl || '' });
             });
             Object.values(dayMap).forEach(ev => base.push(ev));
           });
@@ -904,9 +912,17 @@
               <div class="p-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-3">
                 ${photos.map((p, pIdx) => {
                   const u = p.url || p;
+                  const isVid = isVideoMedia(p);
+                  const poster = isVid ? getVideoPoster(u) : '';
                   return `
-                    <button type="button" onclick="openDetailPhotoInModal('${templeId}', ${evIdx}, ${pIdx})" class="group relative aspect-[4/3] rounded-xl overflow-hidden bg-slate-100 border border-slate-200 hover:border-amber-500 shadow-xs cursor-pointer">
-                      <img src="${u}" alt="${ev.title || 'दर्शन'}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+                    <button type="button" onclick="openDetailPhotoInModal('${templeId}', ${evIdx}, ${pIdx})" class="group relative aspect-[4/3] rounded-xl overflow-hidden bg-slate-900 border ${isVid ? 'border-2 border-amber-400' : 'border-slate-200'} hover:border-amber-500 shadow-xs cursor-pointer">
+                      ${isVid
+                        ? `<video src="${u}#t=0.5" ${poster ? `poster="${poster}"` : ''} muted playsinline preload="metadata" class="w-full h-full object-cover pointer-events-none"></video>
+                           <div class="absolute inset-0 bg-black/25 flex items-center justify-center">
+                             <span class="w-11 h-11 rounded-full bg-amber-400/95 text-[#031926] shadow-lg flex items-center justify-center pl-0.5 text-lg font-black group-hover:scale-110 transition">▶</span>
+                           </div>
+                           <span class="absolute top-1.5 left-1.5 px-2 py-0.5 rounded-full bg-black/75 text-amber-300 border border-amber-400/50 text-[10px] font-extrabold">🎬 व्हिडिओ</span>`
+                        : `<img src="${u}" alt="${ev.title || 'दर्शन'}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />`}
                       <span class="absolute bottom-1.5 right-1.5 px-2 py-0.5 rounded-full bg-black/65 text-white text-[10px] font-bold">${pIdx + 1}/${photos.length}</span>
                     </button>
                   `;
@@ -1138,7 +1154,12 @@
           return `<a href="temple-info.html?id=${encodeURIComponent(t.id)}" class="${cls}">${isP ? '⭐ ' : '🛕 '}${escM(t.shortTitle || t.title || t.name || t.id)}</a>`;
         }).join('');
       }
-      renderMenuTemples(DEF_TEMPLES);
+      try {
+        const cachedM = JSON.parse(localStorage.getItem('ds_menu_temples_v1') || '[]');
+        renderMenuTemples((Array.isArray(cachedM) && cachedM.length) ? cachedM : DEF_TEMPLES);
+      } catch(_) {
+        renderMenuTemples(DEF_TEMPLES);
+      }
 
       try {
         if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
@@ -1160,7 +1181,11 @@
           mdb.ref('temples').on('value', (snap) => {
             const val = snap.val();
             const arr = Array.isArray(val) ? val : (val && typeof val === 'object' ? Object.entries(val).map(([k, v]) => (v && typeof v === 'object' ? { id: v.id || k, ...v } : null)).filter(Boolean) : []);
-            if (arr.length) renderMenuTemples(arr.sort((a,b) => (Number(a.order)||999)-(Number(b.order)||999)));
+            if (arr.length) {
+              const sorted = arr.sort((a,b) => (Number(a.order)||999)-(Number(b.order)||999));
+              try { localStorage.setItem('ds_menu_temples_v1', JSON.stringify(sorted.filter(t => t && t.id && !t.deleted && !t.hidden).map(t => ({ id: t.id, shortTitle: t.shortTitle || t.title || t.name || t.id })))); } catch(_) {}
+              renderMenuTemples(sorted);
+            }
           });
           mdb.ref('siteConfig/menuLinks').on('value', (snap) => {
             const m = snap.val();

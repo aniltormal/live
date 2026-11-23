@@ -390,10 +390,15 @@
     }
 
     async function loadTemples() {
-      const snap = await fbDb.ref('temples').once('value');
-      const raw = snap.val() || {};
+      const [s1, s2] = await Promise.all([
+        fbDb.ref('temples').once('value').catch(() => ({ val: () => ({}) })),
+        fbDb.ref('dailyDarshan/temples').once('value').catch(() => ({ val: () => ({}) }))
+      ]);
+      const raw = s1.val() || {};
+      const rawDt = s2.val() || {};
       const norm = {};
       (Array.isArray(raw) ? raw : Object.values(raw)).forEach(t => { if (t && t.id && !t.deleted) norm[t.id] = t; });
+      (Array.isArray(rawDt) ? rawDt : Object.values(rawDt)).forEach(t => { if (t && t.id && !t.deleted) norm[t.id] = { ...(norm[t.id] || {}), ...t }; });
       templesMap = norm;
       const sel = document.getElementById('audioTempleSelect');
       const entries = Object.entries(templesMap);

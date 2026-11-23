@@ -1513,7 +1513,7 @@
       </div>
     </div>
 
-    <audio id="bgAudio" preload="metadata" loop></audio>
+    <audio id="bgAudio" preload="auto" loop playsinline></audio>
   </div>
 
   <script>
@@ -1605,7 +1605,7 @@
     async function boot() {
       try {
         const [cfgData, tData, dtData, ddSnap, archData] = await Promise.all([
-          getCachedOrFetch('ds_shorts_cfg_v2', 'siteConfig/shortsConfig', 300000),
+          fbDb.ref('siteConfig/shortsConfig').once('value').then(s => s.val() || {}).catch(() => ({})),
           getCachedOrFetch('ds_temples_v2', 'temples', 600000),
           getCachedOrFetch('ds_dtemples_v2', 'dailyDarshan/temples', 600000),
           fbDb.ref('dailyDarshan/latest').once('value').catch(() => ({ val: () => ({}) })),
@@ -1647,6 +1647,25 @@
       });
     }
 
+    function getTempleTracks(tid, templeName) {
+      const tt = (shortsCfg.audio && shortsCfg.audio.templeTracks) || {};
+      if (tt[tid] && tt[tid].length) return tt[tid];
+      const clean = s => String(s || '').toLowerCase().replace(/[^a-z0-9\u0900-\u097f]+/g, '');
+      const cTid = clean(tid);
+      const cName = clean(templeName);
+      for (const [k, arr] of Object.entries(tt)) {
+        if (!Array.isArray(arr) || !arr.length) continue;
+        const ck = clean(k);
+        if (ck && cTid && (ck.includes(cTid) || cTid.includes(ck))) return arr;
+        const tObj = templesMap[k];
+        if (tObj && cName) {
+          const tn = clean(tObj.name || tObj.shortTitle || tObj.title);
+          if (tn && (tn === cName || tn.includes(cName) || cName.includes(tn))) return arr;
+        }
+      }
+      return [];
+    }
+
     function buildReelsFeed(latestObj, archObj) {
       const hiddenIds = (shortsCfg.feed && shortsCfg.feed.hiddenReelIds) || {};
       const syncHidden = !shortsCfg.feed || shortsCfg.feed.syncHiddenTemples !== false;
@@ -1683,7 +1702,8 @@
         const srcUrl = (typeof rawItem === 'object' && rawItem && rawItem.sourceUrl) || data.sourceUrl || tInfo.sourceUrl || '';
         const srcL = srcPlat.toLowerCase();
         const srcIco = srcL.includes('youtube') ? YT_SVG : (srcL.includes('facebook') ? FB_SVG : IG_SVG);
-        const tracks = (shortsCfg.audio && shortsCfg.audio.templeTracks && shortsCfg.audio.templeTracks[tid]) || [];
+        const tDispName = tInfo.name || tInfo.shortTitle || tInfo.title || data.templeName || tid;
+        const tracks = getTempleTracks(tid, tDispName);
         const audioTitle = tracks.length ? tracks[0].title : 'भक्तीमय दर्शन ध्वनी';
 
         targetArr.push({
@@ -1873,13 +1893,17 @@
     function playReelAudio(r) {
       const audio = document.getElementById('bgAudio');
       if (!r || r.isAd) { audio.pause(); return; }
-      const tracks = (shortsCfg.audio && shortsCfg.audio.templeTracks && shortsCfg.audio.templeTracks[r.templeId]) || [];
+      const tracks = getTempleTracks(r.templeId, r.temple);
       if (!tracks.length) { audio.pause(); return; }
       const pick = (shortsCfg.audio.randomAudio !== false) ? tracks[Math.floor(Math.random() * tracks.length)] : tracks[0];
-      if (pick && pick.url && audio.src !== pick.url) {
-        audio.src = pick.url;
+      if (pick && pick.url) {
+        if (audio.src !== pick.url) {
+          audio.src = pick.url;
+        }
         audio.muted = isMuted;
-        audio.play().catch(() => {});
+        if (!isMuted) {
+          audio.play().catch(() => {});
+        }
       }
     }
 
@@ -1904,8 +1928,13 @@
         if (!isMuted) activeVid.play().catch(() => {});
         audio.pause();
       } else {
+        const curR = REELS[activeIdx];
+        if (!isMuted && curR && !audio.src) {
+          playReelAudio(curR);
+        }
         audio.muted = isMuted;
-        if (!isMuted) audio.play().catch(() => {});
+        if (!isMuted && audio.src) audio.play().catch(() => {});
+        else if (isMuted) audio.pause();
       }
       const mb = document.getElementById('muteBtn');
       mb.textContent = isMuted ? '🔇' : '🔊';

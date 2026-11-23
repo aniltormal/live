@@ -78,16 +78,64 @@
             <span class="text-xs sm:text-sm text-slate-800">कालावधी संपल्यावर ऑटो-स्क्रोल करा</span>
           </label>
         </div>
-        <div class="border-t border-slate-100 pt-3 space-y-2.5">
+        <div class="border-t border-slate-100 pt-3 space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-2">
-            <label class="text-xs font-bold text-[#05344E]">मंदिर निवडा (GitHub `darshansetu-audio` MP3 लिंक - कमाल १०)</label>
+            <label class="text-xs font-bold text-[#05344E]">मंदिर निवडा (कमाल १० ऑडिओ — फाईल अपलोड करा किंवा लिंक जोडा) <span id="trackCountBadge" class="ml-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[11px] font-extrabold">0/10</span></label>
             <select id="audioTempleSelect" class="rounded-xl border border-slate-300 px-3 py-1.5 text-xs bg-white min-w-[220px]"></select>
           </div>
+
+          <!-- GitHub Repo Audio Uploader -->
+          <div class="p-3.5 rounded-2xl bg-gradient-to-br from-amber-50/80 to-slate-50 border border-amber-200/80 space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="text-xs font-extrabold text-[#05344E]">🎵 GitHub (`darshansetu-audio`) वर एकाच वेळी १० पर्यंत ऑडिओ अपलोड करा</div>
+              <button id="toggleGhCfgBtn" type="button" class="text-[11px] font-bold text-[#05344E] underline">⚙️ GitHub Repo सेटिंग्ज</button>
+            </div>
+
+            <div id="ghCfgBox" class="grid grid-cols-1 sm:grid-cols-5 gap-2 p-2.5 rounded-xl bg-white border border-slate-200 text-xs">
+              <div>
+                <label class="block text-[10px] text-slate-500 mb-0.5">GitHub Username</label>
+                <input id="ghOwner" type="text" value="aniltormal" class="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-xs" />
+              </div>
+              <div>
+                <label class="block text-[10px] text-slate-500 mb-0.5">Repo नाव (Public)</label>
+                <input id="ghRepo" type="text" value="darshansetu-audio" class="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-xs" />
+              </div>
+              <div>
+                <label class="block text-[10px] text-slate-500 mb-0.5">Branch</label>
+                <input id="ghBranch" type="text" value="main" class="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-xs" />
+              </div>
+              <div>
+                <label class="block text-[10px] text-slate-500 mb-0.5">लिंक प्रकार</label>
+                <select id="ghUrlMode" class="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-xs bg-white">
+                  <option value="raw">raw.githubusercontent (तात्काळ)</option>
+                  <option value="pages">GitHub Pages (.github.io)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[10px] text-slate-500 mb-0.5">GitHub Token (PAT)</label>
+                <input id="ghToken" type="password" placeholder="github_pat_..." class="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-xs" />
+              </div>
+              <div class="sm:col-span-5 text-[10px] text-slate-500">
+                🔒 सुरक्षितता: तुमचा GitHub Token फक्त तुमच्या ब्राउझरमध्ये (`localStorage`) सेव्ह होतो, Firebase मध्ये नाही. (`darshansetu-audio` Public repo साठी `Contents: Read & Write` Token वापरा.)
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+              <input id="audioFileInput" type="file" accept="audio/*,.mp3,.m4a,.wav,.ogg,.aac" multiple class="flex-1 text-xs text-slate-700 file:mr-3 file:py-2 file:px-3.5 file:rounded-xl file:border-0 file:text-xs file:font-extrabold file:bg-[#05344E] file:text-amber-300 hover:file:bg-[#084160] cursor-pointer bg-white rounded-xl border border-slate-300 p-1" />
+              <button id="uploadAudioFilesBtn" type="button" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-sm transition whitespace-nowrap">⬆️ GitHub वर अपलोड करा</button>
+            </div>
+            <div id="audioUploadStatus" class="hidden text-xs font-bold text-[#05344E] bg-white/90 rounded-xl px-3 py-2 border border-amber-200"></div>
+          </div>
+
           <div id="templeTracksList" class="space-y-2"></div>
-          <div class="flex flex-col sm:flex-row gap-2">
-            <input id="newTrackTitle" type="text" placeholder="आरती / भजन नाव (उदा. श्री विठ्ठल आरती)" class="flex-1 rounded-xl border border-slate-300 px-3 py-2 text-xs" />
-            <input id="newTrackUrl" type="url" placeholder="https://raw.githubusercontent.com/.../darshansetu-audio/main/track.mp3" class="flex-[2] rounded-xl border border-slate-300 px-3 py-2 text-xs" />
-            <button id="addTrackBtn" type="button" class="px-4 py-2 rounded-xl bg-[#05344E] text-amber-300 text-xs font-extrabold hover:bg-[#084160] transition">+ ऑडिओ जोडा</button>
+
+          <div class="pt-1">
+            <div class="text-[11px] font-bold text-slate-500 mb-1.5">किंवा थेट MP3 / ऑडिओ लिंक जोडा (ऐच्छिक):</div>
+            <div class="flex flex-col sm:flex-row gap-2">
+              <input id="newTrackTitle" type="text" placeholder="आरती / भजन नाव (उदा. श्री विठ्ठल आरती)" class="flex-1 rounded-xl border border-slate-300 px-3 py-2 text-xs" />
+              <input id="newTrackUrl" type="url" placeholder="https://.../track.mp3" class="flex-[2] rounded-xl border border-slate-300 px-3 py-2 text-xs" />
+              <button id="addTrackBtn" type="button" class="px-4 py-2 rounded-xl bg-[#05344E] text-amber-300 text-xs font-extrabold hover:bg-[#084160] transition">+ लिंक जोडा</button>
+            </div>
           </div>
         </div>
       </section>
@@ -322,9 +370,24 @@
 
     initAdminGuard(async (user) => {
       document.getElementById('stickySaveBar').classList.remove('hidden');
-      await Promise.all([loadTemples(), loadShortsConfig(), loadReports(), loadUsers()]);
+      await Promise.all([loadGithubAudioConfig(), loadTemples(), loadShortsConfig(), loadReports(), loadUsers()]);
       bindActions();
     });
+
+    async function loadGithubAudioConfig() {
+      try {
+        const snap = await fbDb.ref('siteConfig/githubAudio').once('value');
+        const v = snap.val() || {};
+        if (v.owner) document.getElementById('ghOwner').value = v.owner;
+        if (v.repo) document.getElementById('ghRepo').value = v.repo;
+        if (v.branch) document.getElementById('ghBranch').value = v.branch;
+        if (v.urlMode) document.getElementById('ghUrlMode').value = v.urlMode;
+      } catch (e) {}
+      try {
+        const savedTok = localStorage.getItem('ds_gh_audio_pat') || '';
+        if (savedTok) document.getElementById('ghToken').value = savedTok;
+      } catch (e) {}
+    }
 
     async function loadTemples() {
       const snap = await fbDb.ref('temples').once('value');
@@ -388,23 +451,30 @@
     function renderTempleTracks() {
       const tid = document.getElementById('audioTempleSelect').value;
       const tracks = (cfg.audio.templeTracks && cfg.audio.templeTracks[tid]) || [];
+      const badge = document.getElementById('trackCountBadge');
+      if (badge) badge.textContent = `${tracks.length}/10`;
       const box = document.getElementById('templeTracksList');
       if (!tracks.length) {
-        box.innerHTML = '<div class="text-xs text-slate-400 py-2">या मंदिरासाठी अद्याप MP3 ऑडिओ जोडलेला नाही (कमाल १० जोडू शकता).</div>';
+        box.innerHTML = '<div class="text-xs text-slate-400 py-2">या मंदिरासाठी अद्याप ऑडिओ जोडलेला नाही (कमाल १० जोडू शकता).</div>';
         return;
       }
       box.innerHTML = tracks.map((tr, i) => `
-        <div class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+        <div class="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs">
           <div class="min-w-0 flex-1">
-            <div class="font-bold text-[#05344E] truncate">🎵 ${tr.title}</div>
+            <div class="font-bold text-[#05344E] truncate">🎵 ${i + 1}. ${tr.title}</div>
             <div class="text-[11px] text-slate-500 truncate">${tr.url}</div>
           </div>
-          <button type="button" onclick="removeTrack('${tid}', ${i})" class="px-2.5 py-1 rounded-lg bg-rose-100 text-rose-700 font-bold hover:bg-rose-200">हटवा</button>
+          <audio controls preload="none" src="${tr.url}" class="h-8 max-w-[200px] sm:max-w-[240px]"></audio>
+          <button type="button" onclick="removeTrack('${tid}', ${i})" class="px-2.5 py-1.5 rounded-lg bg-rose-100 text-rose-700 font-bold hover:bg-rose-200">हटवा</button>
         </div>`).join('');
     }
-    window.removeTrack = (tid, idx) => {
+    window.removeTrack = async (tid, idx) => {
       cfg.audio.templeTracks[tid].splice(idx, 1);
       renderTempleTracks();
+      try {
+        await fbDb.ref(`siteConfig/shortsConfig/audio/templeTracks/${tid}`).set(cfg.audio.templeTracks[tid]);
+        showToast('ऑडिओ हटवला व सेव्ह झाला!');
+      } catch (e) {}
     };
 
     function renderHiddenReels() {
@@ -566,18 +636,134 @@
     };
 
     function bindActions() {
-      document.getElementById('addTrackBtn').onclick = () => {
+      document.getElementById('toggleGhCfgBtn').onclick = () => {
+        document.getElementById('ghCfgBox').classList.toggle('hidden');
+      };
+
+      const fileToBase64 = (file) => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const s = String(reader.result || '');
+          const idx = s.indexOf('base64,');
+          resolve(idx >= 0 ? s.slice(idx + 7) : s);
+        };
+        reader.onerror = () => reject(reader.error || new Error('File read error'));
+        reader.readAsDataURL(file);
+      });
+
+      document.getElementById('uploadAudioFilesBtn').onclick = async () => {
+        const tid = document.getElementById('audioTempleSelect').value;
+        const owner = document.getElementById('ghOwner').value.trim();
+        const repo = document.getElementById('ghRepo').value.trim();
+        const branch = document.getElementById('ghBranch').value.trim() || 'main';
+        const urlMode = document.getElementById('ghUrlMode').value;
+        const token = document.getElementById('ghToken').value.trim();
+
+        if (!owner || !repo || !token) {
+          document.getElementById('ghCfgBox').classList.remove('hidden');
+          return showToast('कृपया GitHub Username, Repo नाव आणि Token (PAT) भरा', true);
+        }
+        try { localStorage.setItem('ds_gh_audio_pat', token); } catch (e) {}
+        try { await fbDb.ref('siteConfig/githubAudio').set({ owner, repo, branch, urlMode }); } catch (e) {}
+
+        const inp = document.getElementById('audioFileInput');
+        const statusEl = document.getElementById('audioUploadStatus');
+        const btn = document.getElementById('uploadAudioFilesBtn');
+        const files = Array.from(inp.files || []);
+        if (!files.length) return showToast('कृपया आधी ऑडिओ फाईल्स निवडा', true);
+
+        if (!cfg.audio.templeTracks) cfg.audio.templeTracks = {};
+        if (!cfg.audio.templeTracks[tid]) cfg.audio.templeTracks[tid] = [];
+        const remaining = 10 - cfg.audio.templeTracks[tid].length;
+        if (remaining <= 0) return showToast('या मंदिरासाठी कमाल १० ऑडिओ मर्यादा पूर्ण झाली आहे!', true);
+
+        const toUpload = files.slice(0, remaining);
+        if (files.length > remaining) {
+          showToast(`कमाल १० मर्यादेमुळे फक्त पहिले ${remaining} ऑडिओ अपलोड होतील`, true);
+        }
+
+        btn.disabled = true;
+        btn.classList.add('opacity-60', 'cursor-not-allowed');
+        statusEl.classList.remove('hidden');
+
+        let uploaded = 0;
+        let failed = 0;
+        let lastErr = '';
+        for (let i = 0; i < toUpload.length; i++) {
+          const f = toUpload[i];
+          statusEl.textContent = `⏳ GitHub वर अपलोड होत आहे (${i + 1}/${toUpload.length}): ${f.name}`;
+          try {
+            const b64 = await fileToBase64(f);
+            const extMatch = f.name.match(/(\.[a-zA-Z0-9]+)$/);
+            const ext = extMatch ? extMatch[1].toLowerCase() : '.mp3';
+            const baseSlug = f.name.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9_-]+/g, '-').replace(/^-+|-+$/g, '') || 'audio';
+            const safeName = `${Date.now().toString(36)}_${baseSlug}${ext}`;
+            const filePath = `audio/${encodeURIComponent(tid)}/${safeName}`;
+
+            const apiUrl = `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${filePath}`;
+            const res = await fetch(apiUrl, {
+              method: 'PUT',
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/vnd.github+json',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                message: `Add temple audio (${tid}): ${safeName}`,
+                content: b64,
+                branch
+              })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || `HTTP ${res.status}`);
+
+            const audioUrl = urlMode === 'pages'
+              ? `https://${owner}.github.io/${repo}/${filePath}`
+              : `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${filePath}`;
+            const cleanTitle = f.name.replace(/\.[^/.]+$/, '').replace(/[_-]+/g, ' ').trim() || 'भक्ती ऑडिओ';
+            cfg.audio.templeTracks[tid].push({ title: cleanTitle, url: audioUrl, active: true });
+            uploaded++;
+            renderTempleTracks();
+          } catch (err) {
+            console.error('GitHub audio upload error:', err);
+            lastErr = err.message || 'Upload failed';
+            failed++;
+          }
+        }
+
+        if (uploaded > 0) {
+          try {
+            await fbDb.ref(`siteConfig/shortsConfig/audio/templeTracks/${tid}`).set(cfg.audio.templeTracks[tid]);
+          } catch (e) {
+            console.error('Save tracks error:', e);
+          }
+        }
+
+        inp.value = '';
+        btn.disabled = false;
+        btn.classList.remove('opacity-60', 'cursor-not-allowed');
+        statusEl.textContent = failed
+          ? `✅ ${uploaded} ऑडिओ GitHub वर अपलोड झाले, ❌ ${failed} अपयशी (${lastErr}).`
+          : `✅ सर्व ${uploaded} ऑडिओ GitHub वर यशस्वीरित्या अपलोड व सेव्ह झाले!`;
+        showToast(failed ? `${uploaded} अपलोड झाले, ${failed} अपयशी` : `${uploaded} ऑडिओ GitHub वर अपलोड व सेव्ह झाले!`, failed > 0 && uploaded === 0);
+      };
+
+      document.getElementById('addTrackBtn').onclick = async () => {
         const tid = document.getElementById('audioTempleSelect').value;
         const title = document.getElementById('newTrackTitle').value.trim();
         const url = document.getElementById('newTrackUrl').value.trim();
-        if (!title || !url) return showToast('ऑडिओ नाव व MP3 लिंक भरा', true);
+        if (!title || !url) return showToast('ऑडिओ नाव व लिंक भरा', true);
         if (!cfg.audio.templeTracks) cfg.audio.templeTracks = {};
         if (!cfg.audio.templeTracks[tid]) cfg.audio.templeTracks[tid] = [];
-        if (cfg.audio.templeTracks[tid].length >= 10) return showToast('एका मंदिरासाठी कमाल १० MP3 मर्यादा आहे', true);
+        if (cfg.audio.templeTracks[tid].length >= 10) return showToast('एका मंदिरासाठी कमाल १० ऑडिओ मर्यादा आहे', true);
         cfg.audio.templeTracks[tid].push({ title, url, active: true });
         document.getElementById('newTrackTitle').value = '';
         document.getElementById('newTrackUrl').value = '';
         renderTempleTracks();
+        try {
+          await fbDb.ref(`siteConfig/shortsConfig/audio/templeTracks/${tid}`).set(cfg.audio.templeTracks[tid]);
+          showToast('ऑडिओ लिंक जोडली व सेव्ह झाली!');
+        } catch (e) {}
       };
 
       document.getElementById('addMoreMenuBtn').onclick = () => {

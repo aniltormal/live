@@ -287,60 +287,6 @@
       justify-content: center;
     }
 
-    /* Highlights Row */
-    .hl-row {
-      display: flex;
-      gap: 14px;
-      overflow-x: auto;
-      padding: 12px 14px;
-      background: var(--card);
-      border-bottom: 1px solid var(--card-border);
-      scrollbar-width: none;
-    }
-    .hl-row::-webkit-scrollbar { display: none; }
-    .hl-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 5px;
-      flex-shrink: 0;
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--text);
-    }
-    .hl-circle {
-      width: 58px;
-      height: 58px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, #ea580c, #f59e0b);
-      padding: 2.5px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .hl-inner {
-      width: 100%;
-      height: 100%;
-      border-radius: 999px;
-      background: var(--bg);
-      border: 2px solid var(--card);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-    }
-    .hl-lbl {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--sub);
-      max-width: 68px;
-      text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
     /* Tabs */
     .tabs-bar {
       display: grid;
@@ -558,40 +504,62 @@
       color: #FDE68A; white-space: nowrap; animation: wmScroll 24s linear infinite;
     }
 
-    /* Bottom Nav (T2 + P2) */
+    /* Bottom 5-Icon Navigation Bar (Exact reels.html + profile.html: T2 + P2) */
     .bottom-nav {
       position: fixed;
-      bottom: 0;
       left: 50%;
       transform: translateX(-50%);
+      bottom: 0;
       width: 100%;
       max-width: 430px;
-      height: 62px;
-      background: var(--nav-bg);
-      border-top: 1px solid var(--card-border);
+      height: 66px;
+      background: linear-gradient(180deg, #071320, #030b14);
+      border-top: 1px solid rgba(251, 191, 36, 0.25);
+      z-index: 42;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 6px;
-      z-index: 40;
+      gap: 2px;
+      padding: 2px 6px;
     }
     .bnav-btn {
+      position: relative;
+      background: transparent;
+      border: 1px solid transparent;
+      color: #cbd5e1;
       flex: 1;
-      height: 52px;
-      background: none;
-      border: none;
-      color: var(--sub);
+      height: 56px;
+      min-width: 0;
+      padding: 3px 2px;
+      border-radius: 13px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 2px;
+      gap: 3px;
       cursor: pointer;
-      transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+      transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-    .bnav-btn svg { width: 28px; height: 28px; }
-    .bnav-lbl { font-size: 10.5px; font-weight: 700; }
-    .bnav-btn:active { transform: translateY(-4px) scale(1.12); }
+    .bnav-btn svg {
+      width: 32px;
+      height: 32px;
+      display: block;
+      transition: transform 0.24s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .bnav-btn:active { background: rgba(251, 191, 36, 0.16); }
+    .bnav-btn:active svg { transform: translateY(-4px) scale(1.12); }
+    .bnav-lbl { font-size: 11.5px; font-weight: 600; line-height: 1; letter-spacing: 0.1px; }
+    .bnav-dot {
+      position: absolute;
+      top: 4px;
+      right: 14px;
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #ef4444;
+      border: 1.5px solid #030b14;
+    }
+    .bnav-btn.profile-btn .bnav-dot { top: 3px; right: 13px; }
     .hidden { display: none !important; }
   </style>
   <script src="live-popup.js"></script>
@@ -664,26 +632,6 @@
       </div>
     </div>
 
-    <!-- Highlights -->
-    <div class="hl-row">
-      <button type="button" class="hl-item" onclick="switchTab('grid')">
-        <span class="hl-circle"><span class="hl-inner">📸</span></span>
-        <span class="hl-lbl">आजचे दर्शन</span>
-      </button>
-      <button type="button" class="hl-item" onclick="switchTab('info')">
-        <span class="hl-circle"><span class="hl-inner">🪔</span></span>
-        <span class="hl-lbl">आरती वेळ</span>
-      </button>
-      <button type="button" class="hl-item" onclick="switchTab('reels')">
-        <span class="hl-circle"><span class="hl-inner">🎬</span></span>
-        <span class="hl-lbl">भक्ती शॉर्ट्स</span>
-      </button>
-      <button type="button" class="hl-item" onclick="switchTab('info')">
-        <span class="hl-circle"><span class="hl-inner">🛕</span></span>
-        <span class="hl-lbl">इतिहास</span>
-      </button>
-    </div>
-
     <!-- Tabs -->
     <div class="tabs-bar">
       <button type="button" class="tab-btn active" id="tabBtn_grid" onclick="switchTab('grid')">⊞ सर्व दर्शन</button>
@@ -696,26 +644,28 @@
     <div id="tabReels" class="media-grid hidden"></div>
     <div id="tabInfo" class="info-section hidden"></div>
 
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
-      <button type="button" class="bnav-btn" onclick="location.href='index.html'">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2.5L4 9.5V20a1 1 0 0 0 1 1h5v-6h4v6h5a1 1 0 0 0 1-1V9.5L12 2.5z" fill="#FBBF24" fill-opacity="0.22" stroke="currentColor" stroke-width="2"/></svg>
+    <!-- Bottom Navigation (Exact reels.html & profile.html 5-Icon Bar) -->
+    <nav class="bottom-nav" aria-label="मुख्य मेनू">
+      <button type="button" class="bnav-btn" onclick="location.href='index.html'" title="मुख्य पान">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2.5L4 9.5V20a1 1 0 0 0 1 1h5v-6h4v6h5a1 1 0 0 0 1-1V9.5L12 2.5z" fill="#FBBF24" fill-opacity="0.22" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
         <span class="bnav-lbl">मुख्य पान</span>
       </button>
-      <button type="button" class="bnav-btn" onclick="location.href='panchang.html'">
-        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="3" fill="#FBBF24" fill-opacity="0.2" stroke="currentColor" stroke-width="2"/><path d="M8 3v4M16 3v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <button type="button" class="bnav-btn" onclick="location.href='panchang.html'" title="आजचे पंचांग व उत्सव">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="3" fill="#FBBF24" fill-opacity="0.2" stroke="currentColor" stroke-width="2"/><path d="M8 3v4M16 3v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 13.2l.9 1.8 2 .3-1.45 1.4.35 2-1.8-.95-1.8.95.35-2L9.1 15.3l2-.3.9-1.8z" fill="#FBBF24"/></svg>
         <span class="bnav-lbl">पंचांग</span>
       </button>
-      <button type="button" class="bnav-btn" onclick="location.href='reels.html'">
-        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="4" fill="#FBBF24" fill-opacity="0.22" stroke="currentColor" stroke-width="2"/><polygon points="10 9 16 12 10 15 10 9" fill="currentColor"/></svg>
+      <button type="button" class="bnav-btn" onclick="location.href='reels.html'" title="दर्शन शॉर्ट्स">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="3.5" width="16" height="17" rx="4" fill="#FBBF24" fill-opacity="0.22" stroke="currentColor" stroke-width="2"/><path d="M10.2 8.8l5.2 3.2-5.2 3.2V8.8z" fill="#FBBF24" stroke="#FBBF24" stroke-width="1.2" stroke-linejoin="round"/></svg>
         <span class="bnav-lbl">शॉर्ट्स</span>
       </button>
-      <button type="button" class="bnav-btn" onclick="location.href='daily-darshan.html'">
-        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="14" rx="3" fill="#FBBF24" fill-opacity="0.2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="13" r="3.5" stroke="currentColor" stroke-width="2"/></svg>
-        <span class="bnav-lbl">डेली दर्शन</span>
+      <button type="button" class="bnav-btn" onclick="location.href='profile.html?tab=notif'" title="नोटिफिकेशन्स">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M18 8.5a6 6 0 0 0-12 0c0 6.5-2.8 8.5-2.8 8.5h17.6S18 15 18 8.5z" fill="#FBBF24" fill-opacity="0.22" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M13.8 20.5a2 2 0 0 1-3.6 0" stroke="#FBBF24" stroke-width="2" stroke-linecap="round"/></svg>
+        <span class="bnav-dot"></span>
+        <span class="bnav-lbl">सूचना</span>
       </button>
-      <button type="button" class="bnav-btn" onclick="location.href='profile.html'">
-        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8.5" r="4" fill="currentColor"/><path d="M4.5 20c0-3.5 3.4-6 7.5-6s7.5 2.5 7.5 6" fill="currentColor"/></svg>
+      <button type="button" class="bnav-btn profile-btn" onclick="location.href='profile.html'" title="माझे भक्ती प्रोफाइल">
+        <span class="bnav-avatar" id="bnavAvatar" style="width:32px;height:32px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;background:transparent;border:none;overflow:hidden;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8.5" r="3.8" fill="#ffffff" stroke="#ffffff" stroke-width="1.6"/><path d="M4.5 20c1-4 4-6 7.5-6s6.5 2 7.5 6" fill="#ffffff" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+        <span class="bnav-dot" id="bnavProfDot"></span>
         <span class="bnav-lbl">प्रोफाइल</span>
       </button>
     </nav>
@@ -1013,50 +963,34 @@
 
     async function loadTempleProfile() {
       const picker = document.getElementById('templePicker');
-      if (picker && DEFAULT_TEMPLES[curTempleId]) picker.value = curTempleId;
 
-      const [tSnap, allTSnap, infoSnap, latSnap, archSnap, statsSnap] = await Promise.all([
-        fbDb.ref('temples/' + curTempleId).once('value').catch(() => ({ val: () => null })),
-        fbDb.ref('temples').once('value').catch(() => ({ val: () => null })),
+      const [allTSnap, ddTSnap, infoSnap, latSnap, archSnap, statsSnap] = await Promise.all([
+        fbDb.ref('temples').once('value').catch(() => ({ val: () => ({}) })),
+        fbDb.ref('dailyDarshan/temples').once('value').catch(() => ({ val: () => ({}) })),
         fbDb.ref('templeInfo/' + curTempleId).once('value').catch(() => ({ val: () => null })),
         fbDb.ref('dailyDarshan/latest/' + curTempleId).once('value').catch(() => ({ val: () => null })),
         fbDb.ref('dailyDarshan/archive/' + curTempleId).once('value').catch(() => ({ val: () => null })),
         fbDb.ref('shortsStats').once('value').catch(() => ({ val: () => ({}) }))
       ]);
+
       const allT = allTSnap.val() || {};
+      const ddT = ddTSnap.val() || {};
+      const mergedTemples = {};
+      Object.entries(allT).forEach(([k, v]) => {
+        if (v && typeof v === 'object' && !v.deleted && !v.hidden) mergedTemples[k] = Object.assign({ id: k }, v);
+      });
+      Object.entries(ddT).forEach(([k, v]) => {
+        if (v && typeof v === 'object' && !v.deleted && !v.hidden && v.visible !== false && !v.hiddenInDaily) {
+          mergedTemples[k] = Object.assign({}, mergedTemples[k] || {}, v, { id: k });
+        }
+      });
+
       const statsMap = statsSnap.val() || {};
-      if (picker && Object.keys(allT).length) {
-        const opts = Object.entries(allT).filter(([,v]) => v && !v.deleted && !v.hidden).map(([k, v]) => `<option value="${k}" ${k===curTempleId?'selected':''}>${v.shortTitle || v.name || k}</option>`).join('');
-        if (opts) picker.innerHTML = opts;
-      }
-
-      const def = DEFAULT_TEMPLES[curTempleId] || DEFAULT_TEMPLES.pandharpur;
-      const fbT = tSnap.val() || {};
+      const lat = latSnap.val();
+      const arch = archSnap.val() || {};
+      const fbT = mergedTemples[curTempleId] || {};
       const fbInfo = infoSnap.val() || {};
-
-      curTempleObj = {
-        name: fbT.shortTitle || fbT.name || def.name,
-        handle: fbT.shortTitle || fbT.name || def.name,
-        bio: fbInfo.summary || fbInfo.description || def.bio,
-        site: fbInfo.website || def.site,
-        map: fbInfo.mapUrl || def.map,
-        image: fbT.image || 'icon-192.png',
-        streamUrl: fbT.streamUrl || def.streamUrl || '',
-        streamType: fbT.streamType || 'auto'
-      };
-
-      document.getElementById('templeAvatar').src = curTempleObj.image;
-      document.getElementById('templeFullName').textContent = curTempleObj.name;
-      document.getElementById('templeBio').textContent = curTempleObj.bio;
-      document.getElementById('templeSiteLink').href = curTempleObj.site;
-      document.getElementById('templeSiteLink').textContent = '🔗 ' + curTempleObj.site.replace(/^https?:\/\//, '');
-      document.getElementById('mapBtn').href = curTempleObj.map;
-
-      let fol = {};
-      try { fol = JSON.parse(localStorage.getItem('ds_follows_v1') || '{}'); } catch(e) {}
-      const btn = document.getElementById('folBtn');
-      btn.classList.toggle('following', !!fol[curTempleId]);
-      btn.textContent = fol[curTempleId] ? 'फॉलोइंग' : 'फॉलो करा';
+      const def = DEFAULT_TEMPLES[curTempleId] || {};
 
       const items = [];
       const seen = new Set();
@@ -1071,12 +1005,57 @@
           items.push({ rid, url: u, isVid, dt: dt || 'आजचे दर्शन', likes });
         });
       };
-      const lat = latSnap.val();
       if (lat) pushList(Array.isArray(lat.photos) ? lat.photos : [lat.image || lat.url], lat.date || 'आजचे दर्शन');
-      const arch = archSnap.val() || {};
       Object.entries(arch).sort((a,b) => b[0].localeCompare(a[0])).forEach(([dt, d]) => {
         pushList(Array.isArray(d.photos) ? d.photos : [d.image || d.url], dt);
       });
+
+      const resolvedName = fbT.name || fbT.shortTitle || fbT.title || (lat && lat.templeName) || def.name || curTempleId;
+      const firstPhoto = (items.find(x => !x.isVid) || {}).url || '';
+      const resolvedAvatar = fbT.image || fbT.photo || fbT.thumb || firstPhoto || 'icon-192.png';
+      const resolvedBio = fbInfo.summary || fbInfo.description || fbT.subtitle || def.bio || `${resolvedName} — दैनंदिन मंगल दर्शन, फोटो व भक्ती शॉर्ट्स.`;
+      const resolvedSite = fbInfo.website || fbT.website || def.site || '';
+      const resolvedMap = fbInfo.mapUrl || fbT.mapUrl || def.map || ('https://maps.google.com/?q=' + encodeURIComponent(resolvedName));
+
+      curTempleObj = {
+        name: resolvedName,
+        handle: resolvedName,
+        bio: resolvedBio,
+        site: resolvedSite,
+        map: resolvedMap,
+        image: resolvedAvatar,
+        streamUrl: fbT.streamUrl || fbT.liveUrl || def.streamUrl || '',
+        streamType: fbT.streamType || 'auto'
+      };
+
+      if (picker) {
+        if (!mergedTemples[curTempleId]) {
+          mergedTemples[curTempleId] = { id: curTempleId, name: resolvedName };
+        }
+        picker.innerHTML = Object.entries(mergedTemples)
+          .map(([k, v]) => `<option value="${k}" ${k === curTempleId ? 'selected' : ''}>${v.shortTitle || v.name || v.title || k}</option>`)
+          .join('');
+        picker.value = curTempleId;
+      }
+
+      document.getElementById('templeAvatar').src = curTempleObj.image;
+      document.getElementById('templeFullName').textContent = curTempleObj.name;
+      document.getElementById('templeBio').textContent = curTempleObj.bio;
+      const siteEl = document.getElementById('templeSiteLink');
+      if (curTempleObj.site) {
+        siteEl.href = curTempleObj.site;
+        siteEl.textContent = '🔗 ' + curTempleObj.site.replace(/^https?:\/\//, '');
+        siteEl.classList.remove('hidden');
+      } else {
+        siteEl.classList.add('hidden');
+      }
+      document.getElementById('mapBtn').href = curTempleObj.map;
+
+      let fol = {};
+      try { fol = JSON.parse(localStorage.getItem('ds_follows_v1') || '{}'); } catch(e) {}
+      const btn = document.getElementById('folBtn');
+      btn.classList.toggle('following', !!fol[curTempleId]);
+      btn.textContent = fol[curTempleId] ? 'फॉलोइंग' : 'फॉलो करा';
 
       curMedia = items;
       document.getElementById('statPosts').textContent = items.length;

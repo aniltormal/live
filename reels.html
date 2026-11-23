@@ -26,16 +26,19 @@
       align-items: center;
     }
     .phone-shell {
-      position: relative;
+      position: fixed;
+      inset: 0;
       width: 100%;
-      max-width: 430px;
-      height: 100dvh;
+      height: 100%;
       background: #000;
       overflow: hidden;
       border: none;
     }
     @media (min-width: 500px) {
       .phone-shell {
+        position: relative;
+        inset: auto;
+        max-width: 430px;
         border-radius: 28px;
         height: 92dvh;
         max-height: 860px;
@@ -71,14 +74,17 @@
     /* Top Center Calligraphy Logo Image */
     .reels-top-brand {
       position: absolute;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      padding-top: 6px;
       z-index: 36;
       pointer-events: none;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
+      background: linear-gradient(180deg, rgba(2, 10, 18, 0.88) 0%, rgba(2, 10, 18, 0.58) 65%, rgba(2, 10, 18, 0) 100%);
     }
     .reels-top-brand img {
       height: 50px;
@@ -228,7 +234,7 @@
     }
     .reel.active-reel .reel-bg-blur {
       opacity: 1;
-      filter: blur(20px) brightness(0.45);
+      filter: blur(20px) brightness(0.62);
       transform: scale(1.1);
     }
     .reel-media {
@@ -243,7 +249,7 @@
       position: absolute;
       inset: 0;
       z-index: 5;
-      background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 18%, transparent 45%, rgba(0,0,0,0.58) 68%, rgba(0,0,0,0.94) 100%);
+      background: linear-gradient(180deg, rgba(0,0,0,0.16) 0%, transparent 14%, transparent 62%, rgba(0,0,0,0.32) 80%, rgba(0,0,0,0.68) 100%);
       pointer-events: none;
     }
 
@@ -295,8 +301,8 @@
     .bottom-left {
       position: absolute;
       left: 12px;
-      right: 98px;
-      bottom: 18px;
+      right: 10px;
+      bottom: 14px;
       z-index: 28;
       display: grid;
       grid-template-columns: minmax(0, 1fr);
@@ -308,6 +314,7 @@
       gap: 8px;
       min-width: 0;
       max-width: 100%;
+      padding-right: 78px;
     }
     .prof-pic {
       width: 48px;
@@ -342,8 +349,8 @@
     .t-link {
       font-family: 'Khand', sans-serif;
       font-weight: 700;
-      font-size: 19px;
-      line-height: 1.16;
+      font-size: 15.5px;
+      line-height: 1.2;
       color: #fff;
       text-decoration: none;
       display: inline;
@@ -369,26 +376,28 @@
     .t-link:hover { color: #FDE68A; }
     .follow-btn {
       flex-shrink: 0;
-      background: rgba(0, 0, 0, 0.24);
-      backdrop-filter: blur(6px);
-      border: 1px solid rgba(255, 255, 255, 0.8);
+      background: transparent;
+      backdrop-filter: none;
+      box-shadow: none;
+      text-shadow: none;
+      border: 1.5px solid rgba(255, 255, 255, 0.9);
       color: #ffffff;
       border-radius: 9px;
       padding: 5.5px 14px;
-      font-size: 14px;
-      font-weight: 500;
+      font-size: 13.5px;
+      font-weight: 700;
       line-height: 1.2;
       cursor: pointer;
       transition: all 0.18s ease;
     }
     .follow-btn:active { transform: scale(0.93); }
     .follow-btn.following {
-      background: rgba(255, 255, 255, 0.14);
-      border-color: rgba(255, 255, 255, 0.6);
+      background: transparent;
+      border-color: rgba(255, 255, 255, 0.65);
       color: #ffffff;
     }
     .audio-line {
-      font-size: 13px;
+      font-size: 11.5px;
       color: #e2e8f0;
       font-weight: 500;
       white-space: nowrap;
@@ -412,9 +421,9 @@
       backdrop-filter: blur(6px);
       border: 1px solid rgba(255,255,255,0.24);
       color: #FEF3C7;
-      font-size: 12.5px;
+      font-size: 11px;
       font-weight: 500;
-      padding: 3px 9px;
+      padding: 2px 8px;
       border-radius: 999px;
     }
     .src-pill {
@@ -424,9 +433,9 @@
       background: rgba(0,0,0,0.68);
       border: 1px solid rgba(251,191,36,0.55);
       color: #FDE68A;
-      font-size: 12.5px;
+      font-size: 11px;
       font-weight: 500;
-      padding: 3px 9px;
+      padding: 2px 8px;
       border-radius: 999px;
       text-decoration: none;
     }
@@ -437,7 +446,7 @@
       z-index: 29;
     }
     .event-caption {
-      font-size: 14.5px;
+      font-size: 12.5px;
       font-weight: 500;
       color: #FDE68A;
       line-height: 1.3;
@@ -663,7 +672,7 @@
       overflow-y: auto;
       touch-action: none;
       transform: translateY(100%);
-      transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+      transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
     }
     .sheet-bg.open .opt-sheet { transform: translateY(0); }
     .ds-toggle {
@@ -916,6 +925,44 @@
     .phone-shell.cmt-open .reel {
       display: none;
     }
+    /* Smooth Global Transitions & One-Time Swipe-Up Hint */
+    .feed { scroll-behavior: smooth; }
+    .swipe-hint-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.58) 0%, rgba(0, 0, 0, 0.38) 55%, rgba(0, 0, 0, 0.25) 100%);
+      z-index: 40;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.38s ease;
+    }
+    .swipe-hint-overlay.show { opacity: 1; }
+    .swipe-hint-track {
+      width: 48px;
+      height: 108px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.06) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.85));
+    }
+    .swipe-hint-hand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: swipeUpGlide 1.45s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+    }
+    @keyframes swipeUpGlide {
+      0% { transform: translateY(26px) scale(0.92); opacity: 0; }
+      25% { opacity: 1; }
+      75% { transform: translateY(-26px) scale(1.06); opacity: 1; }
+      100% { transform: translateY(-34px) scale(0.95); opacity: 0; }
+    }
+
     .phone-shell.cmt-open .reel.active-reel {
       display: flex;
       transform-origin: top center;
@@ -923,7 +970,7 @@
       border-radius: 26px;
       border: none;
       box-shadow: 0 18px 45px rgba(0,0,0,0.85);
-      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), border-radius 0.3s ease;
+      transition: transform 0.36s cubic-bezier(0.22, 1, 0.36, 1), border-radius 0.36s cubic-bezier(0.22, 1, 0.36, 1);
     }
     .phone-shell.cmt-open .reel.active-reel .bottom-left,
     .phone-shell.cmt-open .reel.active-reel .actions,
@@ -954,7 +1001,7 @@
       overflow: hidden;
       transform: translateY(100%);
       pointer-events: none;
-      transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+      transition: transform 0.36s cubic-bezier(0.22, 1, 0.36, 1);
     }
     .cmt-split-panel.open {
       transform: translateY(0);
@@ -1027,14 +1074,48 @@
     /* Likes / Reactions & Views Bottom Sheet */
     .likes-sheet {
       width: 100%;
-      height: 70%;
+      height: 72%;
       background: #111827;
       color: #f8fafc;
       border-radius: 22px 22px 0 0;
-      border-top: 1.5px solid rgba(251, 191, 36, 0.4);
+      border-top: 1.5px solid rgba(251, 191, 36, 0.45);
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      transform: translateY(100%);
+      transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: transform;
+    }
+    .sheet-bg.open .likes-sheet { transform: translateY(0); }
+    .likes-handle {
+      width: 42px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.28);
+      margin: 8px auto 2px;
+      flex-shrink: 0;
+    }
+    .devotee-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .devotee-av {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #05344E, #0a4e73);
+      border: 1.5px solid rgba(251, 191, 36, 0.55);
+      color: #FDE68A;
+      font-weight: 700;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
     .likes-stats {
       display: flex;
@@ -1391,6 +1472,18 @@
     <div class="pop-above" id="badgePopGlobal" style="position:absolute;bottom:auto;left:0;transform:none;">दर्शनसेतू .लाईव्ह व्हेरिफाइड</div>
 
     <div class="feed" id="feed"></div>
+    <div class="swipe-hint-overlay hidden" id="swipeHintOverlay">
+      <div class="swipe-hint-track">
+        <span class="swipe-hint-hand">
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="rgba(255,255,255,0.22)" stroke="#ffffff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 11V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2"/>
+            <path d="M14 10V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v2"/>
+            <path d="M10 10.5V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v8"/>
+            <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>
+          </svg>
+        </span>
+      </div>
+    </div>
 
     <nav class="bottom-nav" aria-label="मुख्य मेनू">
       <button type="button" class="bnav-btn" onclick="location.href='index.html'" title="मुख्य पान">
@@ -1401,16 +1494,16 @@
         <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="3" fill="#FBBF24" fill-opacity="0.2" stroke="currentColor" stroke-width="2"/><path d="M8 3v4M16 3v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 13.2l.9 1.8 2 .3-1.45 1.4.35 2-1.8-.95-1.8.95.35-2L9.1 15.3l2-.3.9-1.8z" fill="#FBBF24"/></svg>
         <span class="bnav-lbl">पंचांग</span>
       </button>
-      <button type="button" class="bnav-btn" onclick="openSearchSheet()" title="शोधा">
-        <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" fill="#FBBF24" fill-opacity="0.18" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.8-3.8" stroke="#FBBF24" stroke-width="2.4" stroke-linecap="round"/></svg>
-        <span class="bnav-lbl">शोधा</span>
+      <button type="button" class="bnav-btn active" onclick="location.href='reels.html'" title="दर्शन शॉर्ट्स">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="3.5" width="16" height="17" rx="4" fill="#FBBF24" fill-opacity="0.22" stroke="currentColor" stroke-width="2"/><path d="M10.2 8.8l5.2 3.2-5.2 3.2V8.8z" fill="#FBBF24" stroke="#FBBF24" stroke-width="1.2" stroke-linejoin="round"/></svg>
+        <span class="bnav-lbl">शॉर्ट्स</span>
       </button>
-      <button type="button" class="bnav-btn" onclick="location.href='profile.html'" title="नोटिफिकेशन्स">
+      <button type="button" class="bnav-btn" onclick="location.href='profile.html?tab=notif'" title="नोटिफिकेशन्स">
         <svg viewBox="0 0 24 24" fill="none"><path d="M18 8.5a6 6 0 0 0-12 0c0 6.5-2.8 8.5-2.8 8.5h17.6S18 15 18 8.5z" fill="#FBBF24" fill-opacity="0.22" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M13.8 20.5a2 2 0 0 1-3.6 0" stroke="#FBBF24" stroke-width="2" stroke-linecap="round"/></svg>
         <span class="bnav-dot"></span>
         <span class="bnav-lbl">सूचना</span>
       </button>
-      <button type="button" class="bnav-btn profile-btn active" onclick="setBottomTab(this, '👤 माझे भक्ती प्रोफाइल उघडेल!')" title="माझे भक्ती प्रोफाइल">
+      <button type="button" class="bnav-btn profile-btn" onclick="location.href='profile.html'" title="माझे भक्ती प्रोफाइल">
         <span class="bnav-avatar" id="bnavAvatar">🙏</span>
         <span class="bnav-dot"></span>
         <span class="bnav-lbl">प्रोफाइल</span>
@@ -1419,12 +1512,13 @@
 
     <!-- Split-View Reference Comment Sheet -->
     <div class="cmt-split-panel" id="cmtSplitPanel">
-      <div class="handle-bar" id="cmtHandleBar">
+      <div class="handle-bar" id="cmtHandleBar" style="touch-action:none;">
         <div class="handle"></div>
         <div class="sheet-top">
           <span style="font-size:15px;font-weight:700;color:#FDE68A;">💬 भक्तीमय कमेंट्स</span>
           <button type="button" onclick="closeCmt()" style="background:rgba(255,255,255,0.12);border:none;color:#fff;border-radius:999px;width:28px;height:28px;font-size:14px;cursor:pointer;">✕</button>
         </div>
+        <div class="likes-stats" id="cmtStatsBar" style="padding:4px 12px 6px;border-top:1px solid rgba(255,255,255,0.08);font-size:12px;"></div>
       </div>
       <div class="cmt-scroll" id="cmtScroll"></div>
       <div class="preset-strip" id="presetStrip"></div>
@@ -1449,16 +1543,21 @@
       </div>
     </div>
 
-    <!-- Likes & Views Sheet -->
-    <div class="sheet-bg hidden" id="likesBg" onclick="if(event.target===this) closeLikesSheet()">
-      <div class="likes-sheet">
-        <div class="sheet-hdr">
-          <span>❤️ लाईक्स व दर्शन आकडेवारी</span>
-          <button type="button" onclick="closeLikesSheet()" style="background:none;border:none;color:#fff;font-size:16px;cursor:pointer;">✕</button>
+    <!-- Split-View Likes / Saves & Views Sheet (Exact Prototype Layout) -->
+    <div class="cmt-split-panel" id="likesSheet" style="z-index:60;">
+      <div class="handle-bar" id="likesHandleBar" style="touch-action:none;">
+        <div class="handle" onclick="closeLikesSheet()" style="cursor:pointer;width:46px;height:4.5px;"></div>
+        <div class="sheet-top">
+          <span style="width:28px;"></span>
+          <span id="likesSheetTitle" style="font-size:16px;font-weight:700;color:#FDE68A;">प्रतिसाद आणि दर्शने</span>
+          <button type="button" onclick="closeLikesSheet()" style="background:rgba(255,255,255,0.12);border:none;color:#fff;width:28px;height:28px;border-radius:999px;font-size:14px;cursor:pointer;">✕</button>
         </div>
-        <div class="likes-stats" id="likesStatsBar"></div>
-        <div class="likes-list" id="likesSheetBody"></div>
       </div>
+      <div class="likes-stats">
+        <span id="likesStatCnt">🤍 0</span>
+        <span id="viewsStatCnt">👁️ 0</span>
+      </div>
+      <div class="likes-list cmt-scroll" id="likesList"></div>
     </div>
 
     <!-- Search Sheet -->
@@ -1612,6 +1711,8 @@
           getCachedOrFetch('ds_dd_arch_v2', 'dailyDarshan/archive', 600000)
         ]);
         shortsCfg = cfgData || {};
+        if (!shortsCfg.audio) shortsCfg.audio = {};
+        shortsCfg.audio.autoScroll = false;
         if (shortsCfg.ui && shortsCfg.ui.skeletonEnabled === false) {
           document.getElementById('reelsSkel').classList.add('fade-out');
         }
@@ -1726,6 +1827,19 @@
       let oldItems = [];
       const seenUrls = new Set();
 
+      const MR_MONTHS = ['जानेवारी', 'फेब्रुवारी', 'मार्च', 'एप्रिल', 'मे', 'जून', 'जुलै', 'ऑगस्ट', 'सप्टेंबर', 'ऑक्टोबर', 'नोव्हेंबर', 'डिसेंबर'];
+      const fmtMarathiDate = (rawDt) => {
+        const s = String(rawDt || '').trim();
+        const m = s.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+        if (m) {
+          const d = parseInt(m[3], 10);
+          const mo = parseInt(m[2], 10) - 1;
+          return `${d} ${MR_MONTHS[mo] || m[2]} ${m[1]}`;
+        }
+        const now = new Date();
+        return s && s !== 'latest' && s !== 'आजचे दर्शन' ? s : `${now.getDate()} ${MR_MONTHS[now.getMonth()]} ${now.getFullYear()}`;
+      };
+
       const pushPhoto = (targetArr, tid, data, rawItem, dtLabel, idx) => {
         const pUrl = typeof rawItem === 'string' ? rawItem : (rawItem && (rawItem.url || rawItem.src || rawItem.image)) || '';
         if (!pUrl || seenUrls.has(pUrl)) return;
@@ -1757,7 +1871,7 @@
           avatar: optImg(tInfo.image || tInfo.photo || tInfo.thumb || pUrl),
           src: isVid ? pUrl : optImg(pUrl),
           type: isVid ? 'video' : 'image',
-          dt: '📅 ' + (data.date || dtLabel || 'आजचे दर्शन'),
+          dt: '📅 ' + fmtMarathiDate(data.date || dtLabel),
           event: (typeof rawItem === 'object' && rawItem && rawItem.caption) || data.caption || tInfo.subtitle || 'आजचे मंगल दर्शन',
           sourcePlatform: srcPlat,
           sourceUrl: srcUrl,
@@ -1765,7 +1879,11 @@
           audio: audioTitle,
           liveUrl,
           liked: !!guestLikes[rid],
-          likes: 108 + (idx * 17)
+          likes: 108 + (idx * 17),
+          saved: false,
+          saves: 24 + (idx * 7),
+          cmtsCount: 12 + (idx * 3),
+          views: 940 + (idx * 137)
         });
       };
 
@@ -1782,18 +1900,30 @@
         });
       });
 
-      if (shortsCfg.feed && shortsCfg.feed.smartShuffle && !filterReel) {
-        for (let i = oldItems.length - 1; i > 0; i--) {
+      const shuffleNoConsecutiveTemple = (arr) => {
+        if (arr.length <= 1) return arr;
+        // Fisher-Yates shuffle first
+        for (let i = arr.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
-          [oldItems[i], oldItems[j]] = [oldItems[j], oldItems[i]];
+          [arr[i], arr[j]] = [arr[j], arr[i]];
         }
+        // Greedy anti-consecutive reorder by templeId
+        const res = [];
+        const pool = [...arr];
+        while (pool.length) {
+          const lastTid = res.length ? res[res.length - 1].templeId : null;
+          let pickIdx = pool.findIndex(x => x.templeId !== lastTid);
+          if (pickIdx === -1) pickIdx = 0;
+          res.push(pool.splice(pickIdx, 1)[0]);
+        }
+        return res;
+      };
+      if (!filterReel) {
+        freshItems = shuffleNoConsecutiveTemple(freshItems);
+        oldItems = shuffleNoConsecutiveTemple(oldItems);
         if (!freshOnTop) {
-          freshItems = [...freshItems, ...oldItems];
+          freshItems = shuffleNoConsecutiveTemple([...freshItems, ...oldItems]);
           oldItems = [];
-          for (let i = freshItems.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [freshItems[i], freshItems[j]] = [freshItems[j], freshItems[i]];
-          }
         }
       }
       let items = [...freshItems, ...oldItems];
@@ -1846,7 +1976,7 @@
         const isFol = !!followedMap[r.templeId];
         return `<div class="reel ${i===activeIdx?'active-reel':''}" data-idx="${i}" data-rid="${r.id}" onclick="handleReelTap(event, ${i})">
           ${r.type === 'video'
-            ? `<video class="reel-media reel-video" src="${r.src}" autoplay muted playsinline preload="metadata" loop></video>`
+            ? `<video class="reel-media reel-video" src="${r.src}" autoplay muted playsinline preload="metadata" onended="onReelVideoEnded(this)"></video>`
             : `<img class="reel-bg-blur" src="${r.src}" alt="" /><img class="reel-media" src="${r.src}" loading="lazy" alt="${r.temple}" />`
           }
           <div class="reel-vignette"></div>
@@ -1866,31 +1996,34 @@
               <button type="button" class="follow-btn ${isFol ? 'following' : ''}" onclick="toggleFollow(this, '${r.templeId}')">${isFol ? 'फॉलोइंग' : 'फॉलो'}</button>
             </div>
             <div class="meta-row">
-              <span class="dt-pill">${r.dt}</span>
+              <div style="display:flex;align-items:center;gap:6px;min-width:0;flex:1;">
+                <span class="dt-pill" style="flex-shrink:0;">${r.dt}</span>
+                <span class="event-caption" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.event}</span>
+              </div>
+              <a href="${r.sourceUrl || '#'}" onclick="event.stopPropagation();if(!'${r.sourceUrl}'){event.preventDefault();showToast('सोर्स: ${r.sourcePlatform}');}" target="_blank" class="src-pill" style="flex-shrink:0;">
+                <span>सौजन्य:</span>${r.srcIco}<span>↗</span>
+              </a>
             </div>
-            <div class="event-caption">${r.event}</div>
           </div>
-
-          <a href="${r.sourceUrl || '#'}" onclick="event.stopPropagation();if(!'${r.sourceUrl}'){event.preventDefault();showToast('सोर्स: ${r.sourcePlatform}');}" target="_blank" class="src-pill src-below-dots">
-            <span>सौजन्य:</span>${r.srcIco}<span>↗</span>
-          </a>
 
           <div class="actions" onclick="event.stopPropagation()">
             <div class="act-btn">
               <button type="button" style="background:none;border:none;cursor:pointer;display:flex;" onclick="triggerLike(${i}, true, event)" aria-label="लाईक">
                 <span class="act-circle"><span class="act-ico ${r.liked ? 'pop-anim' : ''}" id="ico_${r.id}">${r.liked ? '❤️' : '🤍'}</span></span>
               </button>
-              <button type="button" class="act-lbl" id="lbl_${r.id}" onclick="openLikesSheet(${i})" style="background:none;border:none;color:#fff;cursor:pointer;padding:0;">${r.likes}</button>
+              <button type="button" class="act-lbl" id="lbl_${r.id}" onclick="openLikesSheet(${i})" style="background:none;border:none;color:#fff;cursor:pointer;padding:3px 10px;">${r.likes}</button>
             </div>
-            <button type="button" class="act-btn" onclick="openCmt(${i})">
-              <span class="act-circle"><span class="act-ico">💬</span></span>
-              <span class="act-lbl">कमेंट्स</span>
-            </button>
+            <div class="act-btn">
+              <button type="button" style="background:none;border:none;cursor:pointer;display:flex;" onclick="openCmt(${i})" aria-label="कमेंट्स">
+                <span class="act-circle"><span class="act-ico">💬</span></span>
+              </button>
+              <button type="button" class="act-lbl" id="clbl_${r.id}" onclick="openCmt(${i})" style="background:none;border:none;color:#fff;cursor:pointer;padding:3px 10px;">${r.cmtsCount || 0}</button>
+            </div>
             <div class="act-btn">
               <button type="button" style="background:none;border:none;cursor:pointer;display:flex;" onclick="toggleSave(this, ${i})" aria-label="सेव्ह">
-                <span class="act-circle"><svg class="save-svg" id="ssvg_${r.id}" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></span>
+                <span class="act-circle"><svg class="save-svg" id="ssvg_${r.id}" width="26" height="26" viewBox="0 0 24 24" fill="${r.saved ? '#FBBF24' : 'none'}" stroke="${r.saved ? '#FBBF24' : '#fff'}" stroke-width="2" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></span>
               </button>
-              <span class="act-lbl" id="slbl_${r.id}">सेव्ह</span>
+              <button type="button" class="act-lbl" id="slbl_${r.id}" onclick="openSavesSheet(${i})" style="background:none;border:none;color:#fff;cursor:pointer;padding:3px 10px;">${r.saves || 0}</button>
             </div>
             <button type="button" class="act-btn" onclick="shareReel(${i})">
               <span class="act-circle"><span class="act-ico">📤</span></span>
@@ -1918,12 +2051,17 @@
             en.target.classList.add('active-reel');
             activeIdx = Number(en.target.dataset.idx) || 0;
             const r = REELS[activeIdx];
+            if (window._hintMediaTimer) { clearTimeout(window._hintMediaTimer); window._hintMediaTimer = null; }
             if (vid) {
               vid.muted = isMuted;
               vid.play().catch(() => {});
               document.getElementById('bgAudio').pause();
             } else {
               playReelAudio(r);
+              if (localStorage.getItem('ds_swipe_hint_seen') !== '1') {
+                const durMs = ((shortsCfg.audio && Number(shortsCfg.audio.durationSec)) || 10) * 1000;
+                window._hintMediaTimer = setTimeout(() => showOneTimeSwipeHint(), durMs);
+              }
             }
             scheduleAutoScroll();
           } else if (vid) {
@@ -1943,6 +2081,42 @@
       if (pick && pick.url) {
         setAndPlayAudio(audio, pick.url, !isMuted);
       }
+    }
+
+    window.onReelVideoEnded = (vid) => {
+      if (localStorage.getItem('ds_swipe_hint_seen') !== '1') {
+        showOneTimeSwipeHint();
+      }
+      if (vid) {
+        vid.currentTime = 0;
+        vid.play().catch(() => {});
+      }
+    };
+
+    function showOneTimeSwipeHint() {
+      try {
+        if (localStorage.getItem('ds_swipe_hint_seen') === '1') return;
+        const hint = document.getElementById('swipeHintOverlay');
+        if (!hint || REELS.length < 2) return;
+        hint.classList.remove('hidden');
+        requestAnimationFrame(() => hint.classList.add('show'));
+        const dismiss = () => {
+          hint.classList.remove('show');
+          setTimeout(() => hint.classList.add('hidden'), 400);
+          try { localStorage.setItem('ds_swipe_hint_seen', '1'); } catch (_) {}
+          const fd = document.getElementById('feed');
+          if (fd) {
+            fd.removeEventListener('scroll', dismiss);
+            fd.removeEventListener('touchstart', dismiss);
+          }
+        };
+        const fd = document.getElementById('feed');
+        if (fd) {
+          fd.addEventListener('scroll', dismiss, { once: true, passive: true });
+          fd.addEventListener('touchstart', dismiss, { once: true, passive: true });
+        }
+        setTimeout(dismiss, 3600);
+      } catch (_) {}
     }
 
     function scheduleAutoScroll() {
@@ -2059,8 +2233,10 @@
       const r = REELS[idx];
       const svg = document.getElementById('ssvg_' + r.id);
       const lbl = document.getElementById('slbl_' + r.id);
-      const saved = lbl && lbl.textContent === 'सेव्ह केले';
-      if (lbl) lbl.textContent = saved ? 'सेव्ह' : 'सेव्ह केले';
+      const saved = !!r.saved;
+      r.saved = !saved;
+      r.saves = Math.max(0, (r.saves || 0) + (saved ? -1 : 1));
+      if (lbl) lbl.textContent = r.saves;
       if (svg) { svg.setAttribute('fill', saved ? 'none' : '#FBBF24'); svg.setAttribute('stroke', saved ? '#fff' : '#FBBF24'); }
       if (!saved) {
         await fbDb.ref(`shortsUserSaved/${currentUser.uid}/${r.id}`).set({ thumb: r.src, templeName: r.temple, ts: Date.now() });
@@ -2093,17 +2269,39 @@
 
     // Split-View Comment Sheet
     window.openCmt = async (idx) => {
+      activeIdx = idx;
       const r = REELS[idx];
+      if (!r) return;
       activeCmtReelId = r.id;
+      document.querySelectorAll('.reel').forEach((el, i) => el.classList.toggle('active-reel', i === activeIdx));
+      const feed = document.getElementById('feed');
+      const cBar = document.getElementById('cmtStatsBar');
+      if (cBar) cBar.innerHTML = `<span>💬 ${r.cmtsCount || 0} (व्हेरिफाइड भक्त व इतर)</span><span>•</span><span>👁️ ${fmtViews(r.views || 940)} Views</span>`;
+      const cPanel = document.getElementById('cmtSplitPanel');
+      if (cPanel) { cPanel.style.transition = ''; cPanel.style.transform = ''; }
       document.getElementById('shell').classList.add('cmt-open');
-      document.getElementById('cmtSplitPanel').classList.add('open');
+      if (feed) feed.scrollTop = 0;
+      cPanel.classList.add('open');
       const presets = (shortsCfg.ui && shortsCfg.ui.presetComments) || ['🙏 जय हरी विठ्ठल!', '🌸 सुंदर दर्शन!', '🚩 हर हर महादेव!'];
       document.getElementById('presetStrip').innerHTML = presets.map(p => `<button type="button" class="p-chip" onclick="document.getElementById('cmtInp').value='${p.replace(/'/g,'')}'">${p}</button>`).join('');
       await loadComments(r.id);
     };
     window.closeCmt = () => {
-      document.getElementById('cmtSplitPanel').classList.remove('open');
-      document.getElementById('shell').classList.remove('cmt-open');
+      const cPanel = document.getElementById('cmtSplitPanel');
+      if (cPanel) { cPanel.style.transition = ''; cPanel.style.transform = ''; cPanel.classList.remove('open'); }
+      const likesOpen = document.getElementById('likesSheet').classList.contains('open');
+      if (!likesOpen) {
+        const feed = document.getElementById('feed');
+        if (feed) feed.style.scrollSnapType = 'none';
+        document.getElementById('shell').classList.remove('cmt-open');
+        if (feed) {
+          feed.scrollTop = activeIdx * (feed.clientHeight || 1);
+          requestAnimationFrame(() => {
+            feed.scrollTop = activeIdx * (feed.clientHeight || 1);
+            feed.style.scrollSnapType = 'y mandatory';
+          });
+        }
+      }
     };
 
     async function loadComments(rid) {
@@ -2183,14 +2381,154 @@
       scheduleAutoScroll();
       showToast(shortsCfg.audio.autoScroll ? '⏩ ऑटो-स्क्रोल चालू!' : '⏸️ ऑटो-स्क्रोल बंद');
     };
+    function fmtViews(n) {
+      if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+      return String(n);
+    }
+    const VERIFIED_SAMPLE_DEVOTEES = [
+      { name: 'संदीप कुलकर्णी', city: 'पुणे, महाराष्ट्र', streak: '🔥 12 दिवस' },
+      { name: 'प्रिया देशमुख', city: 'कोल्हापूर, महाराष्ट्र', streak: '🔥 9 दिवस' },
+      { name: 'ओंकार पाटील', city: 'सातारा, महाराष्ट्र', streak: '🔥 21 दिवस' },
+      { name: 'मयुरी जोशी', city: 'नाशिक, महाराष्ट्र', streak: '🔥 5 दिवस' },
+      { name: 'स्नेहा कुलकर्णी', city: 'पंढरपूर, महाराष्ट्र', streak: '🔥 15 दिवस' },
+      { name: 'वैष्णवी जाधव', city: 'हिंगोली, महाराष्ट्र', streak: '🔥 8 दिवस' },
+      { name: 'प्रसाद गायकवाड', city: 'लातूर, महाराष्ट्र', streak: '🔥 14 दिवस' }
+    ];
+    function renderEngagementRows(actionActive, totalCount, modeLabel) {
+      const list = [];
+      if (actionActive && userProfile && userProfile.name) {
+        list.push({ name: userProfile.name + ' (तुम्ही)', city: userProfile.district || 'महाराष्ट्र', streak: '🔥 7 दिवस' });
+      }
+      VERIFIED_SAMPLE_DEVOTEES.forEach(d => list.push(d));
+      const otherCount = Math.max(0, (totalCount || 0) - list.length);
+      let html = list.map((u, ui) => `
+        <div class="like-user-row">
+          <div class="lu-av">🙏</div>
+          <div class="lu-info">
+            <div class="lu-name-row">
+              <span>${u.name}</span>
+              <span class="badge-anchor"><button type="button" class="vbadge" onclick="popAbove('lu_${ui}', event)">${GOLD_BADGE_SVG}</button></span>
+            </div>
+            <div class="lu-sub">${u.city} • व्हेरिफाइड भक्त</div>
+          </div>
+          <span class="lu-tag">${u.streak}</span>
+        </div>`).join('');
+      if (otherCount > 0) {
+        html += `<div style="text-align:center;color:#94a3b8;font-size:12.5px;padding:12px 10px 6px;border-top:1px solid rgba(255,255,255,0.06);">🙏 आणि इतर <b style="color:#FDE68A;">${otherCount}</b> भाविकांनीही ${modeLabel} केले आहे.</div>`;
+      }
+      document.getElementById('likesList').innerHTML = html;
+      return { verifiedCount: list.length, otherCount };
+    }
     window.openLikesSheet = (idx) => {
+      activeIdx = idx;
       const r = REELS[idx];
       if (!r) return;
-      document.getElementById('likesStatsBar').innerHTML = `<span>❤️ ${r.likes} लाईक्स</span><span>•</span><span>👁️ भक्ती दर्शन</span>`;
-      document.getElementById('likesSheetBody').innerHTML = `<div style="text-align:center;color:#94a3b8;padding:24px;font-size:14px;">🙏 ${r.temple} च्या या दर्शनाला ${r.likes} भक्तांनी पसंती दिली आहे.</div>`;
-      document.getElementById('likesBg').classList.remove('hidden');
+      document.querySelectorAll('.reel').forEach((el, i) => el.classList.toggle('active-reel', i === activeIdx));
+      document.getElementById('likesSheetTitle').textContent = 'प्रतिसाद आणि दर्शने';
+      const iconPrefix = r.liked ? '❤️ ' : '🤍 ';
+      const { verifiedCount, otherCount } = renderEngagementRows(r.liked, r.likes, 'पसंती (लाईक)');
+      document.getElementById('likesStatCnt').textContent = `${iconPrefix}${r.likes} (${verifiedCount} व्हेरिफाइड व ${otherCount} इतर)`;
+      const vEl = document.getElementById('viewsStatCnt');
+      vEl.style.display = '';
+      vEl.textContent = '👁️ ' + fmtViews(r.views || 940) + ' Views';
+      const sheet = document.getElementById('likesSheet');
+      const feed = document.getElementById('feed');
+      sheet.style.transition = '';
+      sheet.style.transform = '';
+      document.getElementById('shell').classList.add('cmt-open');
+      if (feed) feed.scrollTop = 0;
+      sheet.classList.add('open');
     };
-    window.closeLikesSheet = () => document.getElementById('likesBg').classList.add('hidden');
+    window.openSavesSheet = (idx) => {
+      activeIdx = idx;
+      const r = REELS[idx];
+      if (!r) return;
+      document.querySelectorAll('.reel').forEach((el, i) => el.classList.toggle('active-reel', i === activeIdx));
+      document.getElementById('likesSheetTitle').textContent = 'सेव्ह केलेले भक्त';
+      const { verifiedCount, otherCount } = renderEngagementRows(r.saved, r.saves || 0, 'सेव्ह');
+      document.getElementById('likesStatCnt').textContent = `🔖 ${r.saves || 0} (${verifiedCount} व्हेरिफाइड${otherCount > 0 ? ' व ' + otherCount + ' इतर' : ''})`;
+      const vEl = document.getElementById('viewsStatCnt');
+      vEl.style.display = '';
+      vEl.textContent = '👁️ ' + fmtViews(r.views || 940) + ' Views';
+      const sheet = document.getElementById('likesSheet');
+      const feed = document.getElementById('feed');
+      sheet.style.transition = '';
+      sheet.style.transform = '';
+      document.getElementById('shell').classList.add('cmt-open');
+      if (feed) feed.scrollTop = 0;
+      sheet.classList.add('open');
+    };
+    window.closeLikesSheet = () => {
+      const sheet = document.getElementById('likesSheet');
+      sheet.style.transition = '';
+      sheet.style.transform = '';
+      sheet.classList.remove('open');
+      const cmtOpen = document.getElementById('cmtSplitPanel').classList.contains('open');
+      if (!cmtOpen) {
+        const feed = document.getElementById('feed');
+        if (feed) feed.style.scrollSnapType = 'none';
+        document.getElementById('shell').classList.remove('cmt-open');
+        if (feed) {
+          feed.scrollTop = activeIdx * (feed.clientHeight || 1);
+          requestAnimationFrame(() => {
+            feed.scrollTop = activeIdx * (feed.clientHeight || 1);
+            feed.style.scrollSnapType = 'y mandatory';
+          });
+        }
+      }
+    };
+
+    // Smooth 1:1 Finger Swipe-Down with Proportional Video/Reel Scale-Up
+    (function attachSwipeDown() {
+      const bindDrag = (handleEl, targetEl, onClose) => {
+        if (!handleEl || !targetEl) return;
+        let startY = 0, curY = 0, dragging = false, activeReel = null, sheetH = 400;
+        handleEl.addEventListener('touchstart', (e) => {
+          if (!e.touches || !e.touches[0]) return;
+          startY = e.touches[0].clientY;
+          curY = 0;
+          dragging = true;
+          sheetH = targetEl.offsetHeight || (window.innerHeight * 0.6) || 400;
+          activeReel = document.querySelector('.reel.active-reel');
+          targetEl.style.transition = 'none';
+          if (activeReel) activeReel.style.transition = 'none';
+        }, { passive: true });
+        handleEl.addEventListener('touchmove', (e) => {
+          if (!dragging || !e.touches || !e.touches[0]) return;
+          const dy = Math.max(0, e.touches[0].clientY - startY);
+          curY = dy;
+          targetEl.style.transform = `translateY(${dy}px)`;
+          if (activeReel) {
+            const p = Math.min(1, dy / sheetH);
+            const scale = 0.36 + (1 - 0.36) * p;
+            const ty = 16 * (1 - p);
+            const rad = 26 * (1 - p);
+            activeReel.style.transform = `scale(${scale.toFixed(4)}) translateY(${ty.toFixed(1)}px)`;
+            activeReel.style.borderRadius = `${rad.toFixed(1)}px`;
+          }
+        }, { passive: true });
+        const finish = () => {
+          if (!dragging) return;
+          dragging = false;
+          targetEl.style.transition = '';
+          if (activeReel) {
+            activeReel.style.transition = '';
+            activeReel.style.transform = '';
+            activeReel.style.borderRadius = '';
+          }
+          if (curY > 75) {
+            onClose();
+          } else {
+            targetEl.style.transform = '';
+          }
+          activeReel = null;
+        };
+        handleEl.addEventListener('touchend', finish, { passive: true });
+        handleEl.addEventListener('touchcancel', finish, { passive: true });
+      };
+      bindDrag(document.getElementById('likesHandleBar'), document.getElementById('likesSheet'), () => window.closeLikesSheet());
+      bindDrag(document.getElementById('cmtHandleBar'), document.getElementById('cmtSplitPanel'), () => window.closeCmt());
+    })();
     window.closeOpt = () => {
       const bg = document.getElementById('optBg');
       bg.classList.remove('open');
@@ -2202,8 +2540,8 @@
     };
 
     // Search
-    window.openSearchSheet = () => { document.getElementById('searchBg').classList.remove('hidden'); renderSearchList(''); };
-    window.closeSearchSheet = () => document.getElementById('searchBg').classList.add('hidden');
+    window.openSearchSheet = () => { (() => { const _b = document.getElementById('searchBg'); _b.classList.remove('hidden'); requestAnimationFrame(() => _b.classList.add('open')); })(); renderSearchList(''); };
+    window.closeSearchSheet = () => (() => { const _b = document.getElementById('searchBg'); _b.classList.remove('open'); setTimeout(() => _b.classList.add('hidden'), 260); })();
     window.renderSearchList = (q) => {
       const term = (q || '').trim().toLowerCase();
       const matched = REELS.filter(r => !r.isAd && (!term || r.temple.toLowerCase().includes(term)));
@@ -2230,9 +2568,9 @@
           <div><div class="lu-name-row">${u.name || 'भक्त'}</div><div class="lu-sub">${u.district || '-'} • वॉर्निंग: ${u.warningCount || 0}/3</div></div>
           <button type="button" onclick="onCmtUserTap('${uid}','${(u.name||'').replace(/'/g,'')}')" class="lu-tag" style="cursor:pointer;">मॉडरेट</button>
         </div>`).join('')}`;
-      document.getElementById('adminModBg').classList.remove('hidden');
+      (() => { const _b = document.getElementById('adminModBg'); _b.classList.remove('hidden'); requestAnimationFrame(() => _b.classList.add('open')); })();
     };
-    window.closeAdminModSheet = () => document.getElementById('adminModBg').classList.add('hidden');
+    window.closeAdminModSheet = () => (() => { const _b = document.getElementById('adminModBg'); _b.classList.remove('open'); setTimeout(() => _b.classList.add('hidden'), 260); })();
     window.onCmtUserTap = async (uid, name) => {
       if (!isAdminUser || !uid) return;
       const uSnap = await fbDb.ref(`shortsUsers/${uid}`).once('value').catch(() => ({ val: () => ({}) }));
@@ -2246,7 +2584,7 @@
             <button type="button" onclick="quickBlock('${uid}', ${!u.blocked})" style="flex:1;padding:10px;border-radius:12px;background:#dc2626;color:#fff;font-weight:800;border:none;cursor:pointer;">${u.blocked ? '✓ अनब्लॉक' : '🚫 ब्लॉक करा'}</button>
           </div>
         </div>`;
-      document.getElementById('adminModBg').classList.remove('hidden');
+      (() => { const _b = document.getElementById('adminModBg'); _b.classList.remove('hidden'); requestAnimationFrame(() => _b.classList.add('open')); })();
     };
     window.quickWarn = async (uid) => {
       const snap = await fbDb.ref(`shortsUsers/${uid}/warningCount`).once('value');

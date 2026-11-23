@@ -1434,6 +1434,18 @@
       </div>
     </div>
 
+    <!-- Likes & Views Sheet -->
+    <div class="sheet-bg hidden" id="likesBg" onclick="if(event.target===this) closeLikesSheet()">
+      <div class="likes-sheet">
+        <div class="sheet-hdr">
+          <span>❤️ लाईक्स व दर्शन आकडेवारी</span>
+          <button type="button" onclick="closeLikesSheet()" style="background:none;border:none;color:#fff;font-size:16px;cursor:pointer;">✕</button>
+        </div>
+        <div class="likes-stats" id="likesStatsBar"></div>
+        <div class="likes-list" id="likesSheetBody"></div>
+      </div>
+    </div>
+
     <!-- Search Sheet -->
     <div class="sheet-bg hidden" id="searchBg" onclick="if(event.target===this) closeSearchSheet()">
       <div class="likes-sheet" style="height:68%;">
@@ -1473,8 +1485,10 @@
           </div>
         </div>
         <div class="live-stage" id="liveStage">
-          <video id="liveVideo" style="width:100%;height:100%;object-fit:contain;display:none;" playsinline controls autoplay></video>
-          <iframe id="liveIframe" style="width:100%;height:100%;border:0;display:none;" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+          <div class="live-shimmer" id="liveShimmer">🙏 दर्शन सुरू होत आहे...</div>
+          <div id="liveOfflineCard" class="hidden" style="text-align:center;padding:18px;color:#FDE68A;font-size:14px;font-weight:700;z-index:7;">🙏 सध्या लाईव्ह दर्शन तात्पुरते बंद आहे. कृपया थोड्या वेळाने पुन्हा प्रयत्न करा.</div>
+          <video id="liveVideo" style="position:relative;z-index:3;width:100%;height:100%;object-fit:contain;display:none;" playsinline controls autoplay onplaying="document.getElementById('liveShimmer').style.display='none'"></video>
+          <iframe id="liveIframe" style="position:relative;z-index:3;width:100%;height:100%;border:0;display:none;" allow="autoplay; encrypted-media" allowfullscreen onload="document.getElementById('liveShimmer').style.display='none'"></iframe>
           <div class="ott-center-wm" id="ottWatermark">दर्शन सेतू . लाईव्ह</div>
         </div>
         <div class="live-wm-bar">
@@ -1787,16 +1801,18 @@
               <button type="button" style="background:none;border:none;cursor:pointer;display:flex;" onclick="triggerLike(${i}, true, event)" aria-label="लाईक">
                 <span class="act-circle"><span class="act-ico ${r.liked ? 'pop-anim' : ''}" id="ico_${r.id}">${r.liked ? '❤️' : '🤍'}</span></span>
               </button>
-              <span class="act-lbl" id="lbl_${r.id}">${r.likes}</span>
+              <button type="button" class="act-lbl" id="lbl_${r.id}" onclick="openLikesSheet(${i})" style="background:none;border:none;color:#fff;cursor:pointer;padding:0;">${r.likes}</button>
             </div>
             <button type="button" class="act-btn" onclick="openCmt(${i})">
               <span class="act-circle"><span class="act-ico">💬</span></span>
               <span class="act-lbl">कमेंट्स</span>
             </button>
-            <button type="button" class="act-btn" onclick="toggleSave(this, ${i})">
-              <span class="act-circle"><span class="act-ico">🔖</span></span>
-              <span class="act-lbl">सेव्ह</span>
-            </button>
+            <div class="act-btn">
+              <button type="button" style="background:none;border:none;cursor:pointer;display:flex;" onclick="toggleSave(this, ${i})" aria-label="सेव्ह">
+                <span class="act-circle"><svg class="save-svg" id="ssvg_${r.id}" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></span>
+              </button>
+              <span class="act-lbl" id="slbl_${r.id}">सेव्ह</span>
+            </div>
             <button type="button" class="act-btn" onclick="shareReel(${i})">
               <span class="act-circle"><span class="act-ico">📤</span></span>
               <span class="act-lbl">शेअर</span>
@@ -1955,9 +1971,11 @@
     window.toggleSave = async (btn, idx) => {
       if (!requireLogin()) return;
       const r = REELS[idx];
-      const lbl = btn.querySelector('.act-lbl');
-      const saved = lbl.textContent === 'सेव्ह केले';
-      lbl.textContent = saved ? 'सेव्ह' : 'सेव्ह केले';
+      const svg = document.getElementById('ssvg_' + r.id);
+      const lbl = document.getElementById('slbl_' + r.id);
+      const saved = lbl && lbl.textContent === 'सेव्ह केले';
+      if (lbl) lbl.textContent = saved ? 'सेव्ह' : 'सेव्ह केले';
+      if (svg) { svg.setAttribute('fill', saved ? 'none' : '#FBBF24'); svg.setAttribute('stroke', saved ? '#fff' : '#FBBF24'); }
       if (!saved) {
         await fbDb.ref(`shortsUserSaved/${currentUser.uid}/${r.id}`).set({ thumb: r.src, templeName: r.temple, ts: Date.now() });
         showToast('🔖 रील प्रोफाइलमध्ये सेव्ह झाले!');
@@ -2054,7 +2072,10 @@
         { label: '🛕 मंदिराची संपूर्ण माहिती पहा', url: 'temple-info.html' },
         { label: '🔗 व्हॉट्सॲपवर शेअर करा', url: 'action:share' }
       ];
-      let html = items.map(it => {
+      const isAutoOn = !!(shortsCfg.audio && shortsCfg.audio.autoScroll);
+      let html = `<button class="opt-btn" onclick="location.href='daily-darshan.html'"><span class="opt-ico">📸</span><span>आजचे सर्व फोटो पहा</span></button>
+        <button class="opt-btn" onclick="toggleLocalAutoScroll(this)"><span class="opt-ico">⏩</span><span>ऑटो-स्क्रोल (${(shortsCfg.audio&&shortsCfg.audio.durationSec)||10}s)</span><span class="ds-toggle ${isAutoOn?'on':''}"></span></button>
+        <div class="opt-sep"></div>` + items.map(it => {
         if ((it.url || '').includes('report')) return `<button class="opt-btn" onclick="location.href='profile.html?tab=report&reelId=${encodeURIComponent(r.id)}&reelTitle=${encodeURIComponent(r.temple)}'"><span class="opt-ico">⚠️</span><span>${it.label}</span></button>`;
         if (it.url === 'action:share') return `<button class="opt-btn" onclick="shareReel(${idx});closeOpt();"><span class="opt-ico">📤</span><span>${it.label}</span></button>`;
         if ((it.url || '').includes('temple-info')) return `<button class="opt-btn" onclick="location.href='temple-info.html?id=${encodeURIComponent(r.templeId)}'"><span class="opt-ico">🛕</span><span>${it.label}</span></button>`;
@@ -2068,6 +2089,22 @@
       bg.classList.remove('hidden');
       requestAnimationFrame(() => bg.classList.add('open'));
     };
+    window.toggleLocalAutoScroll = (btn) => {
+      if (!shortsCfg.audio) shortsCfg.audio = {};
+      shortsCfg.audio.autoScroll = !shortsCfg.audio.autoScroll;
+      const tg = btn.querySelector('.ds-toggle');
+      if (tg) tg.classList.toggle('on', shortsCfg.audio.autoScroll);
+      scheduleAutoScroll();
+      showToast(shortsCfg.audio.autoScroll ? '⏩ ऑटो-स्क्रोल चालू!' : '⏸️ ऑटो-स्क्रोल बंद');
+    };
+    window.openLikesSheet = (idx) => {
+      const r = REELS[idx];
+      if (!r) return;
+      document.getElementById('likesStatsBar').innerHTML = `<span>❤️ ${r.likes} लाईक्स</span><span>•</span><span>👁️ भक्ती दर्शन</span>`;
+      document.getElementById('likesSheetBody').innerHTML = `<div style="text-align:center;color:#94a3b8;padding:24px;font-size:14px;">🙏 ${r.temple} च्या या दर्शनाला ${r.likes} भक्तांनी पसंती दिली आहे.</div>`;
+      document.getElementById('likesBg').classList.remove('hidden');
+    };
+    window.closeLikesSheet = () => document.getElementById('likesBg').classList.add('hidden');
     window.closeOpt = () => {
       const bg = document.getElementById('optBg');
       bg.classList.remove('open');
@@ -2141,7 +2178,9 @@
     // Vertical Live Darshan OTT Popup
     window.openLivePopup = (idx) => {
       const r = REELS[idx];
-      if (!r || !r.liveUrl) return;
+      if (!r) return;
+      document.getElementById('liveShimmer').style.display = r.liveUrl ? 'inline-block' : 'none';
+      document.getElementById('liveOfflineCard').classList.toggle('hidden', !!r.liveUrl);
       document.getElementById('bgAudio').pause();
       document.getElementById('ottTitle').textContent = r.temple;
       const lp = shortsCfg.livePopup || {};

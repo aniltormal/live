@@ -1535,6 +1535,29 @@
       transition: opacity 0.32s ease;
     }
     .reels-skel.fade-out { opacity: 0; pointer-events: none; }
+    .reel-media-skel {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background: linear-gradient(110deg, #070d17 25%, #112238 45%, #070d17 65%);
+      background-size: 220% 100%;
+      animation: skelShimmerDark 1.25s infinite linear;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.28s ease;
+      pointer-events: none;
+    }
+    .reel-media-skel.done { opacity: 0; }
+    .reel-media-skel span {
+      padding: 7px 15px;
+      border-radius: 999px;
+      background: rgba(3, 25, 38, 0.78);
+      border: 1px solid rgba(251, 191, 36, 0.4);
+      color: #FDE68A;
+      font-size: 13.5px;
+      font-weight: 700;
+    }
     .sk-dark {
       background: linear-gradient(90deg, #111827 25%, #1e293b 50%, #111827 75%);
       background-size: 200% 100%;
@@ -2408,9 +2431,10 @@
         }
         const isFol = !!followedMap[r.templeId];
         return `<div class="reel ${i===activeIdx?'active-reel':''}" data-idx="${i}" data-rid="${r.id}" onclick="handleReelTap(event, ${i})">
+          <div class="reel-media-skel" id="mskel_${i}"><span>🙏 दर्शन लोड होत आहे...</span></div>
           ${r.type === 'video'
-            ? `<video class="reel-media reel-video" src="${r.src}" autoplay muted playsinline preload="metadata" onended="onReelVideoEnded(this)"></video>`
-            : `<img class="reel-bg-blur" src="${r.src}" alt="" /><img class="reel-media" src="${r.src}" loading="lazy" alt="${r.temple}" />`
+            ? `<video class="reel-media reel-video" src="${r.src}" autoplay muted playsinline preload="metadata" onloadeddata="var s=document.getElementById('mskel_${i}');if(s)s.classList.add('done');" onplaying="var s=document.getElementById('mskel_${i}');if(s)s.classList.add('done');" onerror="var s=document.getElementById('mskel_${i}');if(s)s.classList.add('done');" onended="onReelVideoEnded(this)"></video>`
+            : `<img class="reel-bg-blur" src="${r.src}" alt="" /><img class="reel-media" src="${r.src}" loading="${i<2?'eager':'lazy'}" onload="var s=document.getElementById('mskel_${i}');if(s)s.classList.add('done');" onerror="var s=document.getElementById('mskel_${i}');if(s)s.classList.add('done');" alt="${r.temple}" />`
           }
           <div class="reel-vignette"></div>
 
@@ -2649,6 +2673,7 @@
       } catch(_) {}
       if (currentUser) {
         if (r.liked) fbDb.ref(`shortsUserLikes/${currentUser.uid}/${r.id}`).set({ thumb: r.src, templeName: r.temple, ts: Date.now() }).catch(() => {});
+        if (r.liked) awardMeritActivity('likes', 5);
         else fbDb.ref(`shortsUserLikes/${currentUser.uid}/${r.id}`).remove().catch(() => {});
       }
     };
@@ -2863,7 +2888,8 @@
 
     window.sendComment = async () => {
       if (!requireLogin() || !activeCmtReelId) return;
-      if (userProfile && userProfile.blocked) return alert('तुमचे खाते तात्पुरते ब्लॉक आहे.');
+      const curMerit = (userProfile && typeof userProfile.meritPoints === 'number') ? userProfile.meritPoints : 5;
+      if (userProfile && (userProfile.blocked || curMerit <= 0)) return alert('🚫 ० मेरिट पॉईंट्समुळे तुमचे खाते कायमस्वरूपी ब्लॉक केले आहे.');
       const txt = document.getElementById('cmtInp').value.trim();
       if (!txt) return;
       const banned = (shortsCfg.moderation && shortsCfg.moderation.bannedWords) || [];
@@ -2892,6 +2918,7 @@
         await fbDb.ref(`shortsComments/${activeCmtReelId}`).push(payload);
       }
       document.getElementById('cmtInp').value = '';
+      awardMeritActivity('comments', 3);
       loadComments(activeCmtReelId);
     };
 
@@ -3161,7 +3188,7 @@
         <a href="admin-shorts.html" style="display:block;text-align:center;padding:10px;border-radius:12px;background:#FBBF24;color:#031926;font-weight:800;text-decoration:none;margin-bottom:8px;">🎛️ संपूर्ण अ‍ॅडमिन शॉर्ट्स पॅनेल उघडा</a>
         <div style="color:#cbd5e1;font-weight:700;">👥 नोंदणीकृत भक्त (${users.length}):</div>
         ${users.map(([uid, u]) => `<div class="like-user-row" style="justify-content:space-between;background:rgba(255,255,255,0.05);padding:8px;border-radius:12px;">
-          <div><div class="lu-name-row">${u.name || 'भक्त'}</div><div class="lu-sub">${u.district || '-'} • वॉर्निंग: ${u.warningCount || 0}/3</div></div>
+          <div><div class="lu-name-row">${u.name || 'भक्त'}</div><div class="lu-sub">${u.district || '-'} • ⭐ मेरिट: ${typeof u.meritPoints === 'number' ? u.meritPoints : Math.max(0, 5 - (u.warningCount || 0))}/5</div></div>
           <button type="button" onclick="onCmtUserTap('${uid}','${(u.name||'').replace(/'/g,'')}')" class="lu-tag" style="cursor:pointer;">मॉडरेट</button>
         </div>`).join('')}`;
       (() => { const _b = document.getElementById('adminModBg'); _b.classList.remove('hidden'); requestAnimationFrame(() => _b.classList.add('open')); })();
@@ -3174,24 +3201,77 @@
       document.getElementById('adminModList').innerHTML = `
         <div style="padding:12px;border-radius:14px;background:rgba(255,255,255,0.06);">
           <div style="font-size:16px;font-weight:800;color:#FDE68A;">${name}</div>
-          <div style="font-size:12px;color:#cbd5e1;margin:6px 0 12px;">जिल्हा: ${u.district || '-'} • वॉर्निंग: ${u.warningCount || 0}/3 • स्थिती: ${u.blocked ? '🚫 ब्लॉक' : '✓ सक्रिय'}</div>
+          <div style="font-size:12px;color:#cbd5e1;margin:6px 0 12px;">जिल्हा: ${u.district || '-'} • ⭐ मेरिट: ${typeof u.meritPoints === 'number' ? u.meritPoints : Math.max(0, 5 - (u.warningCount || 0))}/5 • स्थिती: ${u.blocked ? '🚫 ब्लॉक' : '✓ सक्रिय'}</div>
           <div style="display:flex;gap:8px;">
-            <button type="button" onclick="quickWarn('${uid}')" style="flex:1;padding:10px;border-radius:12px;background:#FBBF24;color:#031926;font-weight:800;border:none;cursor:pointer;">⚠️ वॉर्निंग द्या</button>
+            <button type="button" onclick="quickWarn('${uid}')" style="flex:1;padding:10px;border-radius:12px;background:#FBBF24;color:#031926;font-weight:800;border:none;cursor:pointer;">⬇️ डिमिरिट (-1)</button>
             <button type="button" onclick="quickBlock('${uid}', ${!u.blocked})" style="flex:1;padding:10px;border-radius:12px;background:#dc2626;color:#fff;font-weight:800;border:none;cursor:pointer;">${u.blocked ? '✓ अनब्लॉक' : '🚫 ब्लॉक करा'}</button>
           </div>
         </div>`;
       (() => { const _b = document.getElementById('adminModBg'); _b.classList.remove('hidden'); requestAnimationFrame(() => _b.classList.add('open')); })();
     };
+    async function awardMeritActivity(kind, threshold) {
+      if (!currentUser || !userProfile || userProfile.blocked) return;
+      let merit = typeof userProfile.meritPoints === 'number' ? userProfile.meritPoints : 5;
+      if (merit <= 0 || merit >= 5) return;
+      const act = { ...(userProfile.meritActivity || {}) };
+      act[kind] = (act[kind] || 0) + 1;
+      const upd = { meritActivity: act };
+      if (act[kind] >= threshold) {
+        act[kind] = 0;
+        merit = Math.min(5, merit + 1);
+        upd.meritPoints = merit;
+        upd.verified = merit >= 3;
+        await fbDb.ref('shortsBroadcasts').push({
+          targetUid: currentUser.uid,
+          type: 'merit_up',
+          title: '⭐ भक्ती सहभाग बोनस: +१ मेरिट पॉईंट!',
+          body: `तुमच्या नियमित भक्ती सहभागामुळे मेरिट स्कोअर ${merit}/5 झाला आहे.${merit >= 3 ? ' तुमचा व्हेरिफाइड बॅज सक्रिय आहे ✓' : ''}`,
+          createdAt: Date.now()
+        }).catch(() => {});
+        showToast(`⭐ +१ मेरिट पॉईंट! (एकूण ${merit}/5)`);
+      }
+      await fbDb.ref(`shortsUsers/${currentUser.uid}`).update(upd).catch(() => {});
+      userProfile = { ...userProfile, ...upd };
+    }
+
     window.quickWarn = async (uid) => {
-      const snap = await fbDb.ref(`shortsUsers/${uid}/warningCount`).once('value');
-      const next = (snap.val() || 0) + 1;
-      await fbDb.ref(`shortsUsers/${uid}`).update({ warningCount: next, blocked: next >= 3 });
-      showToast(next >= 3 ? '३/३ वॉर्निंग — भक्त ब्लॉक झाले!' : `वॉर्निंग ${next}/3 दिली!`);
+      const snap = await fbDb.ref(`shortsUsers/${uid}`).once('value');
+      const cur = snap.val() || {};
+      const curM = typeof cur.meritPoints === 'number' ? cur.meritPoints : Math.max(0, 5 - (cur.warningCount || 0));
+      const nextM = Math.max(1, curM - 1);
+      const nextW = (cur.warningCount || 0) + 1;
+      await fbDb.ref(`shortsUsers/${uid}`).update({
+        meritPoints: nextM,
+        verified: nextM >= 3 && !cur.blocked,
+        warningCount: nextW
+      });
+      let bType = 'demerit';
+      let title = `⚠️ डिमिरिट सूचना (मेरिट: ${nextM}/5)`;
+      let body = `नियम-अटींचे उल्लंघन किंवा रिपोर्टमुळे १ मेरिट पॉईंट कमी झाला आहे. सध्याचे मेरिट: ${nextM}/5.`;
+      if (nextM === 1) {
+        bType = 'final_warning';
+        title = '🚨 अंतिम सूचना (१/५ मेरिट स्थिर)';
+        body = 'तुमचे मेरिट किमान १ पॉईंटवर पोहोचले आहे. पुढील गंभीर अटी-उल्लंघन किंवा वाईट वागणुकीवर ॲडमिनच्या अंतिम कार्यवाहीने ० पॉईंट होऊन खाते कायमस्वरूपी ब्लॉक केले जाईल.';
+      } else if (nextM < 3) {
+        title = `⚠️ व्हेरिफाइड बॅज रद्द (मेरिट: ${nextM}/5)`;
+        body = `३ पेक्षा कमी मेरिट पॉईंट्स (${nextM}/5) झाल्यामुळे तुमचा व्हेरिफाइड बॅज काढून घेण्यात आला आहे. स्ट्रीक, लाईक व कमेंटने मेरिट परत मिळवा.`;
+      }
+      await fbDb.ref('shortsBroadcasts').push({ targetUid: uid, type: bType, title, body, createdAt: Date.now() });
+      showToast(nextM === 1 ? 'अंतिम सूचना (१/५ मेरिट स्थिर)!' : `डिमिरिट दिले (मेरिट: ${nextM}/5)`);
       closeAdminModSheet();
     };
     window.quickBlock = async (uid, val) => {
-      await fbDb.ref(`shortsUsers/${uid}/blocked`).set(val);
-      showToast(val ? 'भक्त ब्लॉक केले!' : 'भक्त अनब्लॉक केले!');
+      const upd = val ? { blocked: true, meritPoints: 0, verified: false } : { blocked: false, meritPoints: 1, verified: false };
+      await fbDb.ref(`shortsUsers/${uid}`).update(upd);
+      if (val) {
+        await fbDb.ref('shortsBroadcasts').push({
+          targetUid: uid, type: 'blocked',
+          title: '🚫 ॲडमिन अंतिम कार्यवाही: खाते कायमस्वरूपी ब्लॉक (०/५)',
+          body: 'अटी-शर्तींचे गंभीर उल्लंघन किंवा कमेंटमधील अयोग्य वागणुकीमुळे ॲडमिन कडून तुमचे मेरिट ०/५ करून खाते कायमस्वरूपी ब्लॉक करण्यात आले आहे.',
+          createdAt: Date.now()
+        });
+      }
+      showToast(val ? '०/५ मेरिट — भक्त कायमस्वरूपी ब्लॉक!' : 'भक्त अनब्लॉक केले (१/५ मेरिट)!');
       closeAdminModSheet();
     };
 

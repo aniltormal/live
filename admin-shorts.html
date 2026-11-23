@@ -595,15 +595,18 @@
       if (!filtered.length) { box.innerHTML = '<div class="text-xs text-slate-400 py-3">कोणतेही भक्त सापडले नाहीत.</div>'; return; }
       box.innerHTML = filtered.map(([uid, u]) => {
         const isBday = u.dob && u.dob.slice(5, 10) === todayMD;
+        const mPts = typeof u.meritPoints === 'number' ? u.meritPoints : Math.max(0, 5 - (u.warningCount || 0));
+        const mBadge = u.blocked || mPts <= 0 ? '🚫 ब्लॉक' : (mPts === 1 ? '🚨 अंतिम सूचना' : (mPts < 3 ? '⚠️ बॅज रद्द' : '✓ व्हेरिफाइड'));
         return `
         <div class="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-xl border ${u.blocked ? 'border-rose-300 bg-rose-50/50' : 'border-slate-200 bg-slate-50/60'} text-xs">
           <div class="min-w-0 flex-1">
-            <div class="font-extrabold text-[#05344E]">${u.name || 'भक्त'} ${isBday ? '🎂' : ''} <span class="text-[11px] font-normal text-slate-500">(${u.district || 'जिल्हा नाही'} • वॉर्निंग: ${u.warningCount || 0}/3)</span></div>
+            <div class="font-extrabold text-[#05344E]">${u.name || 'भक्त'} ${isBday ? '🎂' : ''} <span class="text-[11px] font-normal text-slate-500">(${u.district || 'जिल्हा नाही'} • ⭐ मेरिट: ${mPts}/5 • ${mBadge})</span></div>
             <div class="text-[11px] text-slate-500 truncate">${u.email || ''} • फॉलो: ${Object.keys(u.followedTemples || {}).length}</div>
           </div>
-          <div class="flex items-center gap-1.5">
+          <div class="flex items-center gap-1.5 flex-wrap">
             ${isBday ? `<button type="button" onclick="wishBday('${uid}', '${(u.name || 'भक्त').replace(/'/g, '')}')" class="px-2.5 py-1 rounded-lg bg-amber-400 text-[#031926] font-extrabold">🎂 शुभेच्छा</button>` : ''}
-            <button type="button" onclick="warnUser('${uid}')" class="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-900 font-bold">⚠️ वॉर्निंग</button>
+            <button type="button" onclick="addMeritUser('${uid}')" class="px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-900 font-bold">⭐ +1 मेरिट</button>
+            <button type="button" onclick="warnUser('${uid}')" class="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-900 font-bold">⬇️ डिमिरिट (-1)</button>
             <button type="button" onclick="toggleBlockUser('${uid}')" class="px-2.5 py-1 rounded-lg ${u.blocked ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white'} font-bold">${u.blocked ? '✓ अनब्लॉक' : '🚫 ब्लॉक'}</button>
             <button type="button" onclick="deleteDevoteeUser('${uid}', '${(u.name || 'भक्त').replace(/'/g, '')}')" class="px-2.5 py-1 rounded-lg bg-slate-200 hover:bg-rose-100 text-slate-800 hover:text-rose-700 font-bold">🗑️ हटवा</button>
           </div>
@@ -611,24 +614,60 @@
       }).join('');
     }
 
-    window.warnUser = async (uid) => {
+    window.addMeritUser = async (uid) => {
       const cur = usersMap[uid] || {};
-      const next = (cur.warningCount || 0) + 1;
-      const autoBlock = next >= 3;
-      await fbDb.ref(`shortsUsers/${uid}`).update({ warningCount: next, blocked: autoBlock || !!cur.blocked });
+      const curM = typeof cur.meritPoints === 'number' ? cur.meritPoints : Math.max(0, 5 - (cur.warningCount || 0));
+      const nextM = Math.min(5, curM + 1);
+      await fbDb.ref(`shortsUsers/${uid}`).update({ meritPoints: nextM, verified: nextM >= 3, blocked: false });
       await fbDb.ref('shortsBroadcasts').push({
         targetUid: uid,
-        title: '⚠️ दर्शन सेतू टीम कडून सूचना',
-        body: autoBlock ? '३ वॉर्निंग पूर्ण झाल्यामुळे आपले खाते तात्पुरते ब्लॉक करण्यात आले आहे.' : `कृपया मर्यादित व भक्तीमय भाषेतच कमेंट्स करा (वॉर्निंग ${next}/3).`,
+        type: 'merit_up',
+        title: '⭐ दर्शन सेतू टीम कडून +१ मेरिट पॉईंट!',
+        body: `तुमच्या उत्तम भक्ती सहभागाबद्दल मेरिट स्कोअर ${nextM}/5 करण्यात आला आहे.${nextM >= 3 ? ' तुमचा व्हेरिफाइड बॅज सक्रिय आहे ✓' : ''}`,
         createdAt: Date.now()
       });
-      showToast(autoBlock ? '३/३ वॉर्निंग — भक्त ब्लॉक झाले!' : `वॉर्निंग ${next}/3 पाठवली!`);
+      showToast(`+१ मेरिट दिले (एकूण ${nextM}/5)`);
+      loadUsers();
+    };
+    window.warnUser = async (uid) => {
+      const cur = usersMap[uid] || {};
+      const curM = typeof cur.meritPoints === 'number' ? cur.meritPoints : Math.max(0, 5 - (cur.warningCount || 0));
+      const nextM = Math.max(1, curM - 1);
+      const nextW = (cur.warningCount || 0) + 1;
+      await fbDb.ref(`shortsUsers/${uid}`).update({
+        meritPoints: nextM,
+        verified: nextM >= 3 && !cur.blocked,
+        warningCount: nextW
+      });
+      let bType = 'demerit';
+      let title = `⚠️ डिमिरिट सूचना (मेरिट: ${nextM}/5)`;
+      let body = `नियम-अटींचे उल्लंघन किंवा रिपोर्टमुळे १ मेरिट पॉईंट कमी झाला आहे. सध्याचे मेरिट: ${nextM}/5.`;
+      if (nextM === 1) {
+        bType = 'final_warning';
+        title = '🚨 अंतिम सूचना (१/५ मेरिट स्थिर)';
+        body = 'तुमचे मेरिट किमान १ पॉईंटवर पोहोचले आहे. पुढील गंभीर अटी-उल्लंघन किंवा वाईट वागणुकीवर ॲडमिनच्या अंतिम कार्यवाहीने ० पॉईंट होऊन खाते कायमस्वरूपी ब्लॉक केले जाईल.';
+      } else if (nextM < 3) {
+        title = `⚠️ व्हेरिफाइड बॅज रद्द (मेरिट: ${nextM}/5)`;
+        body = `३ पेक्षा कमी मेरिट पॉईंट्स (${nextM}/5) झाल्यामुळे तुमचा व्हेरिफाइड बॅज काढून घेण्यात आला आहे. स्ट्रीक, लाईक व कमेंटने मेरिट परत मिळवा.`;
+      }
+      await fbDb.ref('shortsBroadcasts').push({ targetUid: uid, type: bType, title, body, createdAt: Date.now() });
+      showToast(nextM === 1 ? 'अंतिम सूचना (१/५ मेरिट स्थिर)!' : `डिमिरिट दिले (मेरिट: ${nextM}/5)`);
       loadUsers();
     };
     window.toggleBlockUser = async (uid) => {
-      const next = !((usersMap[uid] || {}).blocked);
-      await fbDb.ref(`shortsUsers/${uid}/blocked`).set(next);
-      showToast(next ? 'भक्त ब्लॉक केले!' : 'भक्त अनब्लॉक केले!');
+      const cur = usersMap[uid] || {};
+      const next = !cur.blocked;
+      const upd = next ? { blocked: true, meritPoints: 0, verified: false } : { blocked: false, meritPoints: Math.max(1, cur.meritPoints || 1), verified: false };
+      await fbDb.ref(`shortsUsers/${uid}`).update(upd);
+      if (next) {
+        await fbDb.ref('shortsBroadcasts').push({
+          targetUid: uid, type: 'blocked',
+          title: '🚫 ॲडमिन अंतिम कार्यवाही: खाते कायमस्वरूपी ब्लॉक (०/५)',
+          body: 'अटी-शर्तींचे गंभीर उल्लंघन किंवा कमेंटमधील अयोग्य वागणुकीमुळे ॲडमिन कडून तुमचे मेरिट ०/५ करून खाते कायमस्वरूपी ब्लॉक करण्यात आले आहे.',
+          createdAt: Date.now()
+        });
+      }
+      showToast(next ? '०/५ मेरिट — भक्त कायमस्वरूपी ब्लॉक!' : 'भक्त अनब्लॉक केले!');
       loadUsers();
     };
     window.deleteDevoteeUser = async (uid, name) => {

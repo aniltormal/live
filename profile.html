@@ -382,6 +382,7 @@
       <div class="flex flex-wrap gap-1.5" id="reportTypeChips"></div>
       <textarea id="reportDetailsInp" rows="3" placeholder="तुमची अडचण किंवा सूचना सविस्तर लिहा..." class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs"></textarea>
       <button id="submitReportBtn" type="button" class="w-full py-3 rounded-2xl bg-[#05344E] text-amber-300 font-extrabold text-sm">📩 दर्शन सेतू टीमकडे पाठवा</button>
+      <div id="reportSuccessMsg" class="hidden p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold text-center">✓ तुमची तक्रार दर्शन सेतू टीमकडे यशस्वीरित्या पाठवली आहे!</div>
       <div class="border-t border-slate-200 pt-3 space-y-2">
         <div class="text-xs font-extrabold text-slate-700">माझ्या मागील तक्रारी व दर्शन सेतू टीमचे उत्तर</div>
         <div id="myReportsList" class="space-y-2 text-xs"></div>
@@ -1018,7 +1019,7 @@
         const list = Object.values(bSnap.val() || {}).filter(b => b.targetUid === 'all' || b.targetUid === currentUser.uid).reverse();
         box.innerHTML = list.length ? list.map(b => {
           const isWarn = b.type === 'demerit' || b.type === 'final_warning' || b.type === 'blocked';
-          const isWelcome = b.type === 'welcome_merit' || b.type === 'merit_up';
+          const isWelcome = b.type === 'welcome_merit' || b.type === 'merit_up' || b.type === 'report_reply';
           const cardCls = isWarn ? 'bg-rose-50/80 border-rose-200' : (isWelcome ? 'bg-[#EEF5FA] border-[#BAE6FD]' : 'bg-amber-50/70 border-amber-200');
           const dt = b.createdAt ? new Date(b.createdAt).toLocaleString('mr-IN', { dateStyle: 'short', timeStyle: 'short' }) : '';
           const bodyHtml = String(b.body || '').replace(/\n/g, '<br>');
@@ -1033,14 +1034,26 @@
       const rTitle = urlParams.get('reelTitle');
       const ctxEl = document.getElementById('reportReelContext');
       if (rTitle) { ctxEl.textContent = '🎬 संबंधित रील: ' + rTitle; ctxEl.classList.remove('hidden'); }
-      const snap = await fbDb.ref('shortsReports').orderByChild('uid').equalTo(currentUser.uid).once('value');
-      const mine = Object.values(snap.val() || {}).reverse();
-      document.getElementById('myReportsList').innerHTML = mine.length ? mine.map(r => `
+      const listEl = document.getElementById('myReportsList');
+      listEl.innerHTML = '<div class="sk-box h-14 w-full"></div><div class="sk-box h-14 w-full"></div>';
+      let mine = [];
+      try {
+        const snap = await fbDb.ref('shortsReports').orderByChild('uid').equalTo(currentUser.uid).once('value');
+        mine = Object.values(snap.val() || {}).reverse();
+      } catch (e) {
+        const snap = await fbDb.ref('shortsReports').limitToLast(60).once('value').catch(() => ({ val: () => ({}) }));
+        mine = Object.values(snap.val() || {}).filter(r => r && r.uid === currentUser.uid).reverse();
+      }
+      listEl.innerHTML = mine.length ? mine.map(r => {
+        const dt = r.createdAt ? new Date(r.createdAt).toLocaleString('mr-IN', { dateStyle: 'short', timeStyle: 'short' }) : '';
+        return `
         <div class="p-2.5 rounded-xl border ${r.status==='resolved'?'border-emerald-200 bg-emerald-50/40':'border-amber-200 bg-amber-50/50'}">
-          <div class="flex justify-between font-bold"><span>${r.issueType}</span><span>${r.status==='resolved'?'✓ निराकरण झाले':'⏳ प्रलंबित'}</span></div>
+          <div class="flex justify-between items-center font-bold gap-2"><span>${r.issueType}</span><span class="text-[11px]">${r.status==='resolved'?'✓ निराकरण झाले':'⏳ प्रलंबित'}</span></div>
           <div class="text-slate-600 mt-0.5">${r.details}</div>
+          ${dt ? `<div class="text-[10px] text-slate-400 mt-0.5">${dt}</div>` : ''}
           ${r.adminReply ? `<div class="mt-1.5 p-2 rounded-lg bg-white border border-emerald-200 text-[#05344E] font-bold">🛡️ दर्शन सेतू टीम: ${r.adminReply}</div>` : ''}
-        </div>`).join('') : '<div class="text-slate-400">कोणतीही मागील तक्रार नाही.</div>';
+        </div>`;
+      }).join('') : '<div class="text-slate-400">कोणतीही मागील तक्रार नाही.</div>';
     };
     document.getElementById('closeReportBtn').onclick = () => document.getElementById('reportModal').classList.add('hidden');
     document.getElementById('submitReportBtn').onclick = async () => {
@@ -1057,7 +1070,8 @@
         createdAt: Date.now()
       });
       document.getElementById('reportDetailsInp').value = '';
-      alert('तुमची तक्रार दर्शन सेतू टीमकडे पाठवली आहे!');
+      const sm = document.getElementById('reportSuccessMsg');
+      if (sm) { sm.classList.remove('hidden'); setTimeout(() => sm.classList.add('hidden'), 3200); }
       openReportModal();
     };
 

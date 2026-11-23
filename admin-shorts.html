@@ -549,13 +549,23 @@
     window.replyReport = async (rid) => {
       const reply = document.getElementById(`repInp_${rid}`).value.trim();
       if (!reply) return showToast('कृपया उत्तर लिहा', true);
+      const repObj = reportsMap[rid] || {};
       await fbDb.ref(`shortsReports/${rid}`).update({
         adminReply: reply,
         status: 'resolved',
         repliedBy: 'दर्शन सेतू टीम',
         updatedAt: Date.now()
       });
-      showToast('तक्रारीचे उत्तर सेव्ह झाले!');
+      if (repObj.uid) {
+        await fbDb.ref('shortsBroadcasts').push({
+          targetUid: repObj.uid,
+          type: 'report_reply',
+          title: '🛡️ दर्शन सेतू टीम कडून तक्रारीचे उत्तर',
+          body: `तुमची तक्रार (${repObj.issueType || 'अडचण'}): ${reply}`,
+          createdAt: Date.now()
+        }).catch(() => {});
+      }
+      showToast('तक्रारीचे उत्तर भक्ताच्या सूचना टॅबमध्ये पाठवले!');
       loadReports();
     };
 

@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>मंदिर प्रोफाइल — दर्शन सेतू . लाईव्ह</title>
+  <link href="https://fonts.googleapis.com/css2?family=Khand:wght@500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.15/dist/hls.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; font-family: 'Khand', sans-serif; }
+    :root {
+      --bg: #DFEBF4;
+      --card: #FFFFFF;
+      --card-border: #C3D9E8;
+      --hdr-bg: linear-gradient(135deg, #021C2B, #05344E, #064E6B);
+      --text: #031926;
+      --sub: #475569;
+      --accent: #EA580C;
+      --gold: #F59E0B;
+      --pill-bg: #E6F4FA;
+      --pill-text: #0369A1;
+      --nav-bg: rgba(255, 255, 255, 0.97);
+    }
+    body.ds-dark {
+      --bg: #030D16;
+      --card: #0A2033;
+      --card-border: rgba(56, 189, 248, 0.26);
+      --hdr-bg: linear-gradient(135deg, #021420, #05344E, #064E6B);
+      --text: #F8FAFC;
+      --sub: #94A3B8;
+      --accent: #F97316;
+      --gold: #FBBF24;
+      --pill-bg: rgba(56, 189, 248, 0.16);
+      --pill-text: #BAE6FD;
+      --nav-bg: rgba(3, 25, 38, 0.97);
+    }
+    body {
+      background: #020810;
+      font-family: 'Khand', sans-serif;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .phone-shell {
+      width: 100%;
+      max-width: 430px;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 72px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Top Bar */
+    .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: var(--hdr-bg);
+      color: #fff;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      border-bottom: 1.5px solid rgba(251, 191, 36, 0.45);
+    }
+    .top-left { display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1; }
+    .ico-btn {
+      width: 34px; height: 34px; border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(253,230,138,0.28);
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; cursor: pointer; flex-shrink: 0;
+    }
+    .handle-txt {
+      font-family: 'Khand', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: #FDE68A;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .top-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .t-switch {
+      background: rgba(3, 25, 38, 0.88);
+      border: 1.5px solid rgba(251, 191, 36, 0.6);
+      color: #FDE68A;
+      border-radius: 10px;
+      padding: 4px 8px;
+      font-family: 'Khand', sans-serif;
+      font-size: 13.5px;
+      font-weight: 700;
+      outline: none;
+      max-width: 128px;
+      cursor: pointer;
+    }
+    .t-switch option { background: #031926; color: #fff; }
+
+    /* Profile Header */
+    .prof-hdr {
+      padding: 14px 14px 10px;
+      background: var(--card);
+      border-bottom: 1px solid var(--card-border);
+    }
+    .prof-top-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .avatar-ring {
+      position: relative;
+      width: 78px;
+      height: 78px;
+      border-radius: 999px;
+      padding: 3px;
+      background: linear-gradient(135deg, #f59e0b, #ea580c, #dc2626);
+      flex-shrink: 0;
+    }
+    .avatar-ring img {
+      width: 100%;
+      height: 100%;
+      border-radius: 999px;
+      object-fit: cover;
+      border: 2.5px solid var(--card);
+      background: #031926;
+    }
+    .live-badge-dot {
+      position: absolute;
+      bottom: -2px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #dc2626;
+      color: #fff;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 1.5px 7px;
+      border-radius: 999px;
+      border: 1.5px solid #fff;
+      white-space: nowrap;
+    }
+    .stats-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      text-align: center;
+    }
+    .stat-block {
+      background: var(--bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 7px 4px;
+    }
+    .stat-val {
+      font-family: 'Khand', sans-serif;
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.1;
+    }
+    .stat-lbl {
+      font-size: 13px;
+      color: var(--sub);
+      font-weight: 600;
+    }
+
+    .bio-box { margin-top: 11px; }
+    .temple-fullname {
+      font-family: 'Khand', sans-serif;
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+    .bio-sub {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--sub);
+      line-height: 1.45;
+      margin-top: 3px;
+    }
+    .bio-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--pill-text);
+      text-decoration: none;
+    }
+
+    /* Action Buttons */
+    .btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1.25fr auto;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .btn-fol {
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: none;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(135deg, #0369A1, #0E7490);
+      color: #ffffff;
+      box-shadow: 0 3px 10px rgba(3, 105, 161, 0.28);
+      transition: transform 0.15s ease;
+    }
+    .btn-fol:active { transform: scale(0.95); }
+    .btn-fol.following {
+      background: linear-gradient(135deg, #031926, #05344E);
+      color: #FDE68A;
+      border: 1.5px solid rgba(251, 191, 36, 0.6);
+      box-shadow: 0 2px 8px rgba(3, 25, 38, 0.25);
+    }
+    .btn-live {
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: none;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(135deg, #dc2626, #ea580c);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      box-shadow: 0 3px 10px rgba(220,38,38,0.28);
+    }
+    .vbadge-wrap { position: relative; display: inline-flex; align-items: center; }
+    .vbadge-btn {
+      background: none; border: none; padding: 0; cursor: pointer; display: inline-flex; align-items: center;
+      transition: transform 0.15s ease;
+    }
+    .vbadge-btn:active { transform: scale(0.88); }
+    .vbadge-pop {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      background: linear-gradient(135deg, #031926, #064E6B);
+      color: #FDE68A;
+      border: 1.5px solid #F59E0B;
+      border-radius: 10px;
+      padding: 6px 11px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      z-index: 50;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+    .vbadge-pop.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+    .btn-map {
+      padding: 8px 12px;
+      border-radius: 10px;
+      background: var(--pill-bg);
+      color: var(--pill-text);
+      border: 1px solid var(--card-border);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Highlights Row */
+    .hl-row {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      padding: 12px 14px;
+      background: var(--card);
+      border-bottom: 1px solid var(--card-border);
+      scrollbar-width: none;
+    }
+    .hl-row::-webkit-scrollbar { display: none; }
+    .hl-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text);
+    }
+    .hl-circle {
+      width: 58px;
+      height: 58px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ea580c, #f59e0b);
+      padding: 2.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hl-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 999px;
+      background: var(--bg);
+      border: 2px solid var(--card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+    .hl-lbl {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--sub);
+      max-width: 68px;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Tabs */
+    .tabs-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      background: var(--card);
+      border-bottom: 1px solid var(--card-border);
+      position: sticky;
+      top: 55px;
+      z-index: 25;
+    }
+    .tab-btn {
+      padding: 10px 6px;
+      background: none;
+      border: none;
+      border-bottom: 2.5px solid transparent;
+      color: var(--sub);
+      font-size: 14.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    /* 3-Col Media Grid */
+    .media-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      padding: 2px;
+    }
+    .grid-tile {
+      position: relative;
+      aspect-ratio: 3 / 4;
+      background: #0f172a;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .grid-tile img, .grid-tile video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .tile-badge {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: rgba(0, 0, 0, 0.72);
+      color: #FDE68A;
+      font-size: 9.5px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 6px;
+      max-width: 90%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tile-foot {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 16px 6px 5px;
+      background: linear-gradient(to top, rgba(0,0,0,0.82), transparent);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+    }
+    .tile-dt-txt { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tile-like-txt { flex-shrink: 0; color: #FDE68A; }
+
+    /* Info Tab */
+    .info-section {
+      padding: 12px;
+      display: grid;
+      gap: 12px;
+    }
+    .info-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 13px;
+    }
+    .info-card h3 {
+      font-family: 'Khand', sans-serif;
+      font-size: 17px;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .aarti-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 7px 0;
+      border-bottom: 1px dashed var(--card-border);
+      font-size: 13px;
+    }
+    .aarti-row:last-child { border-bottom: none; }
+
+    /* Vertical Live Darshan OTT Popup (Exact reels.html + Main Portal Settings) */
+    .live-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(7px);
+      z-index: 80;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .live-overlay.open { opacity: 1; pointer-events: auto; }
+    .live-box {
+      width: 100%;
+      max-width: 418px;
+      margin: 0 auto;
+      padding: 2.5px;
+      background: linear-gradient(90deg, #fbbf24, #f97316, #f43f5e);
+      border-radius: 16px;
+      box-shadow: 0 0 32px rgba(245, 158, 11, 0.45), 0 22px 55px rgba(0, 0, 0, 0.92);
+      overflow: hidden;
+    }
+    .live-inner {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      background: #000;
+      border-radius: 13.5px;
+      overflow: hidden;
+    }
+    .ott-hdr {
+      background: linear-gradient(90deg, #031926, #063854, #031926);
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      border-bottom: 2px solid rgba(251, 191, 36, 0.7);
+    }
+    .ott-hdr-row1 { display: flex; align-items: center; justify-content: flex-start; gap: 8px; min-width: 0; width: 100%; }
+    .ott-hdr-row2 { display: flex; align-items: center; justify-content: flex-end; gap: 7px; width: 100%; }
+    .ott-title-wrap { display: flex; align-items: center; gap: 7px; min-width: 0; flex: 1; }
+    @keyframes ottPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+    .ott-live-badge {
+      background: #dc2626; color: #fff; font-size: 10px; font-weight: 800;
+      padding: 2px 7px; border-radius: 999px; display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0;
+    }
+    .ott-live-dot { width: 6px; height: 6px; border-radius: 999px; background: #fff; animation: ottPulse 1.5s infinite; }
+    .ott-tname { font-size: 19px; line-height: 1.2; font-weight: 700; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ott-dt-pill {
+      font-size: 11.5px; font-weight: 700; color: #FDE68A;
+      border: 1px solid rgba(253, 230, 138, 0.35); background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px; padding: 3px 8px; white-space: nowrap; flex-shrink: 0;
+    }
+    .ott-hdr-btns { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .live-ico-btn {
+      width: 30px; height: 30px; border-radius: 10px;
+      background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer;
+    }
+    .live-close-red { background: #f43f5e; border-color: #fb7185; color: #fff; }
+    .live-stage {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: linear-gradient(135deg, #02121c, #05344E, #02121c);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    @keyframes ottShimmerSweep {
+      0% { transform: translateX(-100%) skewX(-18deg); }
+      100% { transform: translateX(250%) skewX(-18deg); }
+    }
+    .live-shimmer-wrap {
+      position: absolute; inset: 0; z-index: 8; background: rgba(8, 12, 20, 0.92);
+      overflow: hidden; display: flex; align-items: center; justify-content: center;
+      padding: 0 18px 34px; pointer-events: none; user-select: none;
+    }
+    .ott-shimmer-beam {
+      position: absolute; top: 0; bottom: 0; left: 0; width: 50%;
+      background: linear-gradient(90deg, transparent, rgba(253, 230, 138, 0.18), transparent);
+      animation: ottShimmerSweep 1.6s ease-in-out infinite;
+    }
+    .live-shimmer-txt { position: relative; z-index: 2; color: #FDE68A; font-size: 15px; font-weight: 700; text-align: center; line-height: 1.45; }
+    .ott-wm-outer { position: absolute; top: 50%; left: 0; right: 0; transform: translateY(-50%); z-index: 6; overflow: hidden; pointer-events: none; user-select: none; }
+    @keyframes ottWmMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    .ott-center-wm {
+      display: flex; width: max-content; white-space: nowrap; will-change: transform;
+      font-size: 16px; font-weight: 600; letter-spacing: 0.1em; color: rgba(209, 213, 219, 0.48);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65); animation: ottWmMarquee 16s linear infinite;
+    }
+    .ott-wm-item { padding: 0 72px; flex-shrink: 0; }
+    @keyframes wmScroll { 0% { transform: translateX(0%); } 100% { transform: translateX(-100%); } }
+    .live-wm-bar {
+      position: absolute; bottom: 0; left: 0; right: 0; z-index: 7; background: #05344E;
+      border-top: 1px solid rgba(255, 255, 255, 0.18); padding: 4px 0; overflow: hidden; pointer-events: none;
+    }
+    .live-watermark {
+      display: inline-block; padding-left: 100%; font-size: 13px; line-height: 1.3; font-weight: 600;
+      color: #FDE68A; white-space: nowrap; animation: wmScroll 24s linear infinite;
+    }
+
+    /* Bottom Nav (T2 + P2) */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 430px;
+      height: 62px;
+      background: var(--nav-bg);
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6px;
+      z-index: 40;
+    }
+    .bnav-btn {
+      flex: 1;
+      height: 52px;
+      background: none;
+      border: none;
+      color: var(--sub);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      cursor: pointer;
+      transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .bnav-btn svg { width: 28px; height: 28px; }
+    .bnav-lbl { font-size: 10.5px; font-weight: 700; }
+    .bnav-btn:active { transform: translateY(-4px) scale(1.12); }
+    .hidden { display: none !important; }
+  </style>
+  <script src="live-popup.js"></script>
+</head>
+<body>
+  <div class="phone-shell">
+    <div class="top-bar">
+      <div class="top-left">
+        <button type="button" class="ico-btn" onclick="history.length>1?history.back():location.href='reels.html'" aria-label="मागे">←</button>
+        <span class="handle-txt">🛕 मंदिर प्रोफाइल</span>
+      </div>
+      <div class="top-right">
+        <select id="templePicker" class="t-switch" onchange="switchTemple(this.value)" aria-label="मंदिर बदला">
+          <option value="pandharpur">पंढरपूर</option>
+          <option value="shirdi">शिर्डी</option>
+          <option value="kolhapur">कोल्हापूर</option>
+          <option value="tuljapur">तुळजापूर</option>
+          <option value="dagdusheth">दगडूशेठ</option>
+          <option value="siddhivinayak">सिद्धिविनायक</option>
+        </select>
+        <button type="button" class="ico-btn" style="border-radius:10px;border-color:rgba(252,211,77,0.45);" onclick="togglePreviewTheme()" title="लाईट / डार्क थीम" aria-label="लाईट किंवा डार्क थीम बदला">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#FCD34D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        </button>
+        <button type="button" class="ico-btn" style="border-radius:10px;" onclick="shareProfile()" title="शेअर करा" aria-label="शेअर करा">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Profile Header -->
+    <div class="prof-hdr">
+      <div class="prof-top-row">
+        <div class="avatar-ring">
+          <img id="templeAvatar" src="icon-192.png" alt="मंदिर" />
+        </div>
+        <div class="stats-grid">
+          <div class="stat-block">
+            <div class="stat-val" id="statPosts">0</div>
+            <div class="stat-lbl">दर्शन पोस्ट्स</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-val" id="statShorts">0</div>
+            <div class="stat-lbl">भक्ती शॉर्ट्स</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-val" id="statFollowers">0</div>
+            <div class="stat-lbl">फॉलोअर्स</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bio-box">
+        <div class="temple-fullname">
+          <span id="templeFullName">श्री विठ्ठल रुक्मिणी मंदिर, पंढरपूर</span>
+          <span class="vbadge-wrap">
+            <button type="button" class="vbadge-btn" onclick="toggleVerifiedPop(event)" aria-label="व्हेरिफाइड">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2l2.4 2.4 3.4-.5.9 3.3 3 1.7-1.2 3.2 1.2 3.2-3 1.7-.9 3.3-3.4-.5L12 22l-2.4-2.4-3.4.5-.9-3.3-3-1.7 1.2-3.2-1.2-3.2 3-1.7.9-3.3 3.4.5L12 2z" fill="#F59E0B"/><path d="M8.8 12.2l2.2 2.2 4.4-4.6" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="vbadge-pop" id="verifiedPop">✓ दर्शन सेतू .लाईव्ह व्हेरिफाइड देवस्थान</div>
+          </span>
+        </div>
+        <div class="bio-sub" id="templeBio">महाराष्ट्राचे आराध्य दैवत श्री विठ्ठल-रुक्मिणी मातेचे दैनंदिन मंगल दर्शन, आरती वेळापत्रक व थेट लाईव्ह प्रक्षेपण.</div>
+        <a href="#" id="templeSiteLink" class="bio-link" target="_blank" rel="noopener">🔗 darshansetu.live</a>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="btn-fol" id="folBtn" onclick="toggleFollow()">फॉलो करा</button>
+        <button type="button" class="btn-live" onclick="openLivePopup()">🔴 LIVE दर्शन घ्या</button>
+        <a href="#" id="mapBtn" class="btn-map" target="_blank" rel="noopener" title="नकाशा">🗺️</a>
+      </div>
+    </div>
+
+    <!-- Highlights -->
+    <div class="hl-row">
+      <button type="button" class="hl-item" onclick="switchTab('grid')">
+        <span class="hl-circle"><span class="hl-inner">📸</span></span>
+        <span class="hl-lbl">आजचे दर्शन</span>
+      </button>
+      <button type="button" class="hl-item" onclick="switchTab('info')">
+        <span class="hl-circle"><span class="hl-inner">🪔</span></span>
+        <span class="hl-lbl">आरती वेळ</span>
+      </button>
+      <button type="button" class="hl-item" onclick="switchTab('reels')">
+        <span class="hl-circle"><span class="hl-inner">🎬</span></span>
+        <span class="hl-lbl">भक्ती शॉर्ट्स</span>
+      </button>
+      <button type="button" class="hl-item" onclick="switchTab('info')">
+        <span class="hl-circle"><span class="hl-inner">🛕</span></span>
+        <span class="hl-lbl">इतिहास</span>
+      </button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-bar">
+      <button type="button" class="tab-btn active" id="tabBtn_grid" onclick="switchTab('grid')">⊞ सर्व दर्शन</button>
+      <button type="button" class="tab-btn" id="tabBtn_reels" onclick="switchTab('reels')">🎬 शॉर्ट्स</button>
+      <button type="button" class="tab-btn" id="tabBtn_info" onclick="switchTab('info')">🛕 माहिती व आरती</button>
+    </div>
+
+    <!-- Tab Contents -->
+    <div id="tabGrid" class="media-grid"></div>
+    <div id="tabReels" class="media-grid hidden"></div>
+    <div id="tabInfo" class="info-section hidden"></div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <button type="button" class="bnav-btn" onclick="location.href='index.html'">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 2.5L4 9.5V20a1 1 0 0 0 1 1h5v-6h4v6h5a1 1 0 0 0 1-1V9.5L12 2.5z" fill="#FBBF24" fill-opacity="0.22" stroke="currentColor" stroke-width="2"/></svg>
+        <span class="bnav-lbl">मुख्य पान</span>
+      </button>
+      <button type="button" class="bnav-btn" onclick="location.href='panchang.html'">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="3" fill="#FBBF24" fill-opacity="0.2" stroke="currentColor" stroke-width="2"/><path d="M8 3v4M16 3v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span class="bnav-lbl">पंचांग</span>
+      </button>
+      <button type="button" class="bnav-btn" onclick="location.href='reels.html'">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="4" fill="#FBBF24" fill-opacity="0.22" stroke="currentColor" stroke-width="2"/><polygon points="10 9 16 12 10 15 10 9" fill="currentColor"/></svg>
+        <span class="bnav-lbl">शॉर्ट्स</span>
+      </button>
+      <button type="button" class="bnav-btn" onclick="location.href='daily-darshan.html'">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="14" rx="3" fill="#FBBF24" fill-opacity="0.2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="13" r="3.5" stroke="currentColor" stroke-width="2"/></svg>
+        <span class="bnav-lbl">डेली दर्शन</span>
+      </button>
+      <button type="button" class="bnav-btn" onclick="location.href='profile.html'">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8.5" r="4" fill="currentColor"/><path d="M4.5 20c0-3.5 3.4-6 7.5-6s7.5 2.5 7.5 6" fill="currentColor"/></svg>
+        <span class="bnav-lbl">प्रोफाइल</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Live Popup (Exact reels.html OTT Popup Settings) -->
+  <div class="live-overlay" id="liveOverlay" onclick="if(event.target===this) closeLivePopup()">
+    <div class="live-box">
+      <div class="live-inner">
+        <div class="ott-hdr">
+          <div class="ott-hdr-row1">
+            <div class="ott-title-wrap">
+              <span class="ott-live-badge"><span class="ott-live-dot"></span>LIVE</span>
+              <span class="ott-tname" id="ottTitle">लाईव्ह दर्शन</span>
+            </div>
+          </div>
+          <div class="ott-hdr-row2">
+            <span class="ott-dt-pill" id="ottClock">--/--/----</span>
+            <div class="ott-hdr-btns">
+              <button type="button" class="live-ico-btn" onclick="shareLivePopup()" aria-label="शेअर करा" title="WhatsApp / शेअर करा">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+              </button>
+              <button type="button" class="live-ico-btn" onclick="toggleLiveMute()" aria-label="आवाज चालू किंवा बंद करा" title="आवाज चालू / बंद">
+                <svg id="ottMuteOn" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                <svg id="ottMuteOff" class="hidden" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FDE68A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+              </button>
+              <button type="button" class="live-ico-btn live-close-red" onclick="closeLivePopup()" aria-label="बंद करा" title="बंद करा">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="live-stage">
+          <div class="live-shimmer-wrap" id="liveShimmer">
+            <div class="ott-shimmer-beam"></div>
+            <span class="live-shimmer-txt">🙏 लाईव्ह दर्शन सुरू होत आहे, कृपया प्रतीक्षा करा.</span>
+          </div>
+          <div id="liveOfflineCard" class="hidden" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:18px 20px 44px;color:#FDE68A;font-weight:700;font-size:clamp(16px, 4.2vw, 19px);line-height:1.45;z-index:9;background:radial-gradient(circle at center,rgba(3,25,38,0.92),rgba(2,18,28,0.98));">🙏 माफ करा, सदर देवस्थानचे लाईव्ह दर्शन सध्या उपलब्ध नाही.<br>✨ लवकरच दर्शन उपलब्ध करून देण्याचा आम्ही प्रयत्न करत आहोत.</div>
+          <video id="liveVideo" style="position:relative;z-index:3;width:100%;height:100%;object-fit:fill;display:none;" playsinline autoplay onplaying="onLiveVideoPlaying()" oncanplay="if(!this.paused)onLiveVideoPlaying()"></video>
+          <iframe id="liveIframe" style="position:relative;z-index:3;width:100%;height:100%;border:0;display:none;" allow="autoplay; encrypted-media" allowfullscreen onload="if(this.getAttribute('src')&&this.getAttribute('src')!=='about:blank')document.getElementById('liveShimmer').style.display='none'"></iframe>
+          <div class="ott-wm-outer"><div class="ott-center-wm"><span class="ott-wm-item">Anil Tormal</span><span class="ott-wm-item" aria-hidden="true">Anil Tormal</span><span class="ott-wm-item" aria-hidden="true">Anil Tormal</span><span class="ott-wm-item" aria-hidden="true">Anil Tormal</span></div></div>
+          <div class="live-wm-bar">
+            <div class="live-watermark">अस्वीकरण: या पोर्टलवरील सर्व लाईव्ह दर्शनाचे प्रक्षेपण संबंधित देवस्थान व अधिकृत तृतीय-पक्ष माध्यमांच्या माध्यमातून दाखवले जात आहे. आम्ही केवळ भक्तांच्या सोयीसाठी ते एकाच ठिकाणी एकत्रित केले आहेत. देवस्थान संदर्भात कुठल्याही अडचणीसाठी संबंधित देवस्थानाशी संपर्क साधावा.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const FIREBASE_CONFIG = {
+      apiKey: 'AIzaSyCI1oILspru4DCLuUQvNohtKArFVVMy4Xc',
+      authDomain: 'livedarshan-204ed.firebaseapp.com',
+      databaseURL: 'https://livedarshan-204ed-default-rtdb.asia-southeast1.firebasedatabase.app',
+      projectId: 'livedarshan-204ed'
+    };
+    if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+    const fbDb = firebase.database();
+
+    const DEFAULT_TEMPLES = {
+      pandharpur: { name: 'श्री विठ्ठल रुक्मिणी मंदिर, पंढरपूर', handle: 'vitthal_rukmini_pandharpur', bio: 'भूवैकुंठ पंढरपूर येथील श्री विठ्ठल-रुक्मिणी मातेचे दैनंदिन मंगल दर्शन, काकडा-शेजारती वेळा व थेट प्रक्षेपण.', site: 'https://www.vitthalrukminimandir.org', map: 'https://maps.google.com/?q=Vitthal+Rukmini+Mandir+Pandharpur', streamUrl: 'https://cdn1.itekrfid.com/hls/local/index.m3u8' },
+      shirdi: { name: 'श्री साईबाबा संस्थान, शिर्डी', handle: 'shreesaibabasansthan_shirdi', bio: 'सबका मालिक एक 🙏 शिर्डी श्री साईबाबा समाधी मंदिराचे दैनंदिन दर्शन, आरती व अधिकृत माहिती.', site: 'https://sai.org.in', map: 'https://maps.google.com/?q=Shirdi+Saibaba+Temple', streamUrl: 'https://cam.pc.cdn.bitgravity.com/cam/live/feed008/Saibaba/temple/feed/playlist_108k.m3u8' },
+      kolhapur: { name: 'श्री अंबाबाई महालक्ष्मी मंदिर, कोल्हापूर', handle: 'mahalaxmi_kolhapur', bio: 'साडेतीन शक्तिपीठांपैकी एक करवीर निवासिनी श्री अंबाबाई मातेचे नित्य अलंकार व लाईव्ह दर्शन.', site: 'https://mahalaxmikolhapur.com', map: 'https://maps.google.com/?q=Mahalaxmi+Temple+Kolhapur', streamUrl: 'https://s122.ipcamlive.com/streams/7au3lhnveuabdrh7x/stream.m3u8' },
+      tuljapur: { name: 'श्री तुळजाभवानी मंदिर, तुळजापूर', handle: 'tuljabhavani_tuljapur', bio: 'महाराष्ट्राची कुलस्वामिनी श्री तुळजाभवानी मातेचे दैनंदिन अलंकार दर्शन व आरती वेळापत्रक.', site: 'https://shrituljabhavani.org', map: 'https://maps.google.com/?q=Tulja+Bhavani+Temple+Tuljapur', streamUrl: 'https://cdndp.cdn.jio.com/Tulja_Bhavani/Tulja_Bhavani_600.m3u8?cdt=ld9mx1QCVFS8sqls8x1rug' },
+      dagdusheth: { name: 'श्रीमंत दगडूशेठ हलवाई गणपती, पुणे', handle: 'dagdusheth_ganpati_pune', bio: 'पुण्यनगरीचे आराध्य दैवत श्रीमंत दगडूशेठ हलवाई गणपतीचे मंगलमय दर्शन व उत्सव.', site: 'https://www.dagdushethganpati.com', map: 'https://maps.google.com/?q=Dagdusheth+Ganpati+Pune', streamUrl: 'https://dagdusheth2.shemaroo.com/Dagdusheth_Ganpati/Stream1/chunklist_w1236105352.m3u8' },
+      siddhivinayak: { name: 'श्री सिद्धिविनायक मंदिर, प्रभादेवी मुंबई', handle: 'siddhivinayak_mumbai', bio: 'मुंबईचे श्री सिद्धिविनायक गणपती मंदिराचे दैनंदिन दर्शन, आरती व मंदिर माहिती.', site: 'https://www.siddhivinayak.org', map: 'https://maps.google.com/?q=Siddhivinayak+Temple+Mumbai', streamUrl: '' }
+    };
+
+    const DEMO_AARTI = [
+      ['काकड आरती', 'पहाटे ४:३० ते ६:००'],
+      ['महापूजा व नैवेद्य', 'सकाळी ११:०० ते १२:००'],
+      ['धूपारती', 'सायंकाळी ६:३० ते ७:००'],
+      ['शेजारती', 'रात्री १०:३० ते ११:००']
+    ];
+
+    let curTempleId = new URLSearchParams(location.search).get('id') || 'pandharpur';
+    let curTempleObj = {};
+    let curMedia = [];
+    let hls = null;
+
+    function syncTheme() {
+      try { document.body.classList.toggle('ds-dark', localStorage.getItem('live_darshan_theme_v1') === 'dark'); } catch(e) {}
+    }
+    syncTheme();
+    window.togglePreviewTheme = () => {
+      const next = !document.body.classList.contains('ds-dark');
+      document.body.classList.toggle('ds-dark', next);
+      try { localStorage.setItem('live_darshan_theme_v1', next ? 'dark' : 'light'); } catch(e) {}
+    };
+
+    let verifiedPopTimer = null;
+    window.toggleVerifiedPop = (e) => {
+      if (e) e.stopPropagation();
+      const pop = document.getElementById('verifiedPop');
+      if (!pop) return;
+      const show = pop.classList.toggle('show');
+      if (verifiedPopTimer) clearTimeout(verifiedPopTimer);
+      if (show) verifiedPopTimer = setTimeout(() => pop.classList.remove('show'), 2600);
+    };
+    document.addEventListener('click', () => {
+      const pop = document.getElementById('verifiedPop');
+      if (pop) pop.classList.remove('show');
+    });
+
+    window.switchTab = (name) => {
+      ['grid', 'reels', 'info'].forEach(t => {
+        document.getElementById('tabBtn_' + t).classList.toggle('active', t === name);
+      });
+      document.getElementById('tabGrid').classList.toggle('hidden', name !== 'grid');
+      document.getElementById('tabReels').classList.toggle('hidden', name !== 'reels');
+      document.getElementById('tabInfo').classList.toggle('hidden', name !== 'info');
+    };
+
+    window.switchTemple = (tid) => {
+      curTempleId = tid;
+      loadTempleProfile();
+    };
+
+    window.toggleFollow = () => {
+      let fol = {};
+      try { fol = JSON.parse(localStorage.getItem('ds_follows_v1') || '{}'); } catch(e) {}
+      fol[curTempleId] = !fol[curTempleId];
+      try { localStorage.setItem('ds_follows_v1', JSON.stringify(fol)); } catch(e) {}
+      const btn = document.getElementById('folBtn');
+      btn.classList.toggle('following', !!fol[curTempleId]);
+      btn.textContent = fol[curTempleId] ? 'फॉलोइंग' : 'फॉलो करा';
+    };
+
+    window.shareProfile = async () => {
+      const title = curTempleObj.name || 'दर्शन सेतू';
+      const url = location.href;
+      if (navigator.share) { try { await navigator.share({ title, url }); return; } catch(e) {} }
+      window.open('https://wa.me/?text=' + encodeURIComponent(`🙏 ${title} — प्रोफाइल व दर्शन पहा: ${url}`), '_blank');
+    };
+
+    let liveClockTimer = null;
+    let liveStreamTimeoutTimer = null;
+    function extractYouTubeId(input) {
+      const trimmed = (input || '').trim();
+      if (!trimmed) return null;
+      if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) return trimmed;
+      try {
+        const url = new URL(trimmed);
+        if (url.hostname.includes('youtu.be')) return url.pathname.replace('/', '').split('/')[0] || null;
+        if (url.searchParams.has('v')) return url.searchParams.get('v');
+        const parts = url.pathname.split('/').filter(Boolean);
+        for (const seg of ['live', 'embed', 'shorts']) {
+          const idx = parts.indexOf(seg);
+          if (idx !== -1 && parts[idx + 1]) return parts[idx + 1];
+        }
+      } catch (e) { return null; }
+      return null;
+    }
+    function detectStreamType(url, configuredType) {
+      const u = (url || '').trim();
+      if (!u) return 'none';
+      if (configuredType && configuredType !== 'auto') return configuredType;
+      if (extractYouTubeId(u)) return 'youtube';
+      if (/facebook\.com|fb\.watch/i.test(u)) return 'facebook';
+      if (u.toLowerCase().includes('.m3u8')) return 'hls';
+      if (/\.(mp4|webm|mov)(\?|$)/i.test(u)) return 'mp4';
+      return 'iframe';
+    }
+    window.syncLiveMuteIcon = () => {
+      const vid = document.getElementById('liveVideo');
+      const onEl = document.getElementById('ottMuteOn');
+      const offEl = document.getElementById('ottMuteOff');
+      if (!onEl || !offEl) return;
+      const isMuted = Boolean(vid && vid.muted);
+      onEl.classList.toggle('hidden', isMuted);
+      offEl.classList.toggle('hidden', !isMuted);
+    };
+    window.toggleLiveMute = () => {
+      const vid = document.getElementById('liveVideo');
+      if (!vid) return;
+      vid.muted = !vid.muted;
+      syncLiveMuteIcon();
+    };
+    window.shareLivePopup = async () => {
+      const title = curTempleObj.name || 'लाईव्ह दर्शन पोर्टल';
+      const url = 'https://darshansetu.live/';
+      const shareText = `🙏 ${title} — घरबसल्या अखंड लाईव्ह दर्शन घ्या: ${url}`;
+      if (navigator.share) { try { await navigator.share({ title, text: `🙏 ${title} — लाईव्ह दर्शन घ्या`, url }); return; } catch (_) {} }
+      window.open('https://wa.me/?text=' + encodeURIComponent(shareText), '_blank', 'noopener,noreferrer');
+    };
+    window.onLiveVideoPlaying = () => {
+      if (liveStreamTimeoutTimer) { clearTimeout(liveStreamTimeoutTimer); liveStreamTimeoutTimer = null; }
+      const shimmer = document.getElementById('liveShimmer');
+      const offline = document.getElementById('liveOfflineCard');
+      const vid = document.getElementById('liveVideo');
+      if (shimmer) shimmer.style.display = 'none';
+      if (offline) offline.classList.add('hidden');
+      if (vid && (vid.getAttribute('src') || hls)) vid.style.display = 'block';
+    };
+    window.openLivePopup = () => {
+      if (window.DSLivePopup) { window.DSLivePopup.open({ name: curTempleObj.name, streamUrl: curTempleObj.streamUrl, streamType: curTempleObj.streamType }); return; }
+      if (liveStreamTimeoutTimer) { clearTimeout(liveStreamTimeoutTimer); liveStreamTimeoutTimer = null; }
+      const streamUrl = (curTempleObj.streamUrl || '').trim();
+      const sType = detectStreamType(streamUrl, curTempleObj.streamType);
+      const shimmerEl = document.getElementById('liveShimmer');
+      const offlineEl = document.getElementById('liveOfflineCard');
+      const UNAVAIL_HTML = '🙏 माफ करा, सदर देवस्थानचे लाईव्ह दर्शन सध्या उपलब्ध नाही.<br>✨ लवकरच दर्शन उपलब्ध करून देण्याचा आम्ही प्रयत्न करत आहोत.';
+      const TEMP_OFFLINE_HTML = '<div style="font-size:clamp(20px,5.2vw,24px);margin-bottom:6px;">🙏 सध्या लाईव्ह दर्शन तात्पुरते बंद आहे</div><div style="font-size:14.5px;font-weight:500;color:#e2e8f0;line-height:1.45;">मंदिराची दैनंदिन पूजा/नैवेद्य वेळ किंवा तांत्रिक कारणास्तव प्रक्षेपण थांबलेले असू शकते. कृपया थोड्या वेळाने पुन्हा प्रयत्न करा.</div>';
+      offlineEl.innerHTML = sType === 'none' ? UNAVAIL_HTML : TEMP_OFFLINE_HTML;
+      shimmerEl.style.display = sType !== 'none' ? 'flex' : 'none';
+      offlineEl.classList.toggle('hidden', sType !== 'none');
+      document.getElementById('ottTitle').textContent = curTempleObj.name || 'लाईव्ह दर्शन';
+
+      const vid = document.getElementById('liveVideo');
+      const ifr = document.getElementById('liveIframe');
+      vid.pause(); vid.removeAttribute('src'); vid.load(); vid.muted = false; vid.style.display = 'none';
+      ifr.src = 'about:blank'; ifr.style.display = 'none';
+      if (hls) { hls.destroy(); hls = null; }
+      const overlay = document.getElementById('liveOverlay');
+      overlay.classList.add('open');
+
+      const showLiveOffline = (isFatal) => {
+        if (liveStreamTimeoutTimer) { clearTimeout(liveStreamTimeoutTimer); liveStreamTimeoutTimer = null; }
+        shimmerEl.style.display = 'none';
+        offlineEl.innerHTML = TEMP_OFFLINE_HTML;
+        offlineEl.classList.remove('hidden');
+        if (isFatal) vid.style.display = 'none';
+        ifr.style.display = 'none';
+      };
+      vid.onerror = () => { if (overlay.classList.contains('open') && vid.getAttribute('src')) showLiveOffline(); };
+      ifr.onerror = () => { if (overlay.classList.contains('open') && ifr.getAttribute('src') !== 'about:blank') showLiveOffline(); };
+      syncLiveMuteIcon();
+      const tryPlay = () => {
+        vid.play().then(() => syncLiveMuteIcon()).catch(() => {
+          vid.muted = true; syncLiveMuteIcon();
+          vid.play().catch(() => {});
+        });
+      };
+
+      if (sType === 'youtube') {
+        const ytId = extractYouTubeId(streamUrl);
+        if (ytId) {
+          ifr.src = `https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&playsinline=1&controls=0&disablekb=1&fs=0&rel=0&modestbranding=1`;
+          ifr.style.display = 'block';
+        } else { showLiveOffline(); }
+      } else if (sType === 'facebook') {
+        ifr.src = streamUrl.includes('facebook.com/plugins/video.php') ? streamUrl : `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(streamUrl)}&show_text=false&autoplay=1&mute=0`;
+        ifr.style.display = 'block';
+      } else if (sType === 'iframe') {
+        ifr.src = streamUrl; ifr.style.display = 'block';
+      } else if (sType === 'hls') {
+        vid.style.display = 'block';
+        liveStreamTimeoutTimer = setTimeout(() => { if (vid.readyState < 2 && overlay.classList.contains('open')) showLiveOffline(); }, 8000);
+        if (window.Hls && Hls.isSupported()) {
+          hls = new Hls({ enableWorker: true, manifestLoadingMaxRetry: 1, levelLoadingMaxRetry: 1 });
+          hls.loadSource(streamUrl); hls.attachMedia(vid);
+          hls.on(Hls.Events.MANIFEST_PARSED, () => tryPlay());
+          hls.on(Hls.Events.ERROR, (ev, data) => {
+            if (data && data.fatal) {
+              if (hls) { hls.destroy(); hls = null; }
+              if (data.type !== Hls.ErrorTypes.NETWORK_ERROR && vid.canPlayType('application/vnd.apple.mpegurl')) {
+                vid.src = streamUrl; tryPlay();
+              } else { showLiveOffline(); }
+            }
+          });
+        } else if (vid.canPlayType('application/vnd.apple.mpegurl')) {
+          vid.src = streamUrl; tryPlay();
+        } else { showLiveOffline(); }
+      } else if (sType === 'mp4') {
+        vid.style.display = 'block'; vid.src = streamUrl; tryPlay();
+      }
+
+      if (liveClockTimer) clearInterval(liveClockTimer);
+      const MR_DAYS = ['रविवार', 'सोमवार', 'मंगळवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'];
+      const tick = () => {
+        const now = new Date();
+        const dd = String(now.getDate()).padStart(2, '0');
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const yyyy = now.getFullYear();
+        const dayName = MR_DAYS[now.getDay()];
+        let hrs = now.getHours();
+        const mins = String(now.getMinutes()).padStart(2, '0');
+        const secs = String(now.getSeconds()).padStart(2, '0');
+        const ampm = hrs >= 12 ? 'PM' : 'AM';
+        hrs = hrs % 12 || 12;
+        document.getElementById('ottClock').textContent = `${dd}/${mm}/${yyyy} (${dayName}) ${String(hrs).padStart(2, '0')}:${mins}:${secs} ${ampm}`;
+      };
+      tick(); liveClockTimer = setInterval(tick, 1000);
+    };
+    window.closeLivePopup = () => {
+      if (window.DSLivePopup) { window.DSLivePopup.close(); return; }
+      if (liveStreamTimeoutTimer) { clearTimeout(liveStreamTimeoutTimer); liveStreamTimeoutTimer = null; }
+      if (liveClockTimer) clearInterval(liveClockTimer);
+      if (hls) { hls.destroy(); hls = null; }
+      const vid = document.getElementById('liveVideo');
+      vid.pause(); vid.removeAttribute('src'); vid.load();
+      document.getElementById('liveIframe').src = 'about:blank';
+      document.getElementById('liveOverlay').classList.remove('open');
+    };
+
+    async function loadTempleProfile() {
+      const picker = document.getElementById('templePicker');
+      if (picker && DEFAULT_TEMPLES[curTempleId]) picker.value = curTempleId;
+
+      const [tSnap, allTSnap, infoSnap, latSnap, archSnap, statsSnap] = await Promise.all([
+        fbDb.ref('temples/' + curTempleId).once('value').catch(() => ({ val: () => null })),
+        fbDb.ref('temples').once('value').catch(() => ({ val: () => null })),
+        fbDb.ref('templeInfo/' + curTempleId).once('value').catch(() => ({ val: () => null })),
+        fbDb.ref('dailyDarshan/latest/' + curTempleId).once('value').catch(() => ({ val: () => null })),
+        fbDb.ref('dailyDarshan/archive/' + curTempleId).once('value').catch(() => ({ val: () => null })),
+        fbDb.ref('shortsStats').once('value').catch(() => ({ val: () => ({}) }))
+      ]);
+      const allT = allTSnap.val() || {};
+      const statsMap = statsSnap.val() || {};
+      if (picker && Object.keys(allT).length) {
+        const opts = Object.entries(allT).filter(([,v]) => v && !v.deleted && !v.hidden).map(([k, v]) => `<option value="${k}" ${k===curTempleId?'selected':''}>${v.shortTitle || v.name || k}</option>`).join('');
+        if (opts) picker.innerHTML = opts;
+      }
+
+      const def = DEFAULT_TEMPLES[curTempleId] || DEFAULT_TEMPLES.pandharpur;
+      const fbT = tSnap.val() || {};
+      const fbInfo = infoSnap.val() || {};
+
+      curTempleObj = {
+        name: fbT.shortTitle || fbT.name || def.name,
+        handle: fbT.shortTitle || fbT.name || def.name,
+        bio: fbInfo.summary || fbInfo.description || def.bio,
+        site: fbInfo.website || def.site,
+        map: fbInfo.mapUrl || def.map,
+        image: fbT.image || 'icon-192.png',
+        streamUrl: fbT.streamUrl || def.streamUrl || '',
+        streamType: fbT.streamType || 'auto'
+      };
+
+      document.getElementById('templeAvatar').src = curTempleObj.image;
+      document.getElementById('templeFullName').textContent = curTempleObj.name;
+      document.getElementById('templeBio').textContent = curTempleObj.bio;
+      document.getElementById('templeSiteLink').href = curTempleObj.site;
+      document.getElementById('templeSiteLink').textContent = '🔗 ' + curTempleObj.site.replace(/^https?:\/\//, '');
+      document.getElementById('mapBtn').href = curTempleObj.map;
+
+      let fol = {};
+      try { fol = JSON.parse(localStorage.getItem('ds_follows_v1') || '{}'); } catch(e) {}
+      const btn = document.getElementById('folBtn');
+      btn.classList.toggle('following', !!fol[curTempleId]);
+      btn.textContent = fol[curTempleId] ? 'फॉलोइंग' : 'फॉलो करा';
+
+      const items = [];
+      const seen = new Set();
+      const pushList = (arr, dt) => {
+        (arr || []).forEach((it, idx) => {
+          const u = typeof it === 'string' ? it : (it && (it.url || it.src || it.image));
+          if (!u || seen.has(u)) return;
+          seen.add(u);
+          const isVid = (typeof it === 'object' && it.type === 'video') || /\.(mp4|webm|mov)(\?|$)/i.test(u);
+          const rid = `${curTempleId}_${dt || 'latest'}_${idx}`.replace(/[^a-zA-Z0-9_-]/g, '_');
+          const likes = (statsMap[rid] && statsMap[rid].likes) || 0;
+          items.push({ rid, url: u, isVid, dt: dt || 'आजचे दर्शन', likes });
+        });
+      };
+      const lat = latSnap.val();
+      if (lat) pushList(Array.isArray(lat.photos) ? lat.photos : [lat.image || lat.url], lat.date || 'आजचे दर्शन');
+      const arch = archSnap.val() || {};
+      Object.entries(arch).sort((a,b) => b[0].localeCompare(a[0])).forEach(([dt, d]) => {
+        pushList(Array.isArray(d.photos) ? d.photos : [d.image || d.url], dt);
+      });
+
+      curMedia = items;
+      document.getElementById('statPosts').textContent = items.length;
+      document.getElementById('statShorts').textContent = items.filter(x => x.isVid).length;
+      document.getElementById('statFollowers').textContent = fol[curTempleId] ? '1' : '0';
+
+      const getVidThumb = (u) => {
+        if (/res\.cloudinary\.com/i.test(u) && u.includes('/video/upload/')) {
+          return u.replace('/video/upload/', '/video/upload/so_0.5,w_420,q_auto,f_jpg/').replace(/\.(mp4|webm|mov)(\?.*)?$/i, '.jpg');
+        }
+        return '';
+      };
+      const renderTiles = (list, emptyMsg) => {
+        if (!list.length) return `<div style="grid-column:1/-1;text-align:center;padding:36px 16px;color:var(--sub);font-size:13.5px;">${emptyMsg}</div>`;
+        return list.map(m => {
+          let mediaHtml = '';
+          if (m.isVid) {
+            const thumb = getVidThumb(m.url);
+            if (thumb) {
+              mediaHtml = `<img src="${thumb}" loading="lazy" onerror="this.onerror=null;this.src='${curTempleObj.image}'" alt="रील" /><span class="tile-badge">▶ भक्ती शॉर्ट व्हिडिओ</span>`;
+            } else {
+              const vSrc = m.url.includes('#') ? m.url : (m.url + '#t=0.5');
+              mediaHtml = `<video src="${vSrc}" poster="${curTempleObj.image}" muted playsinline preload="metadata" onloadeddata="try{this.currentTime=0.5}catch(e){}"></video><span class="tile-badge">▶ भक्ती शॉर्ट व्हिडिओ</span>`;
+            }
+          } else {
+            mediaHtml = `<img src="${m.url}" loading="lazy" alt="दर्शन" />`;
+          }
+          return `
+          <div class="grid-tile" onclick="location.href='reels.html?temple=${encodeURIComponent(curTempleId)}&post=${encodeURIComponent(m.rid)}&from=profile'">
+            ${mediaHtml}
+            <div class="tile-foot"><span class="tile-like-txt">❤️ ${m.likes || 0}</span><span class="tile-dt-txt">${m.dt}</span></div>
+          </div>`;
+        }).join('');
+      };
+
+      document.getElementById('tabGrid').innerHTML = renderTiles(items, 'अजून कोणतेही दर्शन फोटो उपलब्ध नाहीत 🙏');
+      document.getElementById('tabReels').innerHTML = renderTiles(items.filter(x => x.isVid), 'अजून कोणतेही शॉर्ट व्हिडिओ उपलब्ध नाहीत 🎬');
+
+      const aartiRows = (Array.isArray(fbInfo.aartiSchedule) && fbInfo.aartiSchedule.length ? fbInfo.aartiSchedule.map(a => [a.name || a.title, a.time]) : DEMO_AARTI)
+        .map(([n, t]) => `<div class="aarti-row"><span style="font-weight:700;">🪔 ${n}</span><span style="color:var(--sub);font-weight:600;">${t}</span></div>`).join('');
+
+      document.getElementById('tabInfo').innerHTML = `
+        <div class="info-card">
+          <h3>🪔 दैनंदिन आरती वेळापत्रक</h3>
+          ${aartiRows}
+        </div>
+        <div class="info-card">
+          <h3>🛕 मंदिराची माहिती व पत्ता</h3>
+          <p style="font-size:13px;line-height:1.6;color:var(--sub);">${fbInfo.history || curTempleObj.bio}</p>
+        </div>`;
+    }
+
+    loadTempleProfile();
+  </script>
+</body>
+</html>

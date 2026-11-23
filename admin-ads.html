@@ -432,6 +432,7 @@
         if (!currentAds.bannerSlides[idx].publishedAt) currentAds.bannerSlides[idx].publishedAt = pubMs;
         currentAds.bannerSlides[idx].expiresAt = expMs;
         renderSlots(currentAds.bannerSlides);
+        renderAdReports();
       } else if (kind === 'preroll') {
         if (!currentAds.preRollPublishedAt) currentAds.preRollPublishedAt = pubMs;
         currentAds.preRollExpiresAt = expMs;
@@ -514,7 +515,7 @@
             currentAds.bannerSlides[idx].image = ev.target.result;
             syncSlotsFromDOM();
             renderSlots(currentAds.bannerSlides);
-        if (typeof renderAdReports === "function") renderAdReports();
+        if (typeof window.renderAdReports === "function") window.renderAdReports();
           };
           reader.readAsDataURL(file);
         });
@@ -537,10 +538,10 @@
       box.querySelectorAll('.slot-sponsor, .slot-link').forEach((inp) => {
         inp.addEventListener('input', () => {
           syncSlotsFromDOM();
-          if (typeof renderAdReports === "function") renderAdReports();
+          if (typeof window.renderAdReports === "function") window.renderAdReports();
         });
       });
-      if (typeof renderAdReports === "function") renderAdReports();
+      if (typeof window.renderAdReports === "function") window.renderAdReports();
     }
 
     document.getElementById('addBannerSlotBtn').addEventListener('click', () => {
@@ -760,6 +761,7 @@
       const cleanBtn = document.getElementById('cleanOrphanStatsBtn');
       if (cleanBtn) cleanBtn.classList.toggle('hidden', orphanKeys.length === 0);
     }
+    window.renderAdReports = renderAdReports;
 
 
 

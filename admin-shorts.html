@@ -605,6 +605,7 @@
             ${isBday ? `<button type="button" onclick="wishBday('${uid}', '${(u.name || 'भक्त').replace(/'/g, '')}')" class="px-2.5 py-1 rounded-lg bg-amber-400 text-[#031926] font-extrabold">🎂 शुभेच्छा</button>` : ''}
             <button type="button" onclick="warnUser('${uid}')" class="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-900 font-bold">⚠️ वॉर्निंग</button>
             <button type="button" onclick="toggleBlockUser('${uid}')" class="px-2.5 py-1 rounded-lg ${u.blocked ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white'} font-bold">${u.blocked ? '✓ अनब्लॉक' : '🚫 ब्लॉक'}</button>
+            <button type="button" onclick="deleteDevoteeUser('${uid}', '${(u.name || 'भक्त').replace(/'/g, '')}')" class="px-2.5 py-1 rounded-lg bg-slate-200 hover:bg-rose-100 text-slate-800 hover:text-rose-700 font-bold">🗑️ हटवा</button>
           </div>
         </div>`;
       }).join('');
@@ -628,6 +629,12 @@
       const next = !((usersMap[uid] || {}).blocked);
       await fbDb.ref(`shortsUsers/${uid}/blocked`).set(next);
       showToast(next ? 'भक्त ब्लॉक केले!' : 'भक्त अनब्लॉक केले!');
+      loadUsers();
+    };
+    window.deleteDevoteeUser = async (uid, name) => {
+      if (!confirm(`"${name}" यांची भक्त नोंदणी (shortsUsers) कायमची काढून टाकायची का? (Admin लॉगिन कायम राहील.)`)) return;
+      await fbDb.ref(`shortsUsers/${uid}`).remove();
+      showToast(`${name} यांची भक्त नोंदणी काढून टाकली!`);
       loadUsers();
     };
     window.wishBday = async (uid, name) => {

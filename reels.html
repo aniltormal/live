@@ -1647,23 +1647,67 @@
       });
     }
 
+    const blobAudioCache = {};
+    const TEMPLE_KW_GROUPS = [
+      ['विठ्ठल', 'रुक्मिणी', 'पंढरपूर', 'vitthal', 'pandharpur'],
+      ['अंबाबाई', 'महालक्ष्मी', 'कोल्हापूर', 'ambabai', 'mahalaxmi', 'kolhapur'],
+      ['तुळजा', 'तुळजापूर', 'भवानी', 'tulja', 'tuljapur'],
+      ['साई', 'शिर्डी', 'sai', 'shirdi'],
+      ['दगडूशेठ', 'गणपती', 'dagdusheth'],
+      ['सिद्धिविनायक', 'siddhivinayak']
+    ];
+
     function getTempleTracks(tid, templeName) {
       const tt = (shortsCfg.audio && shortsCfg.audio.templeTracks) || {};
       if (tt[tid] && tt[tid].length) return tt[tid];
       const clean = s => String(s || '').toLowerCase().replace(/[^a-z0-9\u0900-\u097f]+/g, '');
       const cTid = clean(tid);
       const cName = clean(templeName);
+      const hay = `${String(tid || '').toLowerCase()} ${String(templeName || '').toLowerCase()}`;
       for (const [k, arr] of Object.entries(tt)) {
         if (!Array.isArray(arr) || !arr.length) continue;
         const ck = clean(k);
         if (ck && cTid && (ck.includes(cTid) || cTid.includes(ck))) return arr;
         const tObj = templesMap[k];
+        const tFull = tObj ? `${tObj.name || ''} ${tObj.shortTitle || ''} ${tObj.title || ''}`.toLowerCase() : '';
         if (tObj && cName) {
           const tn = clean(tObj.name || tObj.shortTitle || tObj.title);
           if (tn && (tn === cName || tn.includes(cName) || cName.includes(tn))) return arr;
         }
+        for (const grp of TEMPLE_KW_GROUPS) {
+          const inTarget = grp.some(w => hay.includes(w));
+          const inKey = grp.some(w => k.toLowerCase().includes(w) || tFull.includes(w));
+          if (inTarget && inKey) return arr;
+        }
       }
       return [];
+    }
+
+    async function setAndPlayAudio(audio, rawUrl, shouldPlay) {
+      if (!rawUrl) return;
+      let playUrl = blobAudioCache[rawUrl] || rawUrl;
+      if (rawUrl.includes('raw.githubusercontent.com') && !blobAudioCache[rawUrl]) {
+        try {
+          const res = await fetch(rawUrl);
+          if (res.ok) {
+            const buf = await res.arrayBuffer();
+            const lower = rawUrl.toLowerCase();
+            const mime = lower.endsWith('.m4a') ? 'audio/mp4' : (lower.endsWith('.wav') ? 'audio/wav' : (lower.endsWith('.ogg') ? 'audio/ogg' : 'audio/mpeg'));
+            playUrl = URL.createObjectURL(new Blob([buf], { type: mime }));
+            blobAudioCache[rawUrl] = playUrl;
+          }
+        } catch (e) {}
+      }
+      if (audio.src !== playUrl) {
+        audio.src = playUrl;
+        audio.dataset.rawUrl = rawUrl;
+      }
+      audio.muted = isMuted;
+      if (shouldPlay && !isMuted) {
+        audio.play().catch((err) => {
+          console.warn('Audio play failed:', err);
+        });
+      }
     }
 
     function buildReelsFeed(latestObj, archObj) {
@@ -1852,7 +1896,7 @@
               <span class="act-circle"><span class="act-ico">📤</span></span>
               <span class="act-lbl">शेअर</span>
             </button>
-            ${showLive && r.liveUrl ? `<button type="button" class="act-btn" onclick="openLivePopup(${i})"><span class="live-circle"><span>🔴</span><span>LIVE</span></span><span class="act-lbl live-lbl">Darshan घ्या</span></button>` : ''}
+            ${showLive ? `<button type="button" class="act-btn" onclick="openLivePopup(${i})"><span class="live-circle"><span>🔴</span><span>LIVE</span></span><span class="act-lbl live-lbl">Darshan घ्या</span></button>` : ''}
             <button type="button" class="act-btn" onclick="openOpt(${i})">
               <span class="act-circle"><span class="act-ico" style="font-size:24px;">⋮</span></span>
             </button>
@@ -1897,13 +1941,7 @@
       if (!tracks.length) { audio.pause(); return; }
       const pick = (shortsCfg.audio.randomAudio !== false) ? tracks[Math.floor(Math.random() * tracks.length)] : tracks[0];
       if (pick && pick.url) {
-        if (audio.src !== pick.url) {
-          audio.src = pick.url;
-        }
-        audio.muted = isMuted;
-        if (!isMuted) {
-          audio.play().catch(() => {});
-        }
+        setAndPlayAudio(audio, pick.url, !isMuted);
       }
     }
 
@@ -1929,12 +1967,18 @@
         audio.pause();
       } else {
         const curR = REELS[activeIdx];
-        if (!isMuted && curR && !audio.src) {
-          playReelAudio(curR);
+        if (!isMuted && curR) {
+          const tracks = getTempleTracks(curR.templeId, curR.temple);
+          if (tracks.length) {
+            const targetUrl = audio.dataset.rawUrl || tracks[0].url;
+            setAndPlayAudio(audio, targetUrl, true);
+          } else {
+            showToast('🎵 अ‍ॅडमिनमधून या मंदिराचे MP3 गाणे जोडा');
+          }
+        } else if (isMuted) {
+          audio.muted = true;
+          audio.pause();
         }
-        audio.muted = isMuted;
-        if (!isMuted && audio.src) audio.play().catch(() => {});
-        else if (isMuted) audio.pause();
       }
       const mb = document.getElementById('muteBtn');
       mb.textContent = isMuted ? '🔇' : '🔊';
@@ -1944,9 +1988,7 @@
         const audEl = document.getElementById('aud_' + r.id);
         if (audEl) audEl.textContent = (isMuted ? '🔇 ' : '🔊 ') + r.audio;
       }
-      if (!isMuted && !activeVid && !audio.src) {
-        showToast('🎵 अ‍ॅडमिनमधून या मंदिराचे MP3 गाणे जोडा');
-      }
+
     };
 
     let lastTapTime = 0;
@@ -2238,7 +2280,7 @@
       vid.style.display = 'none'; ifr.style.display = 'none';
       if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
 
-      if (r.liveUrl.includes('.m3u8')) {
+      if (!r.liveUrl) { /* offline card already shown */ } else if (r.liveUrl.includes('.m3u8')) {
         vid.style.display = 'block';
         if (window.Hls && Hls.isSupported()) { hlsInstance = new Hls(); hlsInstance.loadSource(r.liveUrl); hlsInstance.attachMedia(vid); }
         else { vid.src = r.liveUrl; }

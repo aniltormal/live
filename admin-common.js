@@ -229,7 +229,7 @@ function showToast(msg, isError = false) {
   if (!pop) {
     pop = document.createElement('div');
     pop.id = 'adminCenterToastPopup';
-    pop.className = 'hidden fixed inset-0 z-[10000] bg-slate-900/45 backdrop-blur-sm flex items-center justify-center p-4';
+    pop.style.cssText = 'position:fixed;inset:0;z-index:100000;background:rgba(15,23,42,0.48);display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px);';
     pop.innerHTML = `
       <div class="modern-pop-card relative w-full max-w-sm rounded-3xl bg-white/95 backdrop-blur-md border shadow-[0_25px_60px_-12px_rgba(5,52,78,0.35)] overflow-hidden p-6 text-center space-y-3.5">
         <div class="admin-toast-top-bar absolute top-0 inset-x-0 h-1.5"></div>
@@ -243,7 +243,7 @@ function showToast(msg, isError = false) {
         </div>
       </div>
     `;
-    pop.addEventListener('click', () => pop.classList.add('hidden'));
+    pop.addEventListener('click', () => { pop.style.display = 'none'; });
     document.body.appendChild(pop);
   }
 
@@ -282,7 +282,7 @@ function showToast(msg, isError = false) {
 
   bar.style.transition = 'none';
   bar.style.width = '100%';
-  pop.classList.remove('hidden');
+  pop.style.display = 'flex';
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       bar.style.transition = 'width 3s linear';
@@ -292,7 +292,7 @@ function showToast(msg, isError = false) {
 
   clearTimeout(window.__toastTimer);
   window.__toastTimer = setTimeout(() => {
-    pop.classList.add('hidden');
+    pop.style.display = 'none';
   }, 3000);
 }
 
@@ -642,7 +642,7 @@ function initAdminGuard(onAuthed, isLoginPage = false) {
     modal.id = 'globalSaveConfirmModal';
     modal.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.62);display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px);';
     modal.innerHTML = `
-      <div class="w-full max-w-md rounded-2xl bg-white border-2 border-[#05344E]/25 shadow-2xl p-5 space-y-4">
+      <div style="width:100%;max-width:420px;background:#ffffff;border-radius:18px;border:2px solid #05344E;box-shadow:0 24px 60px rgba(0,0,0,0.38);padding:20px;display:flex;flex-direction:column;gap:14px;">
         <div class="flex items-center gap-2.5 text-[#05344E]">
           <span class="text-2xl">💾</span>
           <h3 class="text-base sm:text-lg font-extrabold">सेटिंग्ज सेव्ह करायच्या का?</h3>

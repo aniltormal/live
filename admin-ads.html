@@ -39,11 +39,12 @@
     .ds-cselect-opt.active { background: #05344E; color: #fde68a; font-weight: 800; }
   </style>
   <script id="portalDdScript">
+    window.__skipModernSelects = true;
     window.enhancePortalDropdowns = function(rootEl) {
       const root = rootEl || document;
       const selects = root.querySelectorAll('select');
       selects.forEach((sel) => {
-        if (sel.dataset.dsEnhanced === '1') {
+        if (sel.dataset.dsEnhanced === '1' || sel.dataset.modernUpgraded || (sel.closest && sel.closest('.mdrop-wrap'))) {
           if (sel._dsSyncLabel) sel._dsSyncLabel();
           return;
         }
@@ -357,7 +358,30 @@
           </div>
         </div>
       </section>
-            <section id="adminTabLivePreview" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-3">
+            <!-- ६. आलेल्या चौकशी (Shorts Ad Leads) -->
+      <section id="shortsLeadsSection" class="bg-white rounded-2xl border border-sky-200 shadow-sm p-4 sm:p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100">
+          <div>
+            <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">📥 ६. आलेल्या चौकशी — Shorts Ad Leads (<span id="leadsCountBadge">0</span>)</h2>
+            <p class="text-xs text-slate-500">भक्ती शॉर्ट्स जाहिरातींमधून भक्तांनी पाठवलेली चौकशी (नाव, मोबाईल व जिल्हा)</p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
+          <div class="w-full sm:w-64">
+            <select id="leadsSponsorFilter" onchange="renderShortsLeadsList()" class="w-full rounded-xl border border-slate-300 px-3 py-1.5 text-xs font-bold bg-white">
+              <option value="all">सर्व प्रायोजक (All)</option>
+            </select>
+          </div>
+          <button type="button" onclick="exportLeadsCSV()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold cursor-pointer shadow-xs transition">📥 CSV डाउनलोड करा</button>
+        </div>
+
+        <div id="shortsLeadsListWrap" class="space-y-2.5">
+          <div class="text-xs text-slate-500 p-4 rounded-xl bg-slate-50 border border-slate-200 text-center">⏳ चौकशी यादी लोड होत आहे...</div>
+        </div>
+      </section>
+
+      <section id="adminTabLivePreview" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-3">
         <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">👁️ जाहिरात स्थिती लाईव्ह प्रिव्ह्यू</h2>
         <div id="pvAdsStatus" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs font-bold"></div>
         <div id="pvBannerVisual" class="hidden rounded-xl border border-amber-300 bg-amber-50/40 p-2.5 space-y-1.5">
@@ -1556,6 +1580,79 @@
       window.cachedAdStats = snap.val() || {};
       cleanupOldAdStatsDaily(window.cachedAdStats);
       if (typeof renderShortsAdsList === 'function') renderShortsAdsList();
+
+    window.__shortsLeadsArr = [];
+    window.renderShortsLeadsList = function() {
+      const box = document.getElementById('shortsLeadsListWrap');
+      const badge = document.getElementById('leadsCountBadge');
+      const fSel = document.getElementById('leadsSponsorFilter');
+      if (!box) return;
+      const all = window.__shortsLeadsArr || [];
+      if (badge) badge.textContent = all.length;
+
+      if (fSel) {
+        const cur = fSel.value || 'all';
+        const sponsors = Array.from(new Set(all.map(x => (x.sponsor || '').trim()).filter(Boolean)));
+        fSel.innerHTML = '<option value="all">सर्व प्रायोजक (All)</option>' + sponsors.map(s => `<option value="${esc(s)}" ${cur === s ? 'selected' : ''}>${esc(s)}</option>`).join('');
+        if (window.enhancePortalDropdowns) window.enhancePortalDropdowns(fSel.parentNode);
+      }
+
+      const fVal = fSel ? fSel.value : 'all';
+      const list = fVal === 'all' ? all : all.filter(x => (x.sponsor || '').trim() === fVal);
+      if (!list.length) {
+        box.innerHTML = '<div class="text-xs text-slate-500 p-4 rounded-xl bg-slate-50 border border-slate-200 text-center">अद्याप कोणतीही चौकशी आलेली नाही.</div>';
+        return;
+      }
+
+      box.innerHTML = list.map((ld) => {
+        const ph = String(ld.phone || '').replace(/\D/g, '');
+        const waPh = ph.length === 10 ? '91' + ph : ph;
+        const waMsg = encodeURIComponent(`🙏 नमस्कार ${ld.name || ''}, DARSHAN SETU वर तुम्ही "${ld.sponsor || ''}" बद्दल केलेली चौकशी मिळाली आहे.`);
+        const dtStr = ld.createdAt ? formatPubDateTime(ld.createdAt) : '—';
+        return `
+        <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-3 flex flex-wrap items-center justify-between gap-3">
+          <div class="min-w-0 flex-1 space-y-0.5">
+            <div class="text-xs sm:text-sm font-extrabold text-[#05344E]">👤 ${esc(ld.name || 'भक्त')} <span class="text-emerald-800">• 📞 ${esc(ld.phone || '—')}</span></div>
+            <div class="text-[11px] text-slate-600 font-semibold">📍 ${esc(ld.district || '—')} • 🏢 ${esc(ld.sponsor || 'प्रायोजक')} • 🕒 ${dtStr}</div>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            ${ph ? `<a href="tel:${esc(ph)}" class="px-2.5 py-1 rounded-lg bg-sky-50 hover:bg-sky-100 text-[#05344E] border border-sky-200 text-[11px] font-extrabold">📞 कॉल</a>` : ''}
+            ${waPh ? `<a href="https://wa.me/${waPh}?text=${waMsg}" target="_blank" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-extrabold">💬 WA</a>` : ''}
+            <button type="button" onclick="deleteShortsLead('${esc(ld.id)}')" class="px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-[11px] font-bold cursor-pointer">🗑️</button>
+          </div>
+        </div>`;
+      }).join('');
+    };
+
+    window.deleteShortsLead = async function(id) {
+      if (!id || !confirm('ही चौकशी नोंद काढायची का?')) return;
+      try {
+        await fbDb.ref('shortsAdLeads/' + id).remove();
+        showToast('चौकशी नोंद काढली.');
+      } catch (e) { showToast('त्रुटी: ' + e.message, true); }
+    };
+
+    window.exportLeadsCSV = function() {
+      const all = window.__shortsLeadsArr || [];
+      if (!all.length) { showToast('डाउनलोडसाठी चौकशी डेटा नाही.', true); return; }
+      const rows = [['Date', 'Name', 'Phone', 'District', 'Sponsor', 'AdId']];
+      all.forEach(l => rows.push([
+        l.createdAt ? formatPubDateTime(l.createdAt) : '',
+        l.name || '', l.phone || '', l.district || '', l.sponsor || '', l.adId || ''
+      ]));
+      const csv = rows.map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\n');
+      const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'darshansetu_shorts_leads.csv';
+      a.click();
+    };
+
+    fbDb.ref('shortsAdLeads').limitToLast(100).on('value', (snap) => {
+      const val = snap.val() || {};
+      window.__shortsLeadsArr = Object.entries(val).map(([id, v]) => Object.assign({ id }, v || {})).sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0));
+      renderShortsLeadsList();
+    });
       renderAdReports();
     });
 

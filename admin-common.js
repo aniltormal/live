@@ -510,7 +510,7 @@ function initAdminGuard(onAuthed, isLoginPage = false) {
   window.addEventListener('scroll', (e) => { if (activeMenu && e.target !== document && e.target !== window && activeMenu.contains(e.target)) return; if (activeMenu) closeActive(); }, true);
 
   window.upgradeSelectToModern = function(sel) {
-    if (!sel || sel.dataset.modernUpgraded || sel.dataset.dsEnhanced === '1' || sel.classList.contains('hidden') || sel.style.display === 'none') return;
+    if (!sel || window.__skipModernSelects || sel.dataset.modernUpgraded || sel.dataset.dsEnhanced === '1' || sel.classList.contains('hidden') || sel.style.display === 'none' || (sel.closest && sel.closest('.ds-cselect-wrap, #durationDDWrap, #audioTempleDDWrap'))) return;
     sel.dataset.modernUpgraded = '1';
     sel.style.display = 'none';
 

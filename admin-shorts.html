@@ -401,7 +401,7 @@
     </div>
   </div>
 
-  <script src="admin-common.js?v=126"></script>
+  <script src="admin-common.js?v=127"></script>
   <script>
     const DEFAULT_SHORTS_CFG = {
       audio: { durationSec: 25, randomAudio: true, autoScroll: false, templeTracks: {} },
@@ -447,7 +447,59 @@
 
     initAdminGuard(async (user) => {
       document.getElementById('stickySaveBar').classList.remove('hidden');
-      await Promise.all([loadGithubAudioConfig(), loadTemples(), loadShortsConfig(), loadUsers()]);
+      document.getElementById('saveAllShortsBtn').onclick = () => {
+        const doSave = async () => {
+        const btn = document.getElementById('saveAllShortsBtn');
+        const origTxt = btn ? btn.textContent : '';
+        try {
+          if (btn) { btn.disabled = true; btn.textContent = '⏳ सेव्ह होत आहे...'; }
+          cfg.audio = cfg.audio || {};
+          cfg.feed = cfg.feed || {};
+          cfg.ui = cfg.ui || {};
+          cfg.livePopup = cfg.livePopup || {};
+          cfg.moderation = cfg.moderation || {};
+          cfg.audio.durationSec = Number(document.getElementById('cfgDuration').value) || 25;
+        cfg.audio.randomAudio = document.getElementById('cfgRandomAudio').checked;
+        cfg.audio.autoScroll = document.getElementById('cfgAutoScroll').checked;
+        cfg.feed.daysLimit = Number(document.getElementById('cfgDaysLimit').value) || 15;
+        cfg.feed.freshOnTop = document.getElementById('cfgFreshOnTop').checked;
+        cfg.feed.smartShuffle = document.getElementById('cfgSmartShuffle').checked;
+        cfg.feed.syncHiddenTemples = document.getElementById('cfgSyncHidden').checked;
+        cfg.ui.badgeText = document.getElementById('cfgBadgeText').value.trim() || 'दर्शनसेतू .लाईव्ह व्हेरिफाइड';
+        cfg.ui.showLiveBtn = document.getElementById('cfgShowLiveBtn').checked;
+        cfg.ui.presetComments = document.getElementById('cfgPresetComments').value.split('\n').map(s => s.trim()).filter(Boolean);
+        cfg.ui.skeletonEnabled = document.getElementById('cfgSkeletonEnabled').checked;
+        cfg.ui.customLogoUrl = document.getElementById('cfgCustomLogoUrl').value.trim();
+        cfg.livePopup.enabled = document.getElementById('cfgLivePopupEnabled').checked;
+        cfg.livePopup.watermarkText = document.getElementById('cfgWatermarkText').value.trim();
+        cfg.livePopup.watermarkOpacity = Number(document.getElementById('cfgWatermarkOpacity').value) || 0.75;
+        cfg.livePopup.disclaimer = document.getElementById('cfgDisclaimer').value.trim();
+                        cfg.moderation.bannedWords = document.getElementById('cfgBannedWords').value.split(',').map(s => s.trim()).filter(Boolean);
+        cfg.moderation.termsText = document.getElementById('cfgTermsText').value.trim();
+        cfg.merit = {
+          likesForMerit: Math.max(1, parseInt(document.getElementById('cfgMeritLikes').value, 10) || 5),
+          commentsForMerit: Math.max(1, parseInt(document.getElementById('cfgMeritComments').value, 10) || 3),
+          badgeMinMerit: Math.min(5, Math.max(1, parseInt(document.getElementById('cfgBadgeMinMerit').value, 10) || 3)),
+          welcomeTitle: document.getElementById('cfgWelcomeTitle').value.trim(),
+          welcomeBody: document.getElementById('cfgWelcomeBody').value.trim()
+        };
+
+        const cleanCfg = JSON.parse(JSON.stringify(cfg));
+        await fbDb.ref('siteConfig/shortsConfig').set(cleanCfg);
+        showToast('✅ सर्व दर्शन शॉर्ट्स सेटिंग्ज यशस्वीरित्या सेव्ह झाल्या!');
+        } catch (err) {
+          showToast('❌ सेव्ह करताना त्रुटी: ' + (err && err.message ? err.message : err), true);
+        } finally {
+          if (btn) { btn.disabled = false; btn.textContent = origTxt || '💾 सर्व सेटिंग्ज सेव्ह करा'; }
+        }
+        };
+        if (typeof window.askSaveConfirm === 'function') window.askSaveConfirm(doSave);
+        else if (confirm('तुम्ही केलेले सर्व बदल सेव्ह करायचे का?')) doSave();
+      };
+
+      try {
+        await Promise.all([loadGithubAudioConfig(), loadTemples(), loadShortsConfig(), loadUsers()]);
+      } catch (initErr) { console.error('admin-shorts init error:', initErr); }
       bindActions();
     });
 
@@ -1171,55 +1223,6 @@
       };
 
             
-      document.getElementById('saveAllShortsBtn').onclick = () => {
-        const doSave = async () => {
-        const btn = document.getElementById('saveAllShortsBtn');
-        const origTxt = btn ? btn.textContent : '';
-        try {
-          if (btn) { btn.disabled = true; btn.textContent = '⏳ सेव्ह होत आहे...'; }
-          cfg.audio = cfg.audio || {};
-          cfg.feed = cfg.feed || {};
-          cfg.ui = cfg.ui || {};
-          cfg.livePopup = cfg.livePopup || {};
-          cfg.moderation = cfg.moderation || {};
-          cfg.audio.durationSec = Number(document.getElementById('cfgDuration').value) || 25;
-        cfg.audio.randomAudio = document.getElementById('cfgRandomAudio').checked;
-        cfg.audio.autoScroll = document.getElementById('cfgAutoScroll').checked;
-        cfg.feed.daysLimit = Number(document.getElementById('cfgDaysLimit').value) || 15;
-        cfg.feed.freshOnTop = document.getElementById('cfgFreshOnTop').checked;
-        cfg.feed.smartShuffle = document.getElementById('cfgSmartShuffle').checked;
-        cfg.feed.syncHiddenTemples = document.getElementById('cfgSyncHidden').checked;
-        cfg.ui.badgeText = document.getElementById('cfgBadgeText').value.trim() || 'दर्शनसेतू .लाईव्ह व्हेरिफाइड';
-        cfg.ui.showLiveBtn = document.getElementById('cfgShowLiveBtn').checked;
-        cfg.ui.presetComments = document.getElementById('cfgPresetComments').value.split('\n').map(s => s.trim()).filter(Boolean);
-        cfg.ui.skeletonEnabled = document.getElementById('cfgSkeletonEnabled').checked;
-        cfg.ui.customLogoUrl = document.getElementById('cfgCustomLogoUrl').value.trim();
-        cfg.livePopup.enabled = document.getElementById('cfgLivePopupEnabled').checked;
-        cfg.livePopup.watermarkText = document.getElementById('cfgWatermarkText').value.trim();
-        cfg.livePopup.watermarkOpacity = Number(document.getElementById('cfgWatermarkOpacity').value) || 0.75;
-        cfg.livePopup.disclaimer = document.getElementById('cfgDisclaimer').value.trim();
-                        cfg.moderation.bannedWords = document.getElementById('cfgBannedWords').value.split(',').map(s => s.trim()).filter(Boolean);
-        cfg.moderation.termsText = document.getElementById('cfgTermsText').value.trim();
-        cfg.merit = {
-          likesForMerit: Math.max(1, parseInt(document.getElementById('cfgMeritLikes').value, 10) || 5),
-          commentsForMerit: Math.max(1, parseInt(document.getElementById('cfgMeritComments').value, 10) || 3),
-          badgeMinMerit: Math.min(5, Math.max(1, parseInt(document.getElementById('cfgBadgeMinMerit').value, 10) || 3)),
-          welcomeTitle: document.getElementById('cfgWelcomeTitle').value.trim(),
-          welcomeBody: document.getElementById('cfgWelcomeBody').value.trim()
-        };
-
-        const cleanCfg = JSON.parse(JSON.stringify(cfg));
-        await fbDb.ref('siteConfig/shortsConfig').set(cleanCfg);
-        showToast('✅ सर्व दर्शन शॉर्ट्स सेटिंग्ज यशस्वीरित्या सेव्ह झाल्या!');
-        } catch (err) {
-          showToast('❌ सेव्ह करताना त्रुटी: ' + (err && err.message ? err.message : err), true);
-        } finally {
-          if (btn) { btn.disabled = false; btn.textContent = origTxt || '💾 सर्व सेटिंग्ज सेव्ह करा'; }
-        }
-        };
-        if (typeof window.askSaveConfirm === 'function') window.askSaveConfirm(doSave);
-        else if (confirm('तुम्ही केलेले सर्व बदल सेव्ह करायचे का?')) doSave();
-      };
     }
   </script>
 </body>

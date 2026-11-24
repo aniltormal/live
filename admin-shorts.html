@@ -496,7 +496,7 @@
         if (typeof window.askSaveConfirm === 'function') {
           window.askSaveConfirm(doSave);
         } else if (typeof openAdvModal === 'function') {
-          openAdvModal('💾 सेटिंग्ज सेव्ह करायच्या का?', 'तुम्ही केलेले सर्व बदल थेट लाईव्ह वेबसाईटवर लागू करून सेव्ह करायचे का?', false, '✅ होय, सेव्ह करा', () => { doSave(); });
+          openAdvModal({ title: '💾 सेटिंग्ज सेव्ह करायच्या का?', msg: 'तुम्ही केलेले सर्व बदल थेट लाईव्ह वेबसाईटवर लागू करून सेव्ह करायचे का?', okText: '✅ होय, सेव्ह करा', onOk: () => { doSave(); } });
         }
       };
 

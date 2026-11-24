@@ -640,7 +640,7 @@ function initAdminGuard(onAuthed, isLoginPage = false) {
     if (modal) return modal;
     modal = document.createElement('div');
     modal.id = 'globalSaveConfirmModal';
-    modal.className = 'hidden fixed inset-0 z-[9999] bg-black/60 flex items-center justify-center p-4';
+    modal.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.62);display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px);';
     modal.innerHTML = `
       <div class="w-full max-w-md rounded-2xl bg-white border-2 border-[#05344E]/25 shadow-2xl p-5 space-y-4">
         <div class="flex items-center gap-2.5 text-[#05344E]">
@@ -659,10 +659,10 @@ function initAdminGuard(onAuthed, isLoginPage = false) {
     document.body.appendChild(modal);
     modal.querySelector('#globalSaveCancelBtn').addEventListener('click', () => {
       pendingBtn = null;
-      modal.classList.add('hidden');
+      modal.style.display = 'none';
     });
     modal.querySelector('#globalSaveConfirmBtn').addEventListener('click', () => {
-      modal.classList.add('hidden');
+      modal.style.display = 'none';
       if (pendingBtn) {
         const b = pendingBtn;
         pendingBtn = null;
@@ -681,7 +681,7 @@ function initAdminGuard(onAuthed, isLoginPage = false) {
     e.preventDefault();
     e.stopImmediatePropagation();
     pendingBtn = btn;
-    ensureModal().classList.remove('hidden');
+    ensureModal().style.display = 'flex';
   }, true);
 })();
 

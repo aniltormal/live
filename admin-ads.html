@@ -10,6 +10,131 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+  <style id="portalDdStyles">
+    .ds-cselect-wrap { position: relative; width: 100%; }
+    .ds-cselect-btn {
+      width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      padding: 8px 12px; border-radius: 12px; border: 1.5px solid #cbd5e1; background: #ffffff;
+      color: #05344E; font-size: 12px; font-weight: 700; text-align: left; cursor: pointer;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .ds-cselect-btn:hover, .ds-cselect-btn.open { border-color: #05344E; box-shadow: 0 0 0 3px rgba(5,52,78,0.10); }
+    .ds-cselect-menu {
+      position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 120;
+      background: #ffffff; border: 1.5px solid #fbbf24; border-radius: 16px;
+      box-shadow: 0 14px 36px rgba(5,52,78,0.22); padding: 6px; max-height: 250px; overflow-y: auto;
+    }
+    .ds-cselect-search {
+      width: 100%; padding: 6px 10px; margin-bottom: 6px; border-radius: 10px;
+      border: 1px solid #cbd5e1; font-size: 12px; outline: none; background: #f8fafc;
+    }
+    .ds-cselect-search:focus { border-color: #05344E; background: #fff; }
+    .ds-cselect-opt {
+      width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 6px;
+      padding: 7px 10px; border-radius: 10px; font-size: 12px; font-weight: 600; color: #0f172a;
+      text-align: left; cursor: pointer; border: none; background: transparent; transition: background .12s;
+    }
+    .ds-cselect-opt:hover { background: #fef3c7; color: #05344E; }
+    .ds-cselect-opt.active { background: #05344E; color: #fde68a; font-weight: 800; }
+  </style>
+  <script id="portalDdScript">
+    window.enhancePortalDropdowns = function(rootEl) {
+      const root = rootEl || document;
+      const selects = root.querySelectorAll('select');
+      selects.forEach((sel) => {
+        if (sel.dataset.dsEnhanced === '1') {
+          if (sel._dsSyncLabel) sel._dsSyncLabel();
+          return;
+        }
+        sel.dataset.dsEnhanced = '1';
+        sel.classList.add('hidden');
+
+        const wrap = document.createElement('div');
+        wrap.className = 'ds-cselect-wrap';
+        sel.parentNode.insertBefore(wrap, sel);
+        wrap.appendChild(sel);
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'ds-cselect-btn';
+        btn.innerHTML = '<span class="ds-cs-lbl truncate"></span><span class="shrink-0 text-slate-500 text-xs">▾</span>';
+        wrap.appendChild(btn);
+
+        const menu = document.createElement('div');
+        menu.className = 'ds-cselect-menu hidden';
+        wrap.appendChild(menu);
+
+        const buildMenu = () => {
+          const opts = Array.from(sel.options);
+          const curVal = sel.value;
+          const lblEl = btn.querySelector('.ds-cs-lbl');
+          const selOpt = opts.find(o => o.value === curVal) || opts[0];
+          if (lblEl) lblEl.textContent = selOpt ? selOpt.textContent : 'निवडा';
+
+          let html = '';
+          if (opts.length > 7) {
+            html += '<input type="text" class="ds-cselect-search" placeholder="🔍 शोधा..." />';
+          }
+          html += '<div class="ds-cselect-list space-y-0.5">';
+          opts.forEach((o) => {
+            const act = o.value === curVal;
+            const safeT = String(o.textContent || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            const safeV = String(o.value || '').replace(/"/g, '&quot;');
+            html += `<button type="button" class="ds-cselect-opt ${act ? 'active' : ''}" data-val="${safeV}"><span class="truncate">${safeT}</span>${act ? '<span>✓</span>' : ''}</button>`;
+          });
+          html += '</div>';
+          menu.innerHTML = html;
+
+          const sInp = menu.querySelector('.ds-cselect-search');
+          if (sInp) {
+            sInp.addEventListener('click', (e) => e.stopPropagation());
+            sInp.addEventListener('input', () => {
+              const q = sInp.value.toLowerCase().trim();
+              menu.querySelectorAll('.ds-cselect-opt').forEach((ob) => {
+                ob.style.display = !q || ob.textContent.toLowerCase().includes(q) ? '' : 'none';
+              });
+            });
+          }
+
+          menu.querySelectorAll('.ds-cselect-opt').forEach((ob) => {
+            ob.addEventListener('click', (e) => {
+              e.stopPropagation();
+              sel.value = ob.dataset.val;
+              sel.dispatchEvent(new Event('change', { bubbles: true }));
+              menu.classList.add('hidden');
+              btn.classList.remove('open');
+              buildMenu();
+            });
+          });
+        };
+
+        sel._dsSyncLabel = buildMenu;
+        buildMenu();
+
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const wasHidden = menu.classList.contains('hidden');
+          document.querySelectorAll('.ds-cselect-menu').forEach(m => m.classList.add('hidden'));
+          document.querySelectorAll('.ds-cselect-btn').forEach(b => b.classList.remove('open'));
+          if (wasHidden) {
+            buildMenu();
+            menu.classList.remove('hidden');
+            btn.classList.add('open');
+            const sInp = menu.querySelector('.ds-cselect-search');
+            if (sInp) setTimeout(() => sInp.focus(), 30);
+          }
+        });
+      });
+    };
+    if (!window.__dsDdDocClick) {
+      window.__dsDdDocClick = true;
+      document.addEventListener('click', () => {
+        document.querySelectorAll('.ds-cselect-menu').forEach(m => m.classList.add('hidden'));
+        document.querySelectorAll('.ds-cselect-btn').forEach(b => b.classList.remove('open'));
+      });
+    }
+  </script>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
   <header id="adminTopHeader"></header>
@@ -291,6 +416,7 @@
     populateFontSelect('bannerFontSelect');
     populateFontSelect('preRollFontSelect');
     populateFontSelect('splashFontSelect');
+    if (window.enhancePortalDropdowns) window.enhancePortalDropdowns();
 
 
     let currentAds = { bannerSlides: [{}, {}, {}] };
@@ -395,6 +521,7 @@
           </div>
         </div>`;
       }).join('');
+      if (window.enhancePortalDropdowns) window.enhancePortalDropdowns(box);
     }
     function syncShortsAdsFromDOM() {
       const cards = document.querySelectorAll('#shortsAdsListWrap [data-sad]');
@@ -458,6 +585,7 @@
       const mv = document.getElementById('cfgShortsAdsMinView');
       if (mv) mv.value = String(shortsAdsCfg.minViewSec);
       renderShortsAdsList();
+      if (window.enhancePortalDropdowns) window.enhancePortalDropdowns();
     }).catch(() => {});
     const slotPendingFiles = {};
     const preRollPendingFiles = {};
@@ -531,6 +659,7 @@
       document.getElementById('schedModalDaysSelect').value = '';
       document.getElementById('schedModalExpiresInput').value = toLocalInputVal(expMs);
       document.getElementById('adScheduleModal').classList.remove('hidden');
+      if (window.enhancePortalDropdowns) window.enhancePortalDropdowns(document.getElementById('adScheduleModal'));
     };
     window.resetModalPubNow = function() {
       if (!__schedTarget) return;
@@ -586,6 +715,7 @@
         renderMediaSlots('splash', currentAds.splashItems);
       }
       if (typeof window.renderAdReports === 'function') window.renderAdReports();
+        if (window.enhancePortalDropdowns) window.enhancePortalDropdowns();
       closeAdScheduleModal();
       showToast('वेळापत्रक सेट झाले! लागू करण्यासाठी खाली "सेव्ह करा" दाबा.');
     };
@@ -623,6 +753,7 @@
       if (fA !== undefined) slotPendingFiles[target] = fA; else delete slotPendingFiles[target];
       renderSlots(arr);
       if (typeof window.renderAdReports === 'function') window.renderAdReports();
+        if (window.enhancePortalDropdowns) window.enhancePortalDropdowns();
       showToast(`स्लॉट #${idx + 1} चा क्रम बदलून #${target + 1} केला — लागू करण्यासाठी "सेव्ह करा" दाबा.`);
     };
 
@@ -805,6 +936,7 @@
             currentAds[m.key][idx] = item;
             renderMediaSlots(kind, currentAds[m.key]);
             if (typeof window.renderAdReports === 'function') window.renderAdReports();
+        if (window.enhancePortalDropdowns) window.enhancePortalDropdowns();
           };
           r.readAsDataURL(f);
         });
@@ -841,6 +973,7 @@
           }
           renderMediaSlots(kind, currentAds[m.key]);
           if (typeof window.renderAdReports === 'function') window.renderAdReports();
+        if (window.enhancePortalDropdowns) window.enhancePortalDropdowns();
         });
       });
     }
@@ -1485,6 +1618,7 @@
         }];
         renderMediaSlots('splash', currentAds.splashItems);
         if (typeof window.renderAdReports === 'function') window.renderAdReports();
+        if (window.enhancePortalDropdowns) window.enhancePortalDropdowns();
       });
     });
 
@@ -1625,6 +1759,7 @@
         renderMediaSlots('preroll', currentAds.preRollItems);
         renderMediaSlots('splash', currentAds.splashItems);
         if (typeof window.renderAdReports === 'function') window.renderAdReports();
+        if (window.enhancePortalDropdowns) window.enhancePortalDropdowns();
         showToast('✅ सर्व जाहिरात सेटिंग्ज सेव्ह झाल्या!');
       } catch (err) {
         showToast('❌ त्रुटी: ' + err.message, true);

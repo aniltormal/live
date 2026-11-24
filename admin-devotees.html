@@ -7,16 +7,26 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Khand:wght@500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
   <style>
     body { font-size: 15.5px; }
+    @keyframes adminSkelShimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+    .admin-skel { background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); background-size: 800px 100%; animation: adminSkelShimmer 1.3s infinite linear; }
     input, select, textarea { font-size: 15px !important; }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
-  <header id="adminTopHeader"></header>
+  <header id="adminTopHeader" class="sticky top-0 z-50 w-full bg-gradient-to-r from-[#04283d] via-[#05344E] to-[#0a4d70] text-white border-b-2 border-amber-400/80 shadow-md">
+    <div class="max-w-7xl mx-auto px-3 sm:px-5 py-2.5 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5">
+        <a href="admin.html" class="px-3 py-1.5 rounded-xl bg-white/20 text-white text-xs sm:text-sm font-extrabold">← डॅशबोर्ड</a>
+        <h1 class="text-base sm:text-xl font-extrabold">🙏 नोंदणीकृत भक्त व्यवस्थापन</h1>
+      </div>
+      <a href="index.html" class="px-3 py-1.5 rounded-xl bg-white/15 text-white text-xs sm:text-sm font-bold">🏠 मुख्य पेज</a>
+    </div>
+  </header>
 
   <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6 pb-20">
     <div id="authGateMsg" class="w-full space-y-4">
@@ -64,24 +74,39 @@
       const g = document.getElementById('authGateMsg');
       if (g) g.innerHTML = `<div class="p-4 rounded-2xl bg-rose-50 border border-rose-300 text-rose-800 text-sm font-bold">❌ त्रुटी: ${ev.message || 'Unknown error'}</div>`;
     });
-    try {
-      if (typeof renderAdminShell === 'function') renderAdminShell('devotees', 'नोंदणीकृत भक्त व्यवस्थापन');
-    } catch (e) {}
-    const fbDb = firebase.database();
+    let fbDb = null;
     let usersMap = {};
     let userFilterMode = 'all';
+    let authDone = false;
+
+    try {
+      if (typeof renderAdminShell === 'function') renderAdminShell('devotees', '🙏 नोंदणीकृत भक्त व्यवस्थापन');
+    } catch (e) { console.error(e); }
+
+    setTimeout(() => {
+      if (!authDone) {
+        const g = document.getElementById('authGateMsg');
+        if (g) g.innerHTML = '<div class="p-4 rounded-2xl bg-amber-50 border border-amber-300 text-[#05344E] text-sm font-bold space-y-2"><div>⏳ अ‍ॅडमिन लॉगिन तपासले जात आहे... जर पान उघडत नसेल तर कृपया <a href="admin.html" class="underline text-rose-700">अ‍ॅडमिन डॅशबोर्डवर</a> जाऊन पुन्हा लॉगिन करा.</div></div>';
+      }
+    }, 3500);
+
+    function startDevoteesPage() {
+      authDone = true;
+      fbDb = firebase.database();
+      loadUsers();
+    }
 
     if (typeof initAdminGuard === 'function') {
       initAdminGuard((user) => {
         if (!user) return;
-        loadUsers();
+        startDevoteesPage();
       });
-    } else {
+    } else if (typeof firebase !== 'undefined') {
       firebase.auth().onAuthStateChanged((user) => {
         if (user) {
           const g = document.getElementById('authGateMsg'); if (g) g.classList.add('hidden');
           const c = document.getElementById('pageContent'); if (c) c.classList.remove('hidden');
-          loadUsers();
+          startDevoteesPage();
         } else {
           location.href = 'admin.html';
         }

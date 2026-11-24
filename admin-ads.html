@@ -61,15 +61,14 @@
             <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🎬 २. प्री-रोल जाहिरात (<span id="preRollCountBadge">1</span> स्लॉट्स — Random १ दाखवा)</h2>
             <p class="text-xs text-slate-500">मंदिर लाईव्ह सुरू होण्यापूर्वी सक्रिय जाहिरातींपैकी एका वेळी एकच जाहिरात रँडम दाखवली जाईल</p>
           </div>
-          <button id="addPreRollSlotBtn" type="button" class="px-3 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 border border-sky-200 text-[#05344E] text-xs font-extrabold cursor-pointer transition">➕ नवीन Pre-Roll स्लॉट जोडा</button>
         </div>
 
         <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
-          <span class="text-xs font-bold text-slate-700">प्री-रोल जाहिरात स्थिती</span>
           <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
-            <span>चालू ठेवा</span>
+            <span>प्री-रोल चालू ठेवा</span>
             <span class="toggle-pill"><input id="preRollEnabled" type="checkbox" /><span class="knob"></span></span>
           </label>
+          <button id="addPreRollSlotBtn" type="button" class="px-3 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 border border-sky-200 text-[#05344E] text-xs font-extrabold cursor-pointer transition">➕ नवीन Pre-Roll स्लॉट जोडा</button>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -102,15 +101,14 @@
             <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">✨ ३. स्प्लॅश पॉपअप जाहिरात (<span id="splashCountBadge">1</span> स्लॉट्स — Random १ दाखवा)</h2>
             <p class="text-xs text-slate-500">वेबसाईट उघडल्यावर सक्रिय जाहिरातींपैकी एका वेळी एकच पॉपअप जाहिरात रँडम दाखवली जाईल</p>
           </div>
-          <button id="addSplashSlotBtn" type="button" class="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-[#05344E] text-xs font-extrabold cursor-pointer transition">➕ नवीन Splash स्लॉट जोडा</button>
         </div>
 
         <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
-          <span class="text-xs font-bold text-slate-700">स्प्लॅश पॉपअप जाहिरात स्थिती</span>
           <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
-            <span>चालू ठेवा</span>
+            <span>स्प्लॅश पॉपअप चालू ठेवा</span>
             <span class="toggle-pill"><input id="splashEnabled" type="checkbox" /><span class="knob"></span></span>
           </label>
+          <button id="addSplashSlotBtn" type="button" class="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-[#05344E] text-xs font-extrabold cursor-pointer transition">➕ नवीन Splash स्लॉट जोडा</button>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -144,11 +142,46 @@
         <div id="splashSlotsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
       </section>
 
+      <section class="bg-white rounded-2xl border border-amber-200 shadow-sm p-4 sm:p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100">
+          <div>
+            <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🎬 ४. दर्शन शॉर्ट्स (Bhakti Shorts) ९:१६ व्हिडिओ Ads (<span id="shortsAdsCountBadge">0</span> स्लॉट्स)</h2>
+            <p class="text-xs text-slate-500">पर्याय 1D (३-बटण बार + कूपन + झटपट चौकशी फॉर्म + जिल्हा टार्गेट + कमाई हिशोब)</p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-2 bg-amber-50/50 p-2.5 rounded-xl border border-amber-200">
+          <span id="shortsRevBadge" class="px-3 py-1 rounded-full bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs font-extrabold">💰 ₹0</span>
+          <button id="addShortsAdSlotBtn" type="button" class="px-3 py-1.5 rounded-xl bg-amber-100 hover:bg-amber-200 border border-amber-300 text-[#05344E] text-xs font-extrabold cursor-pointer transition">➕ नवीन शॉर्ट-व्हिडिओ Ad</button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
+          <label class="flex items-center justify-between gap-3 p-2.5 rounded-xl border border-slate-200 bg-white cursor-pointer">
+            <span class="text-xs font-bold text-slate-800">Shorts वर जाहिरात दाखवा</span>
+            <span class="toggle-pill"><input id="cfgShortsAdsEnabled" type="checkbox" /><span class="knob"></span></span>
+          </label>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">दर किती रील्सनंतर?</label>
+            <input id="cfgShortsAdsAfterN" type="number" min="2" max="15" value="4" class="w-full rounded-xl border border-slate-300 px-3 py-1.5 text-xs font-bold bg-white" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">स्वाईप अनलॉक वेळ (सेकंद)</label>
+            <select id="cfgShortsAdsMinView" class="w-full rounded-xl border border-slate-300 px-3 py-1.5 text-xs font-bold bg-white">
+              <option value="0">लगेच स्वाईप (0 से.)</option>
+              <option value="3" selected>३ सेकंदांनंतर स्वाईप</option>
+              <option value="5">५ सेकंदांनंतर स्वाईप</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="shortsAdsListWrap" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
+      </section>
+
       <!-- Standalone Ad Clicks & Views Report Block -->
       <section id="adReportsSection" class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div class="px-5 py-3.5 bg-gradient-to-r from-slate-50 to-amber-50/40 border-b border-slate-200 flex items-center justify-between gap-2">
           <div>
-            <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">📊 जाहिरात क्लिक व व्ह्यूज रिपोर्ट</h2>
+            <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">📊 ५. जाहिरात क्लिक व व्ह्यूज रिपोर्ट</h2>
             <p class="text-xs text-slate-600 mt-0.5">प्रत्येक स्लाईड, Pre-Roll आणि Splash जाहिरातीची स्वतंत्र कामगिरी (मुख्य पेज, दैनिक दर्शन व पंचांगवरून)</p>
           </div>
         </div>
@@ -199,41 +232,7 @@
           </div>
         </div>
       </section>
-            <section class="bg-white rounded-2xl border border-amber-200 shadow-sm p-4 sm:p-6 space-y-4">
-        <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100">
-          <div>
-            <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🎬 ४. दर्शन शॉर्ट्स (Bhakti Shorts) ९:१६ व्हिडिओ Ads (<span id="shortsAdsCountBadge">0</span> स्लॉट्स)</h2>
-            <p class="text-xs text-slate-500">पर्याय 1D (३-बटण बार + कूपन + झटपट चौकशी फॉर्म + जिल्हा टार्गेट + कमाई हिशोब)</p>
-          </div>
-          <div class="flex items-center gap-2">
-            <span id="shortsRevBadge" class="px-3 py-1 rounded-full bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs font-extrabold">💰 ₹0</span>
-            <button id="addShortsAdSlotBtn" type="button" class="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-[#05344E] text-xs font-extrabold cursor-pointer transition">➕ नवीन शॉर्ट-व्हिडिओ Ad</button>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
-          <label class="flex items-center justify-between gap-3 p-2.5 rounded-xl border border-slate-200 bg-white cursor-pointer">
-            <span class="text-xs font-bold text-slate-800">Shorts वर जाहिरात दाखवा</span>
-            <span class="toggle-pill"><input id="cfgShortsAdsEnabled" type="checkbox" /><span class="knob"></span></span>
-          </label>
-          <div>
-            <label class="block text-[11px] font-bold text-slate-700 mb-1">दर किती रील्सनंतर?</label>
-            <input id="cfgShortsAdsAfterN" type="number" min="2" max="15" value="4" class="w-full rounded-xl border border-slate-300 px-3 py-1.5 text-xs font-bold bg-white" />
-          </div>
-          <div>
-            <label class="block text-[11px] font-bold text-slate-700 mb-1">स्वाईप अनलॉक वेळ (सेकंद)</label>
-            <select id="cfgShortsAdsMinView" class="w-full rounded-xl border border-slate-300 px-3 py-1.5 text-xs font-bold bg-white">
-              <option value="0">लगेच स्वाईप (0 से.)</option>
-              <option value="3" selected>३ सेकंदांनंतर स्वाईप</option>
-              <option value="5">५ सेकंदांनंतर स्वाईप</option>
-            </select>
-          </div>
-        </div>
-
-        <div id="shortsAdsListWrap" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
-      </section>
-
-      <section id="adminTabLivePreview" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-3">
+            <section id="adminTabLivePreview" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-3">
         <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">👁️ जाहिरात स्थिती लाईव्ह प्रिव्ह्यू</h2>
         <div id="pvAdsStatus" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs font-bold"></div>
         <div id="pvBannerVisual" class="hidden rounded-xl border border-amber-300 bg-amber-50/40 p-2.5 space-y-1.5">

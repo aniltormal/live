@@ -58,21 +58,46 @@
   </main>
 
   <div id="toastBox" class="hidden"></div>
-  <script src="admin-common.js"></script>
+  <script src="admin-common.js?v=110"></script>
   <script>
-    renderAdminShell('devotees', 'नोंदणीकृत भक्त व्यवस्थापन');
+    window.addEventListener('error', (ev) => {
+      const g = document.getElementById('authGateMsg');
+      if (g) g.innerHTML = `<div class="p-4 rounded-2xl bg-rose-50 border border-rose-300 text-rose-800 text-sm font-bold">❌ त्रुटी: ${ev.message || 'Unknown error'}</div>`;
+    });
+    try {
+      if (typeof renderAdminShell === 'function') renderAdminShell('devotees', 'नोंदणीकृत भक्त व्यवस्थापन');
+    } catch (e) {}
     const fbDb = firebase.database();
     let usersMap = {};
     let userFilterMode = 'all';
 
-    initAdminGuard((user) => {
-      if (!user) return;
-      loadUsers();
-    });
+    if (typeof initAdminGuard === 'function') {
+      initAdminGuard((user) => {
+        if (!user) return;
+        loadUsers();
+      });
+    } else {
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+          const g = document.getElementById('authGateMsg'); if (g) g.classList.add('hidden');
+          const c = document.getElementById('pageContent'); if (c) c.classList.remove('hidden');
+          loadUsers();
+        } else {
+          location.href = 'admin.html';
+        }
+      });
+    }
 
     async function loadUsers() {
-      const snap = await fbDb.ref('shortsUsers').limitToLast(250).once('value');
-      usersMap = snap.val() || {};
+      const box = document.getElementById('usersListWrap');
+      if (box) box.innerHTML = '<div class="h-16 rounded-xl admin-skel"></div><div class="h-16 rounded-xl admin-skel"></div>';
+      try {
+        const snap = await fbDb.ref('shortsUsers').limitToLast(250).once('value');
+        usersMap = snap.val() || {};
+      } catch (err) {
+        if (box) box.innerHTML = `<div class="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-sm font-bold">❌ भक्त यादी लोड करताना त्रुटी: ${err.message || err}</div>`;
+        return;
+      }
       const list = Object.entries(usersMap);
       const todayMD = new Date().toISOString().slice(5, 10);
       let bdayCount = 0, blockedCount = 0, maleC = 0, femaleC = 0, otherC = 0;

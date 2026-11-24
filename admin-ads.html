@@ -310,7 +310,7 @@
         box.innerHTML = '<div class="col-span-full text-xs text-slate-500 p-4 rounded-xl bg-slate-50 border border-slate-200 text-center">अद्याप कोणतीही शॉर्ट-व्हिडिओ जाहिरात जोडलेली नाही. वरच्या "➕ नवीन शॉर्ट-व्हिडिओ Ad" बटणावर क्लिक करा.</div>';
         return;
       }
-      const shortsStats = (cachedAdStats && cachedAdStats.shorts) || {};
+      const shortsStats = (window.cachedAdStats && window.cachedAdStats.shorts) || {};
       box.innerHTML = items.map((ad, i) => {
         const sid = ad.adId || ('shorts_' + i);
         const st = shortsStats[sid] || {};
@@ -863,7 +863,7 @@
     renderMediaSlots('splash', currentAds.splashItems);
     initAdminGuard(() => {
       
-    let cachedAdStats = {};
+    window.cachedAdStats = window.cachedAdStats || {};
     function getLast7DaysKeys() {
       const M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
       const out = [];
@@ -891,7 +891,7 @@
     }
 
     function renderAdReports() {
-      const stats = cachedAdStats || {};
+      const stats = window.cachedAdStats || {};
       const banners = stats.banners || {};
       const slides = (currentAds && Array.isArray(currentAds.bannerSlides)) ? currentAds.bannerSlides : [];
       const todayKey = new Date().toISOString().slice(0, 10);
@@ -987,7 +987,7 @@
 
 
     function buildAdReportRows() {
-      const stats = cachedAdStats || {};
+      const stats = window.cachedAdStats || {};
       const banners = stats.banners || {};
       const slides = (currentAds && Array.isArray(currentAds.bannerSlides)) ? currentAds.bannerSlides : [];
       const todayKey = new Date().toISOString().slice(0, 10);
@@ -1408,7 +1408,7 @@
     };
 
     window.cleanOrphanAdStats = async function() {
-      const banners = (cachedAdStats && cachedAdStats.banners) || {};
+      const banners = (window.cachedAdStats && window.cachedAdStats.banners) || {};
       const slides = (currentAds && Array.isArray(currentAds.bannerSlides)) ? currentAds.bannerSlides : [];
       const activeIds = new Set(slides.map((s, idx) => (s && s.adId) || ('slot_' + idx)));
       const orphans = Object.keys(banners).filter(k => !activeIds.has(k));
@@ -1420,8 +1420,9 @@
     };
 
     fbDb.ref('adStats').on('value', (snap) => {
-      cachedAdStats = snap.val() || {};
-      cleanupOldAdStatsDaily(cachedAdStats);
+      window.cachedAdStats = snap.val() || {};
+      cleanupOldAdStatsDaily(window.cachedAdStats);
+      if (typeof renderShortsAdsList === 'function') renderShortsAdsList();
       renderAdReports();
     });
 

@@ -12,6 +12,8 @@
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
   <style>
     body { font-size: 15.5px; }
+    @keyframes dsModalPopIn { 0% { opacity: 0; transform: scale(0.9) translateY(14px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+    .ds-modal-card { animation: dsModalPopIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both; }
     @keyframes adminSkelShimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
     .admin-skel { background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); background-size: 800px 100%; animation: adminSkelShimmer 1.3s infinite linear; }
     input, select, textarea { font-size: 15px !important; }
@@ -46,7 +48,10 @@
           <h2 class="text-xl sm:text-2xl font-extrabold text-amber-300">🙏 नोंदणीकृत भक्त व्यवस्थापन</h2>
           <p class="text-xs sm:text-sm text-slate-200 mt-0.5">मेरिट-डिमिरिट, व्हेरिफाइड बॅज, ब्लॉक/अनब्लॉक, जेंडर विश्लेषण, वाढदिवस शुभेच्छा व वैयक्तिक सूचना</p>
         </div>
-        <button id="refreshUsersBtn" type="button" class="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-[#031926] text-xs font-extrabold shadow-sm transition">🔄 यादी रिफ्रेश करा</button>
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" onclick="openReportsModal()" class="px-4 py-2 rounded-xl bg-white hover:bg-amber-50 text-[#05344E] text-xs font-extrabold shadow-sm transition">⚠️ तक्रार निवारण (<span id="kpiReports">0</span>)</button>
+          <button id="refreshUsersBtn" type="button" class="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-[#031926] text-xs font-extrabold shadow-sm transition">🔄 रिफ्रेश</button>
+        </div>
       </div>
 
       <div id="analyticsSummary" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-sm"></div>
@@ -60,13 +65,100 @@
           <button type="button" id="uFiltBday" onclick="setUserFilter('bday')" class="px-3.5 py-2 rounded-xl bg-sky-50 border border-sky-200 text-sky-900 text-xs font-extrabold">🎂 वाढदिवस (<span id="uCntBday">0</span>)</button>
         </div>
 
-        <input id="userSearchInp" type="text" placeholder="🔍 नाव, जिल्हा, गाव, जेंडर किंवा ईमेलने भक्त शोधा..." class="w-full rounded-xl border-[1.5px] border-[#05344E]/30 bg-[#EEF5FA]/50 px-3.5 py-2.5 text-sm outline-none focus:border-[#05344E]" />
+        <div class="space-y-2.5">
+          <div class="relative">
+            <input id="userSearchInp" type="text" placeholder="🔍 नाव किंवा ईमेलने भक्त शोधा..." class="w-full rounded-xl border-[1.5px] border-[#05344E]/35 bg-[#EEF5FA]/60 pl-3.5 pr-9 py-2.5 text-sm font-bold text-[#031926] outline-none focus:border-[#05344E]" />
+            <button id="clearUserSearchBtn" type="button" onclick="document.getElementById('userSearchInp').value='';this.classList.add('hidden');renderUsersList();" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-slate-200 text-slate-700 text-xs font-extrabold">✕</button>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <!-- जिल्हा कस्टम सर्च ड्रॉप-डाऊन -->
+            <div class="relative" id="userDistDDWrap">
+              <button type="button" onclick="toggleDevoteeDD('userDistDDPanel')" class="w-full rounded-xl border-[1.5px] border-[#05344E]/35 bg-[#EEF5FA] px-3.5 py-2.5 text-sm font-bold text-[#031926] flex items-center justify-between gap-2 text-left shadow-sm">
+                <span id="userDistLabel" class="truncate">📍 सर्व जिल्हे</span>
+                <span class="text-xs text-[#05344E] shrink-0">▾</span>
+              </button>
+              <div id="userDistDDPanel" class="hidden absolute left-0 right-0 top-full mt-1 z-40 bg-white border-[1.5px] border-[#05344E]/40 rounded-2xl shadow-xl overflow-hidden">
+                <div class="p-2 bg-[#EEF5FA] border-b border-[#C8DFEE]">
+                  <input id="userDistSearch" type="text" placeholder="🔍 जिल्हा शोधा..." oninput="filterDevoteeOpts('dist', this.value)" class="w-full rounded-xl border border-[#C3D9E8] px-3 py-1.5 text-sm bg-white outline-none" />
+                </div>
+                <div id="userDistDDList" class="max-h-52 overflow-y-auto divide-y divide-slate-100"></div>
+              </div>
+              <input id="userDistFilter" type="hidden" value="" />
+            </div>
+
+            <!-- गाव / शहर कस्टम सर्च ड्रॉप-डाऊन -->
+            <div class="relative" id="userCityDDWrap">
+              <button type="button" onclick="toggleDevoteeDD('userCityDDPanel')" class="w-full rounded-xl border-[1.5px] border-[#05344E]/35 bg-[#EEF5FA] px-3.5 py-2.5 text-sm font-bold text-[#031926] flex items-center justify-between gap-2 text-left shadow-sm">
+                <span id="userCityLabel" class="truncate">🏘️ सर्व गाव / शहर</span>
+                <span class="text-xs text-[#05344E] shrink-0">▾</span>
+              </button>
+              <div id="userCityDDPanel" class="hidden absolute left-0 right-0 top-full mt-1 z-40 bg-white border-[1.5px] border-[#05344E]/40 rounded-2xl shadow-xl overflow-hidden">
+                <div class="p-2 bg-[#EEF5FA] border-b border-[#C8DFEE]">
+                  <input id="userCitySearch" type="text" placeholder="🔍 गाव / शहर शोधा..." oninput="filterDevoteeOpts('city', this.value)" class="w-full rounded-xl border border-[#C3D9E8] px-3 py-1.5 text-sm bg-white outline-none" />
+                </div>
+                <div id="userCityDDList" class="max-h-52 overflow-y-auto divide-y divide-slate-100"></div>
+              </div>
+              <input id="userCityFilter" type="hidden" value="" />
+            </div>
+
+            <!-- जेंडर कस्टम ड्रॉप-डाऊन -->
+            <div class="relative" id="userGenderDDWrap">
+              <button type="button" onclick="toggleDevoteeDD('userGenderDDPanel')" class="w-full rounded-xl border-[1.5px] border-[#05344E]/35 bg-[#EEF5FA] px-3.5 py-2.5 text-sm font-bold text-[#031926] flex items-center justify-between gap-2 text-left shadow-sm">
+                <span id="userGenderLabel" class="truncate">👥 सर्व जेंडर</span>
+                <span class="text-xs text-[#05344E] shrink-0">▾</span>
+              </button>
+              <div id="userGenderDDPanel" class="hidden absolute left-0 right-0 top-full mt-1 z-40 bg-white border-[1.5px] border-[#05344E]/40 rounded-2xl shadow-xl overflow-hidden divide-y divide-slate-100">
+                <button type="button" onclick="pickDevoteeDD('gender','','👥 सर्व जेंडर')" class="w-full text-left px-3.5 py-2 text-sm font-bold hover:bg-[#EEF5FA]">👥 सर्व जेंडर</button>
+                <button type="button" onclick="pickDevoteeDD('gender','पुरुष','👨 पुरुष')" class="w-full text-left px-3.5 py-2 text-sm font-bold hover:bg-[#EEF5FA]">👨 पुरुष</button>
+                <button type="button" onclick="pickDevoteeDD('gender','महिला','👩 महिला')" class="w-full text-left px-3.5 py-2 text-sm font-bold hover:bg-[#EEF5FA]">👩 महिला</button>
+                <button type="button" onclick="pickDevoteeDD('gender','इतर','🙏 इतर')" class="w-full text-left px-3.5 py-2 text-sm font-bold hover:bg-[#EEF5FA]">🙏 इतर</button>
+              </div>
+              <input id="userGenderFilter" type="hidden" value="" />
+            </div>
+          </div>
+        </div>
+        <div id="userSearchMeta" class="text-xs font-bold text-slate-500"></div>
 
         <div id="usersListWrap" class="space-y-3"></div>
       </section>
     </div>
   </main>
 
+  <!-- तक्रार निवारण डॅशबोर्ड पॉपअप -->
+  <div id="reportsDashModal" class="hidden fixed inset-0 z-50 bg-black/65 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4" onclick="if(event.target===this)closeReportsModal()">
+    <div class="ds-modal-card w-full max-w-3xl bg-white rounded-3xl shadow-2xl border-2 border-amber-400/75 max-h-[86vh] flex flex-col overflow-hidden">
+      <div class="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-[#031926] via-[#05344E] to-[#084160] text-white border-b-2 border-amber-400/75">
+        <div class="text-lg font-extrabold text-amber-300">📋 तक्रार निवारण डॅशबोर्ड</div>
+        <button type="button" onclick="closeReportsModal()" class="w-8 h-8 rounded-xl bg-white/15 border border-amber-300/40 text-white text-sm font-bold">✕</button>
+      </div>
+      <div class="p-4 space-y-3 overflow-y-auto flex-1">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+          <button type="button" id="repFilterAllBtn" onclick="setReportFilter('all')" class="py-2.5 px-3 rounded-xl bg-[#05344E] text-amber-300 text-sm font-extrabold shadow-xs transition">📋 एकूण तक्रारी (<span id="repCntAll">0</span>)</button>
+          <button type="button" id="repFilterPendingBtn" onclick="setReportFilter('pending')" class="py-2.5 px-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-sm font-extrabold transition">⏳ प्रलंबित तक्रारी (<span id="repCntPending">0</span>)</button>
+          <button type="button" id="repFilterResolvedBtn" onclick="setReportFilter('resolved')" class="py-2.5 px-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-sm font-extrabold transition">✓ कार्यवाही केलेल्या (<span id="repCntResolved">0</span>)</button>
+        </div>
+        <div id="reportsListWrap" class="space-y-2.5"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inbuilt Advanced Confirm / Prompt Modal -->
+  <div id="dsAdvModal" class="hidden fixed inset-0 z-[90] bg-black/65 backdrop-blur-sm flex items-center justify-center p-4" onclick="if(event.target===this)closeAdvModal()">
+    <div class="ds-modal-card w-full max-w-md bg-white rounded-3xl shadow-2xl border-2 border-amber-400/75 overflow-hidden">
+      <div class="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-[#031926] via-[#05344E] to-[#084160] text-white border-b-2 border-amber-400/75">
+        <div id="dsAdvTitle" class="text-base sm:text-lg font-extrabold text-amber-300">सूचना</div>
+        <button type="button" onclick="closeAdvModal()" class="w-8 h-8 rounded-xl bg-white/15 border border-amber-300/40 text-white text-sm font-bold">✕</button>
+      </div>
+      <div class="p-4 sm:p-5 space-y-3.5">
+        <div id="dsAdvMsg" class="text-sm font-bold text-slate-700 leading-relaxed"></div>
+        <textarea id="dsAdvInput" rows="3" placeholder="येथे संदेश लिहा..." class="hidden w-full rounded-xl border-[1.5px] border-[#05344E]/30 bg-[#EEF5FA]/50 px-3 py-2 text-sm outline-none focus:border-[#05344E]"></textarea>
+        <div class="flex items-center justify-end gap-2 pt-1">
+          <button type="button" onclick="closeAdvModal()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-extrabold">रद्द करा</button>
+          <button id="dsAdvOkBtn" type="button" class="px-5 py-2 rounded-xl bg-[#05344E] text-amber-300 text-sm font-extrabold shadow-sm">हो, पुढे जा</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <div id="toastBox" class="hidden"></div>
   <script src="admin-common.js?v=110"></script>
   <script>
@@ -92,6 +184,7 @@
     function startDevoteesPage() {
       authDone = true;
       loadUsers();
+      loadReports();
     }
 
     if (typeof initAdminGuard === 'function') {
@@ -112,6 +205,8 @@
     }
 
     async function loadUsers() {
+      const metaEl = document.getElementById('userSearchMeta');
+      if (metaEl) metaEl.textContent = `दाखवत आहे: ${filtered.length} / ${allEntries.length} भक्त`;
       const box = document.getElementById('usersListWrap');
       if (box) box.innerHTML = '<div class="h-16 rounded-xl admin-skel"></div><div class="h-16 rounded-xl admin-skel"></div>';
       try {
@@ -125,6 +220,7 @@
       const todayMD = new Date().toISOString().slice(5, 10);
       let bdayCount = 0, blockedCount = 0, maleC = 0, femaleC = 0, otherC = 0;
       const distCount = {};
+      const cityCount = {};
       list.forEach(([, u]) => {
         if (u.dob && u.dob.slice(5, 10) === todayMD) bdayCount++;
         if (u.blocked) blockedCount++;
@@ -132,8 +228,13 @@
         else if (u.gender === 'महिला') femaleC++;
         else if (u.gender === 'इतर') otherC++;
         if (u.district) distCount[u.district] = (distCount[u.district] || 0) + 1;
+        if (u.city && u.city.trim()) { const ct = u.city.trim(); cityCount[ct] = (cityCount[ct] || 0) + 1; }
       });
       const topDist = Object.entries(distCount).sort((a, b) => b[1] - a[1])[0];
+      _distOpts = Object.entries(distCount).sort((a, b) => b[1] - a[1]);
+      _cityOpts = Object.entries(cityCount).sort((a, b) => b[1] - a[1]);
+      filterDevoteeOpts('dist', '');
+      filterDevoteeOpts('city', '');
       document.getElementById('analyticsSummary').innerHTML = `
         <div class="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-xs"><div class="text-slate-500 text-xs font-bold">एकूण भक्त</div><div class="text-2xl font-extrabold text-[#05344E]">${list.length}</div></div>
         <div class="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-xs"><div class="text-slate-500 text-xs font-bold">आघाडीचा जिल्हा</div><div class="text-base font-extrabold text-[#05344E] truncate mt-1">${topDist ? topDist[0] + ' (' + topDist[1] + ')' : '—'}</div></div>
@@ -158,6 +259,11 @@
 
     function renderUsersList() {
       const q = (document.getElementById('userSearchInp').value || '').trim().toLowerCase();
+      const clrBtn = document.getElementById('clearUserSearchBtn');
+      if (clrBtn) clrBtn.classList.toggle('hidden', !q);
+      const dFilt = (document.getElementById('userDistFilter') && document.getElementById('userDistFilter').value) || '';
+      const cFilt = (document.getElementById('userCityFilter') && document.getElementById('userCityFilter').value) || '';
+      const gFilt = (document.getElementById('userGenderFilter') && document.getElementById('userGenderFilter').value) || '';
       const todayMD = new Date().toISOString().slice(5, 10);
       const allEntries = Object.entries(usersMap || {});
       const getPts = (u) => typeof u.meritPoints === 'number' ? u.meritPoints : Math.max(0, 5 - (u.warningCount || 0));
@@ -183,6 +289,9 @@
         if (userFilterMode === 'low' && (isBlk || pts >= 3)) return false;
         if (userFilterMode === 'blocked' && !isBlk) return false;
         if (userFilterMode === 'bday' && !isBday) return false;
+        if (dFilt && u.district !== dFilt) return false;
+        if (cFilt && (u.city || '').trim() !== cFilt) return false;
+        if (gFilt && u.gender !== gFilt) return false;
         if (!q) return true;
         return `${u.name || ''} ${u.district || ''} ${u.city || ''} ${u.gender || ''} ${u.email || ''}`.toLowerCase().includes(q);
       });
@@ -217,12 +326,173 @@
       }).join('');
     }
 
+    let _advOkHandler = null;
+    window.closeAdvModal = () => {
+      const m = document.getElementById('dsAdvModal');
+      if (m) m.classList.add('hidden');
+      _advOkHandler = null;
+    };
+    window.openAdvModal = ({ title, msg, isPrompt, placeholder, okText, okCls, onOk }) => {
+      document.getElementById('dsAdvTitle').textContent = title || 'खात्री करा';
+      document.getElementById('dsAdvMsg').textContent = msg || '';
+      const inp = document.getElementById('dsAdvInput');
+      if (isPrompt) {
+        inp.value = '';
+        inp.placeholder = placeholder || 'येथे लिहा...';
+        inp.classList.remove('hidden');
+        setTimeout(() => inp.focus(), 60);
+      } else {
+        inp.classList.add('hidden');
+      }
+      const btn = document.getElementById('dsAdvOkBtn');
+      btn.textContent = okText || 'हो';
+      btn.className = okCls || 'px-5 py-2 rounded-xl bg-[#05344E] text-amber-300 text-sm font-extrabold shadow-sm';
+      _advOkHandler = () => {
+        const val = inp ? inp.value.trim() : '';
+        if (isPrompt && !val) return inp.focus();
+        closeAdvModal();
+        if (onOk) onOk(val);
+      };
+      btn.onclick = _advOkHandler;
+      document.getElementById('dsAdvModal').classList.remove('hidden');
+    };
+    let _distOpts = [];
+    let _cityOpts = [];
+    window.toggleDevoteeDD = (pid) => {
+      ['userDistDDPanel', 'userCityDDPanel', 'userGenderDDPanel'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (id === pid) el.classList.toggle('hidden');
+        else el.classList.add('hidden');
+      });
+    };
+    window.pickDevoteeDD = (kind, val, label) => {
+      if (kind === 'dist') {
+        document.getElementById('userDistFilter').value = val;
+        document.getElementById('userDistLabel').textContent = label;
+        document.getElementById('userDistDDPanel').classList.add('hidden');
+      } else if (kind === 'city') {
+        document.getElementById('userCityFilter').value = val;
+        document.getElementById('userCityLabel').textContent = label;
+        document.getElementById('userCityDDPanel').classList.add('hidden');
+      } else if (kind === 'gender') {
+        document.getElementById('userGenderFilter').value = val;
+        document.getElementById('userGenderLabel').textContent = label;
+        document.getElementById('userGenderDDPanel').classList.add('hidden');
+      }
+      renderUsersList();
+    };
+    window.filterDevoteeOpts = (kind, q) => {
+      const s = String(q || '').trim().toLowerCase();
+      if (kind === 'dist') {
+        const box = document.getElementById('userDistDDList');
+        const list = _distOpts.filter(([d]) => !s || d.toLowerCase().includes(s));
+        box.innerHTML = `<button type="button" onclick="pickDevoteeDD('dist','','📍 सर्व जिल्हे')" class="w-full text-left px-3.5 py-2 text-sm font-bold hover:bg-[#EEF5FA] text-[#05344E]">📍 सर्व जिल्हे</button>` +
+          list.map(([d, c]) => `<button type="button" onclick="pickDevoteeDD('dist','${d.replace(/'/g,'')}','📍 ${d.replace(/'/g,'')} (${c})')" class="w-full text-left px-3.5 py-2 text-sm font-bold hover:bg-[#EEF5FA]">${d} (${c})</button>`).join('');
+      } else if (kind === 'city') {
+        const box = document.getElementById('userCityDDList');
+        const list = _cityOpts.filter(([c]) => !s || c.toLowerCase().includes(s));
+        box.innerHTML = `<button type="button" onclick="pickDevoteeDD('city','','🏘️ सर्व गाव / शहर')" class="w-full text-left px-3.5 py-2 text-sm font-bold hover:bg-[#EEF5FA] text-[#05344E]">🏘️ सर्व गाव / शहर</button>` +
+          list.map(([c, n]) => `<button type="button" onclick="pickDevoteeDD('city','${c.replace(/'/g,'')}','🏘️ ${c.replace(/'/g,'')} (${n})')" class="w-full text-left px-3.5 py-2 text-sm font-bold hover:bg-[#EEF5FA]">${c} (${n})</button>`).join('');
+      }
+    };
+    document.addEventListener('click', (ev) => {
+      if (!ev.target.closest('#userDistDDWrap')) { const p = document.getElementById('userDistDDPanel'); if (p) p.classList.add('hidden'); }
+      if (!ev.target.closest('#userCityDDWrap')) { const p = document.getElementById('userCityDDPanel'); if (p) p.classList.add('hidden'); }
+      if (!ev.target.closest('#userGenderDDWrap')) { const p = document.getElementById('userGenderDDPanel'); if (p) p.classList.add('hidden'); }
+    });
+    let reportsMap = {};
+    let reportFilterMode = 'all';
+    window.openReportsModal = () => { const m = document.getElementById('reportsDashModal'); if (m) m.classList.remove('hidden'); };
+    window.closeReportsModal = () => { const m = document.getElementById('reportsDashModal'); if (m) m.classList.add('hidden'); };
+    window.setReportFilter = (mode) => {
+      reportFilterMode = mode || 'all';
+      const btns = {
+        all: ['repFilterAllBtn', 'py-2.5 px-3 rounded-xl bg-[#05344E] text-amber-300 text-sm font-extrabold shadow-xs transition', 'py-2.5 px-3 rounded-xl bg-slate-100 border border-slate-200 text-[#05344E] text-sm font-extrabold transition'],
+        pending: ['repFilterPendingBtn', 'py-2.5 px-3 rounded-xl bg-amber-600 text-white text-sm font-extrabold shadow-xs transition', 'py-2.5 px-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-sm font-extrabold transition'],
+        resolved: ['repFilterResolvedBtn', 'py-2.5 px-3 rounded-xl bg-emerald-600 text-white text-sm font-extrabold shadow-xs transition', 'py-2.5 px-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-sm font-extrabold transition']
+      };
+      Object.entries(btns).forEach(([k, [id, onC, offC]]) => { const e = document.getElementById(id); if (e) e.className = k === reportFilterMode ? onC : offC; });
+      renderFilteredReports();
+    };
+    function renderFilteredReports() {
+      const allEntries = Object.entries(reportsMap || {}).reverse();
+      const pendingEntries = allEntries.filter(([, r]) => r.status !== 'resolved');
+      const resolvedEntries = allEntries.filter(([, r]) => r.status === 'resolved');
+      document.getElementById('repCntAll').textContent = allEntries.length;
+      document.getElementById('repCntPending').textContent = pendingEntries.length;
+      document.getElementById('repCntResolved').textContent = resolvedEntries.length;
+      const kpiEl = document.getElementById('kpiReports');
+      if (kpiEl) kpiEl.textContent = pendingEntries.length;
+      const list = reportFilterMode === 'pending' ? pendingEntries : (reportFilterMode === 'resolved' ? resolvedEntries : allEntries);
+      const box = document.getElementById('reportsListWrap');
+      if (!list.length) { box.innerHTML = '<div class="text-sm text-slate-400 py-4 text-center">या विभागात कोणतीही तक्रार नाही.</div>'; return; }
+      box.innerHTML = list.map(([rid, r]) => {
+        const dt = r.createdAt ? new Date(r.createdAt).toLocaleString('mr-IN', { dateStyle: 'short', timeStyle: 'short' }) : '';
+        return `
+        <div class="p-3.5 rounded-2xl border ${r.status === 'resolved' ? 'border-emerald-200 bg-emerald-50/40' : 'border-amber-200 bg-amber-50/50'} space-y-2 text-sm">
+          <div class="flex items-center justify-between gap-2">
+            <span class="font-extrabold text-[#05344E]">${r.userName || 'भक्त'} • ${r.issueType || 'तक्रार'}</span>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-extrabold ${r.status === 'resolved' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-200 text-amber-900'}">${r.status === 'resolved' ? '✓ कार्यवाही झाली' : '⏳ प्रलंबित'}</span>
+          </div>
+          <div class="text-slate-700">${r.details || ''}</div>
+          ${dt ? `<div class="text-xs text-slate-500">${dt}</div>` : ''}
+          ${r.reelTitle ? `<div class="text-xs text-slate-600">🎬 रील: ${r.reelTitle}</div>` : ''}
+          <div class="flex flex-col sm:flex-row gap-2 pt-1">
+            <input id="repInp_${rid}" type="text" value="${(r.adminReply || '').replace(/"/g, '&quot;')}" placeholder="दर्शन सेतू टीम म्हणून उत्तर लिहा..." class="flex-1 min-w-0 rounded-xl border border-slate-300 px-3 py-1.5 text-sm bg-white" />
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="replyReport('${rid}')" class="px-3.5 py-1.5 rounded-xl bg-[#05344E] text-amber-300 text-xs font-extrabold">उत्तर पाठवा</button>
+              <button type="button" onclick="deleteReport('${rid}')" class="px-2.5 py-1.5 rounded-xl bg-rose-100 text-rose-700 text-xs font-extrabold">🗑️</button>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+    window.replyReport = async (rid) => {
+      const reply = document.getElementById('repInp_' + rid).value.trim();
+      if (!reply) return showToast('कृपया उत्तर लिहा', true);
+      const repObj = reportsMap[rid] || {};
+      const _db = typeof fbDb !== 'undefined' ? fbDb : firebase.database();
+      await _db.ref(`shortsReports/${rid}`).update({ adminReply: reply, status: 'resolved', repliedBy: 'दर्शन सेतू टीम', updatedAt: Date.now() });
+      if (repObj.uid) {
+        await _db.ref('shortsBroadcasts').push({ targetUid: repObj.uid, type: 'report_reply', title: '🛡️ दर्शन सेतू टीम कडून तक्रारीचे उत्तर', body: `तुमची तक्रार (${repObj.issueType || 'अडचण'}): ${reply}`, createdAt: Date.now() }).catch(() => {});
+      }
+      showToast('तक्रारीचे उत्तर भक्ताच्या सूचना टॅबमध्ये पाठवले!');
+      loadReports();
+    };
+    window.deleteReport = (rid) => {
+      openAdvModal({
+        title: '🗑️ तक्रार कायमची हटवा',
+        msg: 'ही तक्रार कायमची काढून टाकायची का?',
+        okText: '🗑️ हो, हटवा',
+        okCls: 'px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-sm font-extrabold shadow-sm',
+        onOk: async () => {
+          await (typeof fbDb !== 'undefined' ? fbDb : firebase.database()).ref(`shortsReports/${rid}`).remove();
+          showToast('तक्रार काढून टाकली!');
+          loadReports();
+        }
+      });
+    };
+    async function loadReports() {
+      try {
+        const snap = await (typeof fbDb !== 'undefined' ? fbDb : firebase.database()).ref('shortsReports').limitToLast(60).once('value');
+        reportsMap = snap.val() || {};
+        renderFilteredReports();
+      } catch (e) {}
+    }
     window.toggleUserDetails = (uid) => { const el = document.getElementById('uDet_' + uid); if (el) el.classList.toggle('hidden'); };
-    window.sendDirectUserNotif = async (uid, name) => {
-      const msg = prompt(`${name} यांना वैयक्तिक सूचना (🔔 सूचना टॅबमध्ये) पाठवा:`);
-      if (!msg || !msg.trim()) return;
-      await (typeof fbDb !== "undefined" ? fbDb : firebase.database()).ref('shortsBroadcasts').push({ targetUid: uid, type: 'report_reply', title: '📩 दर्शन सेतू टीम कडून वैयक्तिक संदेश', body: msg.trim(), createdAt: Date.now() });
-      showToast(`${name} यांना सूचना पाठवली!`);
+    window.sendDirectUserNotif = (uid, name) => {
+      openAdvModal({
+        title: `💌 ${name} यांना वैयक्तिक सूचना`,
+        msg: 'हा संदेश संबंधित भक्ताच्या प्रोफाइलमधील 🔔 सूचना टॅबमध्ये दिसेल:',
+        isPrompt: true,
+        placeholder: 'तुमचा भक्ती संदेश / सूचना येथे लिहा...',
+        okText: '📩 सूचना पाठवा',
+        onOk: async (msg) => {
+          await (typeof fbDb !== "undefined" ? fbDb : firebase.database()).ref('shortsBroadcasts').push({ targetUid: uid, type: 'report_reply', title: '📩 दर्शन सेतू टीम कडून वैयक्तिक संदेश', body: msg, createdAt: Date.now() });
+          showToast(`${name} यांना सूचना पाठवली!`);
+        }
+      });
     };
     window.addMeritUser = async (uid) => {
       const cur = usersMap[uid] || {};
@@ -265,11 +535,18 @@
       showToast(next ? '०/५ मेरिट — भक्त कायमस्वरूपी ब्लॉक!' : 'भक्त अनब्लॉक केले!');
       loadUsers();
     };
-    window.deleteDevoteeUser = async (uid, name) => {
-      if (!confirm(`"${name}" यांची भक्त नोंदणी (shortsUsers) कायमची काढून टाकायची का?`)) return;
-      await (typeof fbDb !== "undefined" ? fbDb : firebase.database()).ref(`shortsUsers/${uid}`).remove();
-      showToast(`${name} यांची भक्त नोंदणी काढून टाकली!`);
-      loadUsers();
+    window.deleteDevoteeUser = (uid, name) => {
+      openAdvModal({
+        title: '🗑️ भक्त नोंदणी कायमची हटवा',
+        msg: `"${name}" यांची भक्त नोंदणी (shortsUsers) कायमची काढून टाकायची का? ही क्रिया पूर्ववत करता येणार नाही.`,
+        okText: '🗑️ हो, कायमचे हटवा',
+        okCls: 'px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-sm font-extrabold shadow-sm',
+        onOk: async () => {
+          await (typeof fbDb !== "undefined" ? fbDb : firebase.database()).ref(`shortsUsers/${uid}`).remove();
+          showToast(`${name} यांची भक्त नोंदणी काढून टाकली!`);
+          loadUsers();
+        }
+      });
     };
     window.wishBday = async (uid, name) => {
       await (typeof fbDb !== "undefined" ? fbDb : firebase.database()).ref('shortsBroadcasts').push({ targetUid: uid, title: '🎂 दर्शन सेतू टीम कडून वाढदिवसाच्या शुभेच्छा!', body: `🙏 नमस्कार ${name}, आपणास वाढदिवसाच्या हार्दिक भक्तीमय शुभेच्छा! श्री विठ्ठल-रुक्मिणी कृपेने आपले आयुष्य सुखमय होवो.`, createdAt: Date.now() });

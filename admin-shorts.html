@@ -12,6 +12,8 @@
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
   <style>
     body { font-size: 15.5px; }
+    @keyframes dsModalPopIn { 0% { opacity: 0; transform: scale(0.9) translateY(14px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+    .ds-modal-card { animation: dsModalPopIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both; }
     input, select, textarea { font-size: 15px !important; }
     .chip-on { background: #05344E; color: #FCD34D; border-color: #05344E; }
     .chip-off { background: #f8fafc; color: #334155; border-color: #cbd5e1; }
@@ -35,18 +37,9 @@
 
     <div id="pageContent" class="hidden space-y-4 fade-in-up">
       <!-- Top KPI Strip + Quick Open Reels Admin Mode -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 gap-3">
 
-        <button id="kpiReportsCard" type="button" onclick="openReportsModal()" class="bg-white hover:bg-amber-50/40 rounded-2xl p-4 shadow-sm border-2 border-amber-300 hover:border-amber-500 flex items-center justify-between text-left transition cursor-pointer">
-          <div>
-            <div class="text-sm text-[#05344E] font-extrabold">⚠️ तक्रार निवारण</div>
-            <div class="flex items-baseline gap-2 mt-0.5">
-              <span id="kpiReports" class="text-2xl font-extrabold text-amber-600">—</span>
-              <span class="text-xs font-bold text-slate-500">प्रलंबित • मॅनेज करा ▾</span>
-            </div>
-          </div>
-          <div class="text-3xl">📋</div>
-        </button>
+
         <div class="bg-white rounded-2xl p-4 shadow-sm border border-emerald-200 flex items-center justify-between gap-2">
           <div>
             <div class="text-sm text-slate-600 font-bold">Admin-on-Reels मोड</div>
@@ -382,20 +375,20 @@
     </div>
   </main>
 
-  <!-- तक्रार निवारण डॅशबोर्ड पॉपअप -->
-  <div id="reportsDashModal" class="hidden fixed inset-0 z-50 bg-black/65 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4" onclick="if(event.target===this)closeReportsModal()">
-    <div class="w-full max-w-3xl bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl border-t-2 sm:border-2 border-amber-400/70 max-h-[88vh] flex flex-col overflow-hidden">
+  <!-- Inbuilt Advanced Confirm / Prompt Modal -->
+  <div id="dsAdvModal" class="hidden fixed inset-0 z-[90] bg-black/65 backdrop-blur-sm flex items-center justify-center p-4" onclick="if(event.target===this)closeAdvModal()">
+    <div class="ds-modal-card w-full max-w-md bg-white rounded-3xl shadow-2xl border-2 border-amber-400/75 overflow-hidden">
       <div class="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-[#031926] via-[#05344E] to-[#084160] text-white border-b-2 border-amber-400/75">
-        <div class="text-lg font-extrabold text-amber-300">📋 तक्रार निवारण डॅशबोर्ड</div>
-        <button type="button" onclick="closeReportsModal()" class="w-8 h-8 rounded-xl bg-white/15 border border-amber-300/40 text-white text-sm font-bold">✕</button>
+        <div id="dsAdvTitle" class="text-base sm:text-lg font-extrabold text-amber-300">सूचना</div>
+        <button type="button" onclick="closeAdvModal()" class="w-8 h-8 rounded-xl bg-white/15 border border-amber-300/40 text-white text-sm font-bold">✕</button>
       </div>
-      <div class="p-4 space-y-3 overflow-y-auto flex-1">
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-          <button type="button" id="repFilterAllBtn" onclick="setReportFilter('all')" class="py-2.5 px-3 rounded-xl bg-[#05344E] text-amber-300 text-sm font-extrabold shadow-xs transition">📋 एकूण तक्रारी (<span id="repCntAll">0</span>)</button>
-          <button type="button" id="repFilterPendingBtn" onclick="setReportFilter('pending')" class="py-2.5 px-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-sm font-extrabold transition">⏳ प्रलंबित तक्रारी (<span id="repCntPending">0</span>)</button>
-          <button type="button" id="repFilterResolvedBtn" onclick="setReportFilter('resolved')" class="py-2.5 px-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-sm font-extrabold transition">✓ कार्यवाही केलेल्या (<span id="repCntResolved">0</span>)</button>
+      <div class="p-4 sm:p-5 space-y-3.5">
+        <div id="dsAdvMsg" class="text-sm font-bold text-slate-700 leading-relaxed"></div>
+        <textarea id="dsAdvInput" rows="3" placeholder="येथे संदेश लिहा..." class="hidden w-full rounded-xl border-[1.5px] border-[#05344E]/30 bg-[#EEF5FA]/50 px-3 py-2 text-sm outline-none focus:border-[#05344E]"></textarea>
+        <div class="flex items-center justify-end gap-2 pt-1">
+          <button type="button" onclick="closeAdvModal()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-extrabold">रद्द करा</button>
+          <button id="dsAdvOkBtn" type="button" class="px-5 py-2 rounded-xl bg-[#05344E] text-amber-300 text-sm font-extrabold shadow-sm">हो, पुढे जा</button>
         </div>
-        <div id="reportsListWrap" class="space-y-2.5"></div>
       </div>
     </div>
   </div>
@@ -454,7 +447,7 @@
 
     initAdminGuard(async (user) => {
       document.getElementById('stickySaveBar').classList.remove('hidden');
-      await Promise.all([loadGithubAudioConfig(), loadTemples(), loadShortsConfig(), loadReports(), loadUsers()]);
+      await Promise.all([loadGithubAudioConfig(), loadTemples(), loadShortsConfig(), loadUsers()]);
       bindActions();
     });
 
@@ -752,11 +745,47 @@
         </div>`;
       }).join('');
     }
-    window.deleteReport = async (rid) => {
-      if (!confirm('ही तक्रार कायमची काढून टाकायची का?')) return;
-      await fbDb.ref(`shortsReports/${rid}`).remove();
-      showToast('तक्रार काढून टाकली!');
-      loadReports();
+    let _advOkHandler = null;
+    window.closeAdvModal = () => {
+      const m = document.getElementById('dsAdvModal');
+      if (m) m.classList.add('hidden');
+      _advOkHandler = null;
+    };
+    window.openAdvModal = ({ title, msg, isPrompt, placeholder, okText, okCls, onOk }) => {
+      document.getElementById('dsAdvTitle').textContent = title || 'खात्री करा';
+      document.getElementById('dsAdvMsg').textContent = msg || '';
+      const inp = document.getElementById('dsAdvInput');
+      if (isPrompt) {
+        inp.value = '';
+        inp.placeholder = placeholder || 'येथे लिहा...';
+        inp.classList.remove('hidden');
+        setTimeout(() => inp.focus(), 60);
+      } else {
+        inp.classList.add('hidden');
+      }
+      const btn = document.getElementById('dsAdvOkBtn');
+      btn.textContent = okText || 'हो';
+      btn.className = okCls || 'px-5 py-2 rounded-xl bg-[#05344E] text-amber-300 text-sm font-extrabold shadow-sm';
+      _advOkHandler = () => {
+        const val = inp ? inp.value.trim() : '';
+        if (isPrompt && !val) return inp.focus();
+        closeAdvModal();
+        if (onOk) onOk(val);
+      };
+      btn.onclick = _advOkHandler;
+      document.getElementById('dsAdvModal').classList.remove('hidden');
+    };
+    window.deleteReport = (rid) => {
+      openAdvModal({
+        title: '🗑️ तक्रार कायमची हटवा',
+        msg: 'ही तक्रार कायमची काढून टाकायची का?',
+        okText: '🗑️ हो, हटवा',
+        okCls: 'px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-sm font-extrabold shadow-sm',
+        onOk: async () => {
+          await fbDb.ref(`shortsReports/${rid}`).remove();
+          showToast('तक्रार काढून टाकली!');
+                  }
+      });
     };
     async function loadReports() {
       const snap = await fbDb.ref('shortsReports').limitToLast(60).once('value');
@@ -783,8 +812,7 @@
         }).catch(() => {});
       }
       showToast('तक्रारीचे उत्तर भक्ताच्या सूचना टॅबमध्ये पाठवले!');
-      loadReports();
-      loadBroadcasts();
+            loadBroadcasts();
     };
 
     async function loadUsers() {

@@ -607,7 +607,8 @@
           menus: { ...DEFAULT_SHORTS_CFG.menus, ...(val.menus || {}) },
           livePopup: { ...DEFAULT_SHORTS_CFG.livePopup, ...(val.livePopup || {}) },
           ads: { ...DEFAULT_SHORTS_CFG.ads, ...(val.ads || {}) },
-          moderation: { ...DEFAULT_SHORTS_CFG.moderation, ...(val.moderation || {}) }
+          moderation: { ...DEFAULT_SHORTS_CFG.moderation, ...(val.moderation || {}) },
+          merit: { ...(DEFAULT_SHORTS_CFG.merit || {}), ...(val.merit || {}) }
         };
       }
       fillConfigForm();

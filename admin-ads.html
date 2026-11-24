@@ -54,16 +54,17 @@
 
       </section>
 
-      <!-- २. प्री-रोल जाहिरात -->
+      <!-- २. प्री-रोल जाहिरात (Multi-Slot Random) -->
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
-        <div class="flex items-center justify-between gap-2 pb-2 border-b border-slate-100">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100">
           <div>
-            <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🎬 २. प्री-रोल जाहिरात (Pre-Roll Ad)</h2>
-            <p class="text-xs text-slate-500">मंदिर लाईव्ह प्लेयर सुरू होण्यापूर्वी दिसणारी जाहिरात</p>
+            <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🎬 २. प्री-रोल जाहिरात (<span id="preRollCountBadge">1</span> स्लॉट्स — Random १ दाखवा)</h2>
+            <p class="text-xs text-slate-500">मंदिर लाईव्ह सुरू होण्यापूर्वी सक्रिय जाहिरातींपैकी एका वेळी एकच जाहिरात रँडम दाखवली जाईल</p>
           </div>
+          <button id="addPreRollSlotBtn" type="button" class="px-3 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 border border-sky-200 text-[#05344E] text-xs font-extrabold cursor-pointer transition">➕ नवीन Pre-Roll स्लॉट जोडा</button>
         </div>
 
-        <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200">
+        <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
           <span class="text-xs font-bold text-slate-700">प्री-रोल जाहिरात स्थिती</span>
           <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
             <span>चालू ठेवा</span>
@@ -71,14 +72,14 @@
           </label>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">जाहिरात कालावधी (सेकंद)</label>
-            <input id="preRollDuration" type="number" min="2" max="60" value="10" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
+            <label class="block text-xs font-bold text-slate-700 mb-1">कालावधी (सेकंद)</label>
+            <input id="preRollDuration" type="number" min="2" max="60" value="10" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm" />
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">व्हिडिओ स्किप बटण किती सेकंदांनी दिसावे?</label>
-            <select id="preRollSkipAfter" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white">
+            <label class="block text-xs font-bold text-slate-700 mb-1">स्किप बटण किती सेकंदांनी?</label>
+            <select id="preRollSkipAfter" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm bg-white">
               <option value="3">३ सेकंदांनंतर (YouTube स्टाईल)</option>
               <option value="5" selected>५ सेकंदांनंतर (डिफॉल्ट)</option>
               <option value="8">८ सेकंदांनंतर</option>
@@ -86,52 +87,25 @@
             </select>
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">क्लिक लिंक (URL)</label>
-            <input id="preRollSponsor" type="text" placeholder="जाहिरातदाराचे नाव (Sponsor — रिपोर्टसाठी ऐच्छिक)" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-bold text-[#05344E]" />
-          <input id="preRollWhatsapp" type="tel" placeholder="जाहिरातदाराचा WhatsApp नंबर (ऐच्छिक, उदा. 98XXXXXXXX)" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-bold text-emerald-800" />
-          <input id="preRollLink" type="url" placeholder="https://..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
-          <div class="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-slate-50 border border-slate-200 px-3 py-2">
-            <span id="preRollPubLabel" class="text-xs font-bold text-slate-600">🕒 पब्लिश: —</span>
-            <button id="preRollSchedBtn" type="button" onclick="openAdScheduleModal('preroll')" class="px-3 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-[#05344E] border border-amber-300 text-xs font-extrabold cursor-pointer transition">⏱️ कस्टम तारखेला अनपब्लिश करायचे असल्यास क्लिक करा</button>
-          </div>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">जाहिरात मजकूर (पर्यायी)</label>
-            <input id="preRollText" type="text" placeholder="जाहिरात शीर्षक किंवा संदेश" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">प्री-रोल मजकूर फॉन्ट (५२ फॉन्ट्स)</label>
-            <select id="preRollFontSelect" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm bg-white"></select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">प्री-रोल फोटो किंवा व्हिडिओ अपलोड</label>
-            <label class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-sky-300 bg-gradient-to-br from-sky-50 to-indigo-50 hover:border-[#05344E] p-3 text-center cursor-pointer transition">
-              <span class="text-xs font-extrabold text-[#05344E]">📷 / 🎬 फोटो किंवा व्हिडिओ निवडा (MP4/JPG)</span>
-              <input id="preRollFile" type="file" accept="image/*,video/*" class="hidden" />
-            </label>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">किंवा थेट व्हिडिओ लिंक (MP4 URL - मोठ्या व्हिडिओसाठी)</label>
-            <input id="preRollVideoUrl" type="url" placeholder="https://.../ad-video.mp4" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
+            <label class="block text-xs font-bold text-slate-700 mb-1">प्री-रोल मजकूर फॉन्ट</label>
+            <select id="preRollFontSelect" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm bg-white"></select>
           </div>
         </div>
-        <div id="preRollPreviewWrap" class="hidden flex flex-wrap items-center gap-3">
-          <img id="preRollPreview" src="" alt="Pre-Roll" class="hidden h-28 rounded-xl border border-slate-200 object-cover" />
-          <video id="preRollVideoPreview" src="" controls muted playsinline class="hidden h-28 rounded-xl border border-slate-200 bg-black"></video>
-          <button id="preRollClearBtn" type="button" class="px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold cursor-pointer">🗑️ मीडिया काढा</button>
-        </div>
+
+        <div id="preRollSlotsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
       </section>
 
-      <!-- ३. स्प्लॅश पॉपअप जाहिरात -->
+      <!-- ३. स्प्लॅश पॉपअप जाहिरात (Multi-Slot Random) -->
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
-        <div class="flex items-center justify-between gap-2 pb-2 border-b border-slate-100">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100">
           <div>
-            <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">✨ ३. स्प्लॅश पॉपअप जाहिरात (Splash Popup)</h2>
-            <p class="text-xs text-slate-500">वेबसाईट उघडल्यावर स्क्रीनवर येणारी पॉपअप जाहिरात</p>
+            <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">✨ ३. स्प्लॅश पॉपअप जाहिरात (<span id="splashCountBadge">1</span> स्लॉट्स — Random १ दाखवा)</h2>
+            <p class="text-xs text-slate-500">वेबसाईट उघडल्यावर सक्रिय जाहिरातींपैकी एका वेळी एकच पॉपअप जाहिरात रँडम दाखवली जाईल</p>
           </div>
+          <button id="addSplashSlotBtn" type="button" class="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-[#05344E] text-xs font-extrabold cursor-pointer transition">➕ नवीन Splash स्लॉट जोडा</button>
         </div>
 
-        <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200">
+        <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
           <span class="text-xs font-bold text-slate-700">स्प्लॅश पॉपअप जाहिरात स्थिती</span>
           <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
             <span>चालू ठेवा</span>
@@ -139,22 +113,22 @@
           </label>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">कालावधी (सेकंद)</label>
-            <input id="splashDuration" type="number" min="2" max="60" value="10" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
+            <input id="splashDuration" type="number" min="2" max="60" value="10" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm" />
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">कधी दाखवावी (Frequency)</label>
-            <select id="splashFreq" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white">
+            <select id="splashFreq" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm bg-white">
               <option value="always">प्रत्येक वेळी</option>
               <option value="session">एका सेशनमध्ये एकदा</option>
               <option value="daily">दिवसातून एकदा</option>
             </select>
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">व्हिडिओ स्किप बटण किती सेकंदांनी दिसावे?</label>
-            <select id="splashSkipAfter" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white">
+            <label class="block text-xs font-bold text-slate-700 mb-1">स्किप बटण किती सेकंदांनी?</label>
+            <select id="splashSkipAfter" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm bg-white">
               <option value="3">३ सेकंदांनंतर (YouTube स्टाईल)</option>
               <option value="5" selected>५ सेकंदांनंतर (डिफॉल्ट)</option>
               <option value="8">८ सेकंदांनंतर</option>
@@ -162,40 +136,12 @@
             </select>
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">क्लिक लिंक (URL)</label>
-            <input id="splashSponsor" type="text" placeholder="जाहिरातदाराचे नाव (Sponsor — रिपोर्टसाठी ऐच्छिक)" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-bold text-[#05344E]" />
-          <input id="splashWhatsapp" type="tel" placeholder="जाहिरातदाराचा WhatsApp नंबर (ऐच्छिक, उदा. 98XXXXXXXX)" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-bold text-emerald-800" />
-          <input id="splashLink" type="url" placeholder="https://..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
-          <div class="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-slate-50 border border-slate-200 px-3 py-2">
-            <span id="splashPubLabel" class="text-xs font-bold text-slate-600">🕒 पब्लिश: —</span>
-            <button id="splashSchedBtn" type="button" onclick="openAdScheduleModal('splash')" class="px-3 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-[#05344E] border border-amber-300 text-xs font-extrabold cursor-pointer transition">⏱️ कस्टम तारखेला अनपब्लिश करायचे असल्यास क्लिक करा</button>
-          </div>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">पॉपअप मजकूर (पर्यायी)</label>
-            <input id="splashText" type="text" placeholder="विशेष सूचना किंवा जाहिरात" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">पॉपअप मजकूर फॉन्ट (५२ फॉन्ट्स)</label>
-            <select id="splashFontSelect" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm bg-white"></select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">स्प्लॅश फोटो किंवा व्हिडिओ अपलोड</label>
-            <label class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-emerald-300 bg-gradient-to-br from-emerald-50 to-teal-50 hover:border-emerald-600 p-3 text-center cursor-pointer transition">
-              <span class="text-xs font-extrabold text-emerald-900">📷 / 🎬 येथून पॉपअप फोटो किंवा व्हिडिओ निवडा (MP4/JPG)</span>
-              <input id="splashFile" type="file" accept="image/*,video/*" class="hidden" />
-            </label>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">किंवा थेट व्हिडिओ लिंक (MP4 URL - मोठ्या व्हिडिओसाठी)</label>
-            <input id="splashVideoUrl" type="url" placeholder="https://.../popup-ad.mp4" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm" />
+            <label class="block text-xs font-bold text-slate-700 mb-1">पॉपअप मजकूर फॉन्ट</label>
+            <select id="splashFontSelect" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm bg-white"></select>
           </div>
         </div>
-        <div id="splashPreviewWrap" class="hidden flex flex-wrap items-center gap-3">
-          <img id="splashPreview" src="" alt="Splash" class="hidden h-28 rounded-xl border border-slate-200 object-cover" />
-          <video id="splashVideoPreview" src="" controls muted playsinline class="hidden h-28 rounded-xl border border-slate-200 bg-black"></video>
-          <button id="splashClearBtn" type="button" class="px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold cursor-pointer">🗑️ मीडिया काढा</button>
-        </div>
+
+        <div id="splashSlotsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
       </section>
 
       <!-- Standalone Ad Clicks & Views Report Block -->
@@ -254,33 +200,37 @@
         </div>
       </section>
             <section class="bg-white rounded-2xl border border-amber-200 shadow-sm p-4 sm:p-6 space-y-4">
-        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🎬 रील्स इन-फीड प्रायोजित कार्ड्स (दर्शन शॉर्ट्स)</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <label class="flex items-center justify-between gap-3 p-3 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer">
-            <span class="text-sm font-bold text-slate-800">रील्सवर इन-फीड प्रायोजित कार्ड दाखवा</span>
-            <span class="relative inline-flex items-center shrink-0">
-              <input id="cfgShortsAdsEnabled" type="checkbox" class="sr-only peer" />
-              <span class="w-12 h-6 bg-rose-500 rounded-full peer peer-checked:bg-emerald-600 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-6 shadow-inner"></span>
-            </span>
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100">
+          <div>
+            <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">🎬 ४. दर्शन शॉर्ट्स (Bhakti Shorts) ९:१६ व्हिडिओ Ads (<span id="shortsAdsCountBadge">0</span> स्लॉट्स)</h2>
+            <p class="text-xs text-slate-500">पर्याय 1D (३-बटण बार + कूपन + झटपट चौकशी फॉर्म + जिल्हा टार्गेट + कमाई हिशोब)</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="shortsRevBadge" class="px-3 py-1 rounded-full bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs font-extrabold">💰 ₹0</span>
+            <button id="addShortsAdSlotBtn" type="button" class="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-[#05344E] text-xs font-extrabold cursor-pointer transition">➕ नवीन शॉर्ट-व्हिडिओ Ad</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
+          <label class="flex items-center justify-between gap-3 p-2.5 rounded-xl border border-slate-200 bg-white cursor-pointer">
+            <span class="text-xs font-bold text-slate-800">Shorts वर जाहिरात दाखवा</span>
+            <span class="toggle-pill"><input id="cfgShortsAdsEnabled" type="checkbox" /><span class="knob"></span></span>
           </label>
           <div>
-            <label class="block text-sm font-bold text-slate-700 mb-1">दर किती रील्सनंतर जाहिरात?</label>
-            <input id="cfgShortsAdsAfterN" type="number" min="2" max="15" value="4" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">दर किती रील्सनंतर?</label>
+            <input id="cfgShortsAdsAfterN" type="number" min="2" max="15" value="4" class="w-full rounded-xl border border-slate-300 px-3 py-1.5 text-xs font-bold bg-white" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">स्वाईप अनलॉक वेळ (सेकंद)</label>
+            <select id="cfgShortsAdsMinView" class="w-full rounded-xl border border-slate-300 px-3 py-1.5 text-xs font-bold bg-white">
+              <option value="0">लगेच स्वाईप (0 से.)</option>
+              <option value="3" selected>३ सेकंदांनंतर स्वाईप</option>
+              <option value="5">५ सेकंदांनंतर स्वाईप</option>
+            </select>
           </div>
         </div>
-        <div class="border-t border-slate-100 pt-3 space-y-2">
-          <div class="text-xs font-extrabold text-slate-700">सक्रिय रील्स इन-फीड जाहिरात कार्ड्स</div>
-          <div id="shortsAdsListWrap" class="space-y-2"></div>
-          <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
-            <input id="newShortsAdTitle" type="text" placeholder="जाहिरात शीर्षक" class="rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs" />
-            <input id="newShortsAdCta" type="text" placeholder="बटण मजकूर (उदा. अधिक पहा)" class="rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs" />
-            <input id="newShortsAdUrl" type="url" placeholder="क्लिक लिंक (https://...)" class="rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs" />
-            <div class="flex gap-2">
-              <input id="newShortsAdImg" type="url" placeholder="फोटो URL" class="flex-1 min-w-0 rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs" />
-              <button id="addShortsAdBtn" type="button" class="px-3 py-1.5 rounded-xl bg-[#05344E] text-amber-300 text-xs font-bold shrink-0">+ जोडा</button>
-            </div>
-          </div>
-        </div>
+
+        <div id="shortsAdsListWrap" class="grid grid-cols-1 lg:grid-cols-2 gap-4"></div>
       </section>
 
       <section id="adminTabLivePreview" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-3">
@@ -346,44 +296,173 @@
 
     let currentAds = { bannerSlides: [{}, {}, {}] };
 
-    let shortsAdsCfg = { enabled: false, afterEveryN: 4, items: [] };
+    let shortsAdsCfg = { enabled: false, afterEveryN: 4, minViewSec: 3, items: [] };
     function renderShortsAdsList() {
       const box = document.getElementById('shortsAdsListWrap');
       if (!box) return;
       const items = shortsAdsCfg.items || [];
-      if (!items.length) { box.innerHTML = '<div class="text-xs text-slate-400">कोणतीही रील्स इन-फीड जाहिरात नाही.</div>'; return; }
-      box.innerHTML = items.map((ad, i) => `
-        <div class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-amber-50/70 border border-amber-200 text-xs">
-          <div class="min-w-0 flex-1">
-            <div class="font-extrabold text-[#05344E] truncate">${ad.title} — [${ad.ctaText || 'पहा'}]</div>
-            <div class="text-[11px] text-slate-500 truncate">${ad.ctaUrl}</div>
+      const cntEl = document.getElementById('shortsAdsCountBadge');
+      if (cntEl) cntEl.textContent = items.length;
+      const rev = items.reduce((s, a) => s + Number((a && a.amount) || 0), 0);
+      const revEl = document.getElementById('shortsRevBadge');
+      if (revEl) revEl.textContent = '💰 ₹' + rev.toLocaleString('en-IN');
+
+      if (!items.length) {
+        box.innerHTML = '<div class="col-span-full text-xs text-slate-500 p-4 rounded-xl bg-slate-50 border border-slate-200 text-center">अद्याप कोणतीही शॉर्ट-व्हिडिओ जाहिरात जोडलेली नाही. वरच्या "➕ नवीन शॉर्ट-व्हिडिओ Ad" बटणावर क्लिक करा.</div>';
+        return;
+      }
+      const shortsStats = (cachedAdStats && cachedAdStats.shorts) || {};
+      box.innerHTML = items.map((ad, i) => {
+        const sid = ad.adId || ('shorts_' + i);
+        const st = shortsStats[sid] || {};
+        const v = Number(st.views || 0), c = Number(st.clicks || 0), wa = Number(st.wa || 0), ld = Number(st.leads || 0), sh = Number(st.shares || 0);
+        const ctr = v > 0 ? ((c / v) * 100).toFixed(1) : '0.0';
+        const vidSrc = (ad.videoUrl || '').trim();
+        const imgSrc = (ad.mediaUrl || '').trim();
+        return `
+        <div class="rounded-2xl border ${ad.paused ? 'border-amber-300 bg-amber-50/30' : 'border-slate-200 bg-gradient-to-b from-slate-50 to-white'} p-3.5 space-y-2.5 shadow-sm" data-sad="${i}">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-1.5">
+              <span class="px-2.5 py-0.5 rounded-full bg-[#05344E] text-amber-200 text-xs font-extrabold">Shorts Ad #${i + 1}</span>
+              <button type="button" onclick="toggleShortsAdPause(${i})" class="px-2 py-0.5 rounded-full text-[11px] font-extrabold border cursor-pointer ${ad.paused ? 'bg-amber-100 text-amber-900 border-amber-300' : 'bg-emerald-50 text-emerald-800 border-emerald-300'}">${ad.paused ? '⏸️ Paused' : '🟢 Active'}</button>
+            </div>
+            <button type="button" onclick="delShortsAd(${i})" class="text-[11px] font-bold text-rose-600 hover:underline cursor-pointer">🗑️ काढा</button>
           </div>
-          <button type="button" onclick="delShortsAd(${i})" class="px-2.5 py-1 rounded-lg bg-rose-100 text-rose-700 font-bold">हटवा</button>
-        </div>`).join('');
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <input type="text" value="${esc(ad.title || '')}" placeholder="प्रायोजक / शीर्षक *" class="sad-title px-3 py-1.5 rounded-xl border border-slate-300 bg-white text-xs font-bold text-[#05344E]" />
+            <input type="tel" value="${esc(ad.whatsapp || '')}" placeholder="WhatsApp नंबर (ऐच्छिक)" class="sad-wa px-3 py-1.5 rounded-xl border border-slate-300 bg-white text-xs font-bold text-emerald-800" />
+            <input type="url" value="${esc(ad.ctaUrl || '')}" placeholder="क्लिक लिंक (https://...)" class="sad-url px-3 py-1.5 rounded-xl border border-slate-300 bg-white text-xs" />
+            <input type="text" value="${esc(ad.ctaText || 'पहा')}" placeholder="बटण मजकूर (उदा. बुक करा)" class="sad-cta px-3 py-1.5 rounded-xl border border-slate-300 bg-white text-xs font-bold" />
+          </div>
+
+          <input type="text" value="${esc(ad.text || '')}" placeholder="छोटा जाहिरात संदेश (पर्यायी)" class="sad-text w-full px-3 py-1.5 rounded-xl border border-slate-300 bg-white text-xs" />
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <input type="url" value="${esc(vidSrc)}" placeholder="🎬 ९:१६ MP4 व्हिडिओ लिंक (URL)" class="sad-vurl px-3 py-1.5 rounded-xl border border-slate-300 bg-white text-xs" />
+            <input type="url" value="${esc(imgSrc)}" placeholder="📷 थंबनेल / पोस्टर फोटो लिंक" class="sad-img px-3 py-1.5 rounded-xl border border-slate-300 bg-white text-xs" />
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div>
+              <label class="block text-[10px] font-bold text-slate-500 mb-0.5">📍 जिल्हा</label>
+              <input type="text" value="${esc(ad.district || '')}" placeholder="सर्व (किंवा हिंगोली)" class="sad-dist w-full px-2 py-1 rounded-lg border border-slate-300 bg-white text-[11px] font-bold" />
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-slate-500 mb-0.5">⏰ वेळेचा स्लॉट</label>
+              <select class="sad-time w-full px-2 py-1 rounded-lg border border-slate-300 bg-white text-[11px] font-bold">
+                <option value="all" ${(!ad.timeSlot||ad.timeSlot==='all')?'selected':''}>सर्व दिवस</option>
+                <option value="morning" ${ad.timeSlot==='morning'?'selected':''}>सकाळ (६–१२)</option>
+                <option value="afternoon" ${ad.timeSlot==='afternoon'?'selected':''}>दुपार (१२–५)</option>
+                <option value="evening" ${ad.timeSlot==='evening'?'selected':''}>संध्याकाळ (५–१२)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-slate-500 mb-0.5">🔁 प्रति-भक्त/दिवस</label>
+              <select class="sad-freq w-full px-2 py-1 rounded-lg border border-slate-300 bg-white text-[11px] font-bold">
+                <option value="0" ${!ad.freqCap?'selected':''}>अमर्यादित</option>
+                <option value="1" ${Number(ad.freqCap)===1?'selected':''}>१ वेळा</option>
+                <option value="2" ${Number(ad.freqCap)===2?'selected':''}>२ वेळा</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-slate-500 mb-0.5">🎟️ कूपन कोड</label>
+              <input type="text" value="${esc(ad.coupon || '')}" placeholder="DARSHAN10" class="sad-coupon w-full px-2 py-1 rounded-lg border border-slate-300 bg-white text-[11px] font-extrabold text-amber-800 uppercase" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <label class="block text-[10px] font-bold text-slate-500 mb-0.5">📊 कमाल व्ह्यूज</label>
+              <input type="number" min="0" value="${Number(ad.maxViews || 0)}" placeholder="0=अमर्यादित" class="sad-maxv w-full px-2 py-1 rounded-lg border border-slate-300 bg-white text-[11px] font-bold" />
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-slate-500 mb-0.5">💰 रक्कम (₹)</label>
+              <input type="number" min="0" value="${Number(ad.amount || 0)}" class="sad-amt w-full px-2 py-1 rounded-lg border border-emerald-300 bg-emerald-50/40 text-[11px] font-extrabold text-emerald-900" />
+            </div>
+            <label class="flex items-center gap-1.5 pt-4 text-[11px] font-bold text-[#05344E] cursor-pointer">
+              <input type="checkbox" ${ad.leadForm !== false ? 'checked' : ''} class="sad-lead accent-[#05344E]" /> 📝 चौकशी फॉर्म
+            </label>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-1.5 text-[10px] font-bold bg-white rounded-lg border border-slate-200 px-2.5 py-1.5">
+            <span>👁️ ${v}</span> • <span>👆 ${c} (${ctr}%)</span> • <span>💬 ${wa}</span> • <span>📥 ${ld} लीड्स</span> • <span>📤 ${sh} शेअर्स</span>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-slate-50 border border-slate-200 px-3 py-1.5">
+            <span class="text-[11px] font-bold text-slate-600">🕒 ${formatPubDateTime(ad.publishedAt || Date.now())}</span>
+            <button type="button" onclick="openAdScheduleModal('shorts', ${i})" class="px-2 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-[#05344E] border border-amber-300 text-[11px] font-extrabold cursor-pointer">
+              ${ad.expiresAt ? (Date.now() > Number(ad.expiresAt) ? '⏸️ मुदत संपली' : '🟢 ' + formatPubDateTime(ad.expiresAt)) : '⏱️ अनपब्लिश वेळ'}
+            </button>
+          </div>
+        </div>`;
+      }).join('');
     }
-    window.delShortsAd = (i) => { shortsAdsCfg.items.splice(i, 1); renderShortsAdsList(); };
-    document.getElementById('addShortsAdBtn').onclick = () => {
-      const title = document.getElementById('newShortsAdTitle').value.trim();
-      const ctaText = document.getElementById('newShortsAdCta').value.trim() || 'अधिक पहा';
-      const ctaUrl = document.getElementById('newShortsAdUrl').value.trim();
-      const mediaUrl = document.getElementById('newShortsAdImg').value.trim();
-      if (!title || !ctaUrl) return showToast('जाहिरात शीर्षक आणि लिंक भरा', true);
+    function syncShortsAdsFromDOM() {
+      const cards = document.querySelectorAll('#shortsAdsListWrap [data-sad]');
+      if (!cards.length) return;
+      cards.forEach((card) => {
+        const idx = Number(card.dataset.sad);
+        if (!shortsAdsCfg.items[idx]) shortsAdsCfg.items[idx] = {};
+        const it = shortsAdsCfg.items[idx];
+        it.title = (card.querySelector('.sad-title')?.value || '').trim();
+        it.whatsapp = (card.querySelector('.sad-wa')?.value || '').trim();
+        it.ctaUrl = (card.querySelector('.sad-url')?.value || '').trim();
+        it.ctaText = (card.querySelector('.sad-cta')?.value || '').trim() || 'पहा';
+        it.text = (card.querySelector('.sad-text')?.value || '').trim();
+        it.videoUrl = (card.querySelector('.sad-vurl')?.value || '').trim();
+        it.mediaUrl = (card.querySelector('.sad-img')?.value || '').trim();
+        it.district = (card.querySelector('.sad-dist')?.value || '').trim();
+        it.timeSlot = card.querySelector('.sad-time')?.value || 'all';
+        it.freqCap = Number(card.querySelector('.sad-freq')?.value || 0);
+        it.coupon = (card.querySelector('.sad-coupon')?.value || '').trim().toUpperCase();
+        it.maxViews = Number(card.querySelector('.sad-maxv')?.value || 0);
+        it.amount = Number(card.querySelector('.sad-amt')?.value || 0);
+        it.leadForm = Boolean(card.querySelector('.sad-lead')?.checked);
+        it.active = !it.paused;
+        if (!it.adId) it.adId = 'shorts_' + Date.now().toString(36) + '_' + idx;
+        if (!it.publishedAt) it.publishedAt = Date.now();
+      });
+    }
+    window.toggleShortsAdPause = (i) => {
+      syncShortsAdsFromDOM();
+      shortsAdsCfg.items[i].paused = !shortsAdsCfg.items[i].paused;
+      shortsAdsCfg.items[i].active = !shortsAdsCfg.items[i].paused;
+      renderShortsAdsList();
+    };
+    window.delShortsAd = (i) => {
+      syncShortsAdsFromDOM();
+      shortsAdsCfg.items.splice(i, 1);
+      renderShortsAdsList();
+    };
+    document.getElementById('addShortsAdSlotBtn').onclick = () => {
+      syncShortsAdsFromDOM();
       if (!shortsAdsCfg.items) shortsAdsCfg.items = [];
-      shortsAdsCfg.items.push({ title, ctaText, ctaUrl, mediaUrl, active: true });
-      document.getElementById('newShortsAdTitle').value = '';
-      document.getElementById('newShortsAdCta').value = '';
-      document.getElementById('newShortsAdUrl').value = '';
-      document.getElementById('newShortsAdImg').value = '';
+      shortsAdsCfg.items.push({
+        adId: 'shorts_' + Date.now().toString(36) + '_' + shortsAdsCfg.items.length,
+        title: '', whatsapp: '', ctaUrl: '', ctaText: 'पहा', text: '',
+        videoUrl: '', mediaUrl: '', district: '', timeSlot: 'all',
+        freqCap: 0, coupon: '', maxViews: 0, amount: 0, leadForm: true,
+        paused: false, active: true, publishedAt: Date.now(), expiresAt: 0
+      });
       renderShortsAdsList();
     };
     firebase.database().ref('siteConfig/shortsConfig/ads').once('value').then(s => {
       const v = s.val() || {};
-      shortsAdsCfg = { enabled: !!v.enabled, afterEveryN: v.afterEveryN || 4, items: Array.isArray(v.items) ? v.items : Object.values(v.items || {}) };
+      shortsAdsCfg = {
+        enabled: !!v.enabled,
+        afterEveryN: v.afterEveryN || 4,
+        minViewSec: v.minViewSec !== undefined ? Number(v.minViewSec) : 3,
+        items: Array.isArray(v.items) ? v.items : Object.values(v.items || {})
+      };
       document.getElementById('cfgShortsAdsEnabled').checked = !!shortsAdsCfg.enabled;
       document.getElementById('cfgShortsAdsAfterN').value = shortsAdsCfg.afterEveryN || 4;
+      const mv = document.getElementById('cfgShortsAdsMinView');
+      if (mv) mv.value = String(shortsAdsCfg.minViewSec);
       renderShortsAdsList();
     }).catch(() => {});
     const slotPendingFiles = {};
+    const preRollPendingFiles = {};
+    const splashPendingFiles = {};
 
     function toLocalInputVal(ms) {
       if (!ms) return '';
@@ -416,64 +495,33 @@
       const mins = totalMins % 60;
       return `${days} दिवस ${hours} तास ${mins} मिनिटे`;
     }
-    window.applySlotDaysPreset = function(idx, daysStr) {
-      const card = document.querySelector(`#bannerSlotsContainer [data-slot="${idx}"]`);
-      if (!card) return;
-      const expEl = card.querySelector('.slot-expires');
-      const pubEl = card.querySelector('.slot-published');
-      if (!expEl) return;
-      const days = Number(daysStr || 0);
-      if (!days) { expEl.value = ''; return; }
-      const baseMs = (pubEl && pubEl.value) ? parseLocalInputMs(pubEl.value) : Date.now();
-      if (pubEl && !pubEl.value) pubEl.value = toLocalInputVal(baseMs);
-      expEl.value = toLocalInputVal(baseMs + days * 86400000);
-    };
-    window.applySingleDaysPreset = function(prefix, daysStr) {
-      const pubEl = document.getElementById(prefix + 'PublishedAt');
-      const expEl = document.getElementById(prefix + 'ExpiresAt');
-      if (!expEl) return;
-      const days = Number(daysStr || 0);
-      if (!days) { expEl.value = ''; return; }
-      const baseMs = (pubEl && pubEl.value) ? parseLocalInputMs(pubEl.value) : Date.now();
-      if (pubEl && !pubEl.value) pubEl.value = toLocalInputVal(baseMs);
-      expEl.value = toLocalInputVal(baseMs + days * 86400000);
-    };
 
     let __schedTarget = null;
-    function syncSingleSchedLabels() {
-      const prPub = document.getElementById('preRollPubLabel');
-      const prBtn = document.getElementById('preRollSchedBtn');
-      if (prPub) prPub.textContent = '🕒 पब्लिश: ' + formatPubDateTime(currentAds.preRollPublishedAt || Date.now());
-      if (prBtn) {
-        const ex = Number(currentAds.preRollExpiresAt || 0);
-        prBtn.textContent = ex ? (Date.now() > ex ? '⏸️ मुदत संपली • बदला' : '🟢 अनपब्लिश: ' + formatPubDateTime(ex) + ' • बदला') : '⏱️ कस्टम तारखेला अनपब्लिश करायचे असल्यास क्लिक करा';
-      }
-      const spPub = document.getElementById('splashPubLabel');
-      const spBtn = document.getElementById('splashSchedBtn');
-      if (spPub) spPub.textContent = '🕒 पब्लिश: ' + formatPubDateTime(currentAds.splashPublishedAt || Date.now());
-      if (spBtn) {
-        const ex = Number(currentAds.splashExpiresAt || 0);
-        spBtn.textContent = ex ? (Date.now() > ex ? '⏸️ मुदत संपली • बदला' : '🟢 अनपब्लिश: ' + formatPubDateTime(ex) + ' • बदला') : '⏱️ कस्टम तारखेला अनपब्लिश करायचे असल्यास क्लिक करा';
-      }
-    }
     window.openAdScheduleModal = function(kind, idx) {
-      __schedTarget = { kind, idx };
+      const i = Number(idx || 0);
+      __schedTarget = { kind, idx: i };
       let pubMs = Date.now(), expMs = 0, ttl = '⏱️ जाहिरात अनपब्लिश वेळापत्रक';
       if (kind === 'slide') {
-        const s = (currentAds.bannerSlides && currentAds.bannerSlides[idx]) || {};
+        const s = (currentAds.bannerSlides && currentAds.bannerSlides[i]) || {};
         pubMs = s.publishedAt || Date.now();
         expMs = s.expiresAt || 0;
-        ttl = `⏱️ स्लाईड ${idx + 1} — अनपब्लिश वेळापत्रक`;
+        ttl = `⏱️ स्लाईड #${i + 1} — अनपब्लिश वेळापत्रक`;
       } else if (kind === 'preroll') {
-        pubMs = currentAds.preRollPublishedAt || Date.now();
-        expMs = currentAds.preRollExpiresAt || 0;
-        ttl = '⏱️ Pre-Roll — अनपब्लिश वेळापत्रक';
+        const s = (currentAds.preRollItems && currentAds.preRollItems[i]) || {};
+        pubMs = s.publishedAt || Date.now();
+        expMs = s.expiresAt || 0;
+        ttl = `⏱️ Pre-Roll #${i + 1} — अनपब्लिश वेळापत्रक`;
+      } else if (kind === 'shorts') {
+        const s = (shortsAdsCfg.items && shortsAdsCfg.items[i]) || {};
+        pubMs = s.publishedAt || Date.now();
+        expMs = s.expiresAt || 0;
+        ttl = `⏱️ Shorts Ad #${i + 1} — अनपब्लिश वेळापत्रक`;
       } else if (kind === 'splash') {
-        pubMs = currentAds.splashPublishedAt || Date.now();
-        expMs = currentAds.splashExpiresAt || 0;
-        ttl = '⏱️ Splash — अनपब्लिश वेळापत्रक';
+        const s = (currentAds.splashItems && currentAds.splashItems[i]) || {};
+        pubMs = s.publishedAt || Date.now();
+        expMs = s.expiresAt || 0;
+        ttl = `⏱️ Splash #${i + 1} — अनपब्लिश वेळापत्रक`;
       }
-      // जर जुन्या जाहिरातीची मुदत आधीच संपली असेल तर आजची तारीख व वेळ दाखवा
       if (expMs > 0 && Date.now() > expMs) {
         pubMs = Date.now();
         expMs = 0;
@@ -503,7 +551,6 @@
       const d = Number(daysStr || 0);
       if (!d) { expEl.value = ''; return; }
       const nowMs = Date.now();
-      // दिवस निवडल्यास नेहमी आजपासून/आत्तापासून पुढची तारीख सेट करा
       if (!__schedTarget.pubMs || __schedTarget.pubMs < nowMs - 60000) {
         __schedTarget.pubMs = nowMs;
         document.getElementById('schedModalPubText').textContent = formatPubDateTime(nowMs);
@@ -520,16 +567,26 @@
         currentAds.bannerSlides[idx].publishedAt = pubMs || Date.now();
         currentAds.bannerSlides[idx].expiresAt = expMs;
         renderSlots(currentAds.bannerSlides);
-        renderAdReports();
       } else if (kind === 'preroll') {
-        currentAds.preRollPublishedAt = pubMs || Date.now();
-        currentAds.preRollExpiresAt = expMs;
-        syncSingleSchedLabels();
+        syncMediaSlotsFromDOM('preroll');
+        if (!currentAds.preRollItems[idx]) currentAds.preRollItems[idx] = {};
+        currentAds.preRollItems[idx].publishedAt = pubMs || Date.now();
+        currentAds.preRollItems[idx].expiresAt = expMs;
+        renderMediaSlots('preroll', currentAds.preRollItems);
+      } else if (kind === 'shorts') {
+        syncShortsAdsFromDOM();
+        if (!shortsAdsCfg.items[idx]) shortsAdsCfg.items[idx] = {};
+        shortsAdsCfg.items[idx].publishedAt = pubMs || Date.now();
+        shortsAdsCfg.items[idx].expiresAt = expMs;
+        renderShortsAdsList();
       } else if (kind === 'splash') {
-        currentAds.splashPublishedAt = pubMs || Date.now();
-        currentAds.splashExpiresAt = expMs;
-        syncSingleSchedLabels();
+        syncMediaSlotsFromDOM('splash');
+        if (!currentAds.splashItems[idx]) currentAds.splashItems[idx] = {};
+        currentAds.splashItems[idx].publishedAt = pubMs || Date.now();
+        currentAds.splashItems[idx].expiresAt = expMs;
+        renderMediaSlots('splash', currentAds.splashItems);
       }
+      if (typeof window.renderAdReports === 'function') window.renderAdReports();
       closeAdScheduleModal();
       showToast('वेळापत्रक सेट झाले! लागू करण्यासाठी खाली "सेव्ह करा" दाबा.');
     };
@@ -550,9 +607,25 @@
         if (spInp) currentAds.bannerSlides[idx].sponsor = spInp.value.trim();
         const waInp = card.querySelector('.slot-whatsapp');
         if (waInp) currentAds.bannerSlides[idx].whatsapp = waInp.value.trim();
-        
       });
     }
+
+    window.moveBannerSlot = function(idx, dir) {
+      syncSlotsFromDOM();
+      const arr = currentAds.bannerSlides || [];
+      const target = idx + dir;
+      if (target < 0 || target >= arr.length) return;
+      const tmp = arr[idx];
+      arr[idx] = arr[target];
+      arr[target] = tmp;
+      const fA = slotPendingFiles[idx];
+      const fB = slotPendingFiles[target];
+      if (fB !== undefined) slotPendingFiles[idx] = fB; else delete slotPendingFiles[idx];
+      if (fA !== undefined) slotPendingFiles[target] = fA; else delete slotPendingFiles[target];
+      renderSlots(arr);
+      if (typeof window.renderAdReports === 'function') window.renderAdReports();
+      showToast(`स्लॉट #${idx + 1} चा क्रम बदलून #${target + 1} केला — लागू करण्यासाठी "सेव्ह करा" दाबा.`);
+    };
 
     function renderSlots(slides) {
       const box = document.getElementById('bannerSlotsContainer');
@@ -562,10 +635,12 @@
 
       box.innerHTML = arr.map((s, i) => `
         <div class="rounded-2xl border border-slate-200 bg-gradient-to-b from-slate-50 to-white p-3.5 space-y-2.5 shadow-sm" data-slot="${i}">
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between gap-2">
             <span class="px-2.5 py-0.5 rounded-full bg-[#05344E]/10 text-[#05344E] text-xs font-extrabold">स्लॉट #${i + 1}</span>
-            <div class="flex items-center gap-2">
-              <button type="button" class="slot-clear text-[11px] font-bold text-rose-600 hover:underline cursor-pointer">${arr.length > 3 ? 'स्लॉट काढा' : 'फोटो काढा'}</button>
+            <div class="flex items-center gap-1.5">
+              <button type="button" onclick="moveBannerSlot(${i}, -1)" ${i === 0 ? 'disabled' : ''} title="क्रम मागे/वर घ्या" class="px-2 py-0.5 rounded-lg border text-[11px] font-extrabold ${i === 0 ? 'bg-slate-100 text-slate-300 border-slate-200 cursor-not-allowed' : 'bg-sky-50 hover:bg-sky-100 text-[#05344E] border-sky-200 cursor-pointer'}">⬆️</button>
+              <button type="button" onclick="moveBannerSlot(${i}, 1)" ${i === arr.length - 1 ? 'disabled' : ''} title="क्रम पुढे/खाली घ्या" class="px-2 py-0.5 rounded-lg border text-[11px] font-extrabold ${i === arr.length - 1 ? 'bg-slate-100 text-slate-300 border-slate-200 cursor-not-allowed' : 'bg-sky-50 hover:bg-sky-100 text-[#05344E] border-sky-200 cursor-pointer'}">⬇️</button>
+              <button type="button" class="slot-clear text-[11px] font-bold text-rose-600 hover:underline cursor-pointer ml-1">${arr.length > 3 ? 'स्लॉट काढा' : 'फोटो काढा'}</button>
             </div>
           </div>
 
@@ -601,9 +676,13 @@
           const reader = new FileReader();
           reader.onload = (ev) => {
             currentAds.bannerSlides[idx].image = ev.target.result;
+            currentAds.bannerSlides[idx].publishedAt = Date.now();
+            if (currentAds.bannerSlides[idx].expiresAt && Date.now() > Number(currentAds.bannerSlides[idx].expiresAt)) {
+              currentAds.bannerSlides[idx].expiresAt = 0;
+            }
             syncSlotsFromDOM();
             renderSlots(currentAds.bannerSlides);
-        if (typeof window.renderAdReports === "function") window.renderAdReports();
+            if (typeof window.renderAdReports === "function") window.renderAdReports();
           };
           reader.readAsDataURL(file);
         });
@@ -618,142 +697,171 @@
           if (currentAds.bannerSlides.length > 3) {
             currentAds.bannerSlides.splice(idx, 1);
           } else {
-            currentAds.bannerSlides[idx] = { image: '', link: '' };
+            currentAds.bannerSlides[idx] = { image: '', link: '', text: '', sponsor: '', whatsapp: '', publishedAt: 0, expiresAt: 0 };
           }
           renderSlots(currentAds.bannerSlides);
-        });
-      });
-      box.querySelectorAll('.slot-sponsor, .slot-link').forEach((inp) => {
-        inp.addEventListener('input', () => {
-          syncSlotsFromDOM();
           if (typeof window.renderAdReports === "function") window.renderAdReports();
         });
       });
-      if (typeof window.renderAdReports === "function") window.renderAdReports();
     }
 
     document.getElementById('addBannerSlotBtn').addEventListener('click', () => {
       syncSlotsFromDOM();
-      currentAds.bannerSlides.push({ image: '', link: '' });
+      currentAds.bannerSlides.push({ image: '', link: '', text: '', sponsor: '', whatsapp: '', publishedAt: Date.now(), expiresAt: 0 });
       renderSlots(currentAds.bannerSlides);
-      showToast(`➕ स्लॉट #${currentAds.bannerSlides.length} जोडला आहे`);
     });
 
-    function showAdMediaPreview(prefix, src, isVideo) {
-      const wrap = document.getElementById(prefix + 'PreviewWrap');
-      const img = document.getElementById(prefix + 'Preview');
-      const vid = document.getElementById(prefix + 'VideoPreview');
-      if (!wrap || !img || !vid) return;
-      if (!src) {
-        wrap.classList.add('hidden');
-        img.classList.add('hidden'); img.src = '';
-        vid.classList.add('hidden'); vid.src = '';
-        return;
-      }
-      wrap.classList.remove('hidden');
-      if (isVideo) {
-        img.classList.add('hidden'); img.src = '';
-        vid.src = src; vid.classList.remove('hidden');
-      } else {
-        vid.classList.add('hidden'); vid.src = '';
-        img.src = src; img.classList.remove('hidden');
-      }
+    function getMediaMeta(kind) {
+      return kind === 'preroll'
+        ? { key: 'preRollItems', containerId: 'preRollSlotsContainer', badgeId: 'preRollCountBadge', pending: preRollPendingFiles, label: 'Pre-Roll' }
+        : { key: 'splashItems', containerId: 'splashSlotsContainer', badgeId: 'splashCountBadge', pending: splashPendingFiles, label: 'Splash' };
     }
 
-    function readVideoFileAsDataUrl(file) {
-      return new Promise((resolve, reject) => {
-        if (file.size > 4.5 * 1024 * 1024) {
-          reject(new Error('व्हिडिओ फाईल 4.5MB पेक्षा मोठी आहे. कृपया लहान MP4 वापरा किंवा थेट Video URL पेस्ट करा.'));
-          return;
-        }
-        const r = new FileReader();
-        r.onload = (e) => resolve(e.target.result);
-        r.onerror = () => reject(new Error('व्हिडिओ वाचताना त्रुटी आली.'));
-        r.readAsDataURL(file);
+    function syncMediaSlotsFromDOM(kind) {
+      const m = getMediaMeta(kind);
+      const cards = document.querySelectorAll(`#${m.containerId} [data-mslot]`);
+      if (!Array.isArray(currentAds[m.key])) currentAds[m.key] = [];
+      cards.forEach((card) => {
+        const idx = Number(card.dataset.mslot);
+        if (!currentAds[m.key][idx]) currentAds[m.key][idx] = {};
+        currentAds[m.key][idx].sponsor = (card.querySelector('.mslot-sponsor')?.value || '').trim();
+        currentAds[m.key][idx].whatsapp = (card.querySelector('.mslot-whatsapp')?.value || '').trim();
+        currentAds[m.key][idx].link = (card.querySelector('.mslot-link')?.value || '').trim();
+        currentAds[m.key][idx].text = (card.querySelector('.mslot-text')?.value || '').trim();
+        const vUrl = (card.querySelector('.mslot-vurl')?.value || '').trim();
+        currentAds[m.key][idx].videoUrl = vUrl;
+        if (vUrl && !currentAds[m.key][idx].mediaType) currentAds[m.key][idx].mediaType = 'video';
       });
     }
 
-    document.getElementById('preRollFile').addEventListener('change', (e) => {
-      const f = e.target.files[0];
-      if (!f) return;
-      const isVid = f.type.startsWith('video/');
-      if (isVid && f.size > 4.5 * 1024 * 1024) {
-        showToast('⚠️ 4.5MB पेक्षा मोठा व्हिडिओ थेट अपलोड होऊ शकत नाही — कृपया MP4 लिंक वापरा.', true);
-        e.target.value = '';
-        return;
-      }
-      currentAds.preRollPublishedAt = Date.now();
-      if (currentAds.preRollExpiresAt && Date.now() > Number(currentAds.preRollExpiresAt)) currentAds.preRollExpiresAt = 0;
-      syncSingleSchedLabels();
-      const r = new FileReader();
-      r.onload = (ev) => showAdMediaPreview('preRoll', ev.target.result, isVid);
-      r.readAsDataURL(f);
-    });
-    document.getElementById('preRollVideoUrl').addEventListener('input', (e) => {
-      const u = e.target.value.trim();
-      if (u) {
-        if (!currentAds.preRollPublishedAt || (currentAds.preRollExpiresAt && Date.now() > Number(currentAds.preRollExpiresAt))) {
-          currentAds.preRollPublishedAt = Date.now();
-          currentAds.preRollExpiresAt = 0;
-          syncSingleSchedLabels();
-        }
-        showAdMediaPreview('preRoll', u, true);
-      }
-    });
-    document.getElementById('preRollClearBtn').addEventListener('click', () => {
-      document.getElementById('preRollFile').value = '';
-      document.getElementById('preRollVideoUrl').value = '';
-      currentAds.preRollImage = '';
-      currentAds.preRollVideo = '';
-      currentAds.preRollVideoUrl = '';
-      currentAds.preRollMediaType = '';
-      currentAds.preRollPublishedAt = 0;
-      currentAds.preRollExpiresAt = 0;
-      syncSingleSchedLabels();
-      showAdMediaPreview('preRoll', '', false);
-    });
+    function renderMediaSlots(kind, items) {
+      const m = getMediaMeta(kind);
+      const box = document.getElementById(m.containerId);
+      const arr = (Array.isArray(items) && items.length) ? items : [{}];
+      currentAds[m.key] = arr;
+      const badgeEl = document.getElementById(m.badgeId);
+      if (badgeEl) badgeEl.textContent = arr.length;
 
-    document.getElementById('splashFile').addEventListener('change', (e) => {
-      const f = e.target.files[0];
-      if (!f) return;
-      const isVid = f.type.startsWith('video/');
-      if (isVid && f.size > 4.5 * 1024 * 1024) {
-        showToast('⚠️ 4.5MB पेक्षा मोठा व्हिडिओ थेट अपलोड होऊ शकत नाही — कृपया MP4 लिंक वापरा.', true);
-        e.target.value = '';
-        return;
-      }
-      currentAds.splashPublishedAt = Date.now();
-      if (currentAds.splashExpiresAt && Date.now() > Number(currentAds.splashExpiresAt)) currentAds.splashExpiresAt = 0;
-      syncSingleSchedLabels();
-      const r = new FileReader();
-      r.onload = (ev) => showAdMediaPreview('splash', ev.target.result, isVid);
-      r.readAsDataURL(f);
+      box.innerHTML = arr.map((s, i) => {
+        const vidSrc = (s.videoUrl || s.video || '').trim();
+        const isVid = Boolean(vidSrc) || s.mediaType === 'video';
+        const previewSrc = isVid ? vidSrc : (s.image || '');
+        return `
+        <div class="rounded-2xl border border-slate-200 bg-gradient-to-b from-slate-50 to-white p-3.5 space-y-2.5 shadow-sm" data-mslot="${i}">
+          <div class="flex items-center justify-between gap-2">
+            <span class="px-2.5 py-0.5 rounded-full bg-[#05344E] text-amber-200 text-xs font-extrabold">${m.label} #${i + 1}</span>
+            <button type="button" class="mslot-clear text-[11px] font-bold text-rose-600 hover:underline cursor-pointer">${arr.length > 1 ? '🗑️ स्लॉट काढा' : '🗑️ मीडिया काढा'}</button>
+          </div>
+
+          <div class="h-28 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center">
+            ${previewSrc
+              ? (isVid
+                  ? `<video src="${esc(previewSrc)}" controls muted playsinline class="w-full h-full object-contain bg-black"></video>`
+                  : `<img src="${esc(previewSrc)}" class="w-full h-full object-cover" />`)
+              : `<span class="text-xs text-slate-400 font-semibold">अजून फोटो / व्हिडिओ नाही</span>`}
+          </div>
+
+          <label class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed ${kind === 'preroll' ? 'border-sky-300 bg-gradient-to-br from-sky-50 to-indigo-50' : 'border-emerald-300 bg-gradient-to-br from-emerald-50 to-teal-50'} hover:border-[#05344E] p-2.5 text-center cursor-pointer transition">
+            <span class="text-xs font-extrabold text-[#05344E]">📷 / 🎬 फोटो किंवा व्हिडिओ निवडा (MP4/JPG)</span>
+            <input type="file" accept="image/*,video/*" class="mslot-file hidden" />
+          </label>
+
+          <input type="url" value="${esc(s.videoUrl || '')}" placeholder="किंवा थेट व्हिडिओ लिंक (MP4 URL)" class="mslot-vurl w-full px-3 py-1.5 rounded-xl border border-slate-300 bg-white text-xs" />
+          <input type="text" value="${esc(s.sponsor || '')}" placeholder="जाहिरातदाराचे नाव (Sponsor — रिपोर्टसाठी ऐच्छिक)" class="mslot-sponsor w-full px-3 py-1.5 rounded-xl border border-slate-300 bg-white text-xs font-bold text-[#05344E]" />
+          <input type="tel" value="${esc(s.whatsapp || '')}" placeholder="जाहिरातदाराचा WhatsApp नंबर (ऐच्छिक)" class="mslot-whatsapp w-full px-3 py-1.5 rounded-xl border border-slate-300 bg-white text-xs font-bold text-emerald-800" />
+          <input type="url" value="${esc(s.link || '')}" placeholder="क्लिक लिंक (https://...)" class="mslot-link w-full px-3 py-1.5 rounded-xl border border-slate-300 bg-white text-xs" />
+          <input type="text" value="${esc(s.text || '')}" placeholder="जाहिरात मजकूर (पर्यायी)" class="mslot-text w-full px-3 py-1.5 rounded-xl border border-slate-300 bg-white text-xs" />
+
+          <div class="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-slate-50 border border-slate-200 px-3 py-2">
+            <span class="text-[11px] font-bold text-slate-600">🕒 पब्लिश: <span class="text-[#05344E]">${formatPubDateTime(s.publishedAt || Date.now())}</span></span>
+            <button type="button" onclick="openAdScheduleModal('${kind}', ${i})" class="px-2.5 py-1 rounded-lg ${s.expiresAt ? (Date.now() > Number(s.expiresAt) ? 'bg-rose-50 text-rose-700 border-rose-300' : 'bg-emerald-50 text-emerald-800 border-emerald-300') : 'bg-amber-50 hover:bg-amber-100 text-[#05344E] border-amber-300'} border text-[11px] font-extrabold cursor-pointer transition">
+              ${s.expiresAt ? (Date.now() > Number(s.expiresAt) ? '⏸️ मुदत संपली • बदला' : '🟢 अनपब्लिश: ' + formatPubDateTime(s.expiresAt) + ' • बदला') : '⏱️ कस्टम तारखेला अनपब्लिश करायचे असल्यास क्लिक करा'}
+            </button>
+          </div>
+        </div>
+        `;
+      }).join('');
+
+      box.querySelectorAll('.mslot-file').forEach((inp) => {
+        inp.addEventListener('change', (e) => {
+          const card = e.target.closest('[data-mslot]');
+          const idx = Number(card.dataset.mslot);
+          const f = e.target.files[0];
+          if (!f) return;
+          const isVid = f.type.startsWith('video/');
+          if (isVid && f.size > 4.5 * 1024 * 1024) {
+            showToast('⚠️ 4.5MB पेक्षा मोठा व्हिडिओ थेट अपलोड होऊ शकत नाही — कृपया MP4 लिंक वापरा.', true);
+            e.target.value = '';
+            return;
+          }
+          m.pending[idx] = f;
+          const r = new FileReader();
+          r.onload = (ev) => {
+            syncMediaSlotsFromDOM(kind);
+            const item = currentAds[m.key][idx] || {};
+            if (isVid) { item.video = ev.target.result; item.image = ''; item.videoUrl = ''; item.mediaType = 'video'; }
+            else { item.image = ev.target.result; item.video = ''; item.videoUrl = ''; item.mediaType = 'image'; }
+            item.publishedAt = Date.now();
+            if (item.expiresAt && Date.now() > Number(item.expiresAt)) item.expiresAt = 0;
+            currentAds[m.key][idx] = item;
+            renderMediaSlots(kind, currentAds[m.key]);
+            if (typeof window.renderAdReports === 'function') window.renderAdReports();
+          };
+          r.readAsDataURL(f);
+        });
+      });
+
+      box.querySelectorAll('.mslot-vurl').forEach((inp) => {
+        inp.addEventListener('change', (e) => {
+          const card = e.target.closest('[data-mslot]');
+          const idx = Number(card.dataset.mslot);
+          const u = e.target.value.trim();
+          syncMediaSlotsFromDOM(kind);
+          if (u) {
+            currentAds[m.key][idx].videoUrl = u;
+            currentAds[m.key][idx].mediaType = 'video';
+            if (!currentAds[m.key][idx].publishedAt || (currentAds[m.key][idx].expiresAt && Date.now() > Number(currentAds[m.key][idx].expiresAt))) {
+              currentAds[m.key][idx].publishedAt = Date.now();
+              currentAds[m.key][idx].expiresAt = 0;
+            }
+            renderMediaSlots(kind, currentAds[m.key]);
+          }
+        });
+      });
+
+      box.querySelectorAll('.mslot-clear').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          syncMediaSlotsFromDOM(kind);
+          const card = e.target.closest('[data-mslot]');
+          const idx = Number(card.dataset.mslot);
+          delete m.pending[idx];
+          if (currentAds[m.key].length > 1) {
+            currentAds[m.key].splice(idx, 1);
+          } else {
+            currentAds[m.key][idx] = { image: '', video: '', videoUrl: '', mediaType: '', sponsor: '', whatsapp: '', link: '', text: '', publishedAt: 0, expiresAt: 0 };
+          }
+          renderMediaSlots(kind, currentAds[m.key]);
+          if (typeof window.renderAdReports === 'function') window.renderAdReports();
+        });
+      });
+    }
+
+    document.getElementById('addPreRollSlotBtn').addEventListener('click', () => {
+      syncMediaSlotsFromDOM('preroll');
+      if (!Array.isArray(currentAds.preRollItems)) currentAds.preRollItems = [];
+      currentAds.preRollItems.push({ image: '', video: '', videoUrl: '', mediaType: '', sponsor: '', whatsapp: '', link: '', text: '', publishedAt: Date.now(), expiresAt: 0 });
+      renderMediaSlots('preroll', currentAds.preRollItems);
     });
-    document.getElementById('splashVideoUrl').addEventListener('input', (e) => {
-      const u = e.target.value.trim();
-      if (u) {
-        if (!currentAds.splashPublishedAt || (currentAds.splashExpiresAt && Date.now() > Number(currentAds.splashExpiresAt))) {
-          currentAds.splashPublishedAt = Date.now();
-          currentAds.splashExpiresAt = 0;
-          syncSingleSchedLabels();
-        }
-        showAdMediaPreview('splash', u, true);
-      }
-    });
-    document.getElementById('splashClearBtn').addEventListener('click', () => {
-      document.getElementById('splashFile').value = '';
-      document.getElementById('splashVideoUrl').value = '';
-      currentAds.splashImage = '';
-      currentAds.splashVideo = '';
-      currentAds.splashVideoUrl = '';
-      currentAds.splashMediaType = '';
-      currentAds.splashPublishedAt = 0;
-      currentAds.splashExpiresAt = 0;
-      syncSingleSchedLabels();
-      showAdMediaPreview('splash', '', false);
+    document.getElementById('addSplashSlotBtn').addEventListener('click', () => {
+      syncMediaSlotsFromDOM('splash');
+      if (!Array.isArray(currentAds.splashItems)) currentAds.splashItems = [];
+      currentAds.splashItems.push({ image: '', video: '', videoUrl: '', mediaType: '', sponsor: '', whatsapp: '', link: '', text: '', publishedAt: Date.now(), expiresAt: 0 });
+      renderMediaSlots('splash', currentAds.splashItems);
     });
 
     renderSlots(currentAds.bannerSlides);
+    renderMediaSlots('preroll', currentAds.preRollItems);
+    renderMediaSlots('splash', currentAds.splashItems);
     initAdminGuard(() => {
       
     let cachedAdStats = {};
@@ -946,20 +1054,26 @@
       }
 
       if (filterVal === 'all' || filterVal === 'preroll') {
-        const pr = stats.preroll || {};
-        const pv = Number(pr.views || 0), pc = Number(pr.clicks || 0);
-        const ptc = Number((pr.daily && pr.daily[todayKey] && pr.daily[todayKey].clicks) || 0);
-        const prSp = (currentAds.preRollSponsor || document.getElementById('preRollSponsor')?.value || '').trim() || '—';
-        if (filterVal === 'preroll') { totalV = pv; totalC = pc; }
-        items.push({ name: 'Pre-Roll जाहिरात', sponsor: prSp, whatsapp: (currentAds.preRollWhatsapp || document.getElementById('preRollWhatsapp')?.value || '').trim(), title: 'व्हिडिओ पूर्व जाहिरात', link: currentAds.preRollLink || '—', views: pv, clicks: pc, today: ptc, ctr: pv > 0 ? ((pc / pv) * 100).toFixed(1) + '%' : '0.0%', publishedStr: formatPubDateTime(currentAds.preRollPublishedAt), durationStr: formatDurationMarathi(currentAds.preRollPublishedAt, currentAds.preRollExpiresAt), expiresStr: currentAds.preRollExpiresAt ? formatPubDateTime(currentAds.preRollExpiresAt) : 'अमर्याद', image: currentAds.preRollImage || '', pageCounts: pr.byPage || {}, pages: formatPageStats(pr.byPage), days7Arr: get7DayRows(pr.daily) });
+        const prArr = Array.isArray(currentAds.preRollItems) && currentAds.preRollItems.length ? currentAds.preRollItems : [{ adId: 'preroll', sponsor: currentAds.preRollSponsor, whatsapp: currentAds.preRollWhatsapp, link: currentAds.preRollLink, text: currentAds.preRollText, image: currentAds.preRollImage, publishedAt: currentAds.preRollPublishedAt, expiresAt: currentAds.preRollExpiresAt }];
+        prArr.forEach((p, idx) => {
+          const statKey = p.adId || (idx === 0 ? 'preroll' : 'preroll_' + idx);
+          const pr = stats[statKey] || (idx === 0 ? stats.preroll : {}) || {};
+          const pv = Number(pr.views || 0), pc = Number(pr.clicks || 0);
+          const ptc = Number((pr.daily && pr.daily[todayKey] && pr.daily[todayKey].clicks) || 0);
+          if (filterVal === 'preroll') { totalV += pv; totalC += pc; }
+          items.push({ name: `Pre-Roll #${idx + 1}`, sponsor: (p.sponsor || '').trim() || '—', whatsapp: (p.whatsapp || '').trim(), title: p.text || 'व्हिडिओ पूर्व जाहिरात', link: p.link || '—', views: pv, clicks: pc, today: ptc, ctr: pv > 0 ? ((pc / pv) * 100).toFixed(1) + '%' : '0.0%', publishedStr: formatPubDateTime(p.publishedAt), durationStr: formatDurationMarathi(p.publishedAt, p.expiresAt), expiresStr: p.expiresAt ? formatPubDateTime(p.expiresAt) : 'अमर्याद', image: p.image || '', pageCounts: pr.byPage || {}, pages: formatPageStats(pr.byPage), days7Arr: get7DayRows(pr.daily) });
+        });
       }
       if (filterVal === 'all' || filterVal === 'splash') {
-        const sp = stats.splash || {};
-        const sv = Number(sp.views || 0), sc = Number(sp.clicks || 0);
-        const stc = Number((sp.daily && sp.daily[todayKey] && sp.daily[todayKey].clicks) || 0);
-        const spSp = (currentAds.splashSponsor || document.getElementById('splashSponsor')?.value || '').trim() || '—';
-        if (filterVal === 'splash') { totalV = sv; totalC = sc; }
-        items.push({ name: 'Splash पॉपअप जाहिरात', sponsor: spSp, whatsapp: (currentAds.splashWhatsapp || document.getElementById('splashWhatsapp')?.value || '').trim(), title: 'मुख्य स्क्रीन पॉपअप', link: currentAds.splashLink || '—', views: sv, clicks: sc, today: stc, ctr: sv > 0 ? ((sc / sv) * 100).toFixed(1) + '%' : '0.0%', publishedStr: formatPubDateTime(currentAds.splashPublishedAt), durationStr: formatDurationMarathi(currentAds.splashPublishedAt, currentAds.splashExpiresAt), expiresStr: currentAds.splashExpiresAt ? formatPubDateTime(currentAds.splashExpiresAt) : 'अमर्याद', image: currentAds.splashImage || '', pageCounts: sp.byPage || {}, pages: formatPageStats(sp.byPage), days7Arr: get7DayRows(sp.daily) });
+        const spArr = Array.isArray(currentAds.splashItems) && currentAds.splashItems.length ? currentAds.splashItems : [{ adId: 'splash', sponsor: currentAds.splashSponsor, whatsapp: currentAds.splashWhatsapp, link: currentAds.splashLink, text: currentAds.splashText, image: currentAds.splashImage, publishedAt: currentAds.splashPublishedAt, expiresAt: currentAds.splashExpiresAt }];
+        spArr.forEach((p, idx) => {
+          const statKey = p.adId || (idx === 0 ? 'splash' : 'splash_' + idx);
+          const sp = stats[statKey] || (idx === 0 ? stats.splash : {}) || {};
+          const sv = Number(sp.views || 0), sc = Number(sp.clicks || 0);
+          const stc = Number((sp.daily && sp.daily[todayKey] && sp.daily[todayKey].clicks) || 0);
+          if (filterVal === 'splash') { totalV += sv; totalC += sc; }
+          items.push({ name: `Splash #${idx + 1}`, sponsor: (p.sponsor || '').trim() || '—', whatsapp: (p.whatsapp || '').trim(), title: p.text || 'मुख्य स्क्रीन पॉपअप', link: p.link || '—', views: sv, clicks: sc, today: stc, ctr: sv > 0 ? ((sc / sv) * 100).toFixed(1) + '%' : '0.0%', publishedStr: formatPubDateTime(p.publishedAt), durationStr: formatDurationMarathi(p.publishedAt, p.expiresAt), expiresStr: p.expiresAt ? formatPubDateTime(p.expiresAt) : 'अमर्याद', image: p.image || '', pageCounts: sp.byPage || {}, pages: formatPageStats(sp.byPage), days7Arr: get7DayRows(sp.daily) });
+        });
       }
       return { dtDisplay, dtTimeDisplay, dtFile, totalV, totalC, items, filterVal };
     }
@@ -1331,41 +1445,55 @@
         document.getElementById('preRollEnabled').checked = !!ads.preRollEnabled;
         document.getElementById('preRollDuration').value = ads.preRollDuration || 10;
         document.getElementById('preRollSkipAfter').value = String(ads.preRollSkipAfter || 5);
-        document.getElementById('preRollLink').value = ads.preRollLink || '';
-        if (document.getElementById('preRollSponsor')) document.getElementById('preRollSponsor').value = ads.preRollSponsor || '';
-        if (document.getElementById('preRollWhatsapp')) document.getElementById('preRollWhatsapp').value = ads.preRollWhatsapp || '';
-        syncSingleSchedLabels();
-        document.getElementById('preRollText').value = ads.preRollText || '';
         if (ads.preRollFontFamily) document.getElementById('preRollFontSelect').value = ads.preRollFontFamily;
-        document.getElementById('preRollVideoUrl').value = ads.preRollVideoUrl || '';
-        if (ads.preRollVideoUrl || ads.preRollVideo) {
-          showAdMediaPreview('preRoll', ads.preRollVideoUrl || ads.preRollVideo, true);
-        } else if (ads.preRollImage) {
-          showAdMediaPreview('preRoll', ads.preRollImage, false);
-        }
+
+        const rawPr = Array.isArray(ads.preRollItems) ? ads.preRollItems : (ads.preRollItems && typeof ads.preRollItems === 'object' ? Object.values(ads.preRollItems) : []);
+        currentAds.preRollItems = rawPr.length ? rawPr : [{
+          adId: 'preroll',
+          sponsor: ads.preRollSponsor || '',
+          whatsapp: ads.preRollWhatsapp || '',
+          link: ads.preRollLink || '',
+          text: ads.preRollText || '',
+          image: ads.preRollImage || '',
+          video: ads.preRollVideo || '',
+          videoUrl: ads.preRollVideoUrl || '',
+          mediaType: ads.preRollMediaType || '',
+          publishedAt: ads.preRollPublishedAt || 0,
+          expiresAt: ads.preRollExpiresAt || 0
+        }];
+        renderMediaSlots('preroll', currentAds.preRollItems);
 
         document.getElementById('splashEnabled').checked = !!ads.splashEnabled;
         document.getElementById('splashDuration').value = ads.splashDuration || 10;
         document.getElementById('splashSkipAfter').value = String(ads.splashSkipAfter || 5);
         document.getElementById('splashFreq').value = ads.splashFrequency || 'always';
-        document.getElementById('splashLink').value = ads.splashLink || '';
-        if (document.getElementById('splashSponsor')) document.getElementById('splashSponsor').value = ads.splashSponsor || '';
-        if (document.getElementById('splashWhatsapp')) document.getElementById('splashWhatsapp').value = ads.splashWhatsapp || '';
-        syncSingleSchedLabels();
-        document.getElementById('splashText').value = ads.splashText || '';
         if (ads.splashFontFamily) document.getElementById('splashFontSelect').value = ads.splashFontFamily;
-        document.getElementById('splashVideoUrl').value = ads.splashVideoUrl || '';
-        if (ads.splashVideoUrl || ads.splashVideo) {
-          showAdMediaPreview('splash', ads.splashVideoUrl || ads.splashVideo, true);
-        } else if (ads.splashImage) {
-          showAdMediaPreview('splash', ads.splashImage, false);
-        }
+
+        const rawSp = Array.isArray(ads.splashItems) ? ads.splashItems : (ads.splashItems && typeof ads.splashItems === 'object' ? Object.values(ads.splashItems) : []);
+        currentAds.splashItems = rawSp.length ? rawSp : [{
+          adId: 'splash',
+          sponsor: ads.splashSponsor || '',
+          whatsapp: ads.splashWhatsapp || '',
+          link: ads.splashLink || '',
+          text: ads.splashText || '',
+          image: ads.splashImage || '',
+          video: ads.splashVideo || '',
+          videoUrl: ads.splashVideoUrl || '',
+          mediaType: ads.splashMediaType || '',
+          publishedAt: ads.splashPublishedAt || 0,
+          expiresAt: ads.splashExpiresAt || 0
+        }];
+        renderMediaSlots('splash', currentAds.splashItems);
+        if (typeof window.renderAdReports === 'function') window.renderAdReports();
       });
     });
 
     document.getElementById('saveAdsBtn').addEventListener('click', async () => {
       try {
         syncSlotsFromDOM();
+        syncMediaSlotsFromDOM('preroll');
+        syncMediaSlotsFromDOM('splash');
+
         const slides = [];
         const cards = document.querySelectorAll('#bannerSlotsContainer [data-slot]');
         for (let i = 0; i < cards.length; i++) {
@@ -1393,44 +1521,58 @@
           });
         }
 
-        const preFile = document.getElementById('preRollFile').files[0];
-        const splFile = document.getElementById('splashFile').files[0];
-        const preVideoUrlInput = document.getElementById('preRollVideoUrl').value.trim();
-        const splVideoUrlInput = document.getElementById('splashVideoUrl').value.trim();
-
-        let preRollImage = currentAds.preRollImage || '';
-        let preRollVideo = currentAds.preRollVideo || '';
-        let preRollMediaType = currentAds.preRollMediaType || (preRollVideo || preVideoUrlInput ? 'video' : 'image');
-        if (preFile) {
-          if (preFile.type.startsWith('video/')) {
-            preRollVideo = await readVideoFileAsDataUrl(preFile);
-            preRollImage = '';
-            preRollMediaType = 'video';
-          } else {
-            preRollImage = await compressImageFile(preFile, 900, 500, 0.82);
-            preRollVideo = '';
-            preRollMediaType = 'image';
+        async function buildMediaArray(kind) {
+          const m = getMediaMeta(kind);
+          const list = currentAds[m.key] || [];
+          const out = [];
+          for (let i = 0; i < list.length; i++) {
+            const prev = list[i] || {};
+            const f = m.pending[i];
+            let image = prev.image || '';
+            let video = prev.video || '';
+            let videoUrl = (prev.videoUrl || '').trim();
+            let mediaType = prev.mediaType || (video || videoUrl ? 'video' : (image ? 'image' : ''));
+            if (f) {
+              if (f.type.startsWith('video/')) {
+                video = await readVideoFileAsDataUrl(f);
+                image = '';
+                videoUrl = '';
+                mediaType = 'video';
+              } else {
+                image = await compressImageFile(f, kind === 'preroll' ? 900 : 720, kind === 'preroll' ? 500 : 900, 0.82);
+                video = '';
+                videoUrl = '';
+                mediaType = 'image';
+              }
+            } else if (videoUrl) {
+              mediaType = 'video';
+            }
+            const hasMedia = Boolean(image || video || videoUrl || prev.link || prev.text);
+            const adId = prev.adId || (i === 0 ? kind : `${kind}_${Date.now().toString(36)}_${i}`);
+            const prevExp = Number(prev.expiresAt || 0);
+            const pubMs = f ? Date.now() : (prev.publishedAt || (hasMedia ? Date.now() : 0));
+            const expMs = (f && prevExp > 0 && Date.now() > prevExp) ? 0 : prevExp;
+            out.push({
+              adId,
+              sponsor: prev.sponsor || '',
+              whatsapp: prev.whatsapp || '',
+              link: prev.link || '',
+              text: prev.text || '',
+              image,
+              video,
+              videoUrl,
+              mediaType,
+              publishedAt: pubMs,
+              expiresAt: expMs
+            });
           }
-        } else if (preVideoUrlInput) {
-          preRollMediaType = 'video';
+          return out;
         }
 
-        let splashImage = currentAds.splashImage || '';
-        let splashVideo = currentAds.splashVideo || '';
-        let splashMediaType = currentAds.splashMediaType || (splashVideo || splVideoUrlInput ? 'video' : 'image');
-        if (splFile) {
-          if (splFile.type.startsWith('video/')) {
-            splashVideo = await readVideoFileAsDataUrl(splFile);
-            splashImage = '';
-            splashMediaType = 'video';
-          } else {
-            splashImage = await compressImageFile(splFile, 720, 900, 0.82);
-            splashVideo = '';
-            splashMediaType = 'image';
-          }
-        } else if (splVideoUrlInput) {
-          splashMediaType = 'video';
-        }
+        const preRollItems = await buildMediaArray('preroll');
+        const splashItems = await buildMediaArray('splash');
+        const primaryPr = preRollItems.find(x => x.image || x.video || x.videoUrl) || preRollItems[0] || {};
+        const primarySp = splashItems.find(x => x.image || x.video || x.videoUrl) || splashItems[0] || {};
 
         const payload = Object.assign({}, currentAds, {
           bannerEnabled: document.getElementById('bannerEnabled').checked,
@@ -1439,39 +1581,50 @@
           preRollEnabled: document.getElementById('preRollEnabled').checked,
           preRollDuration: Math.max(2, Math.min(60, Number(document.getElementById('preRollDuration').value) || 10)),
           preRollSkipAfter: Number(document.getElementById('preRollSkipAfter').value) || 5,
-          preRollSponsor: (document.getElementById('preRollSponsor')?.value || '').trim(),
-          preRollWhatsapp: (document.getElementById('preRollWhatsapp')?.value || '').trim(),
-          preRollPublishedAt: preFile ? Date.now() : (currentAds.preRollPublishedAt || (document.getElementById('preRollEnabled').checked ? Date.now() : 0)),
-          preRollExpiresAt: (preFile && currentAds.preRollExpiresAt && Date.now() > Number(currentAds.preRollExpiresAt)) ? 0 : (currentAds.preRollExpiresAt || 0),
-          preRollLink: document.getElementById('preRollLink').value.trim(),
-          preRollText: document.getElementById('preRollText').value.trim(),
           preRollFontFamily: document.getElementById('preRollFontSelect').value,
-          preRollImage,
-          preRollVideo,
-          preRollVideoUrl: preVideoUrlInput,
-          preRollMediaType,
+          preRollItems,
+          preRollSponsor: primaryPr.sponsor || '',
+          preRollWhatsapp: primaryPr.whatsapp || '',
+          preRollPublishedAt: primaryPr.publishedAt || 0,
+          preRollExpiresAt: primaryPr.expiresAt || 0,
+          preRollLink: primaryPr.link || '',
+          preRollText: primaryPr.text || '',
+          preRollImage: primaryPr.image || '',
+          preRollVideo: primaryPr.video || '',
+          preRollVideoUrl: primaryPr.videoUrl || '',
+          preRollMediaType: primaryPr.mediaType || '',
           splashEnabled: document.getElementById('splashEnabled').checked,
           splashDuration: Math.max(2, Math.min(60, Number(document.getElementById('splashDuration').value) || 10)),
           splashSkipAfter: Number(document.getElementById('splashSkipAfter').value) || 5,
           splashFrequency: document.getElementById('splashFreq').value,
-          splashSponsor: (document.getElementById('splashSponsor')?.value || '').trim(),
-          splashWhatsapp: (document.getElementById('splashWhatsapp')?.value || '').trim(),
-          splashPublishedAt: splFile ? Date.now() : (currentAds.splashPublishedAt || (document.getElementById('splashEnabled').checked ? Date.now() : 0)),
-          splashExpiresAt: (splFile && currentAds.splashExpiresAt && Date.now() > Number(currentAds.splashExpiresAt)) ? 0 : (currentAds.splashExpiresAt || 0),
-          splashLink: document.getElementById('splashLink').value.trim(),
-          splashText: document.getElementById('splashText').value.trim(),
           splashFontFamily: document.getElementById('splashFontSelect').value,
-          splashImage,
-          splashVideo,
-          splashVideoUrl: splVideoUrlInput,
-          splashMediaType
+          splashItems,
+          splashSponsor: primarySp.sponsor || '',
+          splashWhatsapp: primarySp.whatsapp || '',
+          splashPublishedAt: primarySp.publishedAt || 0,
+          splashExpiresAt: primarySp.expiresAt || 0,
+          splashLink: primarySp.link || '',
+          splashText: primarySp.text || '',
+          splashImage: primarySp.image || '',
+          splashVideo: primarySp.video || '',
+          splashVideoUrl: primarySp.videoUrl || '',
+          splashMediaType: primarySp.mediaType || ''
         });
 
+        syncShortsAdsFromDOM();
+        shortsAdsCfg.enabled = Boolean(document.getElementById('cfgShortsAdsEnabled')?.checked);
+        shortsAdsCfg.afterEveryN = Math.max(2, Math.min(15, Number(document.getElementById('cfgShortsAdsAfterN')?.value) || 4));
+        shortsAdsCfg.minViewSec = Number(document.getElementById('cfgShortsAdsMinView')?.value || 3);
         await fbDb.ref('siteConfig/ads').set(payload);
+        await fbDb.ref('siteConfig/shortsConfig/ads').set(shortsAdsCfg);
+        Object.keys(slotPendingFiles).forEach(k => delete slotPendingFiles[k]);
+        Object.keys(preRollPendingFiles).forEach(k => delete preRollPendingFiles[k]);
+        Object.keys(splashPendingFiles).forEach(k => delete splashPendingFiles[k]);
         currentAds = payload;
-        syncSingleSchedLabels();
         renderSlots(currentAds.bannerSlides);
-        renderAdReports();
+        renderMediaSlots('preroll', currentAds.preRollItems);
+        renderMediaSlots('splash', currentAds.splashItems);
+        if (typeof window.renderAdReports === 'function') window.renderAdReports();
         showToast('✅ सर्व जाहिरात सेटिंग्ज सेव्ह झाल्या!');
       } catch (err) {
         showToast('❌ त्रुटी: ' + err.message, true);

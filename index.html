@@ -2752,8 +2752,9 @@
       el.nativePlayer.play().catch(() => {});
       };
 
-      if (siteAdsConfig.preRollEnabled && (siteAdsConfig.preRollImage || siteAdsConfig.preRollVideo || siteAdsConfig.preRollVideoUrl)) {
-        showPreRollAd(startActualStream);
+      const pickedPr = pickRandomActiveMediaAd(siteAdsConfig.preRollItems, { image: siteAdsConfig.preRollImage, video: siteAdsConfig.preRollVideo, videoUrl: siteAdsConfig.preRollVideoUrl, link: siteAdsConfig.preRollLink, text: siteAdsConfig.preRollText, expiresAt: siteAdsConfig.preRollExpiresAt, adId: 'preroll' });
+      if (siteAdsConfig.preRollEnabled && pickedPr) {
+        showPreRollAd(startActualStream, pickedPr);
       } else {
         startActualStream();
       }
@@ -3418,6 +3419,7 @@
             siteAdsConfig.preRollFontFamily = a.preRollFontFamily || '';
             if (siteAdsConfig.preRollFontFamily) ensureGoogleFontLoaded(siteAdsConfig.preRollFontFamily);
             siteAdsConfig.preRollDuration = Number(a.preRollDuration) || 10;
+            siteAdsConfig.preRollItems = Array.isArray(a.preRollItems) ? a.preRollItems : (a.preRollItems && typeof a.preRollItems === 'object' ? Object.values(a.preRollItems) : []);
             siteAdsConfig.splashEnabled = Boolean(a.splashEnabled);
             siteAdsConfig.splashImage = a.splashImage || '';
             siteAdsConfig.splashVideo = a.splashVideo || '';
@@ -3430,6 +3432,7 @@
             if (siteAdsConfig.splashFontFamily) ensureGoogleFontLoaded(siteAdsConfig.splashFontFamily);
             siteAdsConfig.splashDuration = Number(a.splashDuration) || 10;
             siteAdsConfig.splashFrequency = a.splashFrequency || 'daily';
+            siteAdsConfig.splashItems = Array.isArray(a.splashItems) ? a.splashItems : (a.splashItems && typeof a.splashItems === 'object' ? Object.values(a.splashItems) : []);
             renderMainAdBanner();
             maybeShowSplashAd();
             updateSiteCache('ads', {
@@ -4339,11 +4342,27 @@
       el.preRollOverlay.classList.add('hidden');
     }
 
-    function showPreRollAd(onFinish) {
+    function pickRandomActiveMediaAd(items, legacyObj) {
+      const now = Date.now();
+      const list = (Array.isArray(items) && items.length) ? items : [legacyObj];
+      const valid = list.filter(it => {
+        if (!it) return false;
+        const hasM = Boolean((it.videoUrl || it.video || '').trim() || it.image);
+        if (!hasM) return false;
+        if (it.expiresAt && Number(it.expiresAt) > 0 && now > Number(it.expiresAt)) return false;
+        return true;
+      });
+      if (!valid.length) return null;
+      return valid[Math.floor(Math.random() * valid.length)];
+    }
+
+    function showPreRollAd(onFinish, chosenAd) {
       stopPreRollAd();
+      const adObj = chosenAd || pickRandomActiveMediaAd(siteAdsConfig.preRollItems, { image: siteAdsConfig.preRollImage, video: siteAdsConfig.preRollVideo, videoUrl: siteAdsConfig.preRollVideoUrl, link: siteAdsConfig.preRollLink, text: siteAdsConfig.preRollText, expiresAt: siteAdsConfig.preRollExpiresAt, adId: 'preroll' });
+      if (!adObj) { if (typeof onFinish === 'function') onFinish(); return; }
       const totalDur = Math.max(2, Math.min(60, Number(siteAdsConfig.preRollDuration) || 10));
       let remaining = totalDur;
-      const videoSrc = (siteAdsConfig.preRollVideoUrl || siteAdsConfig.preRollVideo || '').trim();
+      const videoSrc = (adObj.videoUrl || adObj.video || '').trim();
       const isVideo = Boolean(videoSrc);
       const skipAfter = Math.min(totalDur, Math.max(1, Number(siteAdsConfig.preRollSkipAfter) || 5));
       let elapsed = 0;
@@ -4373,15 +4392,15 @@
       } else {
         if (pv) pv.classList.add('hidden');
         if (pmute) pmute.classList.add('hidden');
-        el.preRollImgEl.src = siteAdsConfig.preRollImage;
+        el.preRollImgEl.src = adObj.image;
         el.preRollImgEl.classList.remove('hidden');
         el.preRollSkipBtn.classList.add('hidden');
         if (pProgWrap) pProgWrap.classList.add('hidden');
       }
 
-      configureAdLink(el.preRollLinkEl, siteAdsConfig.preRollLink);
-      if (siteAdsConfig.preRollText) {
-        el.preRollTextEl.textContent = siteAdsConfig.preRollText;
+      configureAdLink(el.preRollLinkEl, adObj.link);
+      if (adObj.text) {
+        el.preRollTextEl.textContent = adObj.text;
         if (siteAdsConfig.preRollFontFamily) { ensureGoogleFontLoaded(siteAdsConfig.preRollFontFamily); el.preRollTextEl.style.fontFamily = siteAdsConfig.preRollFontFamily; }
         el.preRollTextWrap.classList.remove('hidden');
       } else {
@@ -4416,8 +4435,9 @@
 
       updateLabels();
       el.preRollOverlay.classList.remove('hidden');
-      if (el.preRollLinkEl && !el.preRollLinkEl.__trackedClick) { el.preRollLinkEl.__trackedClick = true; el.preRollLinkEl.addEventListener('click', () => trackAdStat('preroll', 'clicks')); }
-      trackAdStat('preroll', 'views');
+      const prStatId = adObj.adId || 'preroll';
+      if (el.preRollLinkEl) el.preRollLinkEl.onclick = () => trackAdStat(prStatId, 'clicks');
+      trackAdStat(prStatId, 'views');
 
       if (isVideo && pv) {
         pv.onended = finish;
@@ -4453,9 +4473,11 @@
 
     function maybeShowSplashAd() {
       if (splashShownThisLoad) return;
-      const videoSrc = (siteAdsConfig.splashVideoUrl || siteAdsConfig.splashVideo || '').trim();
+      if (!siteAdsConfig.splashEnabled) return;
+      const spObj = pickRandomActiveMediaAd(siteAdsConfig.splashItems, { image: siteAdsConfig.splashImage, video: siteAdsConfig.splashVideo, videoUrl: siteAdsConfig.splashVideoUrl, link: siteAdsConfig.splashLink, text: siteAdsConfig.splashText, expiresAt: siteAdsConfig.splashExpiresAt, adId: 'splash' });
+      if (!spObj) return;
+      const videoSrc = (spObj.videoUrl || spObj.video || '').trim();
       const isVideo = Boolean(videoSrc);
-      if (!siteAdsConfig.splashEnabled || (!siteAdsConfig.splashImage && !isVideo)) return;
 
       const todayKey = new Date().toISOString().slice(0, 10);
       if (siteAdsConfig.splashFrequency === 'daily') {
@@ -4497,15 +4519,15 @@
       } else {
         if (sv) sv.classList.add('hidden');
         if (smute) smute.classList.add('hidden');
-        el.splashAdImgEl.src = siteAdsConfig.splashImage;
+        el.splashAdImgEl.src = spObj.image;
         el.splashAdImgEl.classList.remove('hidden');
         if (sSkipBtn) sSkipBtn.classList.add('hidden');
         if (sProgWrap) sProgWrap.classList.add('hidden');
       }
 
-      configureAdLink(el.splashAdLinkEl, siteAdsConfig.splashLink);
-      if (siteAdsConfig.splashText) {
-        el.splashAdTextEl.textContent = siteAdsConfig.splashText;
+      configureAdLink(el.splashAdLinkEl, spObj.link);
+      if (spObj.text) {
+        el.splashAdTextEl.textContent = spObj.text;
         if (siteAdsConfig.splashFontFamily) { ensureGoogleFontLoaded(siteAdsConfig.splashFontFamily); el.splashAdTextEl.style.fontFamily = siteAdsConfig.splashFontFamily; }
         el.splashAdTextWrap.classList.remove('hidden');
       } else {
@@ -4535,8 +4557,8 @@
 
       updateSplashLabels();
       el.splashAdModal.classList.remove('hidden');
-      trackAdStat('splash', 'views');
-      if (el.splashAdLinkEl && !el.splashAdLinkEl.__trackedClick) { el.splashAdLinkEl.__trackedClick = true; el.splashAdLinkEl.addEventListener('click', () => trackAdStat('splash', 'clicks')); }
+      trackAdStat(spObj.adId || 'splash', 'views');
+      if (el.splashAdLinkEl && !el.splashAdLinkEl.__trackedClick) { el.splashAdLinkEl.__trackedClick = true; el.splashAdLinkEl.addEventListener('click', () => trackAdStat(spObj.adId || 'splash', 'clicks')); }
 
       if (isVideo && sv) {
         sv.onended = closeSplashAd;

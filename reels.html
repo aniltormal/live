@@ -2178,7 +2178,7 @@
             }
           }
           const admSnap = await fbDb.ref(`shortsAdmins/${user.uid}`).once('value').catch(() => ({ val: () => null }));
-          isAdminUser = !!admSnap.val() || (userProfile && userProfile.role === 'admin') || (!userProfile && !!user.email) || urlParams.get('admin') === '1';
+          isAdminUser = !!admSnap.val() || (userProfile && userProfile.role === 'admin') || (!userProfile && !!user.email);
           document.getElementById('adminModePill').classList.toggle('hidden', !isAdminUser);
           if (REELS.length) renderFeed();
         }
@@ -2722,7 +2722,7 @@
       } catch(_) {}
       if (currentUser) {
         if (r.liked) fbDb.ref(`shortsUserLikes/${currentUser.uid}/${r.id}`).set({ thumb: r.src, templeName: r.temple, ts: Date.now() }).catch(() => {});
-        if (r.liked) awardMeritActivity('likes', 5);
+        if (r.liked) awardMeritActivity('likes', (shortsCfg.merit && shortsCfg.merit.likesForMerit) || 5);
         else fbDb.ref(`shortsUserLikes/${currentUser.uid}/${r.id}`).remove().catch(() => {});
       }
     };
@@ -2993,7 +2993,7 @@
         await fbDb.ref(`shortsComments/${activeCmtReelId}`).push(payload);
       }
       document.getElementById('cmtInp').value = '';
-      awardMeritActivity('comments', 3);
+      awardMeritActivity('comments', (shortsCfg.merit && shortsCfg.merit.commentsForMerit) || 3);
       loadComments(activeCmtReelId);
     };
 

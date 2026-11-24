@@ -131,6 +131,8 @@ function renderAdminShell(activeKey, pageTitle) {
   const navItems = [
     { key: 'temples', href: 'admin-temples.html', icon: '🛕', label: 'मंदिरे' },
     { key: 'daily', href: 'admin-daily-darshan.html', icon: '📸', label: 'दैनिक फोटो' },
+    { key: 'shorts', href: 'admin-shorts.html', icon: '🎬', label: 'दर्शन शॉर्ट्स' },
+    { key: 'devotees', href: 'admin-devotees.html', icon: '🙏', label: 'नोंदणीकृत भक्त' },
     { key: 'feedmonitor', href: 'admin-feed-monitor.html', icon: '📡', label: 'ऑटो फीड' },
     { key: 'templeinfo', href: 'admin-temple-info.html', icon: '📝', label: 'मंदिर माहिती' },
     { key: 'ads', href: 'admin-ads.html', icon: '📢', label: 'जाहिराती' },
@@ -146,7 +148,7 @@ function renderAdminShell(activeKey, pageTitle) {
 
   const pillsHtml = activeKey === 'dashboard' ? '' : `
     <nav class="w-full bg-gradient-to-r from-[#031926] via-[#04283d] to-[#031926] border-t-2 border-[#EA580C] border-b-2 border-b-amber-400/80 shadow-md">
-      <div class="w-full max-w-7xl mx-auto px-2.5 sm:px-4 py-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar lg:grid lg:grid-cols-10">
+      <div class="w-full max-w-7xl mx-auto px-2.5 sm:px-4 py-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar lg:grid lg:grid-cols-11">
         ${navItems.map(item => {
           const isAct = item.key === activeKey;
           return `<a href="${item.href}" class="shrink-0 lg:shrink px-3 lg:px-2 py-1.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 whitespace-nowrap ${isAct ? 'bg-amber-400 text-[#031926] font-extrabold shadow-sm' : 'bg-white/10 hover:bg-white/20 text-white border border-white/15'}"><span>${item.icon}</span><span class="truncate">${item.label}</span></a>`;

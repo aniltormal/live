@@ -11,6 +11,8 @@
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
   <style>
+    body { font-size: 15.5px; }
+    input, select, textarea { font-size: 15px !important; }
     .chip-on { background: #05344E; color: #FCD34D; border-color: #05344E; }
     .chip-off { background: #f8fafc; color: #334155; border-color: #cbd5e1; }
   </style>
@@ -33,24 +35,21 @@
 
     <div id="pageContent" class="hidden space-y-4 fade-in-up">
       <!-- Top KPI Strip + Quick Open Reels Admin Mode -->
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div class="bg-gradient-to-br from-[#05344E] to-[#084160] text-white rounded-2xl p-4 shadow-sm border border-amber-400/50 flex items-center justify-between">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+        <button id="kpiReportsCard" type="button" onclick="openReportsModal()" class="bg-white hover:bg-amber-50/40 rounded-2xl p-4 shadow-sm border-2 border-amber-300 hover:border-amber-500 flex items-center justify-between text-left transition cursor-pointer">
           <div>
-            <div class="text-xs text-amber-200 font-bold">नोंदणीकृत भक्त</div>
-            <div id="kpiUsers" class="text-2xl font-extrabold text-white mt-0.5">—</div>
+            <div class="text-sm text-[#05344E] font-extrabold">⚠️ तक्रार निवारण</div>
+            <div class="flex items-baseline gap-2 mt-0.5">
+              <span id="kpiReports" class="text-2xl font-extrabold text-amber-600">—</span>
+              <span class="text-xs font-bold text-slate-500">प्रलंबित • मॅनेज करा ▾</span>
+            </div>
           </div>
-          <div class="text-3xl">🙏</div>
-        </div>
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-amber-200 flex items-center justify-between">
-          <div>
-            <div class="text-xs text-slate-500 font-bold">प्रलंबित तक्रारी</div>
-            <div id="kpiReports" class="text-2xl font-extrabold text-amber-600 mt-0.5">—</div>
-          </div>
-          <div class="text-3xl">⚠️</div>
-        </div>
+          <div class="text-3xl">📋</div>
+        </button>
         <div class="bg-white rounded-2xl p-4 shadow-sm border border-emerald-200 flex items-center justify-between gap-2">
           <div>
-            <div class="text-xs text-slate-500 font-bold">Admin-on-Reels मोड</div>
+            <div class="text-sm text-slate-600 font-bold">Admin-on-Reels मोड</div>
             <a href="reels.html?admin=1" target="_blank" class="inline-flex items-center gap-1.5 mt-1 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-sm transition">🛡️ रील्स फीडवर उघडा →</a>
           </div>
           <div class="text-3xl">🎬</div>
@@ -59,29 +58,58 @@
 
       <!-- १. ऑडिओ आणि प्लेबॅक सेटिंग्ज -->
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 space-y-4">
-        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">१. ऑडिओ आणि प्लेबॅक सेटिंग्ज (मंदिरनिहाय १० MP3)</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <h2 class="text-lg sm:text-xl font-extrabold text-[#05344E]">१. ऑडिओ आणि प्लेबॅक सेटिंग्ज (मंदिरनिहाय १० MP3)</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-stretch">
           <div>
-            <label class="block text-xs text-slate-600 mb-1">रील कालावधी (सेकंद)</label>
-            <select id="cfgDuration" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white">
-              <option value="8">८ सेकंद</option>
-              <option value="10">१० सेकंद (डिफॉल्ट)</option>
-              <option value="12">१२ सेकंद</option>
-            </select>
+            <label class="block text-sm font-bold text-slate-700 mb-1">रील कालावधी (सेकंद)</label>
+            <div class="relative" id="durationDDWrap">
+              <button id="cfgDurationBtn" type="button" onclick="toggleSimpleDD('durationDDPanel')" class="w-full rounded-xl border-[1.5px] border-[#05344E]/35 bg-[#EEF5FA] px-3.5 py-2 text-sm font-bold text-[#031926] flex items-center justify-between gap-2 text-left shadow-sm">
+                <span id="cfgDurationLabel">२५ सेकंद (डिफॉल्ट)</span>
+                <span class="text-xs text-[#05344E]">▾</span>
+              </button>
+              <div id="durationDDPanel" class="hidden absolute left-0 right-0 top-full mt-1 z-40 bg-white border-[1.5px] border-[#05344E]/40 rounded-2xl shadow-xl overflow-hidden divide-y divide-slate-100">
+                <button type="button" onclick="pickSimpleDD('cfgDuration','cfgDurationLabel','durationDDPanel','20','२० सेकंद')" class="w-full text-left px-3.5 py-2 text-sm font-bold hover:bg-[#EEF5FA]">२० सेकंद</button>
+                <button type="button" onclick="pickSimpleDD('cfgDuration','cfgDurationLabel','durationDDPanel','25','२५ सेकंद (डिफॉल्ट)')" class="w-full text-left px-3.5 py-2 text-sm font-bold hover:bg-[#EEF5FA]">२५ सेकंद (डिफॉल्ट)</button>
+                <button type="button" onclick="pickSimpleDD('cfgDuration','cfgDurationLabel','durationDDPanel','30','३० सेकंद')" class="w-full text-left px-3.5 py-2 text-sm font-bold hover:bg-[#EEF5FA]">३० सेकंद</button>
+              </div>
+              <select id="cfgDuration" class="hidden">
+                <option value="20">२० सेकंद</option>
+                <option value="25" selected>२५ सेकंद (डिफॉल्ट)</option>
+                <option value="30">३० सेकंद</option>
+              </select>
+            </div>
           </div>
-          <label class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer">
-            <input id="cfgRandomAudio" type="checkbox" class="w-4 h-4 accent-[#05344E]" />
-            <span class="text-xs sm:text-sm text-slate-800">प्रत्येक वेळी रँडम भक्ती ऑडिओ वाजवा</span>
+          <label class="flex items-center justify-between gap-3 p-3 rounded-xl border bg-emerald-50/60 border-emerald-200 cursor-pointer ">
+            <span class="text-sm font-bold text-[#05344E]">प्रत्येक वेळी रँडम भक्ती ऑडिओ वाजवा</span>
+            <span class="relative inline-flex items-center shrink-0">
+              <input id="cfgRandomAudio" type="checkbox" checked class="sr-only peer" />
+              <span class="w-12 h-6 bg-rose-500 rounded-full peer peer-checked:bg-emerald-600 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-6 shadow-inner"></span>
+            </span>
           </label>
-          <label class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer">
-            <input id="cfgAutoScroll" type="checkbox" class="w-4 h-4 accent-[#05344E]" />
-            <span class="text-xs sm:text-sm text-slate-800">कालावधी संपल्यावर ऑटो-स्क्रोल करा</span>
+          <label class="flex items-center justify-between gap-3 p-3 rounded-xl border bg-slate-50 border-slate-200 cursor-pointer ">
+            <span class="text-sm font-bold text-slate-800">कालावधी संपल्यावर ऑटो-स्क्रोल करा</span>
+            <span class="relative inline-flex items-center shrink-0">
+              <input id="cfgAutoScroll" type="checkbox" class="sr-only peer" />
+              <span class="w-12 h-6 bg-rose-500 rounded-full peer peer-checked:bg-emerald-600 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-6 shadow-inner"></span>
+            </span>
           </label>
         </div>
         <div class="border-t border-slate-100 pt-3 space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <label class="text-xs font-bold text-[#05344E]">मंदिर निवडा (कमाल १० ऑडिओ — फाईल अपलोड करा किंवा लिंक जोडा) <span id="trackCountBadge" class="ml-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[11px] font-extrabold">0/10</span></label>
-            <select id="audioTempleSelect" class="rounded-xl border border-slate-300 px-3 py-1.5 text-xs bg-white min-w-[220px]"></select>
+            <div class="relative w-full sm:w-auto sm:min-w-[280px]" id="audioTempleDDWrap">
+              <button id="audioTempleBtn" type="button" onclick="toggleAudioTempleDD()" class="w-full rounded-xl border-[1.5px] border-[#05344E]/35 bg-[#EEF5FA] px-3.5 py-2 text-sm font-bold text-[#031926] flex items-center justify-between gap-2 text-left shadow-sm">
+                <span id="audioTempleLabel" class="truncate">मंदिर निवडा...</span>
+                <span class="text-xs text-[#05344E] shrink-0">▾</span>
+              </button>
+              <div id="audioTempleDDPanel" class="hidden absolute left-0 right-0 top-full mt-1 z-40 bg-white border-[1.5px] border-[#05344E]/40 rounded-2xl shadow-xl overflow-hidden">
+                <div class="p-2 bg-[#EEF5FA] border-b border-[#C8DFEE]">
+                  <input id="audioTempleSearch" type="text" placeholder="🔍 मंदिर शोधा..." oninput="filterAudioTempleOpts(this.value)" class="w-full rounded-xl border border-[#C3D9E8] px-3 py-1.5 text-sm bg-white outline-none" />
+                </div>
+                <div id="audioTempleDDList" class="max-h-56 overflow-y-auto divide-y divide-slate-100"></div>
+              </div>
+              <select id="audioTempleSelect" class="hidden"></select>
+            </div>
           </div>
 
           <!-- GitHub Repo Audio Uploader -->
@@ -90,45 +118,23 @@
               <div class="text-xs font-extrabold text-[#05344E]">🎵 GitHub (`darshansetu-audio`) वर एकाच वेळी १० पर्यंत ऑडिओ अपलोड करा</div>
               <button id="toggleGhCfgBtn" type="button" class="text-[11px] font-bold text-[#05344E] underline">⚙️ GitHub Repo सेटिंग्ज</button>
             </div>
-
-            <div id="ghCfgBox" class="grid grid-cols-1 sm:grid-cols-5 gap-2 p-2.5 rounded-xl bg-white border border-slate-200 text-xs">
-              <div>
-                <label class="block text-[10px] text-slate-500 mb-0.5">GitHub Username</label>
-                <input id="ghOwner" type="text" value="aniltormal" class="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-xs" />
-              </div>
-              <div>
-                <label class="block text-[10px] text-slate-500 mb-0.5">Repo नाव (Public)</label>
-                <input id="ghRepo" type="text" value="darshansetu-audio" class="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-xs" />
-              </div>
-              <div>
-                <label class="block text-[10px] text-slate-500 mb-0.5">Branch</label>
-                <input id="ghBranch" type="text" value="main" class="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-xs" />
-              </div>
-              <div>
-                <label class="block text-[10px] text-slate-500 mb-0.5">लिंक प्रकार</label>
-                <select id="ghUrlMode" class="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-xs bg-white">
-                  <option value="raw">raw.githubusercontent (तात्काळ)</option>
-                  <option value="pages">GitHub Pages (.github.io)</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-[10px] text-slate-500 mb-0.5">GitHub Token (PAT)</label>
-                <input id="ghToken" type="password" placeholder="github_pat_..." class="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-xs" />
-              </div>
-              <div class="sm:col-span-5 text-[10px] text-slate-500">
-                🔒 सुरक्षितता: तुमचा GitHub Token फक्त तुमच्या ब्राउझरमध्ये (`localStorage`) सेव्ह होतो, Firebase मध्ये नाही. (`darshansetu-audio` Public repo साठी `Contents: Read & Write` Token वापरा.)
-              </div>
+            <div id="ghCfgBox" class="hidden grid grid-cols-1 sm:grid-cols-5 gap-2 p-2.5 rounded-xl bg-white border border-slate-200 text-xs">
+              <div><label class="block text-[10px] text-slate-500 mb-0.5">GitHub Username</label><input id="ghOwner" type="text" value="aniltormal" class="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-xs" /></div>
+              <div><label class="block text-[10px] text-slate-500 mb-0.5">Repo नाव (Public)</label><input id="ghRepo" type="text" value="darshansetu-audio" class="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-xs" /></div>
+              <div><label class="block text-[10px] text-slate-500 mb-0.5">Branch</label><input id="ghBranch" type="text" value="main" class="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-xs" /></div>
+              <div><label class="block text-[10px] text-slate-500 mb-0.5">लिंक प्रकार</label><select id="ghUrlMode" class="w-full rounded-xl border-[1.5px] border-[#05344E]/35 bg-[#EEF5FA] px-2.5 py-1.5 text-xs font-bold text-[#031926] cursor-pointer"><option value="raw">raw.githubusercontent (तात्काळ)</option><option value="pages">GitHub Pages (.github.io)</option></select></div>
+              <div><label class="block text-[10px] text-slate-500 mb-0.5">GitHub Token (PAT)</label><input id="ghToken" type="password" placeholder="github_pat_..." class="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-xs" /></div>
+              <div class="sm:col-span-5 text-[10px] text-slate-500">🔒 सुरक्षितता: तुमचा GitHub Token फक्त तुमच्या ब्राउझरमध्ये (`localStorage`) सेव्ह होतो, Firebase मध्ये नाही.</div>
             </div>
-
             <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-              <input id="audioFileInput" type="file" accept="audio/*,.mp3,.m4a,.wav,.ogg,.aac" multiple class="flex-1 text-xs text-slate-700 file:mr-3 file:py-2 file:px-3.5 file:rounded-xl file:border-0 file:text-xs file:font-extrabold file:bg-[#05344E] file:text-amber-300 hover:file:bg-[#084160] cursor-pointer bg-white rounded-xl border border-slate-300 p-1" />
+              <input id="audioFileInput" type="file" accept=".mp3,audio/mpeg,audio/*" multiple class="flex-1 text-xs text-slate-700 file:mr-3 file:py-2 file:px-3.5 file:rounded-xl file:border-0 file:text-xs file:font-extrabold file:bg-[#05344E] file:text-amber-300 hover:file:bg-[#084160] cursor-pointer bg-white rounded-xl border border-slate-300 p-1" />
               <button id="uploadAudioFilesBtn" type="button" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-sm transition whitespace-nowrap">⬆️ GitHub वर अपलोड करा</button>
             </div>
+            <div class="text-xs font-bold text-slate-600">📏 मर्यादा: एका वेळी कमाल <b>१० MP3</b> निवडता येतील • ३० सेकंद क्लिपसाठी प्रति फाईल कमाल <b>१.५ MB</b> (128–320 kbps)</div>
             <div id="audioUploadStatus" class="hidden text-xs font-bold text-[#05344E] bg-white/90 rounded-xl px-3 py-2 border border-amber-200"></div>
           </div>
 
           <div id="templeTracksList" class="space-y-2"></div>
-
           <div class="pt-1">
             <div class="text-[11px] font-bold text-slate-500 mb-1.5">किंवा थेट MP3 / ऑडिओ लिंक जोडा (ऐच्छिक):</div>
             <div class="flex flex-col sm:flex-row gap-2">
@@ -142,27 +148,47 @@
 
       <!-- २. फीड आणि कंटेंट कंट्रोल -->
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 space-y-4">
-        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">२. फीड आणि कंटेंट कंट्रोल</h2>
+        <h2 class="text-lg sm:text-xl font-extrabold text-[#05344E]">२. फीड आणि कंटेंट कंट्रोल</h2>
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
           <div>
-            <label class="block text-xs text-slate-600 mb-1">रील्स दाखवण्याची मर्यादा</label>
-            <select id="cfgDaysLimit" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white">
-              <option value="7">मागील ७ दिवस</option>
-              <option value="15">मागील १५ दिवस</option>
-              <option value="30">मागील ३० दिवस</option>
-            </select>
+            <label class="block text-sm font-bold text-slate-700 mb-1">रील्स दाखवण्याची मर्यादा</label>
+            <div class="relative" id="daysLimitDDWrap">
+              <button id="cfgDaysLimitBtn" type="button" onclick="toggleSimpleDD('daysLimitDDPanel')" class="w-full rounded-xl border-[1.5px] border-[#05344E]/35 bg-[#EEF5FA] px-3.5 py-2 text-sm font-bold text-[#031926] flex items-center justify-between gap-2 text-left shadow-sm">
+                <span id="cfgDaysLimitLabel">मागील १५ दिवस</span>
+                <span class="text-xs text-[#05344E]">▾</span>
+              </button>
+              <div id="daysLimitDDPanel" class="hidden absolute left-0 right-0 top-full mt-1 z-40 bg-white border-[1.5px] border-[#05344E]/40 rounded-2xl shadow-xl overflow-hidden divide-y divide-slate-100">
+                <button type="button" onclick="pickSimpleDD('cfgDaysLimit','cfgDaysLimitLabel','daysLimitDDPanel','7','मागील ७ दिवस')" class="w-full text-left px-3.5 py-2 text-sm font-bold hover:bg-[#EEF5FA]">मागील ७ दिवस</button>
+                <button type="button" onclick="pickSimpleDD('cfgDaysLimit','cfgDaysLimitLabel','daysLimitDDPanel','15','मागील १५ दिवस')" class="w-full text-left px-3.5 py-2 text-sm font-bold hover:bg-[#EEF5FA]">मागील १५ दिवस</button>
+                <button type="button" onclick="pickSimpleDD('cfgDaysLimit','cfgDaysLimitLabel','daysLimitDDPanel','30','मागील ३० दिवस')" class="w-full text-left px-3.5 py-2 text-sm font-bold hover:bg-[#EEF5FA]">मागील ३० दिवस</button>
+              </div>
+              <select id="cfgDaysLimit" class="hidden">
+                <option value="7">मागील ७ दिवस</option>
+                <option value="15" selected>मागील १५ दिवस</option>
+                <option value="30">मागील ३० दिवस</option>
+              </select>
+            </div>
           </div>
-          <label class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer">
-            <input id="cfgFreshOnTop" type="checkbox" class="w-4 h-4 accent-[#05344E]" />
-            <span class="text-xs sm:text-sm">आजचे ताजे फोटो सर्वात वर</span>
+          <label class="flex items-center justify-between gap-3 p-3 rounded-xl border bg-slate-50 border-slate-200 cursor-pointer ">
+            <span class="text-sm font-bold text-slate-800">आजचे ताजे फोटो सर्वात वर</span>
+            <span class="relative inline-flex items-center shrink-0">
+              <input id="cfgFreshOnTop" type="checkbox" checked class="sr-only peer" />
+              <span class="w-12 h-6 bg-rose-500 rounded-full peer peer-checked:bg-emerald-600 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-6 shadow-inner"></span>
+            </span>
           </label>
-          <label class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer">
-            <input id="cfgSmartShuffle" type="checkbox" class="w-4 h-4 accent-[#05344E]" />
-            <span class="text-xs sm:text-sm">जुन्या फोटोंचे स्मार्ट शफल</span>
+          <label class="flex items-center justify-between gap-3 p-3 rounded-xl border bg-slate-50 border-slate-200 cursor-pointer ">
+            <span class="text-sm font-bold text-slate-800">जुन्या फोटोंचे स्मार्ट शफल</span>
+            <span class="relative inline-flex items-center shrink-0">
+              <input id="cfgSmartShuffle" type="checkbox" checked class="sr-only peer" />
+              <span class="w-12 h-6 bg-rose-500 rounded-full peer peer-checked:bg-emerald-600 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-6 shadow-inner"></span>
+            </span>
           </label>
-          <label class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer">
-            <input id="cfgSyncHidden" type="checkbox" class="w-4 h-4 accent-[#05344E]" />
-            <span class="text-xs sm:text-sm">लपवलेली मंदिरे सिंक करा</span>
+          <label class="flex items-center justify-between gap-3 p-3 rounded-xl border bg-slate-50 border-slate-200 cursor-pointer ">
+            <span class="text-sm font-bold text-slate-800">लपवलेली मंदिरे सिंक करा</span>
+            <span class="relative inline-flex items-center shrink-0">
+              <input id="cfgSyncHidden" type="checkbox" class="sr-only peer" />
+              <span class="w-12 h-6 bg-rose-500 rounded-full peer peer-checked:bg-emerald-600 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-6 shadow-inner"></span>
+            </span>
           </label>
         </div>
         <div id="hiddenReelsWrap" class="text-xs text-slate-600 bg-slate-50 rounded-xl p-3 border border-slate-200">
@@ -172,43 +198,62 @@
 
       <!-- ३. UI, व्हेरिफाइड बॅज आणि रेडीमेड कमेंट्स -->
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 space-y-4">
-        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">३. UI, व्हेरिफाइड बॅज आणि रेडीमेड कमेंट्स</h2>
+        <h2 class="text-lg sm:text-xl font-extrabold text-[#05344E]">३. UI, व्हेरिफाइड बॅज आणि रेडीमेड कमेंट्स</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs text-slate-600 mb-1">व्हेरिफाइड बॅज पॉपअप मजकूर</label>
-            <input id="cfgBadgeText" type="text" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+            <label class="block text-sm font-bold text-slate-700 mb-1">व्हेरिफाइड बॅज पॉपअप मजकूर</label>
+            <input id="cfgBadgeText" type="text" value="दर्शनसेतू .लाईव्ह व्हेरिफाइड" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
           </div>
-          <label class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer mt-auto">
-            <input id="cfgShowLiveBtn" type="checkbox" class="w-4 h-4 accent-[#05344E]" />
-            <span class="text-xs sm:text-sm">रील्सवर '🔴 LIVE Darshan घ्या' बटण दाखवा</span>
+          <label class="flex items-center justify-between gap-3 p-3 rounded-xl border bg-slate-50 border-slate-200 cursor-pointer mt-auto">
+            <span class="text-sm font-bold text-slate-800">रील्सवर '🔴 LIVE Darshan घ्या' बटण दाखवा</span>
+            <span class="relative inline-flex items-center shrink-0">
+              <input id="cfgShowLiveBtn" type="checkbox" checked class="sr-only peer" />
+              <span class="w-12 h-6 bg-rose-500 rounded-full peer peer-checked:bg-emerald-600 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-6 shadow-inner"></span>
+            </span>
           </label>
         </div>
         <div>
-          <label class="block text-xs text-slate-600 mb-1">भक्तांसाठी रेडीमेड भक्ती कमेंट्स (प्रत्येक ओळीत एक)</label>
-          <textarea id="cfgPresetComments" rows="3" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs"></textarea>
+          <label class="block text-sm font-bold text-slate-700 mb-1">भक्तांसाठी रेडीमेड भक्ती कमेंट्स (प्रत्येक ओळीत एक)</label>
+          <textarea id="cfgPresetComments" rows="4" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm">🙏 जय हरी विठ्ठल!
+🌺 मंगलमय दर्शन!
+🚩 हर हर महादेव!
+🪔 श्री स्वामी समर्थ!</textarea>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+          <label class="flex items-center justify-between gap-3 p-3 rounded-xl border bg-slate-50 border-slate-200 cursor-pointer ">
+            <span class="text-sm font-bold text-slate-800">Shimmer स्केलेटन लोडर चालू ठेवा</span>
+            <span class="relative inline-flex items-center shrink-0">
+              <input id="cfgSkeletonEnabled" type="checkbox" checked class="sr-only peer" />
+              <span class="w-12 h-6 bg-rose-500 rounded-full peer peer-checked:bg-emerald-600 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-6 shadow-inner"></span>
+            </span>
+          </label>
+          <div>
+            <label class="block text-sm font-bold text-slate-700 mb-1">कस्टम 'दर्शन शॉर्ट्स' लोगो URL (ऐच्छिक)</label>
+            <input id="cfgCustomLogoUrl" type="url" placeholder="https://..." class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+          </div>
         </div>
       </section>
 
       <!-- ४. ⋮ आणि प्रोफाइल ⚙️ मेनू मॅनेजर -->
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 space-y-4">
-        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">४. डायनॅमिक ⋮ (रील्स) व ⚙️ (प्रोफाइल) मेनू मॅनेजर</h2>
+        <h2 class="text-lg sm:text-xl font-extrabold text-[#05344E]">४. डायनॅमिक ⋮ (रील्स) व ⚙️ (प्रोफाइल) मेनू मॅनेजर</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="space-y-2">
             <div class="text-xs font-extrabold text-slate-700">रील्स `⋮` मेनू पर्याय</div>
             <div id="moreMenuList" class="space-y-1.5"></div>
-            <div class="flex gap-2">
-              <input id="newMoreLabel" type="text" placeholder="पर्याय नाव" class="flex-1 rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs" />
-              <input id="newMoreUrl" type="text" placeholder="लिंक (ऐच्छिक)" class="flex-1 rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs" />
-              <button id="addMoreMenuBtn" type="button" class="px-3 py-1.5 rounded-xl bg-[#05344E] text-white text-xs font-bold">+</button>
+            <div class="flex flex-col sm:flex-row gap-2">
+              <input id="newMoreLabel" type="text" placeholder="पर्याय नाव" class="w-full sm:flex-1 min-w-0 rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs" />
+              <input id="newMoreUrl" type="text" placeholder="लिंक (ऐच्छिक)" class="w-full sm:flex-1 min-w-0 rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs" />
+              <button id="addMoreMenuBtn" type="button" class="w-full sm:w-auto shrink-0 px-3.5 py-1.5 rounded-xl bg-[#05344E] text-amber-300 text-xs font-bold">+ जोडा</button>
             </div>
           </div>
           <div class="space-y-2">
             <div class="text-xs font-extrabold text-slate-700">प्रोफाइल `⚙️` मेनू पर्याय</div>
             <div id="gearMenuList" class="space-y-1.5"></div>
-            <div class="flex gap-2">
-              <input id="newGearLabel" type="text" placeholder="पर्याय नाव" class="flex-1 rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs" />
-              <input id="newGearUrl" type="text" placeholder="लिंक (ऐच्छिक)" class="flex-1 rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs" />
-              <button id="addGearMenuBtn" type="button" class="px-3 py-1.5 rounded-xl bg-[#05344E] text-white text-xs font-bold">+</button>
+            <div class="flex flex-col sm:flex-row gap-2">
+              <input id="newGearLabel" type="text" placeholder="पर्याय नाव" class="w-full sm:flex-1 min-w-0 rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs" />
+              <input id="newGearUrl" type="text" placeholder="लिंक (ऐच्छिक)" class="w-full sm:flex-1 min-w-0 rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs" />
+              <button id="addGearMenuBtn" type="button" class="w-full sm:w-auto shrink-0 px-3.5 py-1.5 rounded-xl bg-[#05344E] text-amber-300 text-xs font-bold">+ जोडा</button>
             </div>
           </div>
         </div>
@@ -216,105 +261,144 @@
 
       <!-- ५. व्हर्टिकल लाईव्ह दर्शन पॉपअप व वॉटरमार्क -->
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 space-y-3">
-        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">५. व्हर्टिकल लाईव्ह दर्शन पॉपअप व वॉटरमार्क</h2>
+        <h2 class="text-lg sm:text-xl font-extrabold text-[#05344E]">५. व्हर्टिकल लाईव्ह दर्शन पॉपअप व वॉटरमार्क</h2>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <label class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer">
-            <input id="cfgLivePopupEnabled" type="checkbox" class="w-4 h-4 accent-[#05344E]" />
-            <span class="text-xs sm:text-sm">रील्सवरच व्हर्टिकल लाईव्ह पॉपअप उघडा</span>
+          <label class="flex items-center justify-between gap-3 p-3 rounded-xl border bg-slate-50 border-slate-200 cursor-pointer ">
+            <span class="text-sm font-bold text-slate-800">रील्सवरच व्हर्टिकल लाईव्ह पॉपअप उघडा</span>
+            <span class="relative inline-flex items-center shrink-0">
+              <input id="cfgLivePopupEnabled" type="checkbox" checked class="sr-only peer" />
+              <span class="w-12 h-6 bg-rose-500 rounded-full peer peer-checked:bg-emerald-600 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-6 shadow-inner"></span>
+            </span>
           </label>
           <div>
-            <label class="block text-xs text-slate-600 mb-1">वॉटरमार्क मजकूर</label>
-            <input id="cfgWatermarkText" type="text" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+            <label class="block text-sm font-bold text-slate-700 mb-1">वॉटरमार्क मजकूर</label>
+            <input id="cfgWatermarkText" type="text" value="Anil Tormal" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
           </div>
           <div>
-            <label class="block text-xs text-slate-600 mb-1">वॉटरमार्क पारदर्शकता (०.२ ते १.०)</label>
-            <input id="cfgWatermarkOpacity" type="number" step="0.1" min="0.2" max="1" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
-          </div>
-        </div>
-        <div>
-          <label class="block text-xs text-slate-600 mb-1">डिस्क्लेमर (Disclaimer) मजकूर</label>
-          <input id="cfgDisclaimer" type="text" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs" />
-        </div>
-      </section>
-
-      <!-- ६. भक्त तक्रार निवारण व ब्रॉडकास्ट सूचना -->
-      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 space-y-4">
-        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">६. भक्त तक्रारी (दर्शन सेतू टीम उत्तर) व सूचना ब्रॉडकास्ट</h2>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div class="space-y-2">
-            <div class="text-xs font-extrabold text-slate-700">अलीकडील भक्त तक्रारी</div>
-            <div id="reportsListWrap" class="space-y-2 max-h-80 overflow-y-auto pr-1"></div>
-          </div>
-          <div class="space-y-2.5 bg-amber-50/70 border border-amber-200 rounded-2xl p-4">
-            <div class="text-xs font-extrabold text-[#05344E]">📣 सर्व भक्तांना सूचना (दर्शन सेतू टीम) पाठवा</div>
-            <input id="bcTitle" type="text" placeholder="सूचनेचे शीर्षक (उदा. आषाढी एकादशी विशेष)" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs bg-white" />
-            <textarea id="bcBody" rows="3" placeholder="संपूर्ण संदेश येथे लिहा..." class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs bg-white"></textarea>
-            <button id="sendBroadcastBtn" type="button" class="w-full py-2.5 rounded-xl bg-[#05344E] hover:bg-[#084160] text-amber-300 text-xs font-extrabold transition">🔔 सर्व भक्तांना सूचना पाठवा</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- ७. भक्त विश्लेषण, ब्लॉक/अनब्लॉक व वाढदिवस -->
-      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 space-y-4">
-        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">७. भक्त विश्लेषण (जिल्हा / वय), ब्लॉक व वाढदिवस शुभेच्छा</h2>
-        <div id="analyticsSummary" class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs"></div>
-        <div class="flex flex-wrap items-center gap-2">
-          <input id="userSearchInp" type="text" placeholder="नाव, जिल्हा किंवा ईमेलने भक्त शोधा..." class="flex-1 min-w-[200px] rounded-xl border border-slate-300 px-3 py-2 text-xs" />
-          <button id="refreshUsersBtn" type="button" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold">🔄 यादी रिफ्रेश करा</button>
-        </div>
-        <div id="usersListWrap" class="space-y-2 max-h-96 overflow-y-auto pr-1"></div>
-      </section>
-
-      <!-- ८. इन-फीड प्रायोजित जाहिराती, लोगो URL व स्केलेटन लोडर -->
-      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 space-y-4">
-        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">८. इन-फीड प्रायोजित जाहिराती, लोगो URL व स्केलेटन लोडर</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <label class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer">
-            <input id="cfgAdsEnabled" type="checkbox" class="w-4 h-4 accent-[#05344E]" />
-            <span class="text-xs sm:text-sm">इन-फीड प्रायोजित कार्ड दाखवा</span>
-          </label>
-          <div>
-            <label class="block text-xs text-slate-600 mb-1">दर किती रील्सनंतर जाहिरात?</label>
-            <input id="cfgAdsAfterN" type="number" min="2" max="15" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
-          </div>
-          <label class="flex items-center gap-2.5 p-3 rounded-xl border border-slate-200 bg-slate-50 cursor-pointer">
-            <input id="cfgSkeletonEnabled" type="checkbox" class="w-4 h-4 accent-[#05344E]" />
-            <span class="text-xs sm:text-sm">Shimmer स्केलेटन लोडर चालू ठेवा</span>
-          </label>
-        </div>
-        <div>
-          <label class="block text-xs text-slate-600 mb-1">कस्टम 'दर्शन शॉर्ट्स' लोगो URL (रिकामे ठेवल्यास डिफॉल्ट WebP लोगो राहील)</label>
-          <input id="cfgCustomLogoUrl" type="url" placeholder="https://..." class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs" />
-        </div>
-        <div class="border-t border-slate-100 pt-3 space-y-2">
-          <div class="text-xs font-extrabold text-slate-700">इन-फीड जाहिरात कार्ड्स</div>
-          <div id="adsListWrap" class="space-y-2"></div>
-          <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
-            <input id="newAdTitle" type="text" placeholder="जाहिरात शीर्षक" class="rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs" />
-            <input id="newAdCta" type="text" placeholder="बटण मजकूर (उदा. अधिक पहा)" class="rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs" />
-            <input id="newAdUrl" type="url" placeholder="क्लिक लिंक (https://...)" class="rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs" />
-            <div class="flex gap-2">
-              <input id="newAdImg" type="url" placeholder="फोटो URL" class="flex-1 rounded-xl border border-slate-300 px-2.5 py-1.5 text-xs" />
-              <button id="addAdBtn" type="button" class="px-3 py-1.5 rounded-xl bg-[#05344E] text-white text-xs font-bold">+</button>
+            <label class="block text-sm font-bold text-slate-700 mb-1">वॉटरमार्क पारदर्शकता (Opacity)</label>
+            <div class="relative" id="wmOpacityDDWrap">
+              <button id="cfgWmOpacityBtn" type="button" onclick="toggleSimpleDD('wmOpacityDDPanel')" class="w-full rounded-xl border-[1.5px] border-[#05344E]/35 bg-[#EEF5FA] px-3.5 py-2 text-sm font-bold text-[#031926] flex items-center justify-between gap-2 text-left shadow-sm">
+                <span id="cfgWmOpacityLabel">७५% (0.75 - डिफॉल्ट)</span>
+                <span class="text-xs text-[#05344E]">▾</span>
+              </button>
+              <div id="wmOpacityDDPanel" class="hidden absolute left-0 right-0 top-full mt-1 z-40 bg-white border-[1.5px] border-[#05344E]/40 rounded-2xl shadow-xl overflow-hidden divide-y divide-slate-100 max-h-52 overflow-y-auto">
+                <button type="button" onclick="pickSimpleDD('cfgWatermarkOpacity','cfgWmOpacityLabel','wmOpacityDDPanel','0.2','२०% (0.2 - अत्यंत फिकट)')" class="w-full text-left px-3.5 py-2 text-sm font-bold hover:bg-[#EEF5FA]">२०% (0.2 - अत्यंत फिकट)</button>
+                <button type="button" onclick="pickSimpleDD('cfgWatermarkOpacity','cfgWmOpacityLabel','wmOpacityDDPanel','0.3','३०% (0.3)')" class="w-full text-left px-3.5 py-2 text-sm font-bold hover:bg-[#EEF5FA]">३०% (0.3)</button>
+                <button type="button" onclick="pickSimpleDD('cfgWatermarkOpacity','cfgWmOpacityLabel','wmOpacityDDPanel','0.4','४०% (0.4)')" class="w-full text-left px-3.5 py-2 text-sm font-bold hover:bg-[#EEF5FA]">४०% (0.4)</button>
+                <button type="button" onclick="pickSimpleDD('cfgWatermarkOpacity','cfgWmOpacityLabel','wmOpacityDDPanel','0.5','५०% (0.5 - मध्यम)')" class="w-full text-left px-3.5 py-2 text-sm font-bold hover:bg-[#EEF5FA]">५०% (0.5 - मध्यम)</button>
+                <button type="button" onclick="pickSimpleDD('cfgWatermarkOpacity','cfgWmOpacityLabel','wmOpacityDDPanel','0.6','६०% (0.6)')" class="w-full text-left px-3.5 py-2 text-sm font-bold hover:bg-[#EEF5FA]">६०% (0.6)</button>
+                <button type="button" onclick="pickSimpleDD('cfgWatermarkOpacity','cfgWmOpacityLabel','wmOpacityDDPanel','0.75','७५% (0.75 - डिफॉल्ट)')" class="w-full text-left px-3.5 py-2 text-sm font-bold hover:bg-[#EEF5FA]">७५% (0.75 - डिफॉल्ट)</button>
+                <button type="button" onclick="pickSimpleDD('cfgWatermarkOpacity','cfgWmOpacityLabel','wmOpacityDDPanel','0.9','९०% (0.9)')" class="w-full text-left px-3.5 py-2 text-sm font-bold hover:bg-[#EEF5FA]">९०% (0.9)</button>
+                <button type="button" onclick="pickSimpleDD('cfgWatermarkOpacity','cfgWmOpacityLabel','wmOpacityDDPanel','1','१००% (1.0 - गडद)')" class="w-full text-left px-3.5 py-2 text-sm font-bold hover:bg-[#EEF5FA]">१००% (1.0 - गडद)</button>
+              </div>
+              <select id="cfgWatermarkOpacity" class="hidden">
+                <option value="0.2">0.2</option><option value="0.3">0.3</option><option value="0.4">0.4</option>
+                <option value="0.5">0.5</option><option value="0.6">0.6</option><option value="0.75" selected>0.75</option>
+                <option value="0.9">0.9</option><option value="1">1.0</option>
+              </select>
             </div>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-slate-700 mb-1">डिस्क्लेमर (Disclaimer) मजकूर</label>
+          <input id="cfgDisclaimer" type="text" value="अस्वीकरण: या पोर्टलवरील सर्व लाईव्ह दर्शनाचे प्रक्षेपण संबंधित देवस्थान व अधिकृत तृतीय-पक्ष माध्यमांच्या माध्यमातून दाखवले जात आहे. आम्ही केवळ भक्तांच्या सोयीसाठी ते एकाच ठिकाणी एकत्रित केले आहेत. देवस्थान संदर्भात कुठल्याही अडचणीसाठी संबंधित देवस्थानाशी संपर्क साधावा." class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+        </div>
+      </section>
+
+      <!-- ६. सूचना ब्रॉडकास्ट व युजर्स Notification Management -->
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 space-y-4">
+        <h2 class="text-lg sm:text-xl font-extrabold text-[#05344E]">६. सूचना ब्रॉडकास्ट व युजर्स Notification Management</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div class="space-y-2.5 bg-amber-50/70 border border-amber-200 rounded-2xl p-4">
+            <div class="text-sm font-extrabold text-[#05344E]">📣 सर्व भक्तांना सूचना (दर्शन सेतू टीम) पाठवा</div>
+            <input id="bcTitle" type="text" placeholder="सूचनेचे शीर्षक (उदा. आषाढी एकादशी विशेष)" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white" />
+            <textarea id="bcBody" rows="3" placeholder="संपूर्ण संदेश येथे लिहा..." class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white"></textarea>
+            <button id="sendBroadcastBtn" type="button" class="w-full py-2.5 rounded-xl bg-[#05344E] hover:bg-[#084160] text-amber-300 text-sm font-extrabold transition">🔔 सर्व भक्तांना सूचना पाठवा</button>
+          </div>
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <div class="text-sm font-extrabold text-slate-700">🔔 पाठवलेल्या सूचना (Notification Management)</div>
+              <button type="button" onclick="loadBroadcasts()" class="px-2.5 py-1 rounded-lg bg-slate-100 text-xs font-bold text-[#05344E]">🔄 रिफ्रेश</button>
+            </div>
+            <div id="broadcastsManageList" class="space-y-2 max-h-72 overflow-y-auto pr-1"></div>
           </div>
         </div>
       </section>
 
       <!-- ९. ऑटो शब्द फिल्टर आणि साइन-अप अटी व शर्ती -->
       <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 space-y-4">
-        <h2 class="text-base sm:text-lg font-extrabold text-[#05344E]">९. ऑटो शब्द फिल्टर (कमेंट मॉडरेशन) व साइन-अप अटी व शर्ती</h2>
+        <h2 class="text-lg sm:text-xl font-extrabold text-[#05344E]">७. ऑटो शब्द फिल्टर (कमेंट मॉडरेशन), अटी-शर्ती व मेरिट नियम</h2>
         <div>
-          <label class="block text-xs text-slate-600 mb-1">प्रतिबंधित शब्द (स्वल्पविराम `,` देऊन लिहा — असे शब्द असलेली कमेंट आपोआप थांबवली जाईल)</label>
-          <input id="cfgBannedWords" type="text" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs" />
+          <label class="block text-sm font-bold text-slate-700 mb-1">प्रतिबंधित शब्द (स्वल्पविराम `,` देऊन लिहा — असे शब्द असलेली कमेंट आपोआप थांबवली जाईल)</label>
+          <input id="cfgBannedWords" type="text" value="http://, https://, www., .com, .in, bit.ly, t.me, whatsapp.com, telegram, lottery, jackpot, loan, betting, rummy, casino, crypto, bitcoin, earn money, free recharge, call me, dm me, subscribe, promo, फालतू, बकवास, मूर्ख, गाढव, पागल, नालायक, बदमाश, चोर, लबाड, खोटारडा, ढोंगी, बोगस, फसवणूक, सट्टा, जुगार, लॉटरी, लिंकवर क्लिक, पैसे कमवा, घटिया, बेकार, फ्रॉड, झूठा" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
         </div>
         <div>
-          <label class="block text-xs text-slate-600 mb-1">भक्त साइन-अप अटी व शर्ती (पॉपअप मजकूर - प्रत्येक मुद्दा नवीन ओळीत)</label>
-          <textarea id="cfgTermsText" rows="5" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs"></textarea>
+          <label class="block text-sm font-bold text-slate-700 mb-1">भक्त साइन-अप अटी व शर्ती (पॉपअप मजकूर - प्रत्येक मुद्दा नवीन ओळीत)</label>
+          <textarea id="cfgTermsText" rows="6" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm">१. पोर्टलचा उद्देश व निःशुल्क भक्ती सेवा: दर्शन सेतू लाईव्ह (darshansetu.live) हे सर्व भाविकांसाठी विविध देवस्थानांचे थेट लाईव्ह दर्शन, दैनंदिन फोटो, भक्ती शॉर्ट्स, पंचांग व आरती वेळापत्रक मोफत देणारे डिजिटल भक्ती पोर्टल आहे.
+२. वैयक्तिक माहितीची सुरक्षा व गोपनीयता: तुमचे नाव, जिल्हा, गाव, जन्मतारीख व भक्ती आवडी केवळ प्रोफाइल अनुभवासाठी वापरल्या जातात. WhatsApp नंबर, ईमेल व जन्मतारीख पूर्णपणे गोपनीय राहील.
+३. अचूक नाव, एकल खाते व नाव लॉक नियम: नोंदणी करताना खरे संपूर्ण नाव वापरणे बंधनकारक आहे. एकदा प्रोफाइल सेव्ह झाल्यावर नाव बदलता येणार नाही.
+४. खाते सुरक्षितता व पासवर्ड जबाबदारी: Google १-टॅप किंवा ईमेल-पासवर्ड वापरून प्रवेश करा; पासवर्ड गोपनीय ठेवण्याची जबाबदारी युजरची असेल.
+५. सभ्य भक्ती संवाद व मेरिट-डिमिरिट नियम: सर्व कमेंट्स भक्तीमय व सभ्य असाव्यात. नियमांचे उल्लंघन झाल्यास कमेंट हटवून डिमिरिट दिले जाईल; ३ पेक्षा कमी मेरिटवर व्हेरिफाइड बॅज रद्द होईल व ॲडमिनच्या अंतिम कार्यवाहीने ० पॉईंट झाल्यावर खाते कायमस्वरूपी ब्लॉक होईल.
+६. स्पॅम, फसव्या लिंक्स व अनधिकृत प्रचारावर बंदी: कमेंट्स किंवा बायोमध्ये जाहिराती, लॉटरी/बँकिंग/सायबर फसव्या लिंक्स किंवा फोन नंबर्स टाकण्यास सक्त मनाई आहे.
+७. भक्तांच्या सुरक्षेसाठी तक्रार व निवारण यंत्रणा: आक्षेपार्ह मजकूर किंवा तांत्रिक अडचणीसाठी प्रोफाइलमधील "अडचण / तक्रार नोंदवा" पर्यायातून तक्रार नोंदवता येईल.
+८. वेबसाईट कंटेंट, फोटो, व्हिडिओ व कॉपीराइट हक्क: सर्व लाईव्ह दर्शन, फोटो, व्हिडिओ व ऑडिओचे हक्क संबंधित देवस्थान ट्रस्ट व दर्शन सेतू व्यवस्थापनाकडे राखीव आहेत.
+९. थर्ड-पार्टी लाईव्ह स्ट्रीम व तांत्रिक उपलब्धता: पूजा, नैवेद्य, अभिषेक किंवा तांत्रिक अडचणीमुळे प्रक्षेपण तात्पुरते बंद राहू शकते.
+१०. ऑफलाईन कॅशिंग, कुकीज व लोकल स्टोरेज वापर: थीम, पंचांग, फॉलो मंदिरे व ऑडिओ पसंती जतन करण्यासाठी ब्राउझर लोकल स्टोरेज वापरले जाते.
+११. जाहिराती, प्रायोजित पोस्ट्स व बाह्य दुवे: सेवा मोफत ठेवण्यासाठी पोर्टलवर जाहिराती किंवा प्रायोजित दुवे दाखवले जाऊ शकतात.
+१२. कौटुंबिक सुरक्षितता व अल्पवयीन वापरकर्ते: १८ वर्षांखालील वापरकर्त्यांनी पालकांच्या मार्गदर्शनाखालीच पोर्टलचा वापर करावा.
+१३. खाते लॉग-आऊट, माहिती अपडेट व खाते हटवण्याचा अधिकार: तुम्ही कधीही माहिती अपडेट, लॉग-आऊट किंवा खाते हटवण्याची विनंती करू शकता.
+१४. अटींमध्ये बदल, मर्यादित जबाबदारी व कायदेशीर कार्यक्षेत्र: या मोफत सेवेच्या अटींमध्ये सुधारणा करण्याचा अधिकार व्यवस्थापनाकडे असून सर्व विषय महाराष्ट्र राज्याच्या न्यायक्षेत्राच्या अधीन राहतील.</textarea>
+        </div>
+        <div class="border-t border-slate-200 pt-3 space-y-3">
+          <div class="text-sm font-extrabold text-[#05344E]">⭐ मेरिट-डिमिरिट नियम व साइन-अप ऑटो-वेलकम मेसेज</div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-sm font-bold text-slate-700 mb-1">+१ मेरिटसाठी आवश्यक लाईक्स</label>
+              <input id="cfgMeritLikes" type="number" min="1" max="50" value="5" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs" />
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-slate-700 mb-1">+१ मेरिटसाठी आवश्यक कमेंट्स</label>
+              <input id="cfgMeritComments" type="number" min="1" max="50" value="3" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs" />
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-slate-700 mb-1">व्हेरिफाइड बॅजसाठी किमान मेरिट (१-५)</label>
+              <input id="cfgBadgeMinMerit" type="number" min="1" max="5" value="3" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-slate-700 mb-1">साइन-अप नंतरचा ऑटो-वेलकम मेसेज (शीर्षक)</label>
+            <input id="cfgWelcomeTitle" type="text" value="🙏 दर्शन सेतू मध्ये आपले स्वागत आहे! (मेरिट-डिमिरिट प्रणाली)" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-slate-700 mb-1">साइन-अप नंतरचा ऑटो-वेलकम मेसेज (सविस्तर मजकूर)</label>
+            <textarea id="cfgWelcomeBody" rows="5" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm">तुमचे खाते यशस्वीरित्या तयार झाले असून तुम्हाला ५/५ मेरिट पॉईंट्स व व्हेरिफाइड बॅज ✓ देण्यात आला आहे.
+
+⭐ मेरिट कसे वाढवावे?: दररोज भक्ती स्ट्रीक, रील्स लाईक आणि भक्तीमय कमेंट्स करून तुम्ही कमी झालेले मेरिट पॉईंट्स (कमाल ५ पर्यंत) पुन्हा मिळवू शकता.
+⚠️ डिमिरिट नियम: रिपोर्ट्स, चुकीचे वागणे किंवा अटी-शर्तींचे उल्लंघन झाल्यास प्रत्येक वेळी १ पॉईंट कमी होईल.
+🛡️ बॅज व ब्लॉक नियम: ३ पेक्षा कमी पॉईंट्स (२ किंवा १) झाल्यास व्हेरिफाइड बॅज आपोआप काढला जाईल. मेरिट कमीत कमी १ पॉईंटवर स्थिर राहते (अंतिम सूचना); परंतु अटी-शर्तींचे गंभीर उल्लंघन किंवा कमेंटमध्ये वाईट वागणूक आढळल्यास केवळ ॲडमिनच्या अंतिम कार्यवाहीने ० पॉईंट होऊन खाते कायमस्वरूपी ब्लॉक केले जाईल.</textarea>
+          </div>
         </div>
       </section>
     </div>
   </main>
+
+  <!-- तक्रार निवारण डॅशबोर्ड पॉपअप -->
+  <div id="reportsDashModal" class="hidden fixed inset-0 z-50 bg-black/65 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4" onclick="if(event.target===this)closeReportsModal()">
+    <div class="w-full max-w-3xl bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl border-t-2 sm:border-2 border-amber-400/70 max-h-[88vh] flex flex-col overflow-hidden">
+      <div class="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-[#031926] via-[#05344E] to-[#084160] text-white border-b-2 border-amber-400/75">
+        <div class="text-lg font-extrabold text-amber-300">📋 तक्रार निवारण डॅशबोर्ड</div>
+        <button type="button" onclick="closeReportsModal()" class="w-8 h-8 rounded-xl bg-white/15 border border-amber-300/40 text-white text-sm font-bold">✕</button>
+      </div>
+      <div class="p-4 space-y-3 overflow-y-auto flex-1">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+          <button type="button" id="repFilterAllBtn" onclick="setReportFilter('all')" class="py-2.5 px-3 rounded-xl bg-[#05344E] text-amber-300 text-sm font-extrabold shadow-xs transition">📋 एकूण तक्रारी (<span id="repCntAll">0</span>)</button>
+          <button type="button" id="repFilterPendingBtn" onclick="setReportFilter('pending')" class="py-2.5 px-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-sm font-extrabold transition">⏳ प्रलंबित तक्रारी (<span id="repCntPending">0</span>)</button>
+          <button type="button" id="repFilterResolvedBtn" onclick="setReportFilter('resolved')" class="py-2.5 px-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-sm font-extrabold transition">✓ कार्यवाही केलेल्या (<span id="repCntResolved">0</span>)</button>
+        </div>
+        <div id="reportsListWrap" class="space-y-2.5"></div>
+      </div>
+    </div>
+  </div>
 
   <!-- Sticky Save Bar -->
   <div id="stickySaveBar" class="hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur border-t border-amber-300 px-4 py-2.5 shadow-lg">
@@ -327,7 +411,7 @@
   <script src="admin-common.js"></script>
   <script>
     const DEFAULT_SHORTS_CFG = {
-      audio: { durationSec: 10, randomAudio: true, autoScroll: false, templeTracks: {} },
+      audio: { durationSec: 25, randomAudio: true, autoScroll: false, templeTracks: {} },
       feed: { daysLimit: 15, freshOnTop: true, smartShuffle: true, syncHiddenTemples: true, hiddenReelIds: {} },
       ui: {
         badgeText: 'दर्शनसेतू .लाईव्ह व्हेरिफाइड',
@@ -390,21 +474,65 @@
     }
 
     async function loadTemples() {
-      const [s1, s2] = await Promise.all([
+      const [s1, s2, s3] = await Promise.all([
         fbDb.ref('temples').once('value').catch(() => ({ val: () => ({}) })),
-        fbDb.ref('dailyDarshan/temples').once('value').catch(() => ({ val: () => ({}) }))
+        fbDb.ref('dailyDarshan/temples').once('value').catch(() => ({ val: () => ({}) })),
+        fbDb.ref('templeInfo').once('value').catch(() => ({ val: () => ({}) }))
       ]);
-      const raw = s1.val() || {};
-      const rawDt = s2.val() || {};
       const norm = {};
-      (Array.isArray(raw) ? raw : Object.values(raw)).forEach(t => { if (t && t.id && !t.deleted) norm[t.id] = t; });
-      (Array.isArray(rawDt) ? rawDt : Object.values(rawDt)).forEach(t => { if (t && t.id && !t.deleted) norm[t.id] = { ...(norm[t.id] || {}), ...t }; });
+      const addSource = (raw, tag) => {
+        const list = Array.isArray(raw) ? raw.map((t, i) => [t && t.id ? t.id : String(i), t]) : Object.entries(raw || {});
+        list.forEach(([k, t]) => {
+          if (!t || typeof t !== 'object' || t.deleted) return;
+          const id = t.id || k;
+          if (!id) return;
+          norm[id] = { ...(norm[id] || {}), ...t, id };
+        });
+      };
+      addSource(s1.val(), 'live');
+      addSource(s2.val(), 'daily');
+      addSource(s3.val(), 'info');
       templesMap = norm;
       const sel = document.getElementById('audioTempleSelect');
-      const entries = Object.entries(templesMap);
-      sel.innerHTML = entries.length
-        ? entries.map(([id, t]) => `<option value="${id}">${t.name || t.title || id}</option>`).join('')
-        : '<option value="vitthal">श्री विठ्ठल-रुक्मिणी मंदिर, पंढरपूर</option>';
+      const entries = Object.entries(templesMap).sort((a, b) => String(a[1].name || a[1].title || a[0]).localeCompare(String(b[1].name || b[1].title || b[0]), 'mr'));
+      const listData = entries.length
+        ? entries.map(([id, t]) => ({ id, name: t.name || t.title || t.templeName || id }))
+        : [{ id: 'vitthal', name: 'श्री विठ्ठल-रुक्मिणी मंदिर, पंढरपूर' }];
+      sel.innerHTML = listData.map(x => `<option value="${x.id}">${x.name}</option>`).join('');
+      window._audioTempleList = listData;
+      window.toggleAudioTempleDD = () => {
+        const p = document.getElementById('audioTempleDDPanel');
+        if (p) p.classList.toggle('hidden');
+      };
+      window.pickAudioTemple = (id, name) => {
+        sel.value = id;
+        const lbl = document.getElementById('audioTempleLabel');
+        if (lbl) lbl.textContent = name;
+        const p = document.getElementById('audioTempleDDPanel');
+        if (p) p.classList.add('hidden');
+        renderTempleTracks();
+      };
+      window.filterAudioTempleOpts = (q) => {
+        const box = document.getElementById('audioTempleDDList');
+        if (!box) return;
+        const s = String(q || '').trim().toLowerCase();
+        const matches = (window._audioTempleList || []).filter(x => !s || x.name.toLowerCase().includes(s));
+        box.innerHTML = (matches.length ? matches : window._audioTempleList || []).map(x =>
+          `<button type="button" onclick="pickAudioTemple('${x.id.replace(/'/g, '')}', '${x.name.replace(/'/g, '')}')" class="w-full text-left px-3.5 py-2 text-sm font-bold hover:bg-[#EEF5FA]">${x.name}</button>`
+        ).join('');
+      };
+      filterAudioTempleOpts('');
+      if (listData[0]) {
+        sel.value = listData[0].id;
+        const lbl = document.getElementById('audioTempleLabel');
+        if (lbl) lbl.textContent = listData[0].name;
+      }
+      document.addEventListener('click', (ev) => {
+        if (!ev.target.closest('#audioTempleDDWrap')) {
+          const p = document.getElementById('audioTempleDDPanel');
+          if (p) p.classList.add('hidden');
+        }
+      });
       sel.onchange = renderTempleTracks;
     }
 
@@ -425,33 +553,64 @@
       fillConfigForm();
     }
 
+    window.toggleSimpleDD = (pid) => {
+      ['durationDDPanel', 'daysLimitDDPanel', 'audioTempleDDPanel', 'wmOpacityDDPanel'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (id === pid) el.classList.toggle('hidden');
+        else el.classList.add('hidden');
+      });
+    };
+    window.pickSimpleDD = (selId, lblId, panelId, val, label) => {
+      const s = document.getElementById(selId);
+      const l = document.getElementById(lblId);
+      const p = document.getElementById(panelId);
+      if (s) s.value = val;
+      if (l) l.textContent = label;
+      if (p) p.classList.add('hidden');
+    };
+    document.addEventListener('click', (ev) => {
+      if (!ev.target.closest('#durationDDWrap')) { const p = document.getElementById('durationDDPanel'); if (p) p.classList.add('hidden'); }
+      if (!ev.target.closest('#daysLimitDDWrap')) { const p = document.getElementById('daysLimitDDPanel'); if (p) p.classList.add('hidden'); }
+      if (!ev.target.closest('#wmOpacityDDWrap')) { const p = document.getElementById('wmOpacityDDPanel'); if (p) p.classList.add('hidden'); }
+    });
     function fillConfigForm() {
-      document.getElementById('cfgDuration').value = String(cfg.audio.durationSec || 10);
-      document.getElementById('cfgRandomAudio').checked = !!cfg.audio.randomAudio;
+      const dVal = Number(cfg.audio.durationSec);
+      const dStr = [20, 25, 30].includes(dVal) ? String(dVal) : '25';
+      const dMap = { '20': '२० सेकंद', '25': '२५ सेकंद (डिफॉल्ट)', '30': '३० सेकंद' };
+      pickSimpleDD('cfgDuration', 'cfgDurationLabel', 'durationDDPanel', dStr, dMap[dStr]);
+      document.getElementById('cfgRandomAudio').checked = cfg.audio.randomAudio !== false;
       document.getElementById('cfgAutoScroll').checked = !!cfg.audio.autoScroll;
-      document.getElementById('cfgDaysLimit').value = String(cfg.feed.daysLimit || 15);
-      document.getElementById('cfgFreshOnTop').checked = !!cfg.feed.freshOnTop;
-      document.getElementById('cfgSmartShuffle').checked = !!cfg.feed.smartShuffle;
+      const dlStr = String(cfg.feed.daysLimit || 15);
+      const dlMap = { '7': 'मागील ७ दिवस', '15': 'मागील १५ दिवस', '30': 'मागील ३० दिवस' };
+      pickSimpleDD('cfgDaysLimit', 'cfgDaysLimitLabel', 'daysLimitDDPanel', dlStr, dlMap[dlStr] || 'मागील १५ दिवस');
+      document.getElementById('cfgFreshOnTop').checked = cfg.feed.freshOnTop !== false;
+      document.getElementById('cfgSmartShuffle').checked = cfg.feed.smartShuffle !== false;
       document.getElementById('cfgSyncHidden').checked = !!cfg.feed.syncHiddenTemples;
       document.getElementById('cfgBadgeText').value = cfg.ui.badgeText || '';
       document.getElementById('cfgShowLiveBtn').checked = cfg.ui.showLiveBtn !== false;
       document.getElementById('cfgPresetComments').value = (cfg.ui.presetComments || []).join('\n');
       document.getElementById('cfgLivePopupEnabled').checked = cfg.livePopup.enabled !== false;
-      document.getElementById('cfgWatermarkText').value = cfg.livePopup.watermarkText || '';
-      document.getElementById('cfgWatermarkOpacity').value = cfg.livePopup.watermarkOpacity ?? 0.75;
-      document.getElementById('cfgDisclaimer').value = cfg.livePopup.disclaimer || '';
-      document.getElementById('cfgAdsEnabled').checked = !!cfg.ads.enabled;
-      document.getElementById('cfgAdsAfterN').value = cfg.ads.afterEveryN || 4;
-      document.getElementById('cfgSkeletonEnabled').checked = cfg.ui.skeletonEnabled !== false;
+      document.getElementById('cfgWatermarkText').value = cfg.livePopup.watermarkText || 'Anil Tormal';
+      const opVal = String(cfg.livePopup.watermarkOpacity ?? 0.75);
+      const opMap = { '0.2':'२०% (0.2 - अत्यंत फिकट)','0.3':'३०% (0.3)','0.4':'४०% (0.4)','0.5':'५०% (0.5 - मध्यम)','0.6':'६०% (0.6)','0.75':'७५% (0.75 - डिफॉल्ट)','0.9':'९०% (0.9)','1':'१००% (1.0 - गडद)' };
+      pickSimpleDD('cfgWatermarkOpacity','cfgWmOpacityLabel','wmOpacityDDPanel', opMap[opVal] ? opVal : '0.75', opMap[opVal] || '७५% (0.75 - डिफॉल्ट)');
+      document.getElementById('cfgDisclaimer').value = cfg.livePopup.disclaimer || 'अस्वीकरण: या पोर्टलवरील सर्व लाईव्ह दर्शनाचे प्रक्षेपण संबंधित देवस्थान व अधिकृत तृतीय-पक्ष माध्यमांच्या माध्यमातून दाखवले जात आहे. आम्ही केवळ भक्तांच्या सोयीसाठी ते एकाच ठिकाणी एकत्रित केले आहेत. देवस्थान संदर्भात कुठल्याही अडचणीसाठी संबंधित देवस्थानाशी संपर्क साधावा.';
+                  document.getElementById('cfgSkeletonEnabled').checked = cfg.ui.skeletonEnabled !== false;
       document.getElementById('cfgCustomLogoUrl').value = cfg.ui.customLogoUrl || '';
-      document.getElementById('cfgBannedWords').value = (cfg.moderation.bannedWords || []).join(', ');
-      document.getElementById('cfgTermsText').value = cfg.moderation.termsText || '';
+      document.getElementById('cfgBannedWords').value = (cfg.moderation.bannedWords && cfg.moderation.bannedWords.length) ? cfg.moderation.bannedWords.join(', ') : 'http://, https://, www., .com, .in, bit.ly, t.me, whatsapp.com, telegram, lottery, jackpot, loan, betting, rummy, casino, crypto, bitcoin, earn money, free recharge, call me, dm me, subscribe, promo, फालतू, बकवास, मूर्ख, गाढव, पागल, नालायक, बदमाश, चोर, लबाड, खोटारडा, ढोंगी, बोगस, फसवणूक, सट्टा, जुगार, लॉटरी, लिंकवर क्लिक, पैसे कमवा, घटिया, बेकार, फ्रॉड, झूठा';
+      document.getElementById('cfgTermsText').value = cfg.moderation.termsText || document.getElementById('cfgTermsText').value;
+      const mCfg = cfg.merit || {};
+      document.getElementById('cfgMeritLikes').value = mCfg.likesForMerit || 5;
+      document.getElementById('cfgMeritComments').value = mCfg.commentsForMerit || 3;
+      document.getElementById('cfgBadgeMinMerit').value = mCfg.badgeMinMerit || 3;
+      document.getElementById('cfgWelcomeTitle').value = mCfg.welcomeTitle || '🙏 दर्शन सेतू मध्ये आपले स्वागत आहे! (मेरिट-डिमिरिट प्रणाली)';
+      document.getElementById('cfgWelcomeBody').value = mCfg.welcomeBody || 'तुमचे खाते यशस्वीरित्या तयार झाले असून तुम्हाला ५/५ मेरिट पॉईंट्स व व्हेरिफाइड बॅज ✓ देण्यात आला आहे.\n\n⭐ मेरिट कसे वाढवावे?: दररोज भक्ती स्ट्रीक, रील्स लाईक आणि भक्तीमय कमेंट्स करून तुम्ही कमी झालेले मेरिट पॉईंट्स (कमाल ५ पर्यंत) पुन्हा मिळवू शकता.\n⚠️ डिमिरिट नियम: रिपोर्ट्स, चुकीचे वागणे किंवा अटी-शर्तींचे उल्लंघन झाल्यास प्रत्येक वेळी १ पॉईंट कमी होईल.\n🛡️ बॅज व ब्लॉक नियम: ३ पेक्षा कमी पॉईंट्स (२ किंवा १) झाल्यास व्हेरिफाइड बॅज आपोआप काढला जाईल. मेरिट कमीत कमी १ पॉईंटवर स्थिर राहते (अंतिम सूचना); परंतु अटी-शर्तींचे गंभीर उल्लंघन किंवा कमेंटमध्ये वाईट वागणूक आढळल्यास केवळ ॲडमिनच्या अंतिम कार्यवाहीने ० पॉईंट होऊन खाते कायमस्वरूपी ब्लॉक केले जाईल.';
 
       renderTempleTracks();
       renderHiddenReels();
       renderMenuLists();
-      renderAdsList();
-    }
+          }
 
     function renderTempleTracks() {
       const tid = document.getElementById('audioTempleSelect').value;
@@ -523,28 +682,86 @@
     }
     window.delAd = (i) => { cfg.ads.items.splice(i, 1); renderAdsList(); };
 
-    async function loadReports() {
-      const snap = await fbDb.ref('shortsReports').limitToLast(40).once('value');
-      reportsMap = snap.val() || {};
-      const entries = Object.entries(reportsMap).reverse();
-      const pendingCount = entries.filter(([, r]) => r.status !== 'resolved').length;
-      document.getElementById('kpiReports').textContent = pendingCount;
+    window.loadBroadcasts = async () => {
+      const box = document.getElementById('broadcastsManageList');
+      if (!box) return;
+      const snap = await fbDb.ref('shortsBroadcasts').limitToLast(25).once('value').catch(() => ({ val: () => ({}) }));
+      const entries = Object.entries(snap.val() || {}).reverse();
+      box.innerHTML = entries.length ? entries.map(([bid, b]) => `
+        <div class="p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs flex items-start justify-between gap-2">
+          <div class="min-w-0 flex-1">
+            <div class="font-extrabold text-[#05344E] truncate">${b.title || 'सूचना'} <span class="text-[10px] text-slate-500">(${b.targetUid === 'all' ? 'सर्व भक्त' : 'वैयक्तिक'})</span></div>
+            <div class="text-slate-600 line-clamp-2 mt-0.5">${b.body || ''}</div>
+          </div>
+          <button type="button" onclick="deleteBroadcast('${bid}')" class="px-2 py-1 rounded-lg bg-rose-100 text-rose-700 font-bold shrink-0">🗑️</button>
+        </div>`).join('') : '<div class="text-xs text-slate-400 py-3">अद्याप कोणतीही सूचना पाठवलेली नाही.</div>';
+    };
+    window.deleteBroadcast = async (bid) => {
+      await fbDb.ref(`shortsBroadcasts/${bid}`).remove();
+      showToast('सूचना काढून टाकली!');
+      loadBroadcasts();
+    };
+    let reportFilterMode = 'all';
+    window.openUsersModal = () => { const m = document.getElementById('usersDashModal'); if (m) m.classList.remove('hidden'); };
+    window.closeUsersModal = () => { const m = document.getElementById('usersDashModal'); if (m) m.classList.add('hidden'); };
+    window.openReportsModal = () => { const m = document.getElementById('reportsDashModal'); if (m) m.classList.remove('hidden'); };
+    window.closeReportsModal = () => { const m = document.getElementById('reportsDashModal'); if (m) m.classList.add('hidden'); };
+    window.setReportFilter = (mode) => {
+      reportFilterMode = mode || 'all';
+      const btns = {
+        all: ['repFilterAllBtn', 'py-2.5 px-3 rounded-xl bg-[#05344E] text-amber-300 text-sm font-extrabold shadow-xs transition', 'py-2.5 px-3 rounded-xl bg-slate-100 border border-slate-200 text-[#05344E] text-sm font-extrabold transition'],
+        pending: ['repFilterPendingBtn', 'py-2.5 px-3 rounded-xl bg-amber-600 text-white text-sm font-extrabold shadow-xs transition', 'py-2.5 px-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-sm font-extrabold transition'],
+        resolved: ['repFilterResolvedBtn', 'py-2.5 px-3 rounded-xl bg-emerald-600 text-white text-sm font-extrabold shadow-xs transition', 'py-2.5 px-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-sm font-extrabold transition']
+      };
+      Object.entries(btns).forEach(([k, [id, onCls, offCls]]) => {
+        const el = document.getElementById(id);
+        if (el) el.className = k === reportFilterMode ? onCls : offCls;
+      });
+      renderFilteredReports();
+    };
+    function renderFilteredReports() {
+      const allEntries = Object.entries(reportsMap || {}).reverse();
+      const pendingEntries = allEntries.filter(([, r]) => r.status !== 'resolved');
+      const resolvedEntries = allEntries.filter(([, r]) => r.status === 'resolved');
+      document.getElementById('repCntAll').textContent = allEntries.length;
+      document.getElementById('repCntPending').textContent = pendingEntries.length;
+      document.getElementById('repCntResolved').textContent = resolvedEntries.length;
+      document.getElementById('kpiReports').textContent = pendingEntries.length;
 
+      const list = reportFilterMode === 'pending' ? pendingEntries : (reportFilterMode === 'resolved' ? resolvedEntries : allEntries);
       const box = document.getElementById('reportsListWrap');
-      if (!entries.length) { box.innerHTML = '<div class="text-xs text-slate-400 py-3">अद्याप कोणतीही तक्रार नाही.</div>'; return; }
-      box.innerHTML = entries.map(([rid, r]) => `
-        <div class="p-3 rounded-xl border ${r.status === 'resolved' ? 'border-emerald-200 bg-emerald-50/40' : 'border-amber-200 bg-amber-50/50'} space-y-1.5 text-xs">
+      if (!list.length) { box.innerHTML = '<div class="text-sm text-slate-400 py-4 text-center">या विभागात कोणतीही तक्रार नाही.</div>'; return; }
+      box.innerHTML = list.map(([rid, r]) => {
+        const dt = r.createdAt ? new Date(r.createdAt).toLocaleString('mr-IN', { dateStyle: 'short', timeStyle: 'short' }) : '';
+        return `
+        <div class="p-3.5 rounded-2xl border ${r.status === 'resolved' ? 'border-emerald-200 bg-emerald-50/40' : 'border-amber-200 bg-amber-50/50'} space-y-2 text-sm">
           <div class="flex items-center justify-between gap-2">
             <span class="font-extrabold text-[#05344E]">${r.userName || 'भक्त'} • ${r.issueType || 'तक्रार'}</span>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold ${r.status === 'resolved' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-200 text-amber-900'}">${r.status === 'resolved' ? '✓ निराकरण झाले' : '⏳ प्रलंबित'}</span>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-extrabold ${r.status === 'resolved' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-200 text-amber-900'}">${r.status === 'resolved' ? '✓ कार्यवाही झाली' : '⏳ प्रलंबित'}</span>
           </div>
           <div class="text-slate-700">${r.details || ''}</div>
-          ${r.reelTitle ? `<div class="text-[11px] text-slate-500">रील: ${r.reelTitle}</div>` : ''}
-          <div class="flex gap-2 pt-1">
-            <input id="repInp_${rid}" type="text" value="${(r.adminReply || '').replace(/"/g, '&quot;')}" placeholder="दर्शन सेतू टीम म्हणून उत्तर लिहा..." class="flex-1 rounded-lg border border-slate-300 px-2.5 py-1 text-xs bg-white" />
-            <button type="button" onclick="replyReport('${rid}')" class="px-3 py-1 rounded-lg bg-[#05344E] text-amber-300 font-bold">उत्तर पाठवा</button>
+          ${dt ? `<div class="text-xs text-slate-500">${dt}</div>` : ''}
+          ${r.reelTitle ? `<div class="text-xs text-slate-600">🎬 रील: ${r.reelTitle}</div>` : ''}
+          <div class="flex flex-col sm:flex-row gap-2 pt-1">
+            <input id="repInp_${rid}" type="text" value="${(r.adminReply || '').replace(/"/g, '&quot;')}" placeholder="दर्शन सेतू टीम म्हणून उत्तर लिहा..." class="flex-1 min-w-0 rounded-xl border border-slate-300 px-3 py-1.5 text-sm bg-white" />
+            <div class="flex gap-2 shrink-0">
+              <button type="button" onclick="replyReport('${rid}')" class="px-3.5 py-1.5 rounded-xl bg-[#05344E] text-amber-300 text-xs font-extrabold">उत्तर पाठवा</button>
+              <button type="button" onclick="deleteReport('${rid}')" class="px-2.5 py-1.5 rounded-xl bg-rose-100 text-rose-700 text-xs font-extrabold">🗑️</button>
+            </div>
           </div>
-        </div>`).join('');
+        </div>`;
+      }).join('');
+    }
+    window.deleteReport = async (rid) => {
+      if (!confirm('ही तक्रार कायमची काढून टाकायची का?')) return;
+      await fbDb.ref(`shortsReports/${rid}`).remove();
+      showToast('तक्रार काढून टाकली!');
+      loadReports();
+    };
+    async function loadReports() {
+      const snap = await fbDb.ref('shortsReports').limitToLast(60).once('value');
+      reportsMap = snap.val() || {};
+      renderFilteredReports();
     }
     window.replyReport = async (rid) => {
       const reply = document.getElementById(`repInp_${rid}`).value.trim();
@@ -567,6 +784,7 @@
       }
       showToast('तक्रारीचे उत्तर भक्ताच्या सूचना टॅबमध्ये पाठवले!');
       loadReports();
+      loadBroadcasts();
     };
 
     async function loadUsers() {
@@ -577,48 +795,111 @@
 
       // Analytics: top district, today birthdays, blocked count
       const todayMD = new Date().toISOString().slice(5, 10);
-      let bdayCount = 0, blockedCount = 0;
+      let bdayCount = 0, blockedCount = 0, maleC = 0, femaleC = 0, otherC = 0;
       const distCount = {};
       list.forEach(([, u]) => {
         if (u.dob && u.dob.slice(5, 10) === todayMD) bdayCount++;
         if (u.blocked) blockedCount++;
+        if (u.gender === 'पुरुष') maleC++;
+        else if (u.gender === 'महिला') femaleC++;
+        else if (u.gender === 'इतर') otherC++;
         if (u.district) distCount[u.district] = (distCount[u.district] || 0) + 1;
       });
       const topDist = Object.entries(distCount).sort((a, b) => b[1] - a[1])[0];
       document.getElementById('analyticsSummary').innerHTML = `
         <div class="p-3 rounded-xl bg-slate-50 border border-slate-200"><div class="text-slate-500">एकूण भक्त</div><div class="text-lg font-extrabold text-[#05344E]">${list.length}</div></div>
         <div class="p-3 rounded-xl bg-slate-50 border border-slate-200"><div class="text-slate-500">आघाडीचा जिल्हा</div><div class="text-sm font-extrabold text-[#05344E] truncate">${topDist ? topDist[0] + ' (' + topDist[1] + ')' : '—'}</div></div>
-        <div class="p-3 rounded-xl bg-amber-50 border border-amber-200"><div class="text-amber-700">🎂 आजचे वाढदिवस</div><div class="text-lg font-extrabold text-amber-800">${bdayCount}</div></div>
-        <div class="p-3 rounded-xl bg-rose-50 border border-rose-200"><div class="text-rose-700">🚫 ब्लॉक केलेले</div><div class="text-lg font-extrabold text-rose-800">${blockedCount}</div></div>
+        <div class="p-3 rounded-xl bg-sky-50 border border-sky-200"><div class="text-sky-800">👥 जेंडर विश्लेषण</div><div class="text-xs font-extrabold text-[#05344E] mt-1">👨 ${maleC} • 👩 ${femaleC} • 🙏 ${otherC}</div></div>
+        <div class="p-3 rounded-xl bg-amber-50 border border-amber-200"><div class="text-amber-700">🎂 वाढदिवस / 🚫 ब्लॉक</div><div class="text-sm font-extrabold text-amber-800 mt-0.5">🎂 ${bdayCount} • 🚫 ${blockedCount}</div></div>
       `;
       renderUsersList();
     }
 
+    let userFilterMode = 'all';
+    window.setUserFilter = (mode) => {
+      userFilterMode = mode || 'all';
+      const mapCls = {
+        all: ['uFiltAll', 'px-3 py-1.5 rounded-xl bg-[#05344E] text-amber-300 text-xs font-extrabold', 'px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-[#05344E] text-xs font-extrabold'],
+        verified: ['uFiltVer', 'px-3 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-extrabold', 'px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-extrabold'],
+        low: ['uFiltLow', 'px-3 py-1.5 rounded-xl bg-amber-600 text-white text-xs font-extrabold', 'px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-extrabold'],
+        blocked: ['uFiltBlk', 'px-3 py-1.5 rounded-xl bg-rose-600 text-white text-xs font-extrabold', 'px-3 py-1.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-900 text-xs font-extrabold'],
+        bday: ['uFiltBday', 'px-3 py-1.5 rounded-xl bg-sky-600 text-white text-xs font-extrabold', 'px-3 py-1.5 rounded-xl bg-sky-50 border border-sky-200 text-sky-900 text-xs font-extrabold']
+      };
+      Object.entries(mapCls).forEach(([k, [id, onC, offC]]) => { const e = document.getElementById(id); if (e) e.className = k === userFilterMode ? onC : offC; });
+      renderUsersList();
+    };
+    window.sendDirectUserNotif = async (uid, name) => {
+      const msg = prompt(`${name} यांना वैयक्तिक सूचना (🔔 सूचना टॅबमध्ये) पाठवा:`);
+      if (!msg || !msg.trim()) return;
+      await fbDb.ref('shortsBroadcasts').push({
+        targetUid: uid,
+        type: 'report_reply',
+        title: '📩 दर्शन सेतू टीम कडून वैयक्तिक संदेश',
+        body: msg.trim(),
+        createdAt: Date.now()
+      });
+      showToast(`${name} यांना सूचना पाठवली!`);
+    };
+    window.toggleUserDetails = (uid) => {
+      const el = document.getElementById('uDet_' + uid);
+      if (el) el.classList.toggle('hidden');
+    };
     function renderUsersList() {
       const q = (document.getElementById('userSearchInp').value || '').trim().toLowerCase();
       const todayMD = new Date().toISOString().slice(5, 10);
-      const filtered = Object.entries(usersMap).filter(([, u]) => {
+      const allEntries = Object.entries(usersMap || {});
+      const getPts = (u) => typeof u.meritPoints === 'number' ? u.meritPoints : Math.max(0, 5 - (u.warningCount || 0));
+      const cnts = { all: allEntries.length, ver: 0, low: 0, blk: 0, bday: 0 };
+      allEntries.forEach(([, u]) => {
+        const pts = getPts(u);
+        if (u.blocked || pts <= 0) cnts.blk++;
+        else if (pts < 3) cnts.low++;
+        else cnts.ver++;
+        if (u.dob && u.dob.slice(5, 10) === todayMD) cnts.bday++;
+      });
+      if (document.getElementById('uCntAll')) {
+        document.getElementById('uCntAll').textContent = cnts.all;
+        document.getElementById('uCntVer').textContent = cnts.ver;
+        document.getElementById('uCntLow').textContent = cnts.low;
+        document.getElementById('uCntBlk').textContent = cnts.blk;
+        document.getElementById('uCntBday').textContent = cnts.bday;
+      }
+      const filtered = allEntries.filter(([, u]) => {
+        const pts = getPts(u);
+        const isBlk = !!u.blocked || pts <= 0;
+        const isBday = !!(u.dob && u.dob.slice(5, 10) === todayMD);
+        if (userFilterMode === 'verified' && (isBlk || pts < 3)) return false;
+        if (userFilterMode === 'low' && (isBlk || pts >= 3)) return false;
+        if (userFilterMode === 'blocked' && !isBlk) return false;
+        if (userFilterMode === 'bday' && !isBday) return false;
         if (!q) return true;
-        return `${u.name || ''} ${u.district || ''} ${u.email || ''}`.toLowerCase().includes(q);
+        return `${u.name || ''} ${u.district || ''} ${u.city || ''} ${u.gender || ''} ${u.email || ''}`.toLowerCase().includes(q);
       });
       const box = document.getElementById('usersListWrap');
-      if (!filtered.length) { box.innerHTML = '<div class="text-xs text-slate-400 py-3">कोणतेही भक्त सापडले नाहीत.</div>'; return; }
+      if (!filtered.length) { box.innerHTML = '<div class="text-sm text-slate-400 py-4 text-center">या विभागात कोणतेही भक्त सापडले नाहीत.</div>'; return; }
       box.innerHTML = filtered.map(([uid, u]) => {
         const isBday = u.dob && u.dob.slice(5, 10) === todayMD;
-        const mPts = typeof u.meritPoints === 'number' ? u.meritPoints : Math.max(0, 5 - (u.warningCount || 0));
+        const mPts = getPts(u);
         const mBadge = u.blocked || mPts <= 0 ? '🚫 ब्लॉक' : (mPts === 1 ? '🚨 अंतिम सूचना' : (mPts < 3 ? '⚠️ बॅज रद्द' : '✓ व्हेरिफाइड'));
+        const safeName = (u.name || 'भक्त').replace(/'/g, '');
         return `
-        <div class="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-xl border ${u.blocked ? 'border-rose-300 bg-rose-50/50' : 'border-slate-200 bg-slate-50/60'} text-xs">
-          <div class="min-w-0 flex-1">
-            <div class="font-extrabold text-[#05344E]">${u.name || 'भक्त'} ${isBday ? '🎂' : ''} <span class="text-[11px] font-normal text-slate-500">(${u.district || 'जिल्हा नाही'} • ⭐ मेरिट: ${mPts}/5 • ${mBadge})</span></div>
-            <div class="text-[11px] text-slate-500 truncate">${u.email || ''} • फॉलो: ${Object.keys(u.followedTemples || {}).length}</div>
+        <div class="flex flex-col gap-2.5 p-3.5 rounded-2xl border ${u.blocked ? 'border-rose-300 bg-rose-50/50' : 'border-slate-200 bg-slate-50/60'} text-sm">
+          <div class="min-w-0 space-y-0.5">
+            <div class="text-base font-extrabold text-[#05344E]">${u.name || 'भक्त'} ${isBday ? '🎂' : ''} <span class="text-xs font-bold text-slate-600">(${u.district || 'जिल्हा नाही'}${u.gender ? ' • ' + u.gender : ''} • ⭐ मेरिट: ${mPts}/5 • ${mBadge})</span></div>
+            <div class="text-xs text-slate-600 truncate">${u.email || ''} • फॉलो मंदिरे: ${Object.keys(u.followedTemples || {}).length} • 🔥 स्ट्रीक: ${u.streakDays || 1}</div>
           </div>
-          <div class="flex items-center gap-1.5 flex-wrap">
-            ${isBday ? `<button type="button" onclick="wishBday('${uid}', '${(u.name || 'भक्त').replace(/'/g, '')}')" class="px-2.5 py-1 rounded-lg bg-amber-400 text-[#031926] font-extrabold">🎂 शुभेच्छा</button>` : ''}
-            <button type="button" onclick="addMeritUser('${uid}')" class="px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-900 font-bold">⭐ +1 मेरिट</button>
-            <button type="button" onclick="warnUser('${uid}')" class="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-900 font-bold">⬇️ डिमिरिट (-1)</button>
-            <button type="button" onclick="toggleBlockUser('${uid}')" class="px-2.5 py-1 rounded-lg ${u.blocked ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white'} font-bold">${u.blocked ? '✓ अनब्लॉक' : '🚫 ब्लॉक'}</button>
-            <button type="button" onclick="deleteDevoteeUser('${uid}', '${(u.name || 'भक्त').replace(/'/g, '')}')" class="px-2.5 py-1 rounded-lg bg-slate-200 hover:bg-rose-100 text-slate-800 hover:text-rose-700 font-bold">🗑️ हटवा</button>
+          <div id="uDet_${uid}" class="hidden p-2.5 rounded-xl bg-white border border-slate-200 text-xs text-slate-700 space-y-1">
+            <div>📍 गाव/शहर: <b>${u.city || '—'}</b> • जन्मतारीख: <b>${u.dob || '—'}</b> • WhatsApp: <b>${u.whatsapp || '—'}</b></div>
+            <div>🪔 आवडती आरती: <b>${u.favAarti || '—'}</b> • बायो: ${u.bio || '—'}</div>
+          </div>
+          <div class="pt-2 border-t border-slate-200/80 flex items-center gap-1.5 flex-wrap">
+            ${isBday ? `<button type="button" onclick="wishBday('${uid}', '${safeName}')" class="px-2.5 py-1.5 rounded-xl bg-amber-400 text-[#031926] text-xs font-extrabold">🎂 शुभेच्छा</button>` : ''}
+            <button type="button" onclick="sendDirectUserNotif('${uid}', '${safeName}')" class="px-2.5 py-1.5 rounded-xl bg-sky-100 text-sky-900 text-xs font-extrabold">💌 मेसेज</button>
+            <button type="button" onclick="addMeritUser('${uid}')" class="px-2.5 py-1.5 rounded-xl bg-emerald-100 text-emerald-900 text-xs font-extrabold">⭐ +1 मेरिट</button>
+            <button type="button" onclick="warnUser('${uid}')" class="px-2.5 py-1.5 rounded-xl bg-amber-100 text-amber-900 text-xs font-extrabold">⬇️ डिमिरिट (-1)</button>
+            <button type="button" onclick="toggleBlockUser('${uid}')" class="px-2.5 py-1.5 rounded-xl ${u.blocked ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white'} text-xs font-extrabold">${u.blocked ? '✓ अनब्लॉक' : '🚫 ब्लॉक'}</button>
+            <button type="button" onclick="toggleUserDetails('${uid}')" class="px-2.5 py-1.5 rounded-xl bg-white border border-slate-300 text-[#05344E] text-xs font-extrabold">👁️ माहिती</button>
+            <button type="button" onclick="deleteDevoteeUser('${uid}', '${safeName}')" class="px-2.5 py-1.5 rounded-xl bg-slate-200 hover:bg-rose-100 text-slate-800 hover:text-rose-700 text-xs font-extrabold">🗑️ हटवा</button>
           </div>
         </div>`;
       }).join('');
@@ -637,8 +918,7 @@
         createdAt: Date.now()
       });
       showToast(`+१ मेरिट दिले (एकूण ${nextM}/5)`);
-      loadUsers();
-    };
+          };
     window.warnUser = async (uid) => {
       const cur = usersMap[uid] || {};
       const curM = typeof cur.meritPoints === 'number' ? cur.meritPoints : Math.max(0, 5 - (cur.warningCount || 0));
@@ -662,8 +942,7 @@
       }
       await fbDb.ref('shortsBroadcasts').push({ targetUid: uid, type: bType, title, body, createdAt: Date.now() });
       showToast(nextM === 1 ? 'अंतिम सूचना (१/५ मेरिट स्थिर)!' : `डिमिरिट दिले (मेरिट: ${nextM}/5)`);
-      loadUsers();
-    };
+          };
     window.toggleBlockUser = async (uid) => {
       const cur = usersMap[uid] || {};
       const next = !cur.blocked;
@@ -678,14 +957,12 @@
         });
       }
       showToast(next ? '०/५ मेरिट — भक्त कायमस्वरूपी ब्लॉक!' : 'भक्त अनब्लॉक केले!');
-      loadUsers();
-    };
+          };
     window.deleteDevoteeUser = async (uid, name) => {
       if (!confirm(`"${name}" यांची भक्त नोंदणी (shortsUsers) कायमची काढून टाकायची का? (Admin लॉगिन कायम राहील.)`)) return;
       await fbDb.ref(`shortsUsers/${uid}`).remove();
       showToast(`${name} यांची भक्त नोंदणी काढून टाकली!`);
-      loadUsers();
-    };
+          };
     window.wishBday = async (uid, name) => {
       await fbDb.ref('shortsBroadcasts').push({
         targetUid: uid,
@@ -738,9 +1015,17 @@
         const remaining = 10 - cfg.audio.templeTracks[tid].length;
         if (remaining <= 0) return showToast('या मंदिरासाठी कमाल १० ऑडिओ मर्यादा पूर्ण झाली आहे!', true);
 
-        const toUpload = files.slice(0, remaining);
-        if (files.length > remaining) {
-          showToast(`कमाल १० मर्यादेमुळे फक्त पहिले ${remaining} ऑडिओ अपलोड होतील`, true);
+        const MAX_AUDIO_BYTES = 1.5 * 1024 * 1024;
+        const validSizeFiles = files.filter(f => f.size <= MAX_AUDIO_BYTES);
+        const skippedBig = files.length - validSizeFiles.length;
+        if (skippedBig > 0) {
+          showToast(`${skippedBig} फाईल १.५ MB (३० सेकंद मर्यादा) पेक्षा मोठ्या असल्याने वगळल्या`, true);
+        }
+        if (!validSizeFiles.length) return showToast('सर्व निवडलेल्या फाईल्स १.५ MB पेक्षा मोठ्या आहेत!', true);
+        const cap = Math.min(10, remaining);
+        const toUpload = validSizeFiles.slice(0, cap);
+        if (validSizeFiles.length > cap) {
+          showToast(`कमाल मर्यादेमुळे फक्त पहिले ${cap} ऑडिओ अपलोड होतील`, true);
         }
 
         btn.disabled = true;
@@ -846,20 +1131,6 @@
         renderMenuLists();
       };
 
-      document.getElementById('addAdBtn').onclick = () => {
-        const title = document.getElementById('newAdTitle').value.trim();
-        const ctaText = document.getElementById('newAdCta').value.trim() || 'अधिक पहा';
-        const ctaUrl = document.getElementById('newAdUrl').value.trim();
-        const mediaUrl = document.getElementById('newAdImg').value.trim();
-        if (!title || !ctaUrl) return showToast('जाहिरात शीर्षक आणि लिंक भरा', true);
-        cfg.ads.items.push({ title, ctaText, ctaUrl, mediaUrl, active: true });
-        document.getElementById('newAdTitle').value = '';
-        document.getElementById('newAdCta').value = '';
-        document.getElementById('newAdUrl').value = '';
-        document.getElementById('newAdImg').value = '';
-        renderAdsList();
-      };
-
       document.getElementById('sendBroadcastBtn').onclick = async () => {
         const title = document.getElementById('bcTitle').value.trim();
         const body = document.getElementById('bcBody').value.trim();
@@ -868,11 +1139,10 @@
         document.getElementById('bcTitle').value = '';
         document.getElementById('bcBody').value = '';
         showToast('सर्व भक्तांना सूचना पाठवली गेली!');
+        loadBroadcasts();
       };
 
-      document.getElementById('userSearchInp').oninput = renderUsersList;
-      document.getElementById('refreshUsersBtn').onclick = loadUsers;
-
+            
       document.getElementById('saveAllShortsBtn').onclick = async () => {
         cfg.audio.durationSec = Number(document.getElementById('cfgDuration').value) || 10;
         cfg.audio.randomAudio = document.getElementById('cfgRandomAudio').checked;
@@ -890,10 +1160,15 @@
         cfg.livePopup.watermarkText = document.getElementById('cfgWatermarkText').value.trim();
         cfg.livePopup.watermarkOpacity = Number(document.getElementById('cfgWatermarkOpacity').value) || 0.75;
         cfg.livePopup.disclaimer = document.getElementById('cfgDisclaimer').value.trim();
-        cfg.ads.enabled = document.getElementById('cfgAdsEnabled').checked;
-        cfg.ads.afterEveryN = Number(document.getElementById('cfgAdsAfterN').value) || 4;
-        cfg.moderation.bannedWords = document.getElementById('cfgBannedWords').value.split(',').map(s => s.trim()).filter(Boolean);
+                        cfg.moderation.bannedWords = document.getElementById('cfgBannedWords').value.split(',').map(s => s.trim()).filter(Boolean);
         cfg.moderation.termsText = document.getElementById('cfgTermsText').value.trim();
+        cfg.merit = {
+          likesForMerit: Math.max(1, parseInt(document.getElementById('cfgMeritLikes').value, 10) || 5),
+          commentsForMerit: Math.max(1, parseInt(document.getElementById('cfgMeritComments').value, 10) || 3),
+          badgeMinMerit: Math.min(5, Math.max(1, parseInt(document.getElementById('cfgBadgeMinMerit').value, 10) || 3)),
+          welcomeTitle: document.getElementById('cfgWelcomeTitle').value.trim(),
+          welcomeBody: document.getElementById('cfgWelcomeBody').value.trim()
+        };
 
         await fbDb.ref('siteConfig/shortsConfig').set(cfg);
         showToast('सर्व दर्शन शॉर्ट्स सेटिंग्ज यशस्वीरित्या सेव्ह झाल्या!');

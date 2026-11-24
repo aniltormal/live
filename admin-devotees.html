@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🙏 नोंदणीकृत भक्त व्यवस्थापन — दर्शन सेतू अ‍ॅडमिन</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Khand:wght@500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+  <style>
+    body { font-size: 15.5px; }
+    input, select, textarea { font-size: 15px !important; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+  <header id="adminTopHeader"></header>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6 pb-20">
+    <div id="authGateMsg" class="w-full space-y-4">
+      <div class="h-20 w-full rounded-2xl admin-skel border border-slate-200/70"></div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div class="h-20 rounded-2xl admin-skel border border-slate-200/70"></div>
+        <div class="h-20 rounded-2xl admin-skel border border-slate-200/70"></div>
+        <div class="h-20 rounded-2xl admin-skel border border-slate-200/70"></div>
+        <div class="h-20 rounded-2xl admin-skel border border-slate-200/70"></div>
+      </div>
+      <div class="h-32 w-full rounded-2xl admin-skel border border-slate-200/70"></div>
+    </div>
+
+    <div id="pageContent" class="hidden space-y-4 fade-in-up">
+      <div class="bg-gradient-to-r from-[#031926] via-[#05344E] to-[#084160] text-white rounded-2xl p-4 sm:p-5 shadow-md border border-amber-400/60 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-amber-300">🙏 नोंदणीकृत भक्त व्यवस्थापन</h2>
+          <p class="text-xs sm:text-sm text-slate-200 mt-0.5">मेरिट-डिमिरिट, व्हेरिफाइड बॅज, ब्लॉक/अनब्लॉक, जेंडर विश्लेषण, वाढदिवस शुभेच्छा व वैयक्तिक सूचना</p>
+        </div>
+        <button id="refreshUsersBtn" type="button" class="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-[#031926] text-xs font-extrabold shadow-sm transition">🔄 यादी रिफ्रेश करा</button>
+      </div>
+
+      <div id="analyticsSummary" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-sm"></div>
+
+      <section data-no-accordion="1" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 space-y-4">
+        <div class="flex flex-wrap gap-2" id="userFilterTabs">
+          <button type="button" id="uFiltAll" onclick="setUserFilter('all')" class="px-3.5 py-2 rounded-xl bg-[#05344E] text-amber-300 text-xs font-extrabold">👥 सर्व भक्त (<span id="uCntAll">0</span>)</button>
+          <button type="button" id="uFiltVer" onclick="setUserFilter('verified')" class="px-3.5 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-extrabold">✓ व्हेरिफाइड (<span id="uCntVer">0</span>)</button>
+          <button type="button" id="uFiltLow" onclick="setUserFilter('low')" class="px-3.5 py-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-extrabold">⚠️ बॅज रद्द / १ पॉईंट (<span id="uCntLow">0</span>)</button>
+          <button type="button" id="uFiltBlk" onclick="setUserFilter('blocked')" class="px-3.5 py-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-900 text-xs font-extrabold">🚫 ब्लॉक (<span id="uCntBlk">0</span>)</button>
+          <button type="button" id="uFiltBday" onclick="setUserFilter('bday')" class="px-3.5 py-2 rounded-xl bg-sky-50 border border-sky-200 text-sky-900 text-xs font-extrabold">🎂 वाढदिवस (<span id="uCntBday">0</span>)</button>
+        </div>
+
+        <input id="userSearchInp" type="text" placeholder="🔍 नाव, जिल्हा, गाव, जेंडर किंवा ईमेलने भक्त शोधा..." class="w-full rounded-xl border-[1.5px] border-[#05344E]/30 bg-[#EEF5FA]/50 px-3.5 py-2.5 text-sm outline-none focus:border-[#05344E]" />
+
+        <div id="usersListWrap" class="space-y-3"></div>
+      </section>
+    </div>
+  </main>
+
+  <script src="admin-common.js"></script>
+  <script>
+    renderAdminShell('devotees', 'नोंदणीकृत भक्त व्यवस्थापन');
+    const fbDb = firebase.database();
+    let usersMap = {};
+    let userFilterMode = 'all';
+
+    initAdminGuard((user) => {
+      if (!user) return;
+      loadUsers();
+    });
+
+    async function loadUsers() {
+      const snap = await fbDb.ref('shortsUsers').limitToLast(250).once('value');
+      usersMap = snap.val() || {};
+      const list = Object.entries(usersMap);
+      const todayMD = new Date().toISOString().slice(5, 10);
+      let bdayCount = 0, blockedCount = 0, maleC = 0, femaleC = 0, otherC = 0;
+      const distCount = {};
+      list.forEach(([, u]) => {
+        if (u.dob && u.dob.slice(5, 10) === todayMD) bdayCount++;
+        if (u.blocked) blockedCount++;
+        if (u.gender === 'पुरुष') maleC++;
+        else if (u.gender === 'महिला') femaleC++;
+        else if (u.gender === 'इतर') otherC++;
+        if (u.district) distCount[u.district] = (distCount[u.district] || 0) + 1;
+      });
+      const topDist = Object.entries(distCount).sort((a, b) => b[1] - a[1])[0];
+      document.getElementById('analyticsSummary').innerHTML = `
+        <div class="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-xs"><div class="text-slate-500 text-xs font-bold">एकूण भक्त</div><div class="text-2xl font-extrabold text-[#05344E]">${list.length}</div></div>
+        <div class="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-xs"><div class="text-slate-500 text-xs font-bold">आघाडीचा जिल्हा</div><div class="text-base font-extrabold text-[#05344E] truncate mt-1">${topDist ? topDist[0] + ' (' + topDist[1] + ')' : '—'}</div></div>
+        <div class="p-3.5 rounded-2xl bg-sky-50 border border-sky-200 shadow-xs"><div class="text-sky-800 text-xs font-bold">👥 जेंडर विश्लेषण</div><div class="text-sm font-extrabold text-[#05344E] mt-1">👨 ${maleC} • 👩 ${femaleC} • 🙏 ${otherC}</div></div>
+        <div class="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 shadow-xs"><div class="text-amber-700 text-xs font-bold">🎂 वाढदिवस / 🚫 ब्लॉक</div><div class="text-base font-extrabold text-amber-800 mt-1">🎂 ${bdayCount} • 🚫 ${blockedCount}</div></div>
+      `;
+      renderUsersList();
+    }
+
+    window.setUserFilter = (mode) => {
+      userFilterMode = mode || 'all';
+      const mapCls = {
+        all: ['uFiltAll', 'px-3.5 py-2 rounded-xl bg-[#05344E] text-amber-300 text-xs font-extrabold', 'px-3.5 py-2 rounded-xl bg-slate-100 border border-slate-200 text-[#05344E] text-xs font-extrabold'],
+        verified: ['uFiltVer', 'px-3.5 py-2 rounded-xl bg-emerald-600 text-white text-xs font-extrabold', 'px-3.5 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-extrabold'],
+        low: ['uFiltLow', 'px-3.5 py-2 rounded-xl bg-amber-600 text-white text-xs font-extrabold', 'px-3.5 py-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-extrabold'],
+        blocked: ['uFiltBlk', 'px-3.5 py-2 rounded-xl bg-rose-600 text-white text-xs font-extrabold', 'px-3.5 py-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-900 text-xs font-extrabold'],
+        bday: ['uFiltBday', 'px-3.5 py-2 rounded-xl bg-sky-600 text-white text-xs font-extrabold', 'px-3.5 py-2 rounded-xl bg-sky-50 border border-sky-200 text-sky-900 text-xs font-extrabold']
+      };
+      Object.entries(mapCls).forEach(([k, [id, onC, offC]]) => { const e = document.getElementById(id); if (e) e.className = k === userFilterMode ? onC : offC; });
+      renderUsersList();
+    };
+
+    function renderUsersList() {
+      const q = (document.getElementById('userSearchInp').value || '').trim().toLowerCase();
+      const todayMD = new Date().toISOString().slice(5, 10);
+      const allEntries = Object.entries(usersMap || {});
+      const getPts = (u) => typeof u.meritPoints === 'number' ? u.meritPoints : Math.max(0, 5 - (u.warningCount || 0));
+      const cnts = { all: allEntries.length, ver: 0, low: 0, blk: 0, bday: 0 };
+      allEntries.forEach(([, u]) => {
+        const pts = getPts(u);
+        if (u.blocked || pts <= 0) cnts.blk++;
+        else if (pts < 3) cnts.low++;
+        else cnts.ver++;
+        if (u.dob && u.dob.slice(5, 10) === todayMD) cnts.bday++;
+      });
+      document.getElementById('uCntAll').textContent = cnts.all;
+      document.getElementById('uCntVer').textContent = cnts.ver;
+      document.getElementById('uCntLow').textContent = cnts.low;
+      document.getElementById('uCntBlk').textContent = cnts.blk;
+      document.getElementById('uCntBday').textContent = cnts.bday;
+
+      const filtered = allEntries.filter(([, u]) => {
+        const pts = getPts(u);
+        const isBlk = !!u.blocked || pts <= 0;
+        const isBday = !!(u.dob && u.dob.slice(5, 10) === todayMD);
+        if (userFilterMode === 'verified' && (isBlk || pts < 3)) return false;
+        if (userFilterMode === 'low' && (isBlk || pts >= 3)) return false;
+        if (userFilterMode === 'blocked' && !isBlk) return false;
+        if (userFilterMode === 'bday' && !isBday) return false;
+        if (!q) return true;
+        return `${u.name || ''} ${u.district || ''} ${u.city || ''} ${u.gender || ''} ${u.email || ''}`.toLowerCase().includes(q);
+      });
+
+      const box = document.getElementById('usersListWrap');
+      if (!filtered.length) { box.innerHTML = '<div class="text-sm text-slate-400 py-6 text-center">या विभागात कोणतेही भक्त सापडले नाहीत.</div>'; return; }
+      box.innerHTML = filtered.map(([uid, u]) => {
+        const isBday = u.dob && u.dob.slice(5, 10) === todayMD;
+        const mPts = getPts(u);
+        const mBadge = u.blocked || mPts <= 0 ? '🚫 ब्लॉक' : (mPts === 1 ? '🚨 अंतिम सूचना' : (mPts < 3 ? '⚠️ बॅज रद्द' : '✓ व्हेरिफाइड'));
+        const safeName = (u.name || 'भक्त').replace(/'/g, '');
+        return `
+        <div class="flex flex-col gap-2.5 p-3.5 rounded-2xl border ${u.blocked ? 'border-rose-300 bg-rose-50/50' : 'border-slate-200 bg-slate-50/60'} text-sm">
+          <div class="min-w-0 space-y-0.5">
+            <div class="text-base font-extrabold text-[#05344E]">${u.name || 'भक्त'} ${isBday ? '🎂' : ''} <span class="text-xs font-bold text-slate-600">(${u.district || 'जिल्हा नाही'}${u.gender ? ' • ' + u.gender : ''} • ⭐ मेरिट: ${mPts}/5 • ${mBadge})</span></div>
+            <div class="text-xs text-slate-600 truncate">${u.email || ''} • फॉलो मंदिरे: ${Object.keys(u.followedTemples || {}).length} • 🔥 स्ट्रीक: ${u.streakDays || 1}</div>
+          </div>
+          <div id="uDet_${uid}" class="hidden p-2.5 rounded-xl bg-white border border-slate-200 text-xs text-slate-700 space-y-1">
+            <div>📍 गाव/शहर: <b>${u.city || '—'}</b> • जन्मतारीख: <b>${u.dob || '—'}</b> • WhatsApp: <b>${u.whatsapp || '—'}</b></div>
+            <div>🪔 आवडती आरती: <b>${u.favAarti || '—'}</b> • बायो: ${u.bio || '—'}</div>
+          </div>
+          <div class="pt-2 border-t border-slate-200/80 flex items-center gap-1.5 flex-wrap">
+            ${isBday ? `<button type="button" onclick="wishBday('${uid}', '${safeName}')" class="px-3 py-1.5 rounded-xl bg-amber-400 text-[#031926] text-xs font-extrabold">🎂 शुभेच्छा</button>` : ''}
+            <button type="button" onclick="sendDirectUserNotif('${uid}', '${safeName}')" class="px-3 py-1.5 rounded-xl bg-sky-100 text-sky-900 text-xs font-extrabold">💌 मेसेज</button>
+            <button type="button" onclick="addMeritUser('${uid}')" class="px-3 py-1.5 rounded-xl bg-emerald-100 text-emerald-900 text-xs font-extrabold">⭐ +1 मेरिट</button>
+            <button type="button" onclick="warnUser('${uid}')" class="px-3 py-1.5 rounded-xl bg-amber-100 text-amber-900 text-xs font-extrabold">⬇️ डिमिरिट (-1)</button>
+            <button type="button" onclick="toggleBlockUser('${uid}')" class="px-3 py-1.5 rounded-xl ${u.blocked ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white'} text-xs font-extrabold">${u.blocked ? '✓ अनब्लॉक' : '🚫 ब्लॉक'}</button>
+            <button type="button" onclick="toggleUserDetails('${uid}')" class="px-3 py-1.5 rounded-xl bg-white border border-slate-300 text-[#05344E] text-xs font-extrabold">👁️ माहिती</button>
+            <button type="button" onclick="deleteDevoteeUser('${uid}', '${safeName}')" class="px-3 py-1.5 rounded-xl bg-slate-200 hover:bg-rose-100 text-slate-800 hover:text-rose-700 text-xs font-extrabold">🗑️ हटवा</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    window.toggleUserDetails = (uid) => { const el = document.getElementById('uDet_' + uid); if (el) el.classList.toggle('hidden'); };
+    window.sendDirectUserNotif = async (uid, name) => {
+      const msg = prompt(`${name} यांना वैयक्तिक सूचना (🔔 सूचना टॅबमध्ये) पाठवा:`);
+      if (!msg || !msg.trim()) return;
+      await fbDb.ref('shortsBroadcasts').push({ targetUid: uid, type: 'report_reply', title: '📩 दर्शन सेतू टीम कडून वैयक्तिक संदेश', body: msg.trim(), createdAt: Date.now() });
+      showToast(`${name} यांना सूचना पाठवली!`);
+    };
+    window.addMeritUser = async (uid) => {
+      const cur = usersMap[uid] || {};
+      const curM = typeof cur.meritPoints === 'number' ? cur.meritPoints : Math.max(0, 5 - (cur.warningCount || 0));
+      const nextM = Math.min(5, curM + 1);
+      await fbDb.ref(`shortsUsers/${uid}`).update({ meritPoints: nextM, verified: nextM >= 3, blocked: false });
+      await fbDb.ref('shortsBroadcasts').push({ targetUid: uid, type: 'merit_up', title: '⭐ दर्शन सेतू टीम कडून +१ मेरिट पॉईंट!', body: `तुमच्या उत्तम भक्ती सहभागाबद्दल मेरिट स्कोअर ${nextM}/5 करण्यात आला आहे.${nextM >= 3 ? ' तुमचा व्हेरिफाइड बॅज सक्रिय आहे ✓' : ''}`, createdAt: Date.now() });
+      showToast(`+१ मेरिट दिले (एकूण ${nextM}/5)`);
+      loadUsers();
+    };
+    window.warnUser = async (uid) => {
+      const cur = usersMap[uid] || {};
+      const curM = typeof cur.meritPoints === 'number' ? cur.meritPoints : Math.max(0, 5 - (cur.warningCount || 0));
+      const nextM = Math.max(1, curM - 1);
+      const nextW = (cur.warningCount || 0) + 1;
+      await fbDb.ref(`shortsUsers/${uid}`).update({ meritPoints: nextM, verified: nextM >= 3 && !cur.blocked, warningCount: nextW });
+      let bType = 'demerit';
+      let title = `⚠️ डिमिरिट सूचना (मेरिट: ${nextM}/5)`;
+      let body = `नियम-अटींचे उल्लंघन किंवा रिपोर्टमुळे १ मेरिट पॉईंट कमी झाला आहे. सध्याचे मेरिट: ${nextM}/5.`;
+      if (nextM === 1) {
+        bType = 'final_warning';
+        title = '🚨 अंतिम सूचना (१/५ मेरिट स्थिर)';
+        body = 'तुमचे मेरिट किमान १ पॉईंटवर पोहोचले आहे. पुढील गंभीर अटी-उल्लंघन किंवा वाईट वागणुकीवर ॲडमिनच्या अंतिम कार्यवाहीने ० पॉईंट होऊन खाते कायमस्वरूपी ब्लॉक केले जाईल.';
+      } else if (nextM < 3) {
+        title = `⚠️ व्हेरिफाइड बॅज रद्द (मेरिट: ${nextM}/5)`;
+        body = `३ पेक्षा कमी मेरिट पॉईंट्स (${nextM}/5) झाल्यामुळे तुमचा व्हेरिफाइड बॅज काढून घेण्यात आला आहे. स्ट्रीक, लाईक व कमेंटने मेरिट परत मिळवा.`;
+      }
+      await fbDb.ref('shortsBroadcasts').push({ targetUid: uid, type: bType, title, body, createdAt: Date.now() });
+      showToast(nextM === 1 ? 'अंतिम सूचना (१/५ मेरिट स्थिर)!' : `डिमिरिट दिले (मेरिट: ${nextM}/5)`);
+      loadUsers();
+    };
+    window.toggleBlockUser = async (uid) => {
+      const cur = usersMap[uid] || {};
+      const next = !cur.blocked;
+      const upd = next ? { blocked: true, meritPoints: 0, verified: false } : { blocked: false, meritPoints: Math.max(1, cur.meritPoints || 1), verified: false };
+      await fbDb.ref(`shortsUsers/${uid}`).update(upd);
+      if (next) {
+        await fbDb.ref('shortsBroadcasts').push({ targetUid: uid, type: 'blocked', title: '🚫 ॲडमिन अंतिम कार्यवाही: खाते कायमस्वरूपी ब्लॉक (०/५)', body: 'अटी-शर्तींचे गंभीर उल्लंघन किंवा कमेंटमधील अयोग्य वागणुकीमुळे ॲडमिन कडून तुमचे मेरिट ०/५ करून खाते कायमस्वरूपी ब्लॉक करण्यात आले आहे.', createdAt: Date.now() });
+      }
+      showToast(next ? '०/५ मेरिट — भक्त कायमस्वरूपी ब्लॉक!' : 'भक्त अनब्लॉक केले!');
+      loadUsers();
+    };
+    window.deleteDevoteeUser = async (uid, name) => {
+      if (!confirm(`"${name}" यांची भक्त नोंदणी (shortsUsers) कायमची काढून टाकायची का?`)) return;
+      await fbDb.ref(`shortsUsers/${uid}`).remove();
+      showToast(`${name} यांची भक्त नोंदणी काढून टाकली!`);
+      loadUsers();
+    };
+    window.wishBday = async (uid, name) => {
+      await fbDb.ref('shortsBroadcasts').push({ targetUid: uid, title: '🎂 दर्शन सेतू टीम कडून वाढदिवसाच्या शुभेच्छा!', body: `🙏 नमस्कार ${name}, आपणास वाढदिवसाच्या हार्दिक भक्तीमय शुभेच्छा! श्री विठ्ठल-रुक्मिणी कृपेने आपले आयुष्य सुखमय होवो.`, createdAt: Date.now() });
+      showToast(`${name} यांना वाढदिवसाच्या शुभेच्छा पाठवल्या!`);
+    };
+
+    document.getElementById('userSearchInp').oninput = renderUsersList;
+    document.getElementById('refreshUsersBtn').onclick = loadUsers;
+  </script>
+</body>
+</html>

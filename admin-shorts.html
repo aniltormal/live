@@ -484,19 +484,31 @@
           welcomeBody: document.getElementById('cfgWelcomeBody').value.trim()
         };
 
-        const cleanCfg = JSON.parse(JSON.stringify(cfg));
-        await fbDb.ref('siteConfig/shortsConfig').set(cleanCfg);
+        const cleanCfg = JSON.parse(JSON.stringify({
+          audio: cfg.audio,
+          feed: cfg.feed,
+          ui: cfg.ui,
+          menus: cfg.menus,
+          livePopup: cfg.livePopup,
+          moderation: cfg.moderation,
+          merit: cfg.merit
+        }));
+        await fbDb.ref('siteConfig/shortsConfig').update(cleanCfg);
+        if (btn) btn.textContent = '✅ सेव्ह झाले!';
         showToast('✅ सर्व दर्शन शॉर्ट्स सेटिंग्ज यशस्वीरित्या सेव्ह झाल्या!');
+        setTimeout(() => { if (btn) btn.textContent = origTxt || '💾 सर्व सेटिंग्ज सेव्ह करा'; }, 2500);
         } catch (err) {
           showToast('❌ सेव्ह करताना त्रुटी: ' + (err && err.message ? err.message : err), true);
         } finally {
           if (btn) { btn.disabled = false; btn.textContent = origTxt || '💾 सर्व सेटिंग्ज सेव्ह करा'; }
         }
         };
-        if (typeof window.askSaveConfirm === 'function') {
-          window.askSaveConfirm(doSave);
-        } else if (typeof openAdvModal === 'function') {
+        if (typeof openAdvModal === 'function') {
           openAdvModal({ title: '💾 सेटिंग्ज सेव्ह करायच्या का?', msg: 'तुम्ही केलेले सर्व बदल थेट लाईव्ह वेबसाईटवर लागू करून सेव्ह करायचे का?', okText: '✅ होय, सेव्ह करा', onOk: () => { doSave(); } });
+        } else if (typeof window.askSaveConfirm === 'function') {
+          window.askSaveConfirm(doSave);
+        } else {
+          doSave();
         }
       };
 

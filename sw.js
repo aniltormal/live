@@ -1,4 +1,4 @@
-const CACHE_NAME = 'darshan-setu-v125';
+const CACHE_NAME = 'darshan-setu-v126';
 const CORE_ASSETS = [
   './',
   'index.html',

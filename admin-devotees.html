@@ -74,7 +74,6 @@
       const g = document.getElementById('authGateMsg');
       if (g) g.innerHTML = `<div class="p-4 rounded-2xl bg-rose-50 border border-rose-300 text-rose-800 text-sm font-bold">❌ त्रुटी: ${ev.message || 'Unknown error'}</div>`;
     });
-    let fbDb = null;
     let usersMap = {};
     let userFilterMode = 'all';
     let authDone = false;
@@ -92,7 +91,6 @@
 
     function startDevoteesPage() {
       authDone = true;
-      fbDb = firebase.database();
       loadUsers();
     }
 
@@ -117,7 +115,7 @@
       const box = document.getElementById('usersListWrap');
       if (box) box.innerHTML = '<div class="h-16 rounded-xl admin-skel"></div><div class="h-16 rounded-xl admin-skel"></div>';
       try {
-        const snap = await fbDb.ref('shortsUsers').limitToLast(250).once('value');
+        const snap = await (typeof fbDb !== "undefined" ? fbDb : firebase.database()).ref('shortsUsers').limitToLast(250).once('value');
         usersMap = snap.val() || {};
       } catch (err) {
         if (box) box.innerHTML = `<div class="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-sm font-bold">❌ भक्त यादी लोड करताना त्रुटी: ${err.message || err}</div>`;
@@ -223,15 +221,15 @@
     window.sendDirectUserNotif = async (uid, name) => {
       const msg = prompt(`${name} यांना वैयक्तिक सूचना (🔔 सूचना टॅबमध्ये) पाठवा:`);
       if (!msg || !msg.trim()) return;
-      await fbDb.ref('shortsBroadcasts').push({ targetUid: uid, type: 'report_reply', title: '📩 दर्शन सेतू टीम कडून वैयक्तिक संदेश', body: msg.trim(), createdAt: Date.now() });
+      await (typeof fbDb !== "undefined" ? fbDb : firebase.database()).ref('shortsBroadcasts').push({ targetUid: uid, type: 'report_reply', title: '📩 दर्शन सेतू टीम कडून वैयक्तिक संदेश', body: msg.trim(), createdAt: Date.now() });
       showToast(`${name} यांना सूचना पाठवली!`);
     };
     window.addMeritUser = async (uid) => {
       const cur = usersMap[uid] || {};
       const curM = typeof cur.meritPoints === 'number' ? cur.meritPoints : Math.max(0, 5 - (cur.warningCount || 0));
       const nextM = Math.min(5, curM + 1);
-      await fbDb.ref(`shortsUsers/${uid}`).update({ meritPoints: nextM, verified: nextM >= 3, blocked: false });
-      await fbDb.ref('shortsBroadcasts').push({ targetUid: uid, type: 'merit_up', title: '⭐ दर्शन सेतू टीम कडून +१ मेरिट पॉईंट!', body: `तुमच्या उत्तम भक्ती सहभागाबद्दल मेरिट स्कोअर ${nextM}/5 करण्यात आला आहे.${nextM >= 3 ? ' तुमचा व्हेरिफाइड बॅज सक्रिय आहे ✓' : ''}`, createdAt: Date.now() });
+      await (typeof fbDb !== "undefined" ? fbDb : firebase.database()).ref(`shortsUsers/${uid}`).update({ meritPoints: nextM, verified: nextM >= 3, blocked: false });
+      await (typeof fbDb !== "undefined" ? fbDb : firebase.database()).ref('shortsBroadcasts').push({ targetUid: uid, type: 'merit_up', title: '⭐ दर्शन सेतू टीम कडून +१ मेरिट पॉईंट!', body: `तुमच्या उत्तम भक्ती सहभागाबद्दल मेरिट स्कोअर ${nextM}/5 करण्यात आला आहे.${nextM >= 3 ? ' तुमचा व्हेरिफाइड बॅज सक्रिय आहे ✓' : ''}`, createdAt: Date.now() });
       showToast(`+१ मेरिट दिले (एकूण ${nextM}/5)`);
       loadUsers();
     };
@@ -240,7 +238,7 @@
       const curM = typeof cur.meritPoints === 'number' ? cur.meritPoints : Math.max(0, 5 - (cur.warningCount || 0));
       const nextM = Math.max(1, curM - 1);
       const nextW = (cur.warningCount || 0) + 1;
-      await fbDb.ref(`shortsUsers/${uid}`).update({ meritPoints: nextM, verified: nextM >= 3 && !cur.blocked, warningCount: nextW });
+      await (typeof fbDb !== "undefined" ? fbDb : firebase.database()).ref(`shortsUsers/${uid}`).update({ meritPoints: nextM, verified: nextM >= 3 && !cur.blocked, warningCount: nextW });
       let bType = 'demerit';
       let title = `⚠️ डिमिरिट सूचना (मेरिट: ${nextM}/5)`;
       let body = `नियम-अटींचे उल्लंघन किंवा रिपोर्टमुळे १ मेरिट पॉईंट कमी झाला आहे. सध्याचे मेरिट: ${nextM}/5.`;
@@ -252,7 +250,7 @@
         title = `⚠️ व्हेरिफाइड बॅज रद्द (मेरिट: ${nextM}/5)`;
         body = `३ पेक्षा कमी मेरिट पॉईंट्स (${nextM}/5) झाल्यामुळे तुमचा व्हेरिफाइड बॅज काढून घेण्यात आला आहे. स्ट्रीक, लाईक व कमेंटने मेरिट परत मिळवा.`;
       }
-      await fbDb.ref('shortsBroadcasts').push({ targetUid: uid, type: bType, title, body, createdAt: Date.now() });
+      await (typeof fbDb !== "undefined" ? fbDb : firebase.database()).ref('shortsBroadcasts').push({ targetUid: uid, type: bType, title, body, createdAt: Date.now() });
       showToast(nextM === 1 ? 'अंतिम सूचना (१/५ मेरिट स्थिर)!' : `डिमिरिट दिले (मेरिट: ${nextM}/5)`);
       loadUsers();
     };
@@ -260,21 +258,21 @@
       const cur = usersMap[uid] || {};
       const next = !cur.blocked;
       const upd = next ? { blocked: true, meritPoints: 0, verified: false } : { blocked: false, meritPoints: Math.max(1, cur.meritPoints || 1), verified: false };
-      await fbDb.ref(`shortsUsers/${uid}`).update(upd);
+      await (typeof fbDb !== "undefined" ? fbDb : firebase.database()).ref(`shortsUsers/${uid}`).update(upd);
       if (next) {
-        await fbDb.ref('shortsBroadcasts').push({ targetUid: uid, type: 'blocked', title: '🚫 ॲडमिन अंतिम कार्यवाही: खाते कायमस्वरूपी ब्लॉक (०/५)', body: 'अटी-शर्तींचे गंभीर उल्लंघन किंवा कमेंटमधील अयोग्य वागणुकीमुळे ॲडमिन कडून तुमचे मेरिट ०/५ करून खाते कायमस्वरूपी ब्लॉक करण्यात आले आहे.', createdAt: Date.now() });
+        await (typeof fbDb !== "undefined" ? fbDb : firebase.database()).ref('shortsBroadcasts').push({ targetUid: uid, type: 'blocked', title: '🚫 ॲडमिन अंतिम कार्यवाही: खाते कायमस्वरूपी ब्लॉक (०/५)', body: 'अटी-शर्तींचे गंभीर उल्लंघन किंवा कमेंटमधील अयोग्य वागणुकीमुळे ॲडमिन कडून तुमचे मेरिट ०/५ करून खाते कायमस्वरूपी ब्लॉक करण्यात आले आहे.', createdAt: Date.now() });
       }
       showToast(next ? '०/५ मेरिट — भक्त कायमस्वरूपी ब्लॉक!' : 'भक्त अनब्लॉक केले!');
       loadUsers();
     };
     window.deleteDevoteeUser = async (uid, name) => {
       if (!confirm(`"${name}" यांची भक्त नोंदणी (shortsUsers) कायमची काढून टाकायची का?`)) return;
-      await fbDb.ref(`shortsUsers/${uid}`).remove();
+      await (typeof fbDb !== "undefined" ? fbDb : firebase.database()).ref(`shortsUsers/${uid}`).remove();
       showToast(`${name} यांची भक्त नोंदणी काढून टाकली!`);
       loadUsers();
     };
     window.wishBday = async (uid, name) => {
-      await fbDb.ref('shortsBroadcasts').push({ targetUid: uid, title: '🎂 दर्शन सेतू टीम कडून वाढदिवसाच्या शुभेच्छा!', body: `🙏 नमस्कार ${name}, आपणास वाढदिवसाच्या हार्दिक भक्तीमय शुभेच्छा! श्री विठ्ठल-रुक्मिणी कृपेने आपले आयुष्य सुखमय होवो.`, createdAt: Date.now() });
+      await (typeof fbDb !== "undefined" ? fbDb : firebase.database()).ref('shortsBroadcasts').push({ targetUid: uid, title: '🎂 दर्शन सेतू टीम कडून वाढदिवसाच्या शुभेच्छा!', body: `🙏 नमस्कार ${name}, आपणास वाढदिवसाच्या हार्दिक भक्तीमय शुभेच्छा! श्री विठ्ठल-रुक्मिणी कृपेने आपले आयुष्य सुखमय होवो.`, createdAt: Date.now() });
       showToast(`${name} यांना वाढदिवसाच्या शुभेच्छा पाठवल्या!`);
     };
 

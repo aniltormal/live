@@ -624,6 +624,7 @@ function initAdminGuard(onAuthed, isLoginPage = false) {
 (function initGlobalSaveConfirmation() {
   const SAVE_IDS = new Set([
     'saveAdsBtn',
+    'saveAllShortsBtn',
     'saveHeaderBtn',
     'saveLayoutBtn',
     'saveMasterBtn',

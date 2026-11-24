@@ -43,7 +43,7 @@
         <div class="bg-white rounded-2xl p-4 shadow-sm border border-emerald-200 flex items-center justify-between gap-2">
           <div>
             <div class="text-sm text-slate-600 font-bold">Admin-on-Reels मोड</div>
-            <a href="reels.html?admin=1" target="_blank" class="inline-flex items-center gap-1.5 mt-1 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-sm transition">🛡️ रील्स फीडवर उघडा →</a>
+            <a href="bhaktishorts.html?admin=1" target="_blank" class="inline-flex items-center gap-1.5 mt-1 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-sm transition">🛡️ रील्स फीडवर उघडा →</a>
           </div>
           <div class="text-3xl">🎬</div>
         </div>
@@ -396,7 +396,7 @@
   <!-- Sticky Save Bar -->
   <div id="stickySaveBar" class="hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur border-t border-amber-300 px-4 py-2.5 shadow-lg">
     <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
-      <span class="text-xs text-slate-600 hidden sm:inline">बदल केल्यानंतर सेव्ह बटण दाबा — लगेच `reels.html` व `profile.html` वर लागू होईल.</span>
+      <span class="text-xs text-slate-600 hidden sm:inline">बदल केल्यानंतर सेव्ह बटण दाबा — लगेच `bhaktishorts.html` व `profile.html` वर लागू होईल.</span>
       <button id="saveAllShortsBtn" type="button" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#05344E] to-[#084160] hover:opacity-95 text-amber-300 text-sm font-extrabold shadow-md transition">💾 सर्व सेटिंग्ज सेव्ह करा</button>
     </div>
   </div>
@@ -1172,7 +1172,16 @@
 
             
       document.getElementById('saveAllShortsBtn').onclick = async () => {
-        cfg.audio.durationSec = Number(document.getElementById('cfgDuration').value) || 10;
+        const btn = document.getElementById('saveAllShortsBtn');
+        const origTxt = btn ? btn.textContent : '';
+        try {
+          if (btn) { btn.disabled = true; btn.textContent = '⏳ सेव्ह होत आहे...'; }
+          cfg.audio = cfg.audio || {};
+          cfg.feed = cfg.feed || {};
+          cfg.ui = cfg.ui || {};
+          cfg.livePopup = cfg.livePopup || {};
+          cfg.moderation = cfg.moderation || {};
+          cfg.audio.durationSec = Number(document.getElementById('cfgDuration').value) || 25;
         cfg.audio.randomAudio = document.getElementById('cfgRandomAudio').checked;
         cfg.audio.autoScroll = document.getElementById('cfgAutoScroll').checked;
         cfg.feed.daysLimit = Number(document.getElementById('cfgDaysLimit').value) || 15;
@@ -1198,8 +1207,14 @@
           welcomeBody: document.getElementById('cfgWelcomeBody').value.trim()
         };
 
-        await fbDb.ref('siteConfig/shortsConfig').set(cfg);
-        showToast('सर्व दर्शन शॉर्ट्स सेटिंग्ज यशस्वीरित्या सेव्ह झाल्या!');
+        const cleanCfg = JSON.parse(JSON.stringify(cfg));
+        await fbDb.ref('siteConfig/shortsConfig').set(cleanCfg);
+        showToast('✅ सर्व दर्शन शॉर्ट्स सेटिंग्ज यशस्वीरित्या सेव्ह झाल्या!');
+        } catch (err) {
+          showToast('❌ सेव्ह करताना त्रुटी: ' + (err && err.message ? err.message : err), true);
+        } finally {
+          if (btn) { btn.disabled = false; btn.textContent = origTxt || '💾 सर्व सेटिंग्ज सेव्ह करा'; }
+        }
       };
     }
   </script>

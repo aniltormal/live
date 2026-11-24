@@ -1846,8 +1846,10 @@
         shortsAdsCfg.enabled = Boolean(document.getElementById('cfgShortsAdsEnabled')?.checked);
         shortsAdsCfg.afterEveryN = Math.max(2, Math.min(15, Number(document.getElementById('cfgShortsAdsAfterN')?.value) || 4));
         shortsAdsCfg.minViewSec = Number(document.getElementById('cfgShortsAdsMinView')?.value || 3);
-        await fbDb.ref('siteConfig/ads').set(payload);
-        await fbDb.ref('siteConfig/shortsConfig/ads').set(shortsAdsCfg);
+        const cleanPayload = JSON.parse(JSON.stringify(payload));
+        const cleanShortsAds = JSON.parse(JSON.stringify(shortsAdsCfg));
+        await fbDb.ref('siteConfig/ads').set(cleanPayload);
+        await fbDb.ref('siteConfig/shortsConfig/ads').set(cleanShortsAds);
         Object.keys(slotPendingFiles).forEach(k => delete slotPendingFiles[k]);
         Object.keys(preRollPendingFiles).forEach(k => delete preRollPendingFiles[k]);
         Object.keys(splashPendingFiles).forEach(k => delete splashPendingFiles[k]);

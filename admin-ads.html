@@ -434,7 +434,7 @@
 
   <div id="toastBox" class="hidden"></div>
 
-  <script src="admin-common.js?v=125"></script>
+  <script src="admin-common.js?v=126"></script>
   <script>
     renderAdminShell('ads', 'जाहिरात नियंत्रण');
     populateFontSelect('bannerFontSelect');
@@ -1719,7 +1719,8 @@
       });
     });
 
-    document.getElementById('saveAdsBtn').addEventListener('click', async () => {
+    document.getElementById('saveAdsBtn').addEventListener('click', () => {
+      const doSaveAds = async () => {
       try {
         syncSlotsFromDOM();
         syncMediaSlotsFromDOM('preroll');
@@ -1863,6 +1864,9 @@
       } catch (err) {
         showToast('❌ त्रुटी: ' + err.message, true);
       }
+      };
+      if (typeof window.askSaveConfirm === 'function') window.askSaveConfirm(doSaveAds);
+      else if (confirm('तुम्ही केलेले सर्व बदल सेव्ह करायचे का?')) doSaveAds();
     });
 
     function updateAdsTabPreview() {

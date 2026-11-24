@@ -407,7 +407,13 @@ function compressImageFile(file, maxW = 900, maxH = 900, quality = 0.8) {
     });
 
     popover.querySelector('.hsv-done').addEventListener('click', () => popover.classList.add('hidden'));
-    document.addEventListener('click', (e) => {
+    window.askSaveConfirm = function(onConfirm) {
+    pendingBtn = null;
+    pendingCb = onConfirm;
+    ensureModal().style.display = 'flex';
+  };
+
+  document.addEventListener('click', (e) => {
       if (!popover.classList.contains('hidden') && !popover.contains(e.target) && e.target !== activeSwatch && e.target !== activeInput) {
         popover.classList.add('hidden');
       }
@@ -623,8 +629,6 @@ function initAdminGuard(onAuthed, isLoginPage = false) {
 // Universal Save Confirmation Modal across all 8 Admin Tabs
 (function initGlobalSaveConfirmation() {
   const SAVE_IDS = new Set([
-    'saveAdsBtn',
-    'saveAllShortsBtn',
     'saveHeaderBtn',
     'saveLayoutBtn',
     'saveMasterBtn',
@@ -634,6 +638,7 @@ function initAdminGuard(onAuthed, isLoginPage = false) {
     'saveVisMenuBtn'
   ]);
   let pendingBtn = null;
+  let pendingCb = null;
 
   function ensureModal() {
     let modal = document.getElementById('globalSaveConfirmModal');
@@ -659,10 +664,17 @@ function initAdminGuard(onAuthed, isLoginPage = false) {
     document.body.appendChild(modal);
     modal.querySelector('#globalSaveCancelBtn').addEventListener('click', () => {
       pendingBtn = null;
+      pendingCb = null;
       modal.style.display = 'none';
     });
     modal.querySelector('#globalSaveConfirmBtn').addEventListener('click', () => {
       modal.style.display = 'none';
+      if (pendingCb) {
+        const fn = pendingCb;
+        pendingCb = null;
+        fn();
+        return;
+      }
       if (pendingBtn) {
         const b = pendingBtn;
         pendingBtn = null;

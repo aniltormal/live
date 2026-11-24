@@ -401,7 +401,7 @@
     </div>
   </div>
 
-  <script src="admin-common.js?v=125"></script>
+  <script src="admin-common.js?v=126"></script>
   <script>
     const DEFAULT_SHORTS_CFG = {
       audio: { durationSec: 25, randomAudio: true, autoScroll: false, templeTracks: {} },
@@ -1171,7 +1171,8 @@
       };
 
             
-      document.getElementById('saveAllShortsBtn').onclick = async () => {
+      document.getElementById('saveAllShortsBtn').onclick = () => {
+        const doSave = async () => {
         const btn = document.getElementById('saveAllShortsBtn');
         const origTxt = btn ? btn.textContent : '';
         try {
@@ -1215,6 +1216,9 @@
         } finally {
           if (btn) { btn.disabled = false; btn.textContent = origTxt || '💾 सर्व सेटिंग्ज सेव्ह करा'; }
         }
+        };
+        if (typeof window.askSaveConfirm === 'function') window.askSaveConfirm(doSave);
+        else if (confirm('तुम्ही केलेले सर्व बदल सेव्ह करायचे का?')) doSave();
       };
     }
   </script>

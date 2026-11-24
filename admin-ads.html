@@ -306,8 +306,9 @@
         <button type="button" onclick="closeAdScheduleModal()" class="w-7 h-7 rounded-lg bg-white/15 hover:bg-rose-600 text-white font-bold flex items-center justify-center cursor-pointer">✕</button>
       </div>
       <div class="p-4 space-y-3">
-        <div class="rounded-xl bg-slate-50 border border-slate-200 px-3 py-2 text-xs font-bold text-slate-600">
-          🕒 पब्लिश दिनांक व वेळ: <span id="schedModalPubText" class="text-[#05344E] font-extrabold"></span>
+        <div class="rounded-xl bg-slate-50 border border-slate-200 px-3 py-2 text-xs font-bold text-slate-600 flex items-center justify-between gap-2 flex-wrap">
+          <span>🕒 पब्लिश दिनांक व वेळ: <span id="schedModalPubText" class="text-[#05344E] font-extrabold"></span></span>
+          <button type="button" onclick="resetModalPubNow()" class="px-2 py-1 rounded-lg bg-amber-100 hover:bg-amber-200 text-[#05344E] text-[11px] font-extrabold border border-amber-300 cursor-pointer">🔄 आत्ताची (आजची) करा</button>
         </div>
         <div>
           <label class="block text-xs font-extrabold text-[#05344E] mb-1">किती दिवस चालवायची? (झटपट निवड):</label>
@@ -472,12 +473,24 @@
         expMs = currentAds.splashExpiresAt || 0;
         ttl = '⏱️ Splash — अनपब्लिश वेळापत्रक';
       }
+      // जर जुन्या जाहिरातीची मुदत आधीच संपली असेल तर आजची तारीख व वेळ दाखवा
+      if (expMs > 0 && Date.now() > expMs) {
+        pubMs = Date.now();
+        expMs = 0;
+      }
       __schedTarget.pubMs = pubMs;
       document.getElementById('schedModalTitle').textContent = ttl;
       document.getElementById('schedModalPubText').textContent = formatPubDateTime(pubMs);
       document.getElementById('schedModalDaysSelect').value = '';
       document.getElementById('schedModalExpiresInput').value = toLocalInputVal(expMs);
       document.getElementById('adScheduleModal').classList.remove('hidden');
+    };
+    window.resetModalPubNow = function() {
+      if (!__schedTarget) return;
+      __schedTarget.pubMs = Date.now();
+      document.getElementById('schedModalPubText').textContent = formatPubDateTime(__schedTarget.pubMs);
+      const sel = document.getElementById('schedModalDaysSelect');
+      if (sel && sel.value && Number(sel.value) > 0) applyModalDaysPreset(sel.value);
     };
     window.closeAdScheduleModal = function() {
       document.getElementById('adScheduleModal').classList.add('hidden');
@@ -486,9 +499,16 @@
     window.applyModalDaysPreset = function(daysStr) {
       const expEl = document.getElementById('schedModalExpiresInput');
       if (!expEl || !__schedTarget) return;
+      if (daysStr === '') return;
       const d = Number(daysStr || 0);
       if (!d) { expEl.value = ''; return; }
-      expEl.value = toLocalInputVal((__schedTarget.pubMs || Date.now()) + d * 86400000);
+      const nowMs = Date.now();
+      // दिवस निवडल्यास नेहमी आजपासून/आत्तापासून पुढची तारीख सेट करा
+      if (!__schedTarget.pubMs || __schedTarget.pubMs < nowMs - 60000) {
+        __schedTarget.pubMs = nowMs;
+        document.getElementById('schedModalPubText').textContent = formatPubDateTime(nowMs);
+      }
+      expEl.value = toLocalInputVal(__schedTarget.pubMs + d * 86400000);
     };
     window.saveAdScheduleModal = function() {
       if (!__schedTarget) return;
@@ -497,16 +517,16 @@
       if (kind === 'slide') {
         syncSlotsFromDOM();
         if (!currentAds.bannerSlides[idx]) currentAds.bannerSlides[idx] = {};
-        if (!currentAds.bannerSlides[idx].publishedAt) currentAds.bannerSlides[idx].publishedAt = pubMs;
+        currentAds.bannerSlides[idx].publishedAt = pubMs || Date.now();
         currentAds.bannerSlides[idx].expiresAt = expMs;
         renderSlots(currentAds.bannerSlides);
         renderAdReports();
       } else if (kind === 'preroll') {
-        if (!currentAds.preRollPublishedAt) currentAds.preRollPublishedAt = pubMs;
+        currentAds.preRollPublishedAt = pubMs || Date.now();
         currentAds.preRollExpiresAt = expMs;
         syncSingleSchedLabels();
       } else if (kind === 'splash') {
-        if (!currentAds.splashPublishedAt) currentAds.splashPublishedAt = pubMs;
+        currentAds.splashPublishedAt = pubMs || Date.now();
         currentAds.splashExpiresAt = expMs;
         syncSingleSchedLabels();
       }
@@ -662,13 +682,23 @@
         e.target.value = '';
         return;
       }
+      currentAds.preRollPublishedAt = Date.now();
+      if (currentAds.preRollExpiresAt && Date.now() > Number(currentAds.preRollExpiresAt)) currentAds.preRollExpiresAt = 0;
+      syncSingleSchedLabels();
       const r = new FileReader();
       r.onload = (ev) => showAdMediaPreview('preRoll', ev.target.result, isVid);
       r.readAsDataURL(f);
     });
     document.getElementById('preRollVideoUrl').addEventListener('input', (e) => {
       const u = e.target.value.trim();
-      if (u) showAdMediaPreview('preRoll', u, true);
+      if (u) {
+        if (!currentAds.preRollPublishedAt || (currentAds.preRollExpiresAt && Date.now() > Number(currentAds.preRollExpiresAt))) {
+          currentAds.preRollPublishedAt = Date.now();
+          currentAds.preRollExpiresAt = 0;
+          syncSingleSchedLabels();
+        }
+        showAdMediaPreview('preRoll', u, true);
+      }
     });
     document.getElementById('preRollClearBtn').addEventListener('click', () => {
       document.getElementById('preRollFile').value = '';
@@ -677,6 +707,9 @@
       currentAds.preRollVideo = '';
       currentAds.preRollVideoUrl = '';
       currentAds.preRollMediaType = '';
+      currentAds.preRollPublishedAt = 0;
+      currentAds.preRollExpiresAt = 0;
+      syncSingleSchedLabels();
       showAdMediaPreview('preRoll', '', false);
     });
 
@@ -689,13 +722,23 @@
         e.target.value = '';
         return;
       }
+      currentAds.splashPublishedAt = Date.now();
+      if (currentAds.splashExpiresAt && Date.now() > Number(currentAds.splashExpiresAt)) currentAds.splashExpiresAt = 0;
+      syncSingleSchedLabels();
       const r = new FileReader();
       r.onload = (ev) => showAdMediaPreview('splash', ev.target.result, isVid);
       r.readAsDataURL(f);
     });
     document.getElementById('splashVideoUrl').addEventListener('input', (e) => {
       const u = e.target.value.trim();
-      if (u) showAdMediaPreview('splash', u, true);
+      if (u) {
+        if (!currentAds.splashPublishedAt || (currentAds.splashExpiresAt && Date.now() > Number(currentAds.splashExpiresAt))) {
+          currentAds.splashPublishedAt = Date.now();
+          currentAds.splashExpiresAt = 0;
+          syncSingleSchedLabels();
+        }
+        showAdMediaPreview('splash', u, true);
+      }
     });
     document.getElementById('splashClearBtn').addEventListener('click', () => {
       document.getElementById('splashFile').value = '';
@@ -704,6 +747,9 @@
       currentAds.splashVideo = '';
       currentAds.splashVideoUrl = '';
       currentAds.splashMediaType = '';
+      currentAds.splashPublishedAt = 0;
+      currentAds.splashExpiresAt = 0;
+      syncSingleSchedLabels();
       showAdMediaPreview('splash', '', false);
     });
 
@@ -1331,8 +1377,10 @@
           const waEl = cards[i].querySelector('.slot-whatsapp');
           const adId = prev.adId || ('ad_' + Date.now().toString(36) + '_' + i + '_' + Math.random().toString(36).slice(2, 6));
           const hasContent = Boolean(img || (stEl && stEl.value.trim()) || cards[i].querySelector('.slot-link').value.trim());
-          const pubMs = prev.publishedAt || (hasContent ? Date.now() : 0);
-          const expMs = prev.expiresAt || 0;
+          const isNewSlideUpload = Boolean(file);
+          const prevExp = Number(prev.expiresAt || 0);
+          const pubMs = isNewSlideUpload ? Date.now() : (prev.publishedAt || (hasContent ? Date.now() : 0));
+          const expMs = (isNewSlideUpload && prevExp > 0 && Date.now() > prevExp) ? 0 : prevExp;
           slides.push({
             adId,
             sponsor: spEl ? spEl.value.trim() : (prev.sponsor || ''),
@@ -1393,8 +1441,8 @@
           preRollSkipAfter: Number(document.getElementById('preRollSkipAfter').value) || 5,
           preRollSponsor: (document.getElementById('preRollSponsor')?.value || '').trim(),
           preRollWhatsapp: (document.getElementById('preRollWhatsapp')?.value || '').trim(),
-          preRollPublishedAt: currentAds.preRollPublishedAt || (preRollEnabled ? Date.now() : 0),
-          preRollExpiresAt: currentAds.preRollExpiresAt || 0,
+          preRollPublishedAt: preFile ? Date.now() : (currentAds.preRollPublishedAt || (document.getElementById('preRollEnabled').checked ? Date.now() : 0)),
+          preRollExpiresAt: (preFile && currentAds.preRollExpiresAt && Date.now() > Number(currentAds.preRollExpiresAt)) ? 0 : (currentAds.preRollExpiresAt || 0),
           preRollLink: document.getElementById('preRollLink').value.trim(),
           preRollText: document.getElementById('preRollText').value.trim(),
           preRollFontFamily: document.getElementById('preRollFontSelect').value,
@@ -1408,8 +1456,8 @@
           splashFrequency: document.getElementById('splashFreq').value,
           splashSponsor: (document.getElementById('splashSponsor')?.value || '').trim(),
           splashWhatsapp: (document.getElementById('splashWhatsapp')?.value || '').trim(),
-          splashPublishedAt: currentAds.splashPublishedAt || (splashEnabled ? Date.now() : 0),
-          splashExpiresAt: currentAds.splashExpiresAt || 0,
+          splashPublishedAt: splFile ? Date.now() : (currentAds.splashPublishedAt || (document.getElementById('splashEnabled').checked ? Date.now() : 0)),
+          splashExpiresAt: (splFile && currentAds.splashExpiresAt && Date.now() > Number(currentAds.splashExpiresAt)) ? 0 : (currentAds.splashExpiresAt || 0),
           splashLink: document.getElementById('splashLink').value.trim(),
           splashText: document.getElementById('splashText').value.trim(),
           splashFontFamily: document.getElementById('splashFontSelect').value,
@@ -1420,6 +1468,10 @@
         });
 
         await fbDb.ref('siteConfig/ads').set(payload);
+        currentAds = payload;
+        syncSingleSchedLabels();
+        renderSlots(currentAds.bannerSlides);
+        renderAdReports();
         showToast('✅ सर्व जाहिरात सेटिंग्ज सेव्ह झाल्या!');
       } catch (err) {
         showToast('❌ त्रुटी: ' + err.message, true);

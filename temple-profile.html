@@ -737,6 +737,20 @@
       siddhivinayak: { name: 'श्री सिद्धिविनायक मंदिर, प्रभादेवी मुंबई', handle: 'siddhivinayak_mumbai', bio: 'मुंबईचे श्री सिद्धिविनायक गणपती मंदिराचे दैनंदिन दर्शन, आरती व मंदिर माहिती.', site: 'https://www.siddhivinayak.org', map: 'https://maps.google.com/?q=Siddhivinayak+Temple+Mumbai', streamUrl: '' }
     };
 
+    const EXTRA_TEMPLE_INFO = [
+      { kws: ['nivrutti', 'निवृत्ती', 'निवृत्ति'], history: 'श्री क्षेत्र त्र्यंबकेश्वर येथील संत निवृत्तीनाथ महाराज समाधी मंदिर हे नाथ संप्रदाय व वारकरी संप्रदायाचे अत्यंत पवित्र तीर्थक्षेत्र आहे.', address: 'निवृत्तीनाथ रोड, त्र्यंबकेश्वर, जि. नाशिक', website: 'https://www.trimbakeshwar.org/', aarti: [['मंदिर दर्शन', 'पहाटे ५:०० ते रात्री ९:००'], ['सकाळची आरती', 'पहाटे ६:०० ते ९:००'], ['सायंकाळची आरती', 'सायंकाळी ५:०० ते ७:००']] },
+      { kws: ['trimbak', 'त्र्यंबक'], history: 'बारा ज्योतिर्लिंगांपैकी एक श्री त्र्यंबकेश्वर ज्योतिर्लिंग मंदिर ब्रह्मगिरी पर्वताच्या पायथ्याशी वसलेले असून येथून गोदावरी नदीचा उगम होतो.', address: 'त्र्यंबकेश्वर ज्योतिर्लिंग मंदिर, त्र्यंबक, जि. नाशिक', website: 'https://www.trimbakeshwartrust.com/', aarti: [['मंदिर दर्शन', 'पहाटे ५:३० ते रात्री ९:००'], ['प्रातःपूजा व रुद्राभिषेक', 'सकाळी ७:०० ते ८:३०'], ['मध्यान्ह पूजा', '१०:४५ ते १२:३०'], ['सायं पूजा', 'सायंकाळी ७:०० ते ८:३०']] },
+      { kws: ['shani', 'शनि', 'शिंगणापूर'], history: 'श्री क्षेत्र शनि शिंगणापूर हे स्वयंभू शनिदेव देवस्थान म्हणून जगप्रसिद्ध आहे.', address: 'शनि शिंगणापूर, ता. नेवासा, जि. अहिल्यानगर', website: 'https://www.shanidev.com/', aarti: [['मंदिर दर्शन', 'पहाटे ४:०० ते रात्री १०:३०'], ['काकड आरती', 'पहाटे ४:३०'], ['मध्यान्ह आरती', 'दुपारी १२:००'], ['सायं आरती', 'सूर्यास्तावेळी']] },
+      { kws: ['shegaon', 'gajanan', 'शेगाव', 'गजानन'], history: 'विदर्भाची पंढरी म्हणून ओळखले जाणारे श्री संत गजानन महाराज संस्थान, शेगाव हे महाराष्ट्रातील प्रमुख भक्तीस्थळ आहे.', address: 'मेन रोड, शेगाव, जि. बुलढाणा', website: 'https://www.gajananmaharaj.org/', aarti: [['काकड आरती', 'पहाटे ५:००'], ['मध्यान्ह आरती', 'सकाळी ११:३०'], ['सायं आरती', 'दुपारी ४:००'], ['शेजारती', 'रात्री ९:३०']] },
+      { kws: ['akkalkot', 'swami', 'अक्कलकोट', 'स्वामी'], history: 'श्री क्षेत्र अक्कलकोट येथील वटवृक्ष स्वामी समर्थ महाराज मंदिर हे दत्त संप्रदायाचे प्रमुख केंद्र आहे.', address: 'वटवृक्ष स्वामी समर्थ देवस्थान, अक्कलकोट, जि. सोलापूर', website: 'https://vatvrukshaswami.org/', aarti: [['काकड आरती', 'पहाटे ५:००'], ['दर्शन वेळ', 'पहाटे ५:१५ ते रात्री १०:००'], ['शेजारती', 'रात्री ८:०० ते ८:४५']] },
+      { kws: ['jejuri', 'khandoba', 'जेजुरी', 'खंडोबा'], history: 'महाराष्ट्राचे कुलदैवत श्री खंडोबा यांचे गडकोट मंदिर जेजुरी येथे स्थित आहे.', address: 'मल्हारगड रोड, जेजुरी, ता. पुरंदर, जि. पुणे', website: 'https://www.khandoba.com/', aarti: [['भूपाली व आरती', 'पहाटे ५:०० ते ६:३०'], ['मध्यान्ह पूजा व आरती', 'दुपारी १२:०० ते १२:३०'], ['सायं दर्शन', 'दुपारी १:०० ते रात्री ८:४५']] },
+      { kws: ['saptashrungi', 'vani', 'सप्तशृंगी', 'वणी'], history: 'वणी येथील सात डोंगररांगांमध्ये वसलेले श्री सप्तशृंगी निवासिनी देवीचे मंदिर साडेतीन शक्तिपीठांपैकी एक अर्धपीठ मानले जाते.', address: 'सप्तशृंगी गड, वणी, ता. कळवण, जि. नाशिक', website: 'https://sgfrl.com/', aarti: [['सांज आरती व पंचारती', 'सायंकाळी ६:०० ते ६:३०']] },
+      { kws: ['bhimashankar', 'भीमाशंकर'], history: 'सह्याद्रीच्या डोंगररांगांमध्ये स्थित श्री भीमाशंकर मंदिर हे बारा ज्योतिर्लिंगांपैकी एक आहे.', address: 'श्री क्षेत्र भीमाशंकर, ता. खेड, जि. पुणे', website: 'https://shreebhimashankar.com/', aarti: [['काकड आरती', 'पहाटे ४:३० ते ५:३०'], ['मध्यान्ह आरती', 'दुपारी ३:००'], ['सायं आरती', 'सायंकाळी ७:३०']] }
+    ];
+    function matchExtraTempleInfo(id, name) {
+      const hay = ((id || '') + ' ' + (name || '')).toLowerCase();
+      return EXTRA_TEMPLE_INFO.find(x => x.kws.some(w => hay.includes(w))) || null;
+    }
     const DEMO_AARTI = [
       ['काकड आरती', 'पहाटे ४:३० ते ६:००'],
       ['महापूजा व नैवेद्य', 'सकाळी ११:०० ते १२:००'],
@@ -1097,7 +1111,18 @@
       document.getElementById('tabGrid').innerHTML = renderTiles(items, 'अजून कोणतेही दर्शन फोटो उपलब्ध नाहीत 🙏');
       document.getElementById('tabReels').innerHTML = renderTiles(items.filter(x => x.isVid), 'अजून कोणतेही शॉर्ट व्हिडिओ उपलब्ध नाहीत 🎬');
 
-      const aartiRows = (Array.isArray(fbInfo.aartiSchedule) && fbInfo.aartiSchedule.length ? fbInfo.aartiSchedule.map(a => [a.name || a.title, a.time]) : DEMO_AARTI)
+      const extraMeta = matchExtraTempleInfo(curTempleId, curTempleObj.name);
+      let parsedAarti = [];
+      if (Array.isArray(fbInfo.aartiSchedule) && fbInfo.aartiSchedule.length) {
+        parsedAarti = fbInfo.aartiSchedule.map(a => [a.name || a.title, a.time]);
+      } else if (fbInfo.schedule && String(fbInfo.schedule).trim()) {
+        parsedAarti = String(fbInfo.schedule).split(/\r?\n/).map(s => s.replace(/^[•\-*\s]+/, '').trim()).filter(Boolean).map(line => {
+          const parts = line.split(/[:\-–]/);
+          if (parts.length >= 2) return [parts[0].trim(), parts.slice(1).join(':').trim()];
+          return [line, ''];
+        });
+      }
+      const aartiRows = (parsedAarti.length ? parsedAarti : (extraMeta ? extraMeta.aarti : DEMO_AARTI))
         .map(([n, t]) => `<div class="aarti-row"><span style="font-weight:700;">🪔 ${n}</span><span style="color:var(--sub);font-weight:600;">${t}</span></div>`).join('');
 
       document.getElementById('tabInfo').innerHTML = `
@@ -1107,7 +1132,9 @@
         </div>
         <div class="info-card">
           <h3>🛕 मंदिराची माहिती व पत्ता</h3>
-          <p style="font-size:13px;line-height:1.6;color:var(--sub);">${fbInfo.history || curTempleObj.bio}</p>
+          <p style="font-size:13.5px;line-height:1.6;color:var(--sub);white-space:pre-line;">${fbInfo.history || (extraMeta && extraMeta.history) || curTempleObj.bio}</p>
+          ${(fbInfo.address || (extraMeta && extraMeta.address)) ? `<div style="margin-top:8px;padding-top:8px;border-top:1px dashed var(--card-border);font-size:13px;font-weight:700;">📍 पत्ता: <span style="font-weight:500;color:var(--sub);">${fbInfo.address || (extraMeta && extraMeta.address)}</span></div>` : ''}
+          ${(fbInfo.website || (extraMeta && extraMeta.website)) ? `<div style="margin-top:6px;font-size:12.5px;"><a href="${fbInfo.website || (extraMeta && extraMeta.website)}" target="_blank" rel="noopener noreferrer" style="color:#0284c7;font-weight:700;">🌐 अधिकृत वेबसाईट ↗</a></div>` : ''}
         </div>`;
     }
 

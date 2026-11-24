@@ -38,7 +38,19 @@
 
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">मंदिर निवडा</label>
-          <select id="infoTempleSelect" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm bg-white"></select>
+          <div class="relative w-full" id="infoTempleDDWrap">
+          <button id="infoTempleBtn" type="button" onclick="toggleInfoTempleDD()" class="w-full rounded-xl border-[1.5px] border-[#05344E]/35 bg-[#EEF5FA] px-3.5 py-2.5 text-sm font-bold text-[#031926] flex items-center justify-between gap-2 text-left shadow-sm">
+            <span id="infoTempleLabel" class="truncate">मंदिर निवडा...</span>
+            <span class="text-xs text-[#05344E] shrink-0">▾</span>
+          </button>
+          <div id="infoTempleDDPanel" class="hidden absolute left-0 right-0 top-full mt-1 z-40 bg-white border-[1.5px] border-[#05344E]/40 rounded-2xl shadow-xl overflow-hidden">
+            <div class="p-2 bg-[#EEF5FA] border-b border-[#C8DFEE]">
+              <input id="infoTempleSearch" type="text" placeholder="🔍 मंदिर शोधा..." oninput="filterInfoTempleOpts(this.value)" class="w-full rounded-xl border border-[#C3D9E8] px-3 py-1.5 text-sm bg-white outline-none" />
+            </div>
+            <div id="infoTempleDDList" class="max-h-56 overflow-y-auto divide-y divide-slate-100"></div>
+          </div>
+          <select id="infoTempleSelect" class="hidden"></select>
+        </div>
         </div>
         <div class="p-3.5 rounded-2xl bg-sky-50/80 border border-sky-200 space-y-2.5">
           <div class="flex flex-wrap items-center justify-between gap-2">
@@ -184,6 +196,54 @@
         "address": "श्रीमंत दगडूशेठ हलवाई सार्वजनिक गणपती ट्रस्ट, २५०, बुधवार पेठ, छत्रपती शिवाजी महाराज रोड, पुणे - ४११००२.\n• रेल्वे स्थानक: पुणे जंक्शन (३.५ किमी)\n• मेट्रो स्थानक: मंडई / बुधवार पेठ मेट्रो स्टेशन (चालत ५ मिनिटे).",
         "website": "https://www.dagdushethganpati.com/marathi/temple-schedule"
     },
+    "nivruttinath": {
+      "schedule": "• मंदिर दर्शन: पहाटे ५:०० ते रात्री ९:००\n• सकाळची आरती व दर्शन: पहाटे ६:०० ते ९:००\n• सायंकाळची आरती: सायंकाळी ५:०० ते ७:००",
+      "history": "श्री क्षेत्र त्र्यंबकेश्वर येथील संत निवृत्तीनाथ महाराज समाधी मंदिर हे नाथ संप्रदाय व वारकरी संप्रदायाचे अत्यंत पवित्र तीर्थक्षेत्र आहे. संत ज्ञानेश्वर महाराजांचे थोरले बंधू व सद्गुरू श्री निवृत्तीनाथ महाराजांनी येथे संजीवन समाधी घेतली.",
+      "address": "निवृत्तीनाथ रोड, श्री क्षेत्र त्र्यंबकेश्वर, जि. नाशिक, महाराष्ट्र ४२२२१२",
+      "website": "https://www.trimbakeshwar.org/"
+    },
+    "trimbakeshwar": {
+      "schedule": "• मंदिर दर्शन: पहाटे ५:३० ते रात्री ९:००\n• प्रातःपूजा व रुद्राभिषेक: सकाळी ७:०० ते ८:३०\n• मध्यान्ह पूजा: सकाळी १०:४५ ते दुपारी १२:३०\n• सुवर्ण मुकुट दर्शन: सायंकाळी ४:३० ते ५:००\n• सायं पूजा: सायंकाळी ७:०० ते ८:३०",
+      "history": "बारा ज्योतिर्लिंगांपैकी एक असलेले श्री त्र्यंबकेश्वर ज्योतिर्लिंग मंदिर नाशिक जिल्ह्यातील ब्रह्मगिरी पर्वताच्या पायथ्याशी वसलेले असून येथूनच गोदावरी नदीचा उगम होतो. येथील पिंडीवर ब्रह्मा, विष्णू व महेश अशी तीन रूपे एकत्र आहेत.",
+      "address": "श्री त्र्यंबकेश्वर ज्योतिर्लिंग मंदिर, त्र्यंबक, जि. नाशिक, महाराष्ट्र ४२२२१२",
+      "website": "https://www.trimbakeshwartrust.com/"
+    },
+    "shanishingnapur": {
+      "schedule": "• मंदिर दर्शन: पहाटे ४:०० ते रात्री १०:३०\n• काकड आरती: पहाटे ४:३०\n• मध्यान्ह आरती: दुपारी १२:००\n• सायं आरती: सूर्यास्तावेळी",
+      "history": "श्री क्षेत्र शनि शिंगणापूर हे स्वयंभू शनिदेव देवस्थान म्हणून जगप्रसिद्ध आहे. येथे शनिदेवाची स्वयंभू काळ्या पाषाणाची मूर्ती उघड्या चौथऱ्यावर विराजमान आहे.",
+      "address": "श्री शनैश्वर देवस्थान, शनि शिंगणापूर, ता. नेवासा, जि. अहिल्यानगर, महाराष्ट्र ४१४१०५",
+      "website": "https://www.shanidev.com/"
+    },
+    "shegaon": {
+      "schedule": "• मंदिर उघडणे व काकड आरती: पहाटे ५:००\n• मध्यान्ह आरती: सकाळी ११:३०\n• सायं आरती: दुपारी ४:००\n• शेजारती: रात्री ९:३० (मंदिर बंद)",
+      "history": "विदर्भाची पंढरी म्हणून ओळखले जाणारे श्री संत गजानन महाराज संस्थान, शेगाव हे महाराष्ट्रातील प्रमुख भक्तीस्थळ आहे. संस्थानतर्फे भाविकांसाठी मोफत महाप्रसाद व उत्कृष्ट भक्तनिवास सेवा दिली जाते.",
+      "address": "श्री संत गजानन महाराज मंदिर, मेन रोड, शेगाव, जि. बुलढाणा, महाराष्ट्र ४४४२०३",
+      "website": "https://www.gajananmaharaj.org/"
+    },
+    "akkalkot": {
+      "schedule": "• काकड आरती: पहाटे ५:००\n• भाविकांसाठी दर्शन: पहाटे ५:१५ ते रात्री १०:००\n• शेजारती: रात्री ८:०० ते ८:४५",
+      "history": "श्री क्षेत्र अक्कलकोट येथील वटवृक्ष स्वामी समर्थ महाराज मंदिर हे दत्त संप्रदायाचे प्रमुख केंद्र आहे. येथे श्री स्वामी समर्थ महाराजांनी अनेक वर्षे वास्तव्य करून भक्तांना आशीर्वाद दिले.",
+      "address": "श्री वटवृक्ष स्वामी समर्थ महाराज देवस्थान, अक्कलकोट, जि. सोलापूर, महाराष्ट्र ४१३२१६",
+      "website": "https://vatvrukshaswami.org/"
+    },
+    "jejuri": {
+      "schedule": "• भूपाली व सकाळची आरती: पहाटे ५:०० ते ६:३०\n• सकाळचे दर्शन: सकाळी ६:३० ते दुपारी १२:००\n• मध्यान्ह पूजा व आरती: दुपारी १२:०० ते १२:३०\n• सायं दर्शन: दुपारी १:०० ते रात्री ८:४५",
+      "history": "महाराष्ट्राचे कुलदैवत श्री खंडोबा (मल्हारी मार्तंड) यांचे गडकोट मंदिर जेजुरी येथे स्थित आहे. पिवळ्या भंडाऱ्याची उधळण आणि 'येळकोट येळकोट जय मल्हार' चा गजर हे येथील प्रमुख वैशिष्ट्य आहे.",
+      "address": "मल्हारगड रोड, श्री क्षेत्र जेजुरी, ता. पुरंदर, जि. पुणे, महाराष्ट्र ४१२३०३",
+      "website": "https://www.khandoba.com/"
+    },
+    "saptashrungi": {
+      "schedule": "• काकड आरती व पंचामृत महापूजा: पहाटे\n• सांज आरती (पंचारती व सप्तशती पाठ): सायंकाळी ६:०० ते ६:३०",
+      "history": "नाशिक जिल्ह्यातील वणी येथील सात डोंगररांगांमध्ये वसलेले श्री सप्तशृंगी निवासिनी देवीचे मंदिर हे साडेतीन शक्तिपीठांपैकी एक अर्धपीठ मानले जाते.",
+      "address": "सप्तशृंगी गड, वणी, ता. कळवण, जि. नाशिक, महाराष्ट्र ४२३५०१",
+      "website": "https://sgfrl.com/"
+    },
+    "bhimashankar": {
+      "schedule": "• मंदिर उघडणे व काकड आरती: पहाटे ४:३० ते ५:३०\n• दर्शन व अभिषेक: सकाळी ५:३० ते दुपारी १२:००\n• नैवेद्य पूजा: दुपारी १२:०० ते १२:२०\n• मध्यान्ह आरती: दुपारी ३:००\n• सायं आरती: सायंकाळी ७:३० (मंदिर बंद रात्री ९:३०)",
+      "history": "पुणे जिल्ह्यातील सह्याद्रीच्या डोंगररांगांमध्ये स्थित श्री भीमाशंकर मंदिर हे बारा ज्योतिर्लिंगांपैकी एक आहे. येथून भीमा नदीचा उगम होतो.",
+      "address": "श्री क्षेत्र भीमाशंकर, ता. खेड, जि. पुणे, महाराष्ट्र ४१०५०९",
+      "website": "https://shreebhimashankar.com/"
+    },
     "siddhivinayak": {
         "title": "श्री सिद्धिविनायक गणपती मंदिर, मुंबई",
         "schedule": "• पहाटे ५:३० ते ६:०० : काकड आरती\n• स. ६:०० ते दु. १२:०० : सकाळचे श्री दर्शन\n• दु. १२:०५ ते १२:३० : महानैवेद्य व आरती\n• दु. १२:३० ते रात्री ७:२० : दुपारचे व सायंकाळचे दर्शन\n• रात्री ७:३० ते ८:०० : धुपारती व महाआरती\n• रात्री ९:५० ते १०:०० : शेजारती व मंदिर बंद\n(मंगळवारी विशेष: पहाटे ३:१५ ला दर्शन सुरू, ५:०० ला काकड आरती व रात्री उशिरापर्यंत दर्शन.)",
@@ -300,10 +360,34 @@
       return null;
     }
 
+    function findDefaultInfo(id) {
+      if (DEFAULT_INFO_TEXT[id]) return DEFAULT_INFO_TEXT[id];
+      const hay = ((id || '') + ' ' + (templeNameMap[id] || '')).toLowerCase();
+      const mapRules = [
+        ['nivruttinath', ['nivrutti', 'निवृत्ती', 'निवृत्ति']],
+        ['trimbakeshwar', ['trimbak', 'त्र्यंबक']],
+        ['shanishingnapur', ['shani', 'शनि', 'शिंगणापूर']],
+        ['shegaon', ['shegaon', 'gajanan', 'शेगाव', 'गजानन']],
+        ['akkalkot', ['akkalkot', 'swami', 'अक्कलकोट', 'स्वामी']],
+        ['jejuri', ['jejuri', 'khandoba', 'जेजुरी', 'खंडोबा']],
+        ['saptashrungi', ['saptashrungi', 'vani', 'सप्तशृंगी', 'वणी']],
+        ['bhimashankar', ['bhimashankar', 'भीमाशंकर']],
+        ['pandharpur', ['pandharpur', 'vitthal', 'पंढरपूर', 'विठ्ठल']],
+        ['kolhapur', ['kolhapur', 'ambabai', 'mahalaxmi', 'कोल्हापूर', 'अंबाबाई', 'महालक्ष्मी']],
+        ['tuljapur', ['tulja', 'तुळजा']],
+        ['shirdi', ['shirdi', 'sai', 'शिर्डी', 'साई']],
+        ['dagdusheth', ['dagdusheth', 'दगडूशेठ']],
+        ['siddhivinayak', ['siddhivinayak', 'सिद्धिविनायक']]
+      ];
+      for (const [k, kws] of mapRules) {
+        if (kws.some(w => hay.includes(w))) return DEFAULT_INFO_TEXT[k];
+      }
+      return null;
+    }
     function loadTempleInfo(id) {
       document.getElementById('previewInfoPageLink').href = 'temple-info.html?id=' + encodeURIComponent(id);
       if (wikiInput) wikiInput.value = templeNameMap[id] || '';
-      const def = DEFAULT_INFO_TEXT[id] || { schedule: '', history: '', address: '', website: '' };
+      const def = findDefaultInfo(id) || { schedule: '', history: '', address: '', website: '' };
       fbDb.ref('templeInfo/' + id).once('value', (snap) => {
         const val = snap.val() || {};
         document.getElementById('infoScheduleInput').value = val.schedule !== undefined ? val.schedule : def.schedule;
@@ -323,31 +407,70 @@
       });
     }
 
-    initAdminGuard(() => {
-      fbDb.ref('temples').once('value', (snap) => {
-        const data = snap.val() || {};
-        const items = [];
-        const seen = new Set();
-        templeNameMap = {};
-        DEFAULT_TEMPLES_META.forEach((d) => {
-          const fb = data[d.id];
-          if (fb && fb.deleted) return;
-          seen.add(d.id);
-          const nm = (fb && (fb.shortTitle || fb.name)) || d.name;
-          templeNameMap[d.id] = nm;
-          if (fb && fb.image) templeImageMap[d.id] = fb.image;
-          items.push({ id: d.id, name: nm });
-        });
-        Object.entries(data).forEach(([id, t]) => {
-          if (seen.has(id) || !t || t.deleted) return;
-          const nm = t.shortTitle || t.name || id;
-          templeNameMap[id] = nm;
-          if (t.image) templeImageMap[id] = t.image;
-          items.push({ id, name: nm });
-        });
-        sel.innerHTML = items.map(it => `<option value="${it.id}">${it.name}</option>`).join('');
-        if (items.length) loadTempleInfo(items[0].id);
+    let _infoTempleItems = [];
+    window.toggleInfoTempleDD = () => {
+      const p = document.getElementById('infoTempleDDPanel');
+      if (p) p.classList.toggle('hidden');
+    };
+    window.pickInfoTemple = (id, name) => {
+      sel.value = id;
+      const lbl = document.getElementById('infoTempleLabel');
+      if (lbl) lbl.textContent = name;
+      const p = document.getElementById('infoTempleDDPanel');
+      if (p) p.classList.add('hidden');
+      loadTempleInfo(id);
+    };
+    window.filterInfoTempleOpts = (q) => {
+      const box = document.getElementById('infoTempleDDList');
+      if (!box) return;
+      const s = String(q || '').trim().toLowerCase();
+      const m = _infoTempleItems.filter(it => !s || it.name.toLowerCase().includes(s));
+      box.innerHTML = (m.length ? m : _infoTempleItems).map(it =>
+        `<button type="button" onclick="pickInfoTemple('${it.id.replace(/'/g, '')}','${it.name.replace(/'/g, '')}')" class="w-full text-left px-3.5 py-2 text-sm font-bold hover:bg-[#EEF5FA]">${it.name}</button>`
+      ).join('');
+    };
+    document.addEventListener('click', (ev) => {
+      if (!ev.target.closest('#infoTempleDDWrap')) {
+        const p = document.getElementById('infoTempleDDPanel');
+        if (p) p.classList.add('hidden');
+      }
+    });
+
+    initAdminGuard(async () => {
+      const [s1, s2] = await Promise.all([
+        fbDb.ref('temples').once('value').catch(() => ({ val: () => ({}) })),
+        fbDb.ref('dailyDarshan/temples').once('value').catch(() => ({ val: () => ({}) }))
+      ]);
+      const data = { ...(s1.val() || {}) };
+      const ddData = s2.val() || {};
+      Object.entries(ddData).forEach(([k, v]) => {
+        if (!v || v.deleted) return;
+        const id = v.id || k;
+        data[id] = { ...(data[id] || {}), ...v, id };
       });
+      const items = [];
+      const seen = new Set();
+      templeNameMap = {};
+      DEFAULT_TEMPLES_META.forEach((d) => {
+        const fb = data[d.id];
+        if (fb && fb.deleted) return;
+        seen.add(d.id);
+        const nm = (fb && (fb.shortTitle || fb.name)) || d.name;
+        templeNameMap[d.id] = nm;
+        if (fb && fb.image) templeImageMap[d.id] = fb.image;
+        items.push({ id: d.id, name: nm });
+      });
+      Object.entries(data).forEach(([id, t]) => {
+        if (seen.has(id) || !t || t.deleted) return;
+        const nm = t.shortTitle || t.name || t.title || id;
+        templeNameMap[id] = nm;
+        if (t.image) templeImageMap[id] = t.image;
+        items.push({ id, name: nm });
+      });
+      _infoTempleItems = items;
+      sel.innerHTML = items.map(it => `<option value="${it.id}">${it.name}</option>`).join('');
+      filterInfoTempleOpts('');
+      if (items.length) pickInfoTemple(items[0].id, items[0].name);
     });
 
     sel.addEventListener('change', () => loadTempleInfo(sel.value));
@@ -448,7 +571,7 @@
 
     document.getElementById('resetOfficialInfoBtn').addEventListener('click', () => {
       const id = sel.value;
-      const def = DEFAULT_INFO_TEXT[id];
+      const def = findDefaultInfo(id);
       if (!def) {
         showToast('या नवीन मंदिरासाठी अधिकृत पूर्वनिर्धारित माहिती नाही; "🌐 इंटरनेटवरून माहिती आणा" वापरा.', true);
         return;

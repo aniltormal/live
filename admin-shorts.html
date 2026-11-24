@@ -493,8 +493,11 @@
           if (btn) { btn.disabled = false; btn.textContent = origTxt || '💾 सर्व सेटिंग्ज सेव्ह करा'; }
         }
         };
-        if (typeof window.askSaveConfirm === 'function') window.askSaveConfirm(doSave);
-        else if (confirm('तुम्ही केलेले सर्व बदल सेव्ह करायचे का?')) doSave();
+        if (typeof window.askSaveConfirm === 'function') {
+          window.askSaveConfirm(doSave);
+        } else if (typeof openAdvModal === 'function') {
+          openAdvModal('💾 सेटिंग्ज सेव्ह करायच्या का?', 'तुम्ही केलेले सर्व बदल थेट लाईव्ह वेबसाईटवर लागू करून सेव्ह करायचे का?', false, '✅ होय, सेव्ह करा', () => { doSave(); });
+        }
       };
 
       try {
